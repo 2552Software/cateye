@@ -95,14 +95,14 @@ public:
        set(0);  // actions can vary
     }
     void set(int action);
-    void set(const glm::vec3& c) { centroid = c; }
+    void set(const ofRectangle& r) { rectangle = r; }
     void setup();
     void update();
     void draw();
 
 private:
     ofxAnimatableOfColor color; // revert to black when not animating
-    glm::vec3 centroid;
+    ofRectangle rectangle;
 
     int action; // things like have the  cat noise when hit
 };
@@ -112,7 +112,7 @@ public:
     void setup();
     void update();
     void draw();
-    void drawContours(float cxScreen, float cyScreen) {    contours.draw(cxScreen, cyScreen);  }
+    void drawContours(float cxScreen, float cyScreen);
     //http://www.findsounds.com/ISAPI/search.dll?keywords=cat
     void sounds();
     void circle();

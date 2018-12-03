@@ -1,5 +1,13 @@
 #include "ofApp.h"
 
+void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
+    contours.draw(cxScreen, cyScreen);
+    for (auto& a : thingsToDo) {
+        a.second.draw();
+    }
+}
+
+
 void Map::setup() {
 }
 void Map::set(int a) {
@@ -18,7 +26,14 @@ void Map::update() {
 }
 
 void Map::draw() {
-
+    if (rectangle.getArea() > 0) {
+        ofPushStyle();
+        ofFill();
+        color.applyCurrentColor();
+        // caller must set position?
+        ofDrawRectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+        ofPopStyle();
+    }
 }
 
 void Light::setup() {
@@ -344,8 +359,8 @@ void ImageAnimator::setup() {
     ofDirectory allEyes(path);
     allEyes.allowExt("png");
     allEyes.allowExt("jpg");
+    size_t i = 0;
     if (allEyes.listDir() > 0) {
-        size_t i = 0;
         for (; i < allEyes.size(); i++) {
             add(allEyes.getPath(i), allEyes.getName(i));
         }
@@ -400,6 +415,10 @@ void ImageAnimator::add(const std::string &name, const std::string &root) {
 }
 
 void ImageAnimator::update() {
+    for (auto& a : thingsToDo) {
+        a.second.update();
+    }
+
     for (SuperSphere&eye : eyes) {
         eye.update();
     }
@@ -425,11 +444,13 @@ void ImageAnimator::update() {
     if (contours.contourFinder.blobs.size() > 0) {
         glm::vec3 target = currentRotation;
         glm::vec3 centroid;
+        ofRectangle rect;
         // find max size
         for (auto& blob : contours.contourFinder.blobs) {
             if (blob.area > max && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
                 max = blob.area;
                 centroid = blob.centroid;
+                rect = blob.boundingRect;
                 break; // first is max
             }
         }
@@ -455,7 +476,7 @@ void ImageAnimator::update() {
                     break;
                 }
             }
-            thingsToDo[std::make_pair(target.x, target.y)].set(centroid); // make these time out using animation, draw while they exist
+            thingsToDo[std::make_pair(target.x, target.y)].set(rect); // make these time out using animation, draw while they exist
 
         }
         // if any data 
