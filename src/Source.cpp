@@ -1,5 +1,26 @@
 #include "ofApp.h"
 
+void Map::setup() {
+}
+void Map::set(int a) {
+    action = a;
+    if (action) {
+        color.setColor(ofColor::aliceBlue);
+        color.setDuration(5.0f);
+        color.setRepeatType(PLAY_ONCE);
+        color.setCurve(LINEAR);
+        color.animateTo(ofColor::fireBrick);
+    }
+}
+
+void Map::update() {
+    color.update(1.0f / ofGetTargetFrameRate());
+}
+
+void Map::draw() {
+
+}
+
 void Light::setup() {
     ofLight::setup();
     setDirectional();
@@ -285,17 +306,29 @@ void ImageAnimator::circle() {
     path.addTransition(point);
 }
 
+// call just after things are found and upon startup
+void ImageAnimator::randomize() {
+    // create hot grids
+    thingsToDo.clear();
+    for (auto& row : mapX) {
+        for (auto& col : mapY) {
+            thingsToDo.insert(std::make_pair(std::make_pair(row.first.first, col.first.first), Map()));
+        }
+    }
+    int c = 0; // make sure we get 3
+    for (int c = 0; c < 3; ++c) {
+        int randX = (int)ofRandom(0, mapX.size() - 1);
+        int randY = (int)ofRandom(0, mapY.size() - 1);
+        thingsToDo[std::make_pair(randX, randY)].set(1);
+    }
+}
+
 void ImageAnimator::setup() {
     ofSetFrameRate(60.0f);
     buildX();
     buildY();
 
-    // create hot grids
-    for (auto& row : mapX) {
-        for (auto& col : mapY) {
-            thingsToDo.insert(std::make_pair(std::make_pair(row.first.first, col.first.first), 1));
-        }
-    }
+    randomize();
 
     animatorIndex.reset(0.0f);
     animatorIndex.setDuration(1.0f);
@@ -311,10 +344,15 @@ void ImageAnimator::setup() {
     ofDirectory allEyes(path);
     allEyes.allowExt("png");
     allEyes.allowExt("jpg");
-    allEyes.listDir();
-    size_t i = 0;
-    for (; i < allEyes.size(); i++) {
-        add(allEyes.getPath(i), allEyes.getName(i));
+    if (allEyes.listDir() > 0) {
+        size_t i = 0;
+        for (; i < allEyes.size(); i++) {
+            add(allEyes.getPath(i), allEyes.getName(i));
+        }
+    }
+    else {
+        ofLogFatalError() << "eyes missing";
+        ofExit(100);
     }
     ofDirectory allSounds(path);
     allSounds.allowExt("wav");
@@ -335,7 +373,7 @@ void ImageAnimator::buildX() {
     float incPercent = 5.0f;
     float incRotaion = ((r * 2) / (100.0f / incPercent - 1));
     for (int i = 1; percent < 100.0f; ++i, percent += incPercent, r -= incRotaion) {
-        mapX.insert(std::make_pair(std::make_pair(percent, percent + incPercent), Map(r, i)));
+        mapX.insert(std::make_pair(std::make_pair(percent, percent + incPercent), r));
     }
 }
 void ImageAnimator::buildY() {
@@ -344,7 +382,7 @@ void ImageAnimator::buildY() {
     float incPercent = 5.0f;
     float incRotaion = ((r * 2) / (100.0f / incPercent - 1));
     for (int i = 1; percent < 100.0f; ++i, percent += incPercent, r -= incRotaion) {
-        mapY.insert(std::make_pair(std::make_pair(percent, percent + incPercent), Map(r, i)));
+        mapY.insert(std::make_pair(std::make_pair(percent, percent + incPercent), r));
     }
 }
 
@@ -386,7 +424,7 @@ void ImageAnimator::update() {
     float max = 0.0f;
     if (contours.contourFinder.blobs.size() > 0) {
         glm::vec3 target = currentRotation;
-        ofDefaultVec3 centroid;
+        glm::vec3 centroid;
         // find max size
         for (auto& blob : contours.contourFinder.blobs) {
             if (blob.area > max && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
@@ -402,33 +440,22 @@ void ImageAnimator::update() {
             double x = (centroid.x / imgWidth)*100.0f; // make it a percent
             double y = (centroid.y / imgHeight)*100.0f; // make it a percent
 
-            int xAction = 0; // none
-            int yAction = 0; // none
-            if (mapX.find(std::make_pair(xAction, yAction)) != mapX.end()) {
-            }
+            //if (mapX.find(std::make_pair(xAction, yAction)) != mapX.end()) {
+           // }
             for (auto& row : mapX) {
                 if (x >= row.first.first && x <= row.first.second) {
-                    target.y = row.second.rotation;
-                    xAction = row.second.action;
+                    target.y = row.second;
                     // centroid
                     break;
                 }
             }
             for (auto& row : mapY) {
                 if (y >= row.first.first && y <= row.first.second) {
-                    target.x = row.second.rotation;
-                    yAction = row.second.action;
+                    target.x = row.second;
                     break;
                 }
             }
-            mapY[std::make_pair(xAction, yAction)].centroid = centroid; // make these time out using animation, draw while they exist
-
-            if (thingsToDo.find(std::make_pair(xAction, yAction)) != thingsToDo.end()) {
-                int fun = thingsToDo[std::make_pair(xAction, yAction)];
-                if (fun == 1) {
-                    sounds(); // done one for eyese and one for both
-                }
-            }
+            thingsToDo[std::make_pair(target.x, target.y)].set(centroid); // make these time out using animation, draw while they exist
 
         }
         // if any data 

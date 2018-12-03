@@ -81,7 +81,6 @@ public:
     // return true if updated
     void update();
     void draw(float cxScreen, float cyScreen);
-
     ofxCvContourFinder contourFinder;
     ofxCvContourFinder contourDrawer;
 private:
@@ -90,25 +89,46 @@ private:
     ofxCvGrayscaleImage grayImage, backgroundImage, grayDiff;
 };
 
+class Map {
+public:
+    Map() {
+       set(0);  // actions can vary
+    }
+    void set(int action);
+    void set(const glm::vec3& c) { centroid = c; }
+    void setup();
+    void update();
+    void draw();
+
+private:
+    ofxAnimatableOfColor color; // revert to black when not animating
+    glm::vec3 centroid;
+
+    int action; // things like have the  cat noise when hit
+};
 
 class ImageAnimator {
 public:
     void setup();
+    void update();
+    void draw();
+    void drawContours(float cxScreen, float cyScreen) {    contours.draw(cxScreen, cyScreen);  }
     //http://www.findsounds.com/ISAPI/search.dll?keywords=cat
     void sounds();
     void circle();
-    void update();
+
     void windowResized(int w, int h) {
         for (SuperSphere&eye : eyes) {
             eye.setRadius(std::min(w, h));
         }
     }
-    void draw();
+
     void startPlaying();
     SuperSphere& getCurrentEyeRef();
     void add(const std::string &name, const std::string &root);
 
 private:
+    void randomize();
     ContoursBuilder contours;
     void buildX();
     void buildY();
@@ -120,22 +140,9 @@ private:
     std::vector<SuperSphere> eyes;
     ofVec3f currentLocation;
     ofVec3f currentRotation;
-    class Map {
-    public:
-        Map(float r, int a) {
-            rotation = r;
-            action = a;
-        }
-        void setup() {}
-        void update() {}
-        void draw() {}
-        ofxAnimatableOfColor color;
-        ofDefaultVec3 centroid;
-        float rotation;
-        int action; // things like have the  cat noise when hit
-    };
-    std::map<std::pair<float, float>, Map> mapX;
-    std::map<std::pair<float, float>, Map> mapY;
-    std::map<std::pair<int, int>, int> thingsToDo;
+    typedef std::pair<float, float> Key;
+    std::map<Key, float> mapX; // range to rotation
+    std::map<Key, float> mapY;
+    std::map<Key, Map> thingsToDo;
 };
 

@@ -44,7 +44,7 @@ void ofApp::draw(){
     eyeAnimator.draw();
     ofPopMatrix();
     camera.end();
-    eyeAnimator.contours.draw(ofGetScreenWidth(), ofGetScreenHeight());
+    eyeAnimator.drawContours(ofGetScreenWidth(), ofGetScreenHeight());
     light.disable();
     ofPopStyle();
     ofPopMatrix();
