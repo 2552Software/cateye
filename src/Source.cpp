@@ -15,28 +15,33 @@ void Map::set(int a) {
 }
 
 void Map::set(const ofRectangle& r) {
-    // trigger
+    rectangle = r;
+}
+void Map::trigger() {
     if (action > 0) {
-        rectangle = r;
-        color.setColor(ofColor::aliceBlue);
-        color.setDuration(25.0f);
+        ofColor c1(0, 255, 255); // bugbug randomize
+        ofColor c2(255, 0, 255);
+        color.setAlphaOnly(100);
+        color.setColor(c1);
+        color.setDuration(5.0f);
         color.setRepeatType(PLAY_ONCE);
         color.setCurve(LINEAR);
-        color.animateTo(ofColor::fireBrick);
+        color.animateTo(c2);
     }
 }
-
 void Map::update() {
     color.update(1.0f / ofGetTargetFrameRate());
 }
 
 void Map::draw() {
-    if (rectangle.getArea() > 0 && color.isAnimating()) {
+    if (isAnimating()) {
         ofPushStyle();
         ofFill();
         color.applyCurrentColor();
-        // caller must set position?
-        ofDrawRectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+        // convert to screen size
+        float xFactor = ofGetScreenWidth()/ imgWidth;
+        float yFactor = ofGetScreenHeight()/ imgHeight;
+        ofDrawRectangle(xFactor*rectangle.x, yFactor*rectangle.y, xFactor*rectangle.width, yFactor*rectangle.height);
         ofPopStyle();
     }
 }
@@ -329,30 +334,42 @@ void ImageAnimator::circle() {
 // call just after things are found and upon startup
 void ImageAnimator::randomize() {
     // create hot grids
-    thingsToDo.clear();
-    for (int x = 0; x < mapX.size(); ++x) {
-        for (int y = 0; y < mapY.size(); ++y) {
-            thingsToDo.insert(std::make_pair(std::make_pair(x, y), Map())); // build an default table
+    for (auto& a : thingsToDo) {
+        a.second.set(0); // clear all
+    }
+    // make sure we get 3 random points
+    for (int c = 0; c < 3; ) {
+        int i = (int)ofRandom(0, thingsToDo.size() - 1);
+        int index = 0;
+        for (auto& item : thingsToDo) {
+            if (index == i){
+                item.second.set(1);
+                ++c;
+                break;
+            }
+            ++index;
         }
     }
-    int c = 0; // make sure we get 3 random points
-    for (int c = 0; c < 3; ++c) {
-        int x = (int)ofRandom(0, mapX.size() - 1);
-        int y = (int)ofRandom(0, mapY.size() - 1);
-        if (thingsToDo[std::make_pair(x, y)].getAction() == 0) {
-            thingsToDo[std::make_pair(x, y)].set(1);
-        }
-        else {
-            c -= 1; // dup ignored
-        }
+    for (auto& a : thingsToDo) {
+        a.second.trigger();
     }
+
 }
 
 void ImageAnimator::setup() {
     ofSetFrameRate(60.0f);
     buildX();
     buildY();
-
+    // all based on camera size and just grid out the screen 10x10 or what ever size we want
+    float w = imgWidth / 10;
+    float h = imgHeight / 10;
+    for (float x = 0.0f; x < imgWidth; x += w) {
+        for (float y = 0.0f; y < imgHeight; y += h) {
+            // roate the x  to reflect viewer vs camera
+            thingsToDo.insert(std::make_pair(std::make_pair(imgWidth-x, y), Map(ofRectangle(x, y, w, h)))); // build an default table
+        }
+    }
+    
     randomize();
 
     animatorIndex.reset(0.0f);
@@ -398,7 +415,7 @@ void ImageAnimator::buildX() {
     float incPercent = 5.0f;
     float incRotaion = ((r * 2) / (100.0f / incPercent - 1));
     for (int i = 1; percent < 100.0f; ++i, percent += incPercent, r -= incRotaion) {
-        mapX.insert(std::make_pair(std::make_pair(percent, percent + incPercent), r));
+        mapCameraInX.insert(std::make_pair(std::make_pair(percent, percent + incPercent), r));
     }
 }
 void ImageAnimator::buildY() {
@@ -407,7 +424,7 @@ void ImageAnimator::buildY() {
     float incPercent = 5.0f;
     float incRotaion = ((r * 2) / (100.0f / incPercent - 1));
     for (int i = 1; percent < 100.0f; ++i, percent += incPercent, r -= incRotaion) {
-        mapY.insert(std::make_pair(std::make_pair(percent, percent + incPercent), r));
+        mapCameraInY.insert(std::make_pair(std::make_pair(percent, percent + incPercent), r));
     }
 }
 
@@ -464,7 +481,7 @@ void ImageAnimator::update() {
                 break; // first is max
             }
         }
-        if (max > 100) { // fine tune on site
+        if (max > 100) { // fine tune on site bugbug put in menu as well as light color range
             int w = imgWidth; // camera size not screen size
             int h = imgHeight;
 
@@ -473,21 +490,24 @@ void ImageAnimator::update() {
 
             //if (mapX.find(std::make_pair(xAction, yAction)) != mapX.end()) {
            // }
-            for (auto& row : mapX) {
+            for (auto& row : mapCameraInX) {
                 if (x >= row.first.first && x <= row.first.second) {
                     target.y = row.second;
                     // centroid
                     break;
                 }
             }
-            for (auto& row : mapY) {
+            for (auto& row : mapCameraInY) {
                 if (y >= row.first.first && y <= row.first.second) {
                     target.x = row.second;
                     break;
                 }
             }
-
-            thingsToDo[std::make_pair(target.x, target.y)].set(rect); // make these time out using animation, draw while they exist
+            for (auto& item : thingsToDo) {
+                if (item.second.match(rect)) {
+                    item.second.trigger();
+                }
+            }
         }
         // if any data 
         if (max > 10) {
@@ -518,6 +538,11 @@ void ImageAnimator::update() {
     }
 }
 void ImageAnimator::draw() {
+
+    // see if there is a fun thing to do (ie 1 2 3), once found randomize
+    for (auto& item : thingsToDo) {
+        item.second.draw();
+    }
     getCurrentEyeRef().blinkingEnabled = false; // only blink when eye is not doing interesting things bugbug fix blinking
     // move all eyes so when they switch things are current
     if (!path.hasFinishedAnimating()) {

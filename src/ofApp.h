@@ -7,13 +7,11 @@
 #include "ofxAnimatableOfColor.h"
 #include "ofxAnimatableQueue.h"
 #include "ofxOpenCv.h"
-
-#include "Header.h"
-
 const int imgWidth = 640;// 320; // the motion image from the camera
 const int imgHeight = 480;//240;
 #define DATAPATH "runtime"
 
+#include "Header.h"
 
 class ofApp : public ofBaseApp {
 

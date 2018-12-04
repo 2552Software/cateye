@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ofApp.h"
 
 class Light : public ofLight {
@@ -91,17 +92,24 @@ private:
 
 class Map {
 public:
-    Map() {
+    Map() {}
+    Map(const ofRectangle& rectangle) {
        set(0);  // actions can vary
+       set(rectangle);
     }
+    void trigger();
+    bool isAnimating() { return color.isAnimating();   }
     void set(int action);
-    void set(const ofRectangle& r);
     void setup();
     void update();
     void draw();
     int getAction() { return action; }
+    bool match(const ofRectangle& rect) {
+        return rectangle.intersects(rect);
+    }
 
 private:
+    void set(const ofRectangle& rectangle);
     int action; // things like have the  cat noise when hit
     ofxAnimatableOfColor color; // revert to black when not animating
     ofRectangle rectangle;
@@ -142,8 +150,8 @@ private:
     ofVec3f currentLocation;
     ofVec3f currentRotation;
     typedef std::pair<float, float> Key;
-    std::map<Key, float> mapX; // range to rotation
-    std::map<Key, float> mapY;
+    std::map<Key, float> mapCameraInX; // range to rotation
+    std::map<Key, float> mapCameraInY;
     std::map<std::pair<int, int>, Map> thingsToDo; // map indexes
 };
 
