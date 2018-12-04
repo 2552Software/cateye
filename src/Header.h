@@ -95,16 +95,17 @@ public:
        set(0);  // actions can vary
     }
     void set(int action);
-    void set(const ofRectangle& r) { rectangle = r; }
+    void set(const ofRectangle& r);
     void setup();
     void update();
     void draw();
+    int getAction() { return action; }
 
 private:
+    int action; // things like have the  cat noise when hit
     ofxAnimatableOfColor color; // revert to black when not animating
     ofRectangle rectangle;
 
-    int action; // things like have the  cat noise when hit
 };
 
 class ImageAnimator {
@@ -143,6 +144,6 @@ private:
     typedef std::pair<float, float> Key;
     std::map<Key, float> mapX; // range to rotation
     std::map<Key, float> mapY;
-    std::map<Key, Map> thingsToDo;
+    std::map<std::pair<int, int>, Map> thingsToDo; // map indexes
 };
 

@@ -12,9 +12,14 @@ void Map::setup() {
 }
 void Map::set(int a) {
     action = a;
-    if (action) {
+}
+
+void Map::set(const ofRectangle& r) {
+    // trigger
+    if (action > 0) {
+        rectangle = r;
         color.setColor(ofColor::aliceBlue);
-        color.setDuration(5.0f);
+        color.setDuration(25.0f);
         color.setRepeatType(PLAY_ONCE);
         color.setCurve(LINEAR);
         color.animateTo(ofColor::fireBrick);
@@ -26,7 +31,7 @@ void Map::update() {
 }
 
 void Map::draw() {
-    if (rectangle.getArea() > 0) {
+    if (rectangle.getArea() > 0 && color.isAnimating()) {
         ofPushStyle();
         ofFill();
         color.applyCurrentColor();
@@ -325,16 +330,21 @@ void ImageAnimator::circle() {
 void ImageAnimator::randomize() {
     // create hot grids
     thingsToDo.clear();
-    for (auto& row : mapX) {
-        for (auto& col : mapY) {
-            thingsToDo.insert(std::make_pair(std::make_pair(row.first.first, col.first.first), Map()));
+    for (int x = 0; x < mapX.size(); ++x) {
+        for (int y = 0; y < mapY.size(); ++y) {
+            thingsToDo.insert(std::make_pair(std::make_pair(x, y), Map())); // build an default table
         }
     }
-    int c = 0; // make sure we get 3
+    int c = 0; // make sure we get 3 random points
     for (int c = 0; c < 3; ++c) {
-        int randX = (int)ofRandom(0, mapX.size() - 1);
-        int randY = (int)ofRandom(0, mapY.size() - 1);
-        thingsToDo[std::make_pair(randX, randY)].set(1);
+        int x = (int)ofRandom(0, mapX.size() - 1);
+        int y = (int)ofRandom(0, mapY.size() - 1);
+        if (thingsToDo[std::make_pair(x, y)].getAction() == 0) {
+            thingsToDo[std::make_pair(x, y)].set(1);
+        }
+        else {
+            c -= 1; // dup ignored
+        }
     }
 }
 
@@ -476,8 +486,8 @@ void ImageAnimator::update() {
                     break;
                 }
             }
-            thingsToDo[std::make_pair(target.x, target.y)].set(rect); // make these time out using animation, draw while they exist
 
+            thingsToDo[std::make_pair(target.x, target.y)].set(rect); // make these time out using animation, draw while they exist
         }
         // if any data 
         if (max > 10) {
