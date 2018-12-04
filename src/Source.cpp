@@ -2,8 +2,9 @@
 
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     contours.draw(cxScreen, cyScreen);
-    for (auto& a : thingsToDo) {
-        a.second.draw();
+    // see if there is a fun thing to do (ie 1 2 3), once found randomize
+    for (auto& item : thingsToDo) {
+        item.second.draw();
     }
 }
 
@@ -18,10 +19,16 @@ void Map::set(const ofRectangle& r) {
     rectangle = r;
 }
 void Map::trigger() {
-    if (action > 0) {
+    if (action > 0 && !isAnimating()) {
+        game.reset(50.0f);
+        game.setCurve(LINEAR);
+        game.setRepeatType(PLAY_ONCE);
+        game.setDuration(5.0f);
+        game.animateTo(200.0f);
         ofColor c1(0, 255, 255); // bugbug randomize
         ofColor c2(255, 0, 255);
-        color.setAlphaOnly(100);
+        color.setAlphaOnly(game); // fade in
+        color.animateToAlpha(game);
         color.setColor(c1);
         color.setDuration(5.0f);
         color.setRepeatType(PLAY_ONCE);
@@ -37,12 +44,17 @@ void Map::draw() {
     if (isAnimating()) {
         ofPushStyle();
         ofFill();
+        ofEnableAlphaBlending();
         color.applyCurrentColor();
         // convert to screen size
         float xFactor = ofGetScreenWidth()/ imgWidth;
         float yFactor = ofGetScreenHeight()/ imgHeight;
         ofDrawRectangle(xFactor*rectangle.x, yFactor*rectangle.y, xFactor*rectangle.width, yFactor*rectangle.height);
+        ofDisableAlphaBlending();
         ofPopStyle();
+    }
+    else {
+        int i = 0;
     }
 }
 
@@ -350,10 +362,6 @@ void ImageAnimator::randomize() {
             ++index;
         }
     }
-    for (auto& a : thingsToDo) {
-        a.second.trigger();
-    }
-
 }
 
 void ImageAnimator::setup() {
@@ -539,10 +547,6 @@ void ImageAnimator::update() {
 }
 void ImageAnimator::draw() {
 
-    // see if there is a fun thing to do (ie 1 2 3), once found randomize
-    for (auto& item : thingsToDo) {
-        item.second.draw();
-    }
     getCurrentEyeRef().blinkingEnabled = false; // only blink when eye is not doing interesting things bugbug fix blinking
     // move all eyes so when they switch things are current
     if (!path.hasFinishedAnimating()) {
@@ -559,6 +563,7 @@ void ImageAnimator::draw() {
    // }
     rotate(currentRotation);
     getCurrentEyeRef().draw();
+
 }
 void ImageAnimator::startPlaying() {
     animatorIndex.animateTo(eyes.size() - 1);

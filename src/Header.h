@@ -98,7 +98,7 @@ public:
        set(rectangle);
     }
     void trigger();
-    bool isAnimating() { return color.isAnimating();   }
+    bool isAnimating() { return game.isAnimating();   }
     void set(int action);
     void setup();
     void update();
@@ -113,7 +113,7 @@ private:
     int action; // things like have the  cat noise when hit
     ofxAnimatableOfColor color; // revert to black when not animating
     ofRectangle rectangle;
-
+    ofxAnimatableFloat game;
 };
 
 class ImageAnimator {
