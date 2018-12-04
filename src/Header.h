@@ -123,7 +123,7 @@ public:
     void draw();
     void drawContours(float cxScreen, float cyScreen);
     //http://www.findsounds.com/ISAPI/search.dll?keywords=cat
-    void sounds();
+    void sounds(float duration= 100.0f); // default to full sound
     void circle();
 
     void windowResized(int w, int h) {
@@ -137,6 +137,7 @@ public:
     void add(const std::string &name, const std::string &root);
 
 private:
+    bool itsAHit;
     void randomize();
     ContoursBuilder contours;
     void buildX();

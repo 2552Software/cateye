@@ -2,7 +2,12 @@
 
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     contours.draw(cxScreen, cyScreen);
-    // see if there is a fun thing to do (ie 1 2 3), once found randomize
+    if (itsAHit) {
+        itsAHit = false;
+        randomize();
+        //sounds(0.25f);
+    }
+    // else draw boxes as hints bugbug make boxes smaller
     for (auto& item : thingsToDo) {
         item.second.draw();
     }
@@ -23,7 +28,7 @@ void Map::trigger() {
         game.reset(50.0f);
         game.setCurve(LINEAR);
         game.setRepeatType(PLAY_ONCE);
-        game.setDuration(5.0f);
+        game.setDuration(125.0f);
         game.animateTo(200.0f);
         ofColor c1(0, 255, 255); // bugbug randomize
         ofColor c2(255, 0, 255);
@@ -38,6 +43,7 @@ void Map::trigger() {
 }
 void Map::update() {
     color.update(1.0f / ofGetTargetFrameRate());
+    game.update(1.0f / ofGetTargetFrameRate());
 }
 
 void Map::draw() {
@@ -309,7 +315,7 @@ void ImageAnimator::rotate(const ofVec3f& target) {
     }
 }
 
-void ImageAnimator::sounds() {
+void ImageAnimator::sounds(float duration) {
     auto rng = std::default_random_engine{};
     std::shuffle(std::begin(mySounds), std::end(mySounds), rng);
 
@@ -317,7 +323,7 @@ void ImageAnimator::sounds() {
         player.setVolume(ofRandom(2.2f));
         player.setPosition(ofRandom(1.0f));
         player.setMultiPlay(true);
-        int end = (int)ofRandom(1, 20);
+        int end = (int)ofRandom(1, duration*2.0f);
         for (int i = 0; i < end; ++i) {
             player.play();
         }
@@ -368,13 +374,14 @@ void ImageAnimator::setup() {
     ofSetFrameRate(60.0f);
     buildX();
     buildY();
+    itsAHit = false; // no match yet
     // all based on camera size and just grid out the screen 10x10 or what ever size we want
     float w = imgWidth / 10;
     float h = imgHeight / 10;
     for (float x = 0.0f; x < imgWidth; x += w) {
         for (float y = 0.0f; y < imgHeight; y += h) {
             // roate the x  to reflect viewer vs camera
-            thingsToDo.insert(std::make_pair(std::make_pair(imgWidth-x, y), Map(ofRectangle(x, y, w, h)))); // build an default table
+            thingsToDo.insert(std::make_pair(std::make_pair(x, y), Map(ofRectangle(x, y, w, h)))); // build an default table
         }
     }
     
@@ -454,6 +461,16 @@ void ImageAnimator::update() {
         a.second.update();
     }
 
+    // see if there is a fun thing to do (ie 1 2 3), once found randomize
+    int count = 0;
+    for (auto& item : thingsToDo) {
+        if (item.second.isAnimating()) {
+            ++count;
+        }
+    }
+    itsAHit = true;
+    randomize();
+
     for (SuperSphere&eye : eyes) {
         eye.update();
     }
@@ -480,13 +497,24 @@ void ImageAnimator::update() {
         glm::vec3 target = currentRotation;
         glm::vec3 centroid;
         ofRectangle rect;
-        // find max size
+        // first find any motion for the game, then find motion for drawing and eye tracking
         for (auto& blob : contours.contourFinder.blobs) {
             if (blob.area > max && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
                 max = blob.area;
                 centroid = blob.centroid;
                 rect = blob.boundingRect;
                 break; // first is max
+            }
+        }
+
+        // find max size
+        for (auto& blob : contours.contourFinder.blobs) {
+            if (blob.area > 5 && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
+                for (auto& item : thingsToDo) {
+                    if (item.second.match(blob.boundingRect)) {
+                        item.second.trigger();
+                    }
+                }
             }
         }
         if (max > 100) { // fine tune on site bugbug put in menu as well as light color range
@@ -511,13 +539,8 @@ void ImageAnimator::update() {
                     break;
                 }
             }
-            for (auto& item : thingsToDo) {
-                if (item.second.match(rect)) {
-                    item.second.trigger();
-                }
-            }
         }
-        // if any data 
+       // if any data 
         if (max > 10) {
             ofLogNotice() << "insert targert" << target;
             currentRotation = target;
