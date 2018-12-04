@@ -5,7 +5,7 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     if (itsAHit) {
         itsAHit = false;
         randomize();
-        //sounds(0.25f);
+        sounds(1);
     }
     // else draw boxes as hints bugbug make boxes smaller
     for (auto& item : thingsToDo) {
@@ -51,7 +51,10 @@ void Map::draw() {
         ofPushStyle();
         ofFill();
         ofEnableAlphaBlending();
-        color.applyCurrentColor();
+        //color.applyCurrentColor();
+        ofColor c = color.getCurrentColor();
+        c.a = 100;
+        ofSetColor(c);
         // convert to screen size
         float xFactor = ofGetScreenWidth()/ imgWidth;
         float yFactor = ofGetScreenHeight()/ imgHeight;
@@ -315,7 +318,7 @@ void ImageAnimator::rotate(const ofVec3f& target) {
     }
 }
 
-void ImageAnimator::sounds(float duration) {
+void ImageAnimator::sounds(int duration) {
     auto rng = std::default_random_engine{};
     std::shuffle(std::begin(mySounds), std::end(mySounds), rng);
 
@@ -323,7 +326,7 @@ void ImageAnimator::sounds(float duration) {
         player.setVolume(ofRandom(2.2f));
         player.setPosition(ofRandom(1.0f));
         player.setMultiPlay(true);
-        int end = (int)ofRandom(1, duration*2.0f);
+        int end = (int)ofRandom(1, duration);
         for (int i = 0; i < end; ++i) {
             player.play();
         }
@@ -468,8 +471,10 @@ void ImageAnimator::update() {
             ++count;
         }
     }
-    itsAHit = true;
-    randomize();
+
+    itsAHit = count > 5; // pick a number that shows somone is playing the game
+
+   //randomize();
 
     for (SuperSphere&eye : eyes) {
         eye.update();
