@@ -3,9 +3,9 @@
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     contours.draw(cxScreen, cyScreen);
     if (itsAHit) {
-        itsAHit = false;
-        randomize();
-        sounds(1);
+       // itsAHit = false;
+       // randomize();
+        sounds(3);
     }
     // else draw boxes as hints bugbug make boxes smaller
     for (auto& item : thingsToDo) {
@@ -30,13 +30,13 @@ void Map::trigger() {
         game.setRepeatType(PLAY_ONCE);
         game.setDuration(125.0f);
         game.animateTo(200.0f);
-        ofColor c1(0, 255, 255); // bugbug randomize
+        ofColor c1(0, 255, 255); // bugbug randomize?
         ofColor c2(255, 0, 255);
         color.setAlphaOnly(game); // fade in
         color.animateToAlpha(game);
         color.setColor(c1);
-        color.setDuration(5.0f);
-        color.setRepeatType(PLAY_ONCE);
+        color.setDuration(3.0f);
+        color.setRepeatType(LOOP_BACK_AND_FORTH);
         color.setCurve(LINEAR);
         color.animateTo(c2);
     }
@@ -356,8 +356,9 @@ void ImageAnimator::circle() {
 void ImageAnimator::randomize() {
     // create hot grids
     for (auto& a : thingsToDo) {
-        a.second.set(0); // clear all
+        a.second.set(1); // clear all is 0
     }
+    return;
     // make sure we get 3 random points
     for (int c = 0; c < 3; ) {
         int i = (int)ofRandom(0, thingsToDo.size() - 1);
