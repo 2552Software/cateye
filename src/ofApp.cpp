@@ -6,8 +6,6 @@ void ofApp::setup(){
   
     //ofEnableSeparateSpecularLight();
     ofSetWindowShape(ofGetScreenWidth(), ofGetScreenHeight());
-    ofSetBackgroundColor(ofColor::black);
-    ofSetColor(ofColor::white);
     ofSetLogLevel(OF_LOG_VERBOSE);
     ofLogToConsole();
     //ofEnableLighting();
@@ -19,21 +17,28 @@ void ofApp::setup(){
     light.setup();
 
     // Works like shit on 4k a does most of OF.
-    gui.setup("a Big Electric Cat");
+    gui.setup();
     gui.setBackgroundColor(ofColor::white);
-    gui.setHeaderBackgroundColor(ofColor::blue);
+    gui.setFillColor(ofColor::blue);
 
     // setup(const std::string& collectionName = "", const std::string& filename = ofxPanelDefaultFilename, float x = 10, float y = 10);
+
     gui.add(squareCount.setup("Squares", 10, 10, 100));
+
+    eyeAnimator.setCount(squareCount);
     eyeAnimator.setup();
     gui.loadFont(OF_TTF_SANS, 24, true, true);
+    gui.setBorderColor(ofColor::yellow);
+    gui.setTextColor(ofColor::black);
+    gui.setHeaderBackgroundColor(ofColor::orangeRed);
+    gui.setBackgroundColor(ofColor::yellowGreen);
     gui.setPosition(ofGetScreenWidth() / 2, ofGetScreenHeight() / 2);
     gui.setShape(ofGetScreenWidth() / 2, ofGetScreenHeight() / 2, ofGetScreenWidth() / 10, ofGetScreenHeight() / 10 );
     gui.loadFromFile("settings.xml");
     squareCount.addListener(this, &ofApp::squareCountChanged);
 }
 void ofApp::squareCountChanged(int &squareCount) {
-    eyeAnimator.setCount(squareCount);
+    eyeAnimator.setCount(squareCount); 
 }
 //--------------------------------------------------------------
 void ofApp::update(){
@@ -50,27 +55,27 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    /*
-    ofEnableDepthTest();
-    ofPushStyle();
-    light.enable();
-    camera.begin();
-    ofPushMatrix();
-    ofTranslate((ofGetWidth() / 2) - eyeAnimator.getCurrentEyeRef().getRadius(), ofGetHeight() / 2 - eyeAnimator.getCurrentEyeRef().getRadius() / 2, 0);
-    eyeAnimator.draw();
-    ofPopMatrix();
-    camera.end();
-    eyeAnimator.drawContours(ofGetScreenWidth(), ofGetScreenHeight());
-    light.disable();
-    ofPopStyle();
-    ofPopMatrix();
-    ofDisableDepthTest();
-    */
-
-    if (!hideMenu) {
+    ofSetBackgroundColor(ofColor::black);
+    ofSetColor(ofColor::white);
+    if (hideMenu) {
+        ofEnableDepthTest();
+        ofPushStyle();
+        light.enable();
+        camera.begin();
+        ofPushMatrix();
+        ofTranslate((ofGetWidth() / 2) - eyeAnimator.getCurrentEyeRef().getRadius(), ofGetHeight() / 2 - eyeAnimator.getCurrentEyeRef().getRadius() / 2, 0);
+        eyeAnimator.draw();
+        ofPopMatrix();
+        camera.end();
+        eyeAnimator.drawContours(ofGetScreenWidth(), ofGetScreenHeight());
+        light.disable();
+        ofPopStyle();
+        ofPopMatrix();
+        ofDisableDepthTest();
+    }
+    else  {
         gui.draw();
     }
-
 }
 
 void ofApp::keyPressed(int key) {
@@ -78,7 +83,8 @@ void ofApp::keyPressed(int key) {
         hideMenu = !hideMenu;
     }
     else if (key == 's') {
-        gui.saveToFile("settings.xml");
+         gui.saveToFile("settings.xml");
+        hideMenu = !hideMenu;
     }
     else if (key == 'l') {
         gui.loadFromFile("settings.xml");

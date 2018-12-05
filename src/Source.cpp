@@ -188,7 +188,7 @@ void ImageAnimator::circle() {
 void ImageAnimator::randomize() {
     // create hot grids
     for (auto& a : thingsToDo) {
-        a.second.set(0); // clear all is 0 menu pick -- all 1s enable all
+        a.second.set(1); // clear all is 0 menu pick -- all 1s enable all
     }
     
     // make sure we get 3 random points used to unlock the game
@@ -207,20 +207,24 @@ void ImageAnimator::randomize() {
 }
 
 void ImageAnimator::buildTable() {
-    // all based on camera size and just grid out the screen 10x10 or what ever size we want
-    float w = imgWidth / squareCount; // menu bugbug
-    float h = imgHeight / squareCount;
-    for (float x = 0.0f; x < imgWidth; x += w) {
-        for (float y = 0.0f; y < imgHeight; y += h) {
-            // roate the x  to reflect viewer vs camera
-            thingsToDo.insert(std::make_pair(std::make_pair(x, y), Map(ofRectangle(x, y, w, h)))); // build an default table
+    if (squareCount) {
+        // all based on camera size and just grid out the screen 10x10 or what ever size we want
+        float w = imgWidth / squareCount; // menu bugbug
+        float h = imgHeight / squareCount;
+        for (float x = 0.0f; x < imgWidth; x += w) {
+            for (float y = 0.0f; y < imgHeight; y += h) {
+                // roate the x  to reflect viewer vs camera
+                thingsToDo.insert(std::make_pair(std::make_pair(x, y), Map(ofRectangle(x, y, w, h)))); // build an default table
+            }
         }
     }
 }
 
 void ImageAnimator::setCount(int count) {
-    squareCount = count;
-    reset();
+    if (count > 0) {
+        squareCount = count;
+        reset();
+    }
 }
 void ImageAnimator::setup() {
     ofSetFrameRate(60.0f);
