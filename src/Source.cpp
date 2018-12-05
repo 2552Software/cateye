@@ -206,21 +206,27 @@ void ImageAnimator::randomize() {
     }
 }
 
-void ImageAnimator::setup() {
-    ofSetFrameRate(60.0f);
-    buildX();
-    buildY();
+void ImageAnimator::buildTable() {
     // all based on camera size and just grid out the screen 10x10 or what ever size we want
-    float w = imgWidth / 20; // menu bugbug
-    float h = imgHeight / 20;
+    float w = imgWidth / squareCount; // menu bugbug
+    float h = imgHeight / squareCount;
     for (float x = 0.0f; x < imgWidth; x += w) {
         for (float y = 0.0f; y < imgHeight; y += h) {
             // roate the x  to reflect viewer vs camera
             thingsToDo.insert(std::make_pair(std::make_pair(x, y), Map(ofRectangle(x, y, w, h)))); // build an default table
         }
     }
-    
-    randomize();
+}
+
+void ImageAnimator::setCount(int count) {
+    squareCount = count;
+    reset();
+}
+void ImageAnimator::setup() {
+    ofSetFrameRate(60.0f);
+    buildX();
+    buildY();
+    reset();
 
     animatorIndex.reset(0.0f);
     animatorIndex.setDuration(1.0f);
@@ -301,9 +307,8 @@ int ImageAnimator::count() {
     return count;
  }
 void ImageAnimator::reset() {
-    for (auto& item : thingsToDo) {
-        item.second.reset();
-    }
+    thingsToDo.clear();
+    buildTable();
     randomize();
 }
 void ImageAnimator::windowResized(int w, int h) {

@@ -121,7 +121,7 @@ private:
 
 class ImageAnimator {
 public:
-    void setup(int squreCount);
+    void setup();
     void update();
     void draw();
     void drawContours(float cxScreen, float cyScreen);
@@ -135,9 +135,11 @@ public:
     int count();
     bool match(int count) { return count == thingsToDo.size(); } // match as in pinball
     void reset();
-
+    void setCount(int count);
 private:
-   
+    void buildTable();
+
+    int squareCount;
     void randomize();
     ContoursBuilder contours;
     void buildX();

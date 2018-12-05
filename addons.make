@@ -1,2 +1,3 @@
 ofxAnimatable
+ofxGui
 ofxOpenCv

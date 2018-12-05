@@ -16,7 +16,6 @@ void ofApp::setup(){
     //ofSetSmoothLighting(true);
     camera.setup();
     // camera.lookAt(eyeAnimator.sphere);
-    eyeAnimator.setup();
     light.setup();
 
     // Works like shit on 4k a does most of OF.
@@ -25,7 +24,8 @@ void ofApp::setup(){
     gui.setHeaderBackgroundColor(ofColor::blue);
 
     // setup(const std::string& collectionName = "", const std::string& filename = ofxPanelDefaultFilename, float x = 10, float y = 10);
-    gui.add(squareCount.setup("Squares", 100, 100, 1000));
+    gui.add(squareCount.setup("Squares", 10, 10, 100));
+    eyeAnimator.setup();
     gui.loadFont(OF_TTF_SANS, 24, true, true);
     gui.setPosition(ofGetScreenWidth() / 2, ofGetScreenHeight() / 2);
     gui.setShape(ofGetScreenWidth() / 2, ofGetScreenHeight() / 2, ofGetScreenWidth() / 10, ofGetScreenHeight() / 10 );
@@ -33,6 +33,7 @@ void ofApp::setup(){
     squareCount.addListener(this, &ofApp::squareCountChanged);
 }
 void ofApp::squareCountChanged(int &squareCount) {
+    eyeAnimator.setCount(squareCount);
 }
 //--------------------------------------------------------------
 void ofApp::update(){
