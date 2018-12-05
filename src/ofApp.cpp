@@ -2,6 +2,8 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    hideMenu = true;
+  
     //ofEnableSeparateSpecularLight();
     ofSetWindowShape(ofGetScreenWidth(), ofGetScreenHeight());
     ofSetBackgroundColor(ofColor::black);
@@ -9,18 +11,29 @@ void ofApp::setup(){
     ofSetLogLevel(OF_LOG_VERBOSE);
     ofLogToConsole();
     //ofEnableLighting();
-    ofEnableDepthTest();
     ofSetVerticalSync(true);
     ofDisableArbTex();
     //ofSetSmoothLighting(true);
-    ofDisableAlphaBlending();
     camera.setup();
     // camera.lookAt(eyeAnimator.sphere);
     eyeAnimator.setup();
     light.setup();
 
-}
+    // Works like shit on 4k a does most of OF.
+    gui.setup("a Big Electric Cat");
+    gui.setBackgroundColor(ofColor::white);
+    gui.setHeaderBackgroundColor(ofColor::blue);
 
+    // setup(const std::string& collectionName = "", const std::string& filename = ofxPanelDefaultFilename, float x = 10, float y = 10);
+    gui.add(squareCount.setup("Squares", 100, 100, 1000));
+    gui.loadFont(OF_TTF_SANS, 24, true, true);
+    gui.setPosition(ofGetScreenWidth() / 2, ofGetScreenHeight() / 2);
+    gui.setShape(ofGetScreenWidth() / 2, ofGetScreenHeight() / 2, ofGetScreenWidth() / 10, ofGetScreenHeight() / 10 );
+    gui.loadFromFile("settings.xml");
+    squareCount.addListener(this, &ofApp::squareCountChanged);
+}
+void ofApp::squareCountChanged(int &squareCount) {
+}
 //--------------------------------------------------------------
 void ofApp::update(){
     eyeAnimator.update();
@@ -36,6 +49,8 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    /*
+    ofEnableDepthTest();
     ofPushStyle();
     light.enable();
     camera.begin();
@@ -48,5 +63,26 @@ void ofApp::draw(){
     light.disable();
     ofPopStyle();
     ofPopMatrix();
+    ofDisableDepthTest();
+    */
+
+    if (!hideMenu) {
+        gui.draw();
+    }
 
 }
+
+void ofApp::keyPressed(int key) {
+    if (key == 'm') {
+        hideMenu = !hideMenu;
+    }
+    else if (key == 's') {
+        gui.saveToFile("settings.xml");
+    }
+    else if (key == 'l') {
+        gui.loadFromFile("settings.xml");
+    }
+}
+
+
+

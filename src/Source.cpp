@@ -188,7 +188,7 @@ void ImageAnimator::circle() {
 void ImageAnimator::randomize() {
     // create hot grids
     for (auto& a : thingsToDo) {
-        a.second.set(0); // clear all is 0
+        a.second.set(0); // clear all is 0 menu pick -- all 1s enable all
     }
     
     // make sure we get 3 random points used to unlock the game

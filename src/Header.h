@@ -121,7 +121,7 @@ private:
 
 class ImageAnimator {
 public:
-    void setup();
+    void setup(int squreCount);
     void update();
     void draw();
     void drawContours(float cxScreen, float cyScreen);
