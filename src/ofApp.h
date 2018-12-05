@@ -22,7 +22,11 @@ public:
     bool hideMenu;
     ofxPanel gui;
     ofxIntSlider squareCount;
+    ofxFloatSlider maxForTrigger;
+    ofxFloatSlider maxForShape;
     void squareCountChanged(int & squareCount);
+    void triggerCountChanged(float & count);
+    void shapeSizeChanged(float & size);
 
     Light	light;
     Camera camera;

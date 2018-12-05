@@ -103,13 +103,9 @@ public:
     void setup();
     void update();
     void draw(int count);
-    void reset() {
-        game.reset();
-    }
+    void reset() { game.reset(); }
     int getAction() { return action; }
-    bool match(const ofRectangle& rect) {
-        return rectangle.intersects(rect);
-    }
+    bool match(const ofRectangle& rect) { return rectangle.intersects(rect); }
 
 private:
     void set(const ofRectangle& rectangle);
@@ -136,14 +132,19 @@ public:
     bool match(int count) { return count == thingsToDo.size(); } // match as in pinball
     void reset();
     void setCount(int count);
+    void ignight(bool on=true);
+    int  firstMatchCount() { return 3; } // intial game trigger
+    void setTriggerCount(float count);
+    void setShapeMinSize(float size) { shapeMinSize = size; };
 private:
+    float shapeMinSize;
     void buildTable();
-
     int squareCount;
     void randomize();
     ContoursBuilder contours;
     void buildX();
     void buildY();
+    float maxForTrigger;
     void rotate(const ofVec3f& target);
     std::vector<ofSoundPlayer> mySounds;
     ofxAnimatableFloat animatorIndex;

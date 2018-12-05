@@ -4,7 +4,7 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     contours.draw(cxScreen, cyScreen);
     int c = count();
     if (match(c)) {
-        reset();
+       reset();
        sounds(3);//  sound in menu, same as grids time out etc bugbug
     }
     else {
@@ -14,7 +14,6 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
         }
     }
 }
-
 
 void Map::setup() {
 }
@@ -69,7 +68,6 @@ void Map::draw(int count) {
     }
 }
 
-
 void ContoursBuilder::setup() {
     vector<ofVideoDevice> devices = video.listDevices();
     for (auto& device : devices) {
@@ -84,6 +82,7 @@ void ContoursBuilder::setup() {
     grayImage.allocate(imgWidth, imgHeight);
     grayDiff.allocate(imgWidth, imgHeight);
 }
+
 // return true if updated
 void ContoursBuilder::update() {
     video.update();
@@ -106,6 +105,7 @@ void ContoursBuilder::update() {
         }
     }
 }
+
 void ContoursBuilder::draw(float cxScreen, float cyScreen) {
     ofPushStyle();
     ofPushMatrix();
@@ -184,13 +184,15 @@ void ImageAnimator::circle() {
     path.addTransition(point);
 }
 
-// call just after things are found and upon startup
-void ImageAnimator::randomize() {
+void ImageAnimator::ignight(bool on) {
     // create hot grids
     for (auto& a : thingsToDo) {
-        a.second.set(1); // clear all is 0 menu pick -- all 1s enable all
+        a.second.set((on) ? 1:0); // clear all is 0 menu pick -- all 1s enable all
     }
-    
+}
+// call just after things are found and upon startup
+void ImageAnimator::randomize() {
+    ignight(false); // reset 
     // make sure we get 3 random points used to unlock the game
     for (int c = 0; c < 3; ) {
         int i = (int)ofRandom(0, thingsToDo.size() - 1);
@@ -220,6 +222,13 @@ void ImageAnimator::buildTable() {
     }
 }
 
+void ImageAnimator::setTriggerCount(float count) {
+    if (count > 0) {
+        maxForTrigger = count;
+        reset();
+    }
+}
+
 void ImageAnimator::setCount(int count) {
     if (count > 0) {
         squareCount = count;
@@ -227,11 +236,12 @@ void ImageAnimator::setCount(int count) {
     }
 }
 void ImageAnimator::setup() {
+    shapeMinSize = 100.0f;
     ofSetFrameRate(60.0f);
     buildX();
     buildY();
     reset();
-
+    maxForTrigger = 5.0f;
     animatorIndex.reset(0.0f);
     animatorIndex.setDuration(1.0f);
     animatorIndex.setRepeatType(LOOP_BACK_AND_FORTH);
@@ -309,7 +319,8 @@ int ImageAnimator::count() {
         }
     }
     return count;
- }
+}
+
 void ImageAnimator::reset() {
     thingsToDo.clear();
     buildTable();
@@ -352,6 +363,7 @@ void ImageAnimator::update() {
         glm::vec3 target = currentRotation;
         glm::vec3 centroid;
         ofRectangle rect;
+
         // first find any motion for the game, then find motion for drawing and eye tracking
         for (auto& blob : contours.contourFinder.blobs) {
             if (blob.area > max && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
@@ -362,17 +374,23 @@ void ImageAnimator::update() {
             }
         }
 
-        // find max size
+        // see if we have a trigger
         for (auto& blob : contours.contourFinder.blobs) {
-            if (blob.area > 5 && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
-                for (auto& item : thingsToDo) {
-                    if (item.second.match(blob.boundingRect)) {
-                        item.second.trigger();
+            if (blob.area > maxForTrigger && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
+                int c = count();
+                if (c < firstMatchCount()) {
+                    for (auto& item : thingsToDo) {
+                        if (item.second.match(blob.boundingRect)) {
+                            item.second.trigger();
+                        }
                     }
+                }
+                if (count() >= firstMatchCount()) {
+                    ignight();
                 }
             }
         }
-        if (max > 100) { // fine tune on site bugbug put in menu as well as light color range
+        if (max > shapeMinSize) { // fine tune on site 
             int w = imgWidth; // camera size not screen size
             int h = imgHeight;
 
