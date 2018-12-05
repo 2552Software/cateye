@@ -102,7 +102,10 @@ public:
     void set(int action);
     void setup();
     void update();
-    void draw();
+    void draw(int count);
+    void reset() {
+        game.reset();
+    }
     int getAction() { return action; }
     bool match(const ofRectangle& rect) {
         return rectangle.intersects(rect);
@@ -125,19 +128,16 @@ public:
     //http://www.findsounds.com/ISAPI/search.dll?keywords=cat
     void sounds(int duration= 5); // default to full sound
     void circle();
-
-    void windowResized(int w, int h) {
-        for (SuperSphere&eye : eyes) {
-            eye.setRadius(std::min(w, h));
-        }
-    }
-
+    void windowResized(int w, int h);
     void startPlaying();
     SuperSphere& getCurrentEyeRef();
     void add(const std::string &name, const std::string &root);
+    int count();
+    bool match(int count) { return count == thingsToDo.size(); } // match as in pinball
+    void reset();
 
 private:
-    bool itsAHit;
+   
     void randomize();
     ContoursBuilder contours;
     void buildX();

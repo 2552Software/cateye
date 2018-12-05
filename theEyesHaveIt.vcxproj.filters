@@ -52,6 +52,15 @@
     <ClCompile Include="src\Source.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\colorAndCam.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shapes.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">

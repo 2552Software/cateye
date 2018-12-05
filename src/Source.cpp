@@ -2,14 +2,16 @@
 
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     contours.draw(cxScreen, cyScreen);
-    if (itsAHit) {
-       // itsAHit = false;
-       // randomize();
-        sounds(3);
+    int c = count();
+    if (match(c)) {
+        reset();
+       sounds(3);//  sound in menu, same as grids time out etc bugbug
     }
-    // else draw boxes as hints bugbug make boxes smaller
-    for (auto& item : thingsToDo) {
-        item.second.draw();
+    else {
+        // else draw boxes as hints bugbug make boxes smaller
+        for (auto& item : thingsToDo) {
+            item.second.draw(c);
+        }
     }
 }
 
@@ -27,8 +29,8 @@ void Map::trigger() {
     if (action > 0 && !isAnimating()) {
         game.reset(50.0f);
         game.setCurve(LINEAR);
-        game.setRepeatType(PLAY_ONCE);
-        game.setDuration(125.0f);
+        game.setRepeatType(LOOP_BACK_AND_FORTH); //bugbug menu -- this mode never stops
+        game.setDuration(15.0f);
         game.animateTo(200.0f);
         ofColor c1(0, 255, 255); // bugbug randomize?
         ofColor c2(255, 0, 255);
@@ -46,14 +48,14 @@ void Map::update() {
     game.update(1.0f / ofGetTargetFrameRate());
 }
 
-void Map::draw() {
+void Map::draw(int count) {
     if (isAnimating()) {
         ofPushStyle();
         ofFill();
         ofEnableAlphaBlending();
         //color.applyCurrentColor();
         ofColor c = color.getCurrentColor();
-        c.a = 100;
+        c.a = count*2;
         ofSetColor(c);
         // convert to screen size
         float xFactor = ofGetScreenWidth()/ imgWidth;
@@ -67,177 +69,7 @@ void Map::draw() {
     }
 }
 
-void Light::setup() {
-    ofLight::setup();
-    setDirectional();
-    setOrientation(ofVec3f(-200.0f, 300.0f, 00.0f));
-    setPosition(0, 0, 2000);
 
-    specularcolor.setColor(ofColor::mediumVioletRed);
-    specularcolor.setDuration(1.0f);
-    specularcolor.setRepeatType(LOOP_BACK_AND_FORTH);
-    specularcolor.setCurve(LINEAR);
-    specularcolor.animateTo(ofColor::orangeRed);
-
-    ambientcolor.setColor(ofColor::blue);
-    ambientcolor.setDuration(1.5f);
-    ambientcolor.setRepeatType(LOOP_BACK_AND_FORTH);
-    ambientcolor.setCurve(LINEAR);
-    ambientcolor.animateTo(ofColor::red);
-}
-void Light::update() {
-    specularcolor.update(1.0f / ofGetTargetFrameRate());
-    ambientcolor.update(1.0f / ofGetTargetFrameRate());
-
-    setAmbientColor(ambientcolor.getCurrentColor());
-    setSpecularColor(specularcolor.getCurrentColor());
-    //setAmbientColor(ofColor::mediumVioletRed);
-    ///setSpecularColor(ofColor::saddleBrown);
-    ////setDiffuseColor(ofColor::pink);
-}
-void Light::setOrientation(ofVec3f rot) {
-    ofVec3f xax(1, 0, 0);
-    ofVec3f yax(0, 1, 0);
-    ofVec3f zax(0, 0, 1);
-    ofQuaternion q;
-    q.makeRotate(rot.x, xax, rot.y, yax, rot.z, zax);
-    ofLight::setOrientation(q);
-}
-
-void Material::setup() {
-    color.setColor(ofColor::white);
-    color.setDuration(1.0f);
-    color.setRepeatType(LOOP_BACK_AND_FORTH);
-    color.setCurve(LINEAR);
-    color.animateTo(ofColor::orangeRed);// COLOR not used yet
-
-    setShininess(120);
-    setSpecularColor(ofColor::white);
-    // setEmissiveColor(ofColor::black);
-    setDiffuseColor(ofColor::whiteSmoke);
-    setAmbientColor(ofColor::navajoWhite);
-}
-void Eye::setup(const string&texName) {
-    if (ofLoadImage(*this, texName)) {
-        ofLogNotice("Eye") << "loaded " << texName;
-    }
-    else {
-        ofLogError("Eye") << "not loaded " << texName;
-    }
-    //assimp not supported model.loadModel(objName);
-}
-void Eye::start() {
-    //color.applyCurrentColor();
-    material.begin();
-    bind();
-}
-void Eye::stop() {
-    unbind();
-    material.end();
-}
-void SuperSphere::setup(const string&name, const string&blinkPath) {
-    blinkingEnabled = true;
-    eye.setup(name);
-    string path = DATAPATH;
-    path += "\\" + blinkPath + ".blink";
-    ofDirectory dir(path);
-    dir.listDir();
-    blink.push_back(Eye(name));
-    std::string name2;
-    for (size_t i = 0; i < dir.size(); i++) {
-        name2 = path + "\\";
-        name2 += dir.getName(i);
-        blink.push_back(Eye(name2));
-    }
-    blink.push_back(Eye(name2)); // last one gets skipped
-
-    blinker.reset(0.0f);
-    blinker.setCurve(LINEAR);
-    blinker.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
-    blinker.setDuration(0.2f);
-    blinker.animateTo(blink.size() - 1);
-    // blink
-    setResolution(21);
-    panDeg(180);
-    // animateToAfterDelay
-}
-void SuperSphere::update() {
-    blinker.update(1.0f / ofGetTargetFrameRate());
-    if (!blinker.isOrWillBeAnimating()) {
-        blinker.reset(0.0f);
-        blinker.animateToAfterDelay(blink.size() - 1, ofRandom(5));
-    }
-}
-void SuperSphere::draw() {
-    int index = 0; // the non blink index
-    if (blinkingEnabled) {
-        index = blinker.getCurrentValue();
-    }
-    blink[index].start();
-    ofSpherePrimitive::draw();
-    blink[index].stop();
-}
-
-void ofxAnimatableQueueofVec3f::update() {
-    currentAnimation.update(1.0f / ofGetTargetFrameRate());
-    if (playing) {
-        if (currentAnimation.hasFinishedAnimating()) {
-            if (animSteps.size() > 0) {
-                //animSteps.erase(animSteps.begin());
-                currentAnimation = animSteps.front();
-                animSteps.pop_front();
-                ofLogNotice() << "next";
-            }
-            else {
-                ofLogNotice() << "empty";
-            }
-        }
-    }
-}
-void ofxAnimatableQueueofVec3f::addTransition(ofxAnimatableOfPoint targetValue) {
-    ofLogNotice() << "addTransition " << targetValue.getCurrentPosition();
-    if (targetValue.getCurrentPosition().x == 0) {
-        int i = 0;
-    }
-    if (animSteps.size() > maxListSize) {
-        ofLogNotice() << " cap list size to maxListSize " << maxListSize;
-        animSteps.pop_back(); // only keep the  most recent
-    }
-    animSteps.push_back(targetValue);//bugbug go to pointer
-}
-void ofxAnimatableQueueofVec3f::insertTransition(ofxAnimatableOfPoint targetValue, bool forceNext) {
-    if (forceNext) {
-        currentAnimation = targetValue; // make this one current, drop the current one
-    }
-    else {
-        ofLogNotice() << "insertTransition " << targetValue.getCurrentPosition();
-        if (animSteps.size() > maxListSize) { // make const
-            ofLogNotice() << " cap list size to maxListSize " << maxListSize;
-            animSteps.pop_back(); // only keep the  most recent
-        }
-        animSteps.push_front(targetValue);//bugbug go to pointer
-    }
-}
-bool ofxAnimatableQueueofVec3f::hasFinishedAnimating() {
-    return currentAnimation.hasFinishedAnimating();
-}
-ofxAnimatableOfPoint ofxAnimatableQueueofVec3f::getCurrentValue() {
-    return currentAnimation;
-}
-ofPoint ofxAnimatableQueueofVec3f::getPoint() {
-    return currentAnimation.getCurrentPosition();
-}
-void ofxAnimatableQueueofVec3f::append(const ofVec3f& target) {
-    ofxAnimatableOfPoint targetPoint;
-    if (animSteps.size() > 0) {
-        targetPoint.setPosition(getPoint());
-    }
-    targetPoint.animateTo(target);
-    targetPoint.setDuration(1.25);
-    targetPoint.setRepeatType(PLAY_ONCE);
-    targetPoint.setCurve(LINEAR);
-    addTransition(targetPoint);
-}
 void ContoursBuilder::setup() {
     vector<ofVideoDevice> devices = video.listDevices();
     for (auto& device : devices) {
@@ -356,10 +188,10 @@ void ImageAnimator::circle() {
 void ImageAnimator::randomize() {
     // create hot grids
     for (auto& a : thingsToDo) {
-        a.second.set(1); // clear all is 0
+        a.second.set(0); // clear all is 0
     }
-    return;
-    // make sure we get 3 random points
+    
+    // make sure we get 3 random points used to unlock the game
     for (int c = 0; c < 3; ) {
         int i = (int)ofRandom(0, thingsToDo.size() - 1);
         int index = 0;
@@ -378,10 +210,9 @@ void ImageAnimator::setup() {
     ofSetFrameRate(60.0f);
     buildX();
     buildY();
-    itsAHit = false; // no match yet
     // all based on camera size and just grid out the screen 10x10 or what ever size we want
-    float w = imgWidth / 10;
-    float h = imgHeight / 10;
+    float w = imgWidth / 20; // menu bugbug
+    float h = imgHeight / 20;
     for (float x = 0.0f; x < imgWidth; x += w) {
         for (float y = 0.0f; y < imgHeight; y += h) {
             // roate the x  to reflect viewer vs camera
@@ -459,23 +290,32 @@ void ImageAnimator::add(const std::string &name, const std::string &root) {
     eyes.push_back(SuperSphere());
     eyes[eyes.size() - 1].setup(name, blinkPath);
 }
-
-void ImageAnimator::update() {
-    for (auto& a : thingsToDo) {
-        a.second.update();
-    }
-
-    // see if there is a fun thing to do (ie 1 2 3), once found randomize
+// count of items selected
+int ImageAnimator::count() {
     int count = 0;
     for (auto& item : thingsToDo) {
         if (item.second.isAnimating()) {
             ++count;
         }
     }
+    return count;
+ }
+void ImageAnimator::reset() {
+    for (auto& item : thingsToDo) {
+        item.second.reset();
+    }
+    randomize();
+}
+void ImageAnimator::windowResized(int w, int h) {
+    for (SuperSphere&eye : eyes) {
+        eye.setRadius(std::min(w, h));
+    }
+}
 
-    itsAHit = count > 5; // pick a number that shows somone is playing the game
-
-   //randomize();
+void ImageAnimator::update() {
+    for (auto& a : thingsToDo) {
+        a.second.update();
+    }
 
     for (SuperSphere&eye : eyes) {
         eye.update();
