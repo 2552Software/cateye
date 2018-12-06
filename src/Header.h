@@ -98,7 +98,7 @@ public:
        set(rectangle);
     }
     void trigger();
-    bool isAnimating() { return game.isAnimating();   }
+    bool isAnimating() { return action > 0 && game.isAnimating();   }
     void set(int action);
     void setup();
     void update();
@@ -136,7 +136,10 @@ public:
     int  firstMatchCount() { return 3; } // intial game trigger
     void setTriggerCount(float count);
     void setShapeMinSize(float size) { shapeMinSize = size; };
+    bool isIgnighted(int count) { return count > firstMatchCount(); }
+
 private:
+    void fireWorks();
     float shapeMinSize;
     void buildTable();
     int squareCount;

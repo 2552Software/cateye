@@ -23,9 +23,9 @@ void ofApp::setup(){
 
     // setup(const std::string& collectionName = "", const std::string& filename = ofxPanelDefaultFilename, float x = 10, float y = 10);
 
-    gui.add(squareCount.setup("Squares", 10, 10, 100));
-    gui.add(squareCount.setup("Triggers", 10.0f, 200.0f, 100.0f));
-    gui.add(squareCount.setup("Shapes", 100.0f, 100.0f, 500.f));
+    gui.add(squareCount.setup("Squares", 20, 10, 100));
+    gui.add(maxForTrigger.setup("Triggers", 20.0f, 200.0f, 100.0f));
+    gui.add(maxForShape.setup("Shapes", 100.0f, 200.0f, 500.f));
 
     eyeAnimator.setCount(squareCount);
     eyeAnimator.setup();
@@ -38,6 +38,8 @@ void ofApp::setup(){
     gui.setShape(ofGetScreenWidth() / 2, ofGetScreenHeight() / 2, ofGetScreenWidth() / 10, ofGetScreenHeight() / 10 );
     gui.loadFromFile("settings.xml");
     squareCount.addListener(this, &ofApp::squareCountChanged);
+    maxForTrigger.addListener(this, &ofApp::triggerCountChanged);
+    maxForShape.addListener(this, &ofApp::shapeSizeChanged);
 }
 
 

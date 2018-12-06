@@ -1,16 +1,22 @@
 #include "ofApp.h"
 
+void  ImageAnimator::fireWorks() {
+    sounds(5);
+    reset();
+}
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     contours.draw(cxScreen, cyScreen);
     int c = count();
-    if (match(c)) {
-       reset();
-       sounds(3);//  sound in menu, same as grids time out etc bugbug
+    if (match(c)) { // match as in pinball
+       // enable fireworks!!
+       fireWorks();
     }
     else {
         // else draw boxes as hints bugbug make boxes smaller
         for (auto& item : thingsToDo) {
-            item.second.draw(c);
+            if (item.second.isAnimating()) {
+                item.second.draw(c);
+            }
         }
     }
 }
@@ -28,7 +34,7 @@ void Map::trigger() {
     if (action > 0 && !isAnimating()) {
         game.reset(50.0f);
         game.setCurve(LINEAR);
-        game.setRepeatType(LOOP_BACK_AND_FORTH); //bugbug menu -- this mode never stops
+        game.setRepeatType(PLAY_ONCE);
         game.setDuration(15.0f);
         game.animateTo(200.0f);
         ofColor c1(0, 255, 255); // bugbug randomize?
@@ -36,7 +42,7 @@ void Map::trigger() {
         color.setAlphaOnly(game); // fade in
         color.animateToAlpha(game);
         color.setColor(c1);
-        color.setDuration(3.0f);
+        color.setDuration(4.0f);
         color.setRepeatType(LOOP_BACK_AND_FORTH);
         color.setCurve(LINEAR);
         color.animateTo(c2);
@@ -48,24 +54,19 @@ void Map::update() {
 }
 
 void Map::draw(int count) {
-    if (isAnimating()) {
-        ofPushStyle();
-        ofFill();
-        ofEnableAlphaBlending();
-        //color.applyCurrentColor();
-        ofColor c = color.getCurrentColor();
-        c.a = count*2;
-        ofSetColor(c);
-        // convert to screen size
-        float xFactor = ofGetScreenWidth()/ imgWidth;
-        float yFactor = ofGetScreenHeight()/ imgHeight;
-        ofDrawRectangle(xFactor*rectangle.x, yFactor*rectangle.y, xFactor*rectangle.width, yFactor*rectangle.height);
-        ofDisableAlphaBlending();
-        ofPopStyle();
-    }
-    else {
-        int i = 0;
-    }
+    ofPushStyle();
+    ofFill();
+    ofEnableAlphaBlending();
+    //color.applyCurrentColor();
+    ofColor c = color.getCurrentColor();
+    c.a = count*2;
+    ofSetColor(c);
+    // convert to screen size
+    float xFactor = ofGetScreenWidth()/ imgWidth;
+    float yFactor = ofGetScreenHeight()/ imgHeight;
+    ofDrawRectangle(xFactor*rectangle.x, yFactor*rectangle.y, xFactor*rectangle.width, yFactor*rectangle.height);
+    ofDisableAlphaBlending();
+    ofPopStyle();
 }
 
 void ContoursBuilder::setup() {
@@ -189,6 +190,9 @@ void ImageAnimator::ignight(bool on) {
     for (auto& a : thingsToDo) {
         a.second.set((on) ? 1:0); // clear all is 0 menu pick -- all 1s enable all
     }
+    if (on) {
+        sounds(2);
+    }
 }
 // call just after things are found and upon startup
 void ImageAnimator::randomize() {
@@ -200,6 +204,7 @@ void ImageAnimator::randomize() {
         for (auto& item : thingsToDo) {
             if (index == i){
                 item.second.set(1);
+                item.second.trigger();
                 ++c;
                 break;
             }
@@ -210,6 +215,7 @@ void ImageAnimator::randomize() {
 
 void ImageAnimator::buildTable() {
     if (squareCount) {
+        thingsToDo.clear();
         // all based on camera size and just grid out the screen 10x10 or what ever size we want
         float w = imgWidth / squareCount; // menu bugbug
         float h = imgHeight / squareCount;
@@ -322,7 +328,6 @@ int ImageAnimator::count() {
 }
 
 void ImageAnimator::reset() {
-    thingsToDo.clear();
     buildTable();
     randomize();
 }
@@ -378,15 +383,16 @@ void ImageAnimator::update() {
         for (auto& blob : contours.contourFinder.blobs) {
             if (blob.area > maxForTrigger && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
                 int c = count();
-                if (c < firstMatchCount()) {
-                    for (auto& item : thingsToDo) {
-                        if (item.second.match(blob.boundingRect)) {
-                            item.second.trigger();
-                        }
+                for (auto& item : thingsToDo) { // get all blocks within region
+                    if (item.second.match(blob.boundingRect)) {
+                        item.second.trigger();
                     }
                 }
-                if (count() >= firstMatchCount()) {
-                    ignight();
+                // see what was triggered
+                if (!isIgnighted(c)) {
+                    if (count() >= firstMatchCount()) {
+                        ignight();
+                    }
                 }
             }
         }
