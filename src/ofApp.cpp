@@ -23,12 +23,15 @@ void ofApp::setup(){
 
     // setup(const std::string& collectionName = "", const std::string& filename = ofxPanelDefaultFilename, float x = 10, float y = 10);
 
-    gui.add(squareCount.setup("Squares", 20, 10, 100));
-    gui.add(maxForTrigger.setup("Triggers", 20.0f, 200.0f, 100.0f));
+    gui.add(squareCount.setup("Squares", 15, 10, 100));
+    gui.add(maxForTrigger.setup("Triggers", 80.0f, 200.0f, 100.0f));
     gui.add(maxForShape.setup("Shapes", 100.0f, 200.0f, 500.f));
 
     eyeAnimator.setCount(squareCount);
+    eyeAnimator.setShapeMinSize(maxForShape);
+    eyeAnimator.setTriggerCount(maxForTrigger);
     eyeAnimator.setup();
+
     gui.loadFont(OF_TTF_SANS, 24, true, true);
     gui.setBorderColor(ofColor::yellow);
     gui.setTextColor(ofColor::black);
@@ -44,7 +47,7 @@ void ofApp::setup(){
 
 
 void ofApp::shapeSizeChanged(float &size) {
-    eyeAnimator.setTriggerCount(size);
+    eyeAnimator.setShapeMinSize(size);
 }
 
 void ofApp::triggerCountChanged(float &count) {

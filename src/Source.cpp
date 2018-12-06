@@ -2,7 +2,19 @@
 
 void  ImageAnimator::fireWorks() {
     sounds(5);
-    reset();
+    randomize(); 
+
+    ofxAnimatableOfPoint point;
+    ofPoint target(0.0f, 0.0f, 360.0f);
+
+    // get the current point -- smooth things out
+    point.setPosition(currentRotation);
+    point.setCurve(LINEAR);
+    point.setRepeatType(PLAY_ONCE);
+    point.setDuration(5.0f);
+    point.animateTo(target);
+    rotator.insertTransition(point, true);
+
 }
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     contours.draw(cxScreen, cyScreen);
@@ -15,7 +27,10 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
         // else draw boxes as hints bugbug make boxes smaller
         for (auto& item : thingsToDo) {
             if (item.second.isAnimating()) {
-                item.second.draw(c);
+                int alpha;
+                // the closer the count gets to size the less opaq
+                alpha = ofMap(c, 0, thingsToDo.size(), 10, 255);
+                item.second.draw(alpha);
             }
         }
     }
@@ -32,18 +47,16 @@ void Map::set(const ofRectangle& r) {
 }
 void Map::trigger() {
     if (action > 0 && !isAnimating()) {
-        game.reset(50.0f);
+        game.reset(5.0f);
         game.setCurve(LINEAR);
         game.setRepeatType(PLAY_ONCE);
-        game.setDuration(15.0f);
-        game.animateTo(200.0f);
-        ofColor c1(0, 255, 255); // bugbug randomize?
-        ofColor c2(255, 0, 255);
-        color.setAlphaOnly(game); // fade in
-        color.animateToAlpha(game);
+        game.setDuration(5.0f);
+        game.animateTo(255.0f);
+        ofColor c1 = ofColor(ofRandom(50, 255), ofRandom(0, 255), ofRandom(50, 255));
+        ofColor c2(255, 255, 255);
         color.setColor(c1);
-        color.setDuration(4.0f);
-        color.setRepeatType(LOOP_BACK_AND_FORTH);
+        color.setDuration(5.0f);
+        color.setRepeatType(PLAY_ONCE);
         color.setCurve(LINEAR);
         color.animateTo(c2);
     }
@@ -53,13 +66,13 @@ void Map::update() {
     game.update(1.0f / ofGetTargetFrameRate());
 }
 
-void Map::draw(int count) {
+void Map::draw(int alpha) {
     ofPushStyle();
     ofFill();
     ofEnableAlphaBlending();
     //color.applyCurrentColor();
     ofColor c = color.getCurrentColor();
-    c.a = count*2;
+    c.a = alpha;
     ofSetColor(c);
     // convert to screen size
     float xFactor = ofGetScreenWidth()/ imgWidth;
@@ -188,23 +201,20 @@ void ImageAnimator::circle() {
 void ImageAnimator::ignight(bool on) {
     // create hot grids
     for (auto& a : thingsToDo) {
+        a.second.reset();
         a.second.set((on) ? 1:0); // clear all is 0 menu pick -- all 1s enable all
-    }
-    if (on) {
-        sounds(2);
     }
 }
 // call just after things are found and upon startup
 void ImageAnimator::randomize() {
     ignight(false); // reset 
-    // make sure we get 3 random points used to unlock the game
-    for (int c = 0; c < 3; ) {
+    // make sure we get 3 or random points used to unlock the game
+    for (int c = 0; c < firstMatchCount(); ) {
         int i = (int)ofRandom(0, thingsToDo.size() - 1);
         int index = 0;
         for (auto& item : thingsToDo) {
             if (index == i){
                 item.second.set(1);
-                item.second.trigger();
                 ++c;
                 break;
             }
@@ -241,13 +251,17 @@ void ImageAnimator::setCount(int count) {
         reset();
     }
 }
-void ImageAnimator::setup() {
+ImageAnimator::ImageAnimator() {
+    maxForTrigger = 25.0f;
     shapeMinSize = 100.0f;
+    squareCount = 10;
     ofSetFrameRate(60.0f);
+}
+void ImageAnimator::setup() {
     buildX();
     buildY();
     reset();
-    maxForTrigger = 5.0f;
+
     animatorIndex.reset(0.0f);
     animatorIndex.setDuration(1.0f);
     animatorIndex.setRepeatType(LOOP_BACK_AND_FORTH);
@@ -354,12 +368,6 @@ void ImageAnimator::update() {
     if (path.hasFinishedAnimating()) {
        circle();
     }
-    if (rotator.hasFinishedAnimating()) {
-        ofxAnimatableOfPoint point;
-        point.setPosition(currentRotation);
-        point.animateTo(ofVec3f(ofRandom(90.0f), ofRandom(90.0f)));
-        rotator.addTransition(point);
-    }
     */
 
     // track motion
@@ -389,6 +397,7 @@ void ImageAnimator::update() {
                     }
                 }
                 // see what was triggered
+                c = count(); // get fresh count
                 if (!isIgnighted(c)) {
                     if (count() >= firstMatchCount()) {
                         ignight();
@@ -459,10 +468,10 @@ void ImageAnimator::draw() {
 
 
     // roate current eye as needed
-    //if (!rotator.hasFinishedAnimating()) {
-    //    currentRotation = rotator.getPoint();
-    //    getCurrentEyeRef().blinkingEnabled = false;
-   // }
+    if (!rotator.hasFinishedAnimating()) {
+        currentRotation = rotator.getPoint();
+        getCurrentEyeRef().blinkingEnabled = false;
+    }
     rotate(currentRotation);
     getCurrentEyeRef().draw();
 
