@@ -2,7 +2,7 @@
 
 void  ImageAnimator::fireWorks() {
     sounds(5);
-    randomize(); 
+    ignight(false);
 
     ofxAnimatableOfPoint point;
     ofPoint target(10.0f, 20.0f, 360.0f);
@@ -10,14 +10,10 @@ void  ImageAnimator::fireWorks() {
     // get the current point -- smooth things out
     point.setPosition(ofPoint(0.0f, 0.0f, 0.0f));
     point.setCurve(LINEAR);
-    point.setRepeatType(PLAY_N_TIMES);
-    point.setRepeatTimes(10);
-    point.setDuration(1.0f);
+    point.setRepeatType(PLAY_ONCE);
+    point.setDuration(10.0f);
     point.animateTo(target);
     rotator.insertTransition(point, true);
-
-    ignight(false);
-
 }
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     contours.draw(cxScreen, cyScreen);
@@ -32,9 +28,11 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
        fireWorks();
     }
     else {
-        // else draw boxes as hints bugbug make boxes smaller
-        for (auto& item : thingsToDo) {
-            item.second.draw(59);
+        // else draw boxes but only when its game on
+        if (count() >= firstMatchCount() && rotator.hasFinishedAnimating()) {
+            for (auto& item : thingsToDo) {
+                item.second.draw(90);
+            }
         }
     }
 }
@@ -50,7 +48,7 @@ void Map::set(const ofRectangle& r) {
 }
 void Map::trigger() {
     if (!isAnimating()) {
-        float duration = 10.0f;//seconds bugbu make menu
+        float duration = 5.0f;//seconds bugbu make menu
         game.reset(5.0f);
         game.setCurve(LINEAR);
         game.setRepeatType(PLAY_ONCE);
@@ -357,7 +355,7 @@ void ImageAnimator::windowResized(int w, int h) {
 }
 
 void ImageAnimator::update() {
-    if (((int)ofGetElapsedTimef() % 60) == 0) {
+    if (((int)ofGetElapsedTimef() % 20) == 0) {
         randomize(); // mix up right in the middle of things
     }
     for (auto& a : thingsToDo) {
@@ -484,7 +482,7 @@ void ImageAnimator::draw() {
     // roate current eye as needed
     if (!rotator.hasFinishedAnimating()) {
         currentRotation = rotator.getPoint();
-        ofScale(ofRandom(1.0f, 1.1f), ofRandom(1.0f, 1.1f), ofRandom(1.0f, 1.1f));
+        ofScale(1.2f, 1.0f, 1.0f);
         getCurrentEyeRef().blinkingEnabled = false;
     }
     rotate(currentRotation);

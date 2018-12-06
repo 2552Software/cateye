@@ -43,7 +43,7 @@ void ofApp::setup(){
 
     // setup(const std::string& collectionName = "", const std::string& filename = ofxPanelDefaultFilename, float x = 10, float y = 10);
 
-    gui.add(squareCount.setup("Squares", 15, 10, 100));
+    gui.add(squareCount.setup("Squares", 10, 10, 100));
     gui.add(maxForTrigger.setup("Triggers", 30.0f, 200.0f, 100.0f));
     gui.add(maxForShape.setup("Shapes", 100.0f, 200.0f, 500.f));
 
