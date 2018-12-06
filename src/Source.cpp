@@ -11,9 +11,11 @@ void  ImageAnimator::fireWorks() {
     point.setPosition(currentRotation);
     point.setCurve(LINEAR);
     point.setRepeatType(PLAY_ONCE);
-    point.setDuration(2.0f);
+    point.setDuration(10.0f);
     point.animateTo(target);
     rotator.insertTransition(point, true);
+
+    ignight(false);
 
 }
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
@@ -26,12 +28,7 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     else {
         // else draw boxes as hints bugbug make boxes smaller
         for (auto& item : thingsToDo) {
-            if (item.second.isAnimating()) {
-                int alpha;
-                // the closer the count gets to size the less opaq
-                alpha = ofMap(c, 0, thingsToDo.size(), 10, 255);
-                item.second.draw(alpha);
-            }
+            item.second.draw(90);
         }
     }
 }
@@ -46,16 +43,17 @@ void Map::set(const ofRectangle& r) {
     rectangle = r;
 }
 void Map::trigger() {
-    if (action > 0 && !isAnimating()) {
+    if (!isAnimating()) {
+        float duration = 15.0f;//seconds bugbu make menu
         game.reset(5.0f);
         game.setCurve(LINEAR);
         game.setRepeatType(PLAY_ONCE);
-        game.setDuration(5.0f);
+        game.setDuration(duration);
         game.animateTo(255.0f);
-        ofColor c1 = ofColor(ofRandom(50, 255), ofRandom(0, 255), ofRandom(50, 255));
-        ofColor c2(255, 255, 255);
+        ofColor c1(0.0f, 0.0f, ofRandom(128, 255));
+        ofColor c2(ofRandom(128, 255), 0.0f, 0.0f);
         color.setColor(c1);
-        color.setDuration(5.0f);
+        color.setDuration(duration);
         color.setRepeatType(PLAY_ONCE);
         color.setCurve(LINEAR);
         color.animateTo(c2);
@@ -73,7 +71,7 @@ void Map::draw(int alpha) {
         ofEnableAlphaBlending();
         //color.applyCurrentColor();
         ofColor c = color.getCurrentColor();
-        c.a = 80.0f;// alpha; keep it light
+        c.a = alpha;// alpha; keep it light
         ofSetColor(c);
         // convert to screen size
         float xFactor = ofGetScreenWidth() / imgWidth;
@@ -203,16 +201,16 @@ void ImageAnimator::circle() {
 void ImageAnimator::ignight(bool on) {
     // create hot grids
     for (auto& a : thingsToDo) {
-        a.second.reset();
         a.second.set((on) ? 1:0); // clear all is 0 menu pick -- all 1s enable all
     }
+    level = (on) ? 1 : 0;
 }
 // call just after things are found and upon startup
 void ImageAnimator::randomize() {
     ignight(false); // reset 
     // make sure we get 3 or random points used to unlock the game
     for (int c = 0; c < firstMatchCount(); ) {
-        int i = (int)ofRandom(0, thingsToDo.size() - 1);
+        int i = (int)ofRandom(10, thingsToDo.size() - 11); // keep from the edges
         int index = 0;
         for (auto& item : thingsToDo) {
             if (index == i){
@@ -231,8 +229,8 @@ void ImageAnimator::buildTable() {
         // all based on camera size and just grid out the screen 10x10 or what ever size we want
         float w = imgWidth / squareCount; // menu bugbug
         float h = imgHeight / squareCount;
-        for (float x = 0.0f; x < imgWidth; x += w) {
-            for (float y = 0.0f; y < imgHeight; y += h) {
+        for (float x = w; x < imgWidth-w; x += w) {
+            for (float y = h; y < imgHeight-h; y += h) {
                 // roate the x  to reflect viewer vs camera
                 thingsToDo.insert(std::make_pair(std::make_pair(x, y), Map(ofRectangle(x, y, w, h)))); // build an default table
             }
@@ -257,7 +255,7 @@ ImageAnimator::ImageAnimator() {
     maxForTrigger = 25.0f;
     shapeMinSize = 100.0f;
     squareCount = 10;
-    ofSetFrameRate(60.0f);
+    level = 0;
 }
 void ImageAnimator::setup() {
     buildX();
@@ -396,14 +394,18 @@ void ImageAnimator::update() {
                 if (c >= firstMatchCount()) {
                     ignight();
                 }
-                if (c == 0) {
-                    randomize(); // keep moving until is found
+                float mymax = maxForTrigger;
+                if (c > firstMatchCount()+1) {
+                    mymax /= 2; // see less
                 }
-                // see if we can trigger with this one
-                for (auto& item : thingsToDo) { // get all blocks within region
-                    if (item.second.match(blob.boundingRect)) {
-                        item.second.trigger();
-                        break; // will make it much harder to get a hit
+                if (blob.area >= mymax) {
+                    // see if we can trigger with this one
+                    for (auto& item : thingsToDo) { // get all blocks within region
+                        if (item.second.match(blob.boundingRect)) {
+                            item.second.trigger();
+                            if (mymax <= maxForTrigger){
+                                break; // will make it much harder to get a hit
+                        }
                     }
                 }
             }
@@ -472,7 +474,7 @@ void ImageAnimator::draw() {
     // roate current eye as needed
     if (!rotator.hasFinishedAnimating()) {
         currentRotation = rotator.getPoint();
-        ofScale(1.2, 1.2);
+        ofScale(ofRandom(1.0f, 1.4f), ofRandom(1.0f, 1.4f), ofRandom(1.0f, 1.4f));
         getCurrentEyeRef().blinkingEnabled = false;
     }
     rotate(currentRotation);

@@ -108,6 +108,7 @@ public:
     bool match(const ofRectangle& rect) { return rectangle.inside(rect); }//return rectangle.intersects(rect); }
 
 private:
+ 
     void set(const ofRectangle& rectangle);
     int action; // things like have the  cat noise when hit
     ofxAnimatableOfColor color; // revert to black when not animating
@@ -129,16 +130,17 @@ public:
     void startPlaying();
     SuperSphere& getCurrentEyeRef();
     void add(const std::string &name, const std::string &root);
-    int count();
+    int count(); // count of items being animiated
     bool match(int count) { return count == thingsToDo.size(); } // match as in pinball
     void reset();
     void setCount(int count);
     void ignight(bool on=true);
-    int  firstMatchCount() { return 3; } // intial game trigger
+    int  firstMatchCount() { return 3; } // intial game trigger bugbug make menu item
     void setTriggerCount(float count);
     void setShapeMinSize(float size) { shapeMinSize = size; };
     bool isIgnighted(int count) { return count > firstMatchCount(); }
 private:
+    int level;
     void fireWorks();
     float shapeMinSize;
     void buildTable();
