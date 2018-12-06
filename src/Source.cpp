@@ -396,6 +396,10 @@ void ImageAnimator::update() {
                 if (c >= firstMatchCount()) {
                     ignight();
                 }
+                if (c == 0) {
+                    randomize(); // keep moving until is found
+                }
+                // see if we can trigger with this one
                 for (auto& item : thingsToDo) { // get all blocks within region
                     if (item.second.match(blob.boundingRect)) {
                         item.second.trigger();

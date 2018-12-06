@@ -134,7 +134,7 @@ public:
     void reset();
     void setCount(int count);
     void ignight(bool on=true);
-    int  firstMatchCount() { return 5; } // intial game trigger
+    int  firstMatchCount() { return 3; } // intial game trigger
     void setTriggerCount(float count);
     void setShapeMinSize(float size) { shapeMinSize = size; };
     bool isIgnighted(int count) { return count > firstMatchCount(); }
