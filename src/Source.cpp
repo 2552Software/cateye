@@ -11,7 +11,7 @@ void  ImageAnimator::fireWorks() {
     point.setPosition(ofPoint(0.0f, 0.0f, 0.0f));
     point.setCurve(LINEAR);
     point.setRepeatType(PLAY_ONCE);
-    point.setDuration(10.0f);
+    point.setDuration(5.0f);
     point.animateTo(target);
     rotator.insertTransition(point, true);
 }
@@ -31,7 +31,7 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
         // else draw boxes but only when its game on
         if (count() >= firstMatchCount() && rotator.hasFinishedAnimating()) {
             for (auto& item : thingsToDo) {
-                item.second.draw(90);
+                item.second.draw(175);//bugbug make menu
             }
         }
     }
@@ -48,14 +48,14 @@ void Map::set(const ofRectangle& r) {
 }
 void Map::trigger() {
     if (!isAnimating()) {
-        float duration = 5.0f;//seconds bugbu make menu
+        float duration = 25.0f;//seconds bugbug make menu
         game.reset(5.0f);
         game.setCurve(LINEAR);
         game.setRepeatType(PLAY_ONCE);
         game.setDuration(duration);
         game.animateTo(255.0f);
-        ofColor c1(ofColor::white);// (0.0f, 0.0f, ofRandom(200, 255));
-        ofColor c2(ofColor::red);//ofRandom(200, 255), 0.0f, 0.0f);
+        ofColor c1(ofColor::orange);// (0.0f, 0.0f, ofRandom(200, 255));
+        ofColor c2(ofColor::cyan);//ofRandom(200, 255), 0.0f, 0.0f);
         color.setColor(c1);
         color.setDuration(duration);
         color.setRepeatType(PLAY_ONCE);
@@ -355,7 +355,7 @@ void ImageAnimator::windowResized(int w, int h) {
 }
 
 void ImageAnimator::update() {
-    if (((int)ofGetElapsedTimef() % 20) == 0) {
+    if (((int)ofGetElapsedTimef() % 30) == 0) {//bugbug put in menu
         randomize(); // mix up right in the middle of things
     }
     for (auto& a : thingsToDo) {
