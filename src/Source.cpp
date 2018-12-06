@@ -405,6 +405,7 @@ void ImageAnimator::update() {
                             item.second.trigger();
                             if (mymax <= maxForTrigger){
                                 break; // will make it much harder to get a hit
+                            }
                         }
                     }
                 }
