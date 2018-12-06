@@ -5,13 +5,14 @@ void  ImageAnimator::fireWorks() {
     randomize(); 
 
     ofxAnimatableOfPoint point;
-    ofPoint target(0.0f, 0.0f, 360.0f);
+    ofPoint target(10.0f, 20.0f, 360.0f);
 
     // get the current point -- smooth things out
     point.setPosition(currentRotation);
     point.setCurve(LINEAR);
-    point.setRepeatType(PLAY_ONCE);
-    point.setDuration(10.0f);
+    point.setRepeatType(PLAY_N_TIMES);
+    point.setRepeatTimes(20);
+    point.setDuration(1.0f);
     point.animateTo(target);
     rotator.insertTransition(point, true);
 
@@ -21,6 +22,11 @@ void  ImageAnimator::fireWorks() {
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     contours.draw(cxScreen, cyScreen);
     int c = count();
+
+    std::stringstream ss;
+    ss << c << ":" << thingsToDo.size();
+    ofSetWindowTitle(ss.str());
+
     if (match(c)) { // match as in pinball
        // enable fireworks!!
        fireWorks();
@@ -28,7 +34,7 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     else {
         // else draw boxes as hints bugbug make boxes smaller
         for (auto& item : thingsToDo) {
-            item.second.draw(90);
+            item.second.draw(100);
         }
     }
 }
@@ -155,9 +161,8 @@ void ImageAnimator::rotate(const ofVec3f& target) {
     std::stringstream ss;
     ss << target;
     //ofSetWindowTitle(ss.str());
-   // if (fabs(target.x) > 16.0) draw less
     if (target.x || target.y || target.z) {
-        ofLogNotice() << "rotate to targert" << target;
+        //ofLogNotice() << "rotate to targert" << target;
         ofRotateDeg(target.x, 1.0f, 0.0f, 0.0f);
         ofRotateDeg(target.y, 0.0f, 1.0f, 0.0f);
         ofRotateDeg(target.z, 0.0f, 0.0f, 1.0f);
@@ -391,12 +396,13 @@ void ImageAnimator::update() {
         for (auto& blob : contours.contourFinder.blobs) {
             if (blob.area > maxForTrigger && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
                 int c = count();
+
                 if (c >= firstMatchCount()) {
                     ignight();
                 }
                 float mymax = maxForTrigger;
                 if (c > firstMatchCount()+1) {
-                    mymax /= 2; // see less
+                    mymax /= 3; // see less
                 }
                 if (blob.area >= mymax) {
                     // see if we can trigger with this one
@@ -443,9 +449,9 @@ void ImageAnimator::update() {
             // no new data so home the eye (?should we add a time?)
             currentRotation.set(0.0L, 0.0L, 0.0L);
         }
-        std::stringstream ss;
-        ss << max;
-        ofSetWindowTitle(ss.str());
+        //std::stringstream ss;
+        //ss << max;
+        //ofSetWindowTitle(ss.str());
 
         /*
         if (found && 0) {
@@ -475,7 +481,7 @@ void ImageAnimator::draw() {
     // roate current eye as needed
     if (!rotator.hasFinishedAnimating()) {
         currentRotation = rotator.getPoint();
-        ofScale(ofRandom(1.0f, 1.4f), ofRandom(1.0f, 1.4f), ofRandom(1.0f, 1.4f));
+        ofScale(ofRandom(1.0f, 1.1f), ofRandom(1.0f, 1.1f), ofRandom(1.0f, 1.1f));
         getCurrentEyeRef().blinkingEnabled = false;
     }
     rotate(currentRotation);
