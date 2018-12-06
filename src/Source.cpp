@@ -11,7 +11,7 @@ void  ImageAnimator::fireWorks() {
     point.setPosition(currentRotation);
     point.setCurve(LINEAR);
     point.setRepeatType(PLAY_ONCE);
-    point.setDuration(5.0f);
+    point.setDuration(2.0f);
     point.animateTo(target);
     rotator.insertTransition(point, true);
 
@@ -67,19 +67,21 @@ void Map::update() {
 }
 
 void Map::draw(int alpha) {
-    ofPushStyle();
-    ofFill();
-    ofEnableAlphaBlending();
-    //color.applyCurrentColor();
-    ofColor c = color.getCurrentColor();
-    c.a = alpha;
-    ofSetColor(c);
-    // convert to screen size
-    float xFactor = ofGetScreenWidth()/ imgWidth;
-    float yFactor = ofGetScreenHeight()/ imgHeight;
-    ofDrawRectangle(xFactor*rectangle.x, yFactor*rectangle.y, xFactor*rectangle.width, yFactor*rectangle.height);
-    ofDisableAlphaBlending();
-    ofPopStyle();
+    if (isAnimating()) {
+        ofPushStyle();
+        ofFill();
+        ofEnableAlphaBlending();
+        //color.applyCurrentColor();
+        ofColor c = color.getCurrentColor();
+        c.a = 80.0f;// alpha; keep it light
+        ofSetColor(c);
+        // convert to screen size
+        float xFactor = ofGetScreenWidth() / imgWidth;
+        float yFactor = ofGetScreenHeight() / imgHeight;
+        ofDrawRectangle(xFactor*rectangle.x, yFactor*rectangle.y, xFactor*rectangle.width, yFactor*rectangle.height);
+        ofDisableAlphaBlending();
+        ofPopStyle();
+    }
 }
 
 void ContoursBuilder::setup() {
@@ -391,16 +393,13 @@ void ImageAnimator::update() {
         for (auto& blob : contours.contourFinder.blobs) {
             if (blob.area > maxForTrigger && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
                 int c = count();
+                if (c >= firstMatchCount()) {
+                    ignight();
+                }
                 for (auto& item : thingsToDo) { // get all blocks within region
                     if (item.second.match(blob.boundingRect)) {
                         item.second.trigger();
-                    }
-                }
-                // see what was triggered
-                c = count(); // get fresh count
-                if (!isIgnighted(c)) {
-                    if (count() >= firstMatchCount()) {
-                        ignight();
+                        break; // will make it much harder to get a hit
                     }
                 }
             }
@@ -466,14 +465,15 @@ void ImageAnimator::draw() {
 // do location later, its just for special effectgs               getCurrentEyeRef().setPosition(currentLocation);
     }
 
-
     // roate current eye as needed
     if (!rotator.hasFinishedAnimating()) {
         currentRotation = rotator.getPoint();
+        ofScale(1.2, 1.2);
         getCurrentEyeRef().blinkingEnabled = false;
     }
     rotate(currentRotation);
     getCurrentEyeRef().draw();
+    ofScale(1.0, 1.0);
 
 }
 void ImageAnimator::startPlaying() {

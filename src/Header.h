@@ -105,7 +105,7 @@ public:
     void draw(int alpha=255);
     void reset() { game.reset(); }
     int getAction() { return action; }
-    bool match(const ofRectangle& rect) { return rectangle.intersects(rect); }
+    bool match(const ofRectangle& rect) { return rectangle.inside(rect); }//return rectangle.intersects(rect); }
 
 private:
     void set(const ofRectangle& rectangle);
