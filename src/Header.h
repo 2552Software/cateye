@@ -131,14 +131,15 @@ public:
     SuperSphere& getCurrentEyeRef();
     void add(const std::string &name, const std::string &root);
     int count(); // count of items being animiated
-    bool match(int count) { return count == thingsToDo.size(); } // match as in pinball
     void reset();
     void setCount(int count);
     void ignight(bool on=true);
-    int  firstMatchCount() { return 5; } // intial game trigger bugbug make menu item
+    int  firstMatchCount() { return 1; } // intial game trigger bugbug make menu item
+    int  winnerCount() { return 1; } // intial game trigger bugbug make menu item
     void setTriggerCount(float count);
     void setShapeMinSize(float size) { shapeMinSize = size; };
     bool isIgnighted(int count) { return count > firstMatchCount(); }
+    bool isWinner(int count) { return count >= winnerCount(); } // easy mode! bugbug menu
 private:
     int level;
     void fireWorks();
@@ -152,7 +153,9 @@ private:
     float maxForTrigger;
     void rotate(const ofVec3f& target);
     std::vector<ofSoundPlayer> mySounds;
+    ofxAnimatableFloat crazyEyes;
     ofxAnimatableFloat animatorIndex;
+    float magicZ; // used in fireworks
     ofxAnimatableQueueofVec3f rotator;
     ofxAnimatableQueueofVec3f path; // path of image
     std::vector<SuperSphere> eyes;

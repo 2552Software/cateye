@@ -95,7 +95,7 @@ public:
 //--------------------------------------------------------------
 void ofApp::setup(){
     hideMenu = true;
-    ofSetFrameRate(60.0f);
+    ofSetFrameRate(30.0f); // camers 30 so why go higher?
 
     //ofEnableSeparateSpecularLight();
     ofSetWindowShape(ofGetScreenWidth(), ofGetScreenHeight());
@@ -158,7 +158,7 @@ void ofApp::update(){
     //too much only use when needed camera.setDistance(eyeAnimator.camera.getCurrentValue());
     // light.setPosition(0, 0, eyeAnimator.camera.getCurrentValue() - 1500);
     // debug helper
-    std::stringstream ss;
+    //std::stringstream ss;
     //ss << camera.getDistance();
    // ofSetWindowTitle(ss.str());
 

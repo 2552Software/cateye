@@ -14,22 +14,33 @@ void  ImageAnimator::fireWorks() {
     point.setDuration(5.0f);
     point.animateTo(target);
     rotator.insertTransition(point, true);
+
+    crazyEyes.reset(0.0f);
+    crazyEyes.setDuration(0.5f); // draw 30 times a second
+    crazyEyes.setRepeatType(PLAY_N_TIMES);
+    crazyEyes.setRepeatTimes(10); // menu? bugbug
+    point.setCurve(SMOOTH_STEP);
+    
+    crazyEyes.animateTo(360.0f);
+
+    magicZ = 360 * 30 * 20; // 30 times a second * seconds
+
 }
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     contours.draw(cxScreen, cyScreen);
     int c = count();
 
     std::stringstream ss;
-    ss << c << ":" << thingsToDo.size();
+    ss << c << ":" << winnerCount();
     ofSetWindowTitle(ss.str());
 
-    if (match(c)) { // match as in pinball
+    if (isWinner(c)) { 
        // enable fireworks!!
        fireWorks();
     }
     else {
         // else draw boxes but only when its game on
-        if (count() >= firstMatchCount() && rotator.hasFinishedAnimating()) {
+        if (count() >= firstMatchCount() && crazyEyes.hasFinishedAnimating()) {
             for (auto& item : thingsToDo) {
                 item.second.draw(175);//bugbug make menu
             }
@@ -259,6 +270,7 @@ ImageAnimator::ImageAnimator() {
     shapeMinSize = 100.0f;
     squareCount = 10;
     level = 0;
+    magicZ = 0;
 }
 void ImageAnimator::setup() {
     buildX();
@@ -355,6 +367,10 @@ void ImageAnimator::windowResized(int w, int h) {
 }
 
 void ImageAnimator::update() {
+
+    if (magicZ > 0.0f) {
+        magicZ -= 15.0f; //bugbug menu
+    }
     if (((int)ofGetElapsedTimef() % 30) == 0) {//bugbug put in menu
         randomize(); // mix up right in the middle of things
     }
@@ -366,6 +382,7 @@ void ImageAnimator::update() {
         eye.update();
     }
     animatorIndex.update(1.0f / ofGetTargetFrameRate());
+    crazyEyes.update(1.0f / ofGetTargetFrameRate());
     path.update();
     rotator.update();
     contours.update();
@@ -480,14 +497,14 @@ void ImageAnimator::draw() {
     }
 
     // roate current eye as needed
-    if (!rotator.hasFinishedAnimating()) {
-        currentRotation = rotator.getPoint();
-        ofScale(1.2f, 1.0f, 1.0f);
+    if (magicZ > 0.0f) {
+        currentRotation.set(0.0f, 0.0f, magicZ);
+        ofScale(1.2f, 1.2f, 1.2f);
         getCurrentEyeRef().blinkingEnabled = false;
     }
     rotate(currentRotation);
     getCurrentEyeRef().draw();
-    ofScale(1.0, 1.0);
+    ofScale(1.0f, 1.0f, 1.0f);
 
 }
 void ImageAnimator::startPlaying() {
