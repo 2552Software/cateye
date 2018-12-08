@@ -2,36 +2,20 @@
 
 #include "ofApp.h"
 
-/*
- *  ofxTextWriter.h
- *  CFText
- *
- *  Created by Artem Titoulenko on 1/6/10.
- *  Copyright 2010 Artem Titoulenko. All rights reserved.
- *
- */
-
-class ofxTextWriter {
+class TextTimer {
 public:
 
-    //for use if you just want a blank TextWriter, for whatever reason.
-    void init() {
-        text = "";
-        timeBegan = timeDelay = timeToRender = 0.0f;
-        timeSet = done = false;
-
-    }
-
-    ofxTextWriter() {
+    TextTimer() {
         init();
     }
 
-    ofxTextWriter(const std::string& textIn, float timeToRenderIn, float timeDelayIn) {
+    TextTimer(const std::string& textIn, float timeToRenderIn, float timeDelayIn) {
+        init();
         text = textIn;
         timeToRender = timeToRenderIn;
         timeSet = done = false;
     }
-    string whatToRender();
+    bool getString(std::string& text);
 
     void resetTime() {
         timeSet = false;
@@ -41,13 +25,11 @@ public:
         timeDelay = delay;
     }
 
-    void setTimeToRender(float _timeToRender) {
+    void setTimeToRender(float timeToRenderIn) {
         resetTime();
-        timeToRender = _timeToRender;
+        timeToRender = timeToRenderIn;
+        timeBegan = (int)ofGetElapsedTimef();
         done = false;
-    }
-    void start() {
-        timeSet = true;
     }
     void stop() {
         done = true;
@@ -64,11 +46,16 @@ public:
     }
 
     bool isRunning() {
-        return timeSet;
+        return !isDone();
     }
 private:
+    void init() {
+        text.clear();
+        timeBegan = timeDelay = timeToRender = 0;
+        timeSet = done = false;
+    }
     std::string text;
-    float timeToRender, timeBegan, timeDelay;
+    int timeToRender, timeBegan, timeDelay;
     bool  timeSet, done;
 };
 
@@ -213,9 +200,9 @@ public:
     bool inFireworks() { return magicZ > 0; }
 
 private:
-    void ImageAnimator::draw(const std::string& s, float x=0.0f, float y = 0.0f);
-    ofxTextWriter text;
-    ofTrueTypeFont font; //bugbug load in setup
+    void draw(const std::string& s, float x=0.0f, float y = 0.0f);
+    std::vector<TextTimer> creditsText;
+    ofTrueTypeFont font; 
     void credits();
     int level;
     void fireWorks();

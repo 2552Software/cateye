@@ -7,58 +7,60 @@ void  ImageAnimator::fireWorks() {
     magicZ = 360 * 10; //bugbug parameter
 }
 
-string ofxTextWriter::whatToRender() {
-    if (ofGetElapsedTimef() < timeDelay) {
-        return "";
+bool TextTimer::getString(std::string& output) {
+    output.clear();
+    int elapsedSeconds = (int)ofGetElapsedTimef() - timeBegan; //  20 seconds passed for example
+    if (elapsedSeconds <= timeDelay || text.size() == 0 || timeToRender <= 0 || elapsedSeconds <= 0 || elapsedSeconds > timeToRender) {
+        return false;
     }
     if (!done) {
         if (!timeSet) {
-            timeBegan = ofGetElapsedTimef();
             timeSet = true;
         }
-        float elapsedSeconds = ofGetElapsedTimef() - timeBegan; // time that has passed
-        float factor = (elapsedSeconds / timeToRender);
-        int n = (int)(factor * text.length());
-
+        float factor = ((float)elapsedSeconds / (float)timeToRender);  // ratio of seconds that passed to our full range of time, say 20% or 0.2
+        
+        float l = text.length();
+        float t = factor * l;
+        int n = (int)(factor * l); //(int)(factor * text.length()); // get 20% of string
+        //int n = (int)((ofGetElapsedTimef() / (timeSet + timeToRender)) * text.length());
         if (!n) {
             done = true;
         }
-        else if (n + 1 >= (int)text.length()) {
+        else if (n >= (int)text.length()) {
             done = true;
         }
-        std::string s = text.substr(0, min(n, (int)text.length()));
-        if (s.size() > 0) {
-            return s;
+        output = text.substr(0, min(n, (int)text.length()));
+        if (output.size() > 0) {
+            return true;
         }
     }
     resetTime();
-    text.clear();
-    return text;
+    return false;
 }
 
 void ImageAnimator::draw(const std::string& s, float x, float y) {
     font.drawStringAsShapes(s, x, y);
 }
 void ImageAnimator::credits() {
-    text.setTimeToRender(5);
-    text.setTextToRender("hi");
+
+    creditsText.push_back(TextTimer("one", 15.0f, 0.0f));
+    creditsText.push_back(TextTimer("two", 15.0f, 15.0f));
 }
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     ofSetBackgroundColor(ofColor::black);
     ofSetColor(ofColor::white);
-    std::string s;
-    if (!text.isRunning()) {
+    if (creditsText.size() == 0) {
         credits();
-        text.start();
     }
-    else if (!text.isDone()){
-       s = text.whatToRender();
-   }
     else {
-        s = "hi";
-    }
-    if (s.size() > 0) {
-        draw(s, ofGetScreenHeight() / 2, (ofGetScreenWidth() / 2) - (s.size() / 2));
+        std::string s;
+        float i = 0;
+        for (auto& a : creditsText) {
+            if (a.getString(s)) {
+                draw(s, (ofGetScreenWidth() / 2) - (s.size() / 2), (ofGetScreenHeight() / 2) + i);
+                i += font.getLineHeight() * 10;
+            }
+        }
     }
     return;
     contours.draw(cxScreen, cyScreen);
