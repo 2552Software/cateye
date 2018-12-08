@@ -8,24 +8,34 @@ void  ImageAnimator::fireWorks() {
 }
 TextTimer::TextTimer(const std::string& textIn, float timeToRenderIn, float delay) {
     init();
-    timeBegan = (int)ofGetElapsedTimef()+delay;
+    timeBegan = (int)ofGetElapsedTimef();
     text = textIn;
     timeToRender = timeToRenderIn;
-    timeSet = done = false;
-    timeDelay = (int)ofGetElapsedTimef() + delay;
+    done = false;
+    timeSet = true;
+    if (delay) {
+        timeDelay = (int)ofGetElapsedTimef() + delay;
+    }
 }
 
 bool TextTimer::getString(std::string& output) {
     output.clear(); 
-    int elapsedSeconds = (int)ofGetElapsedTimef() - timeBegan; //  20 seconds passed for example timeDelay
-    if (elapsedSeconds <= timeDelay || text.size() == 0 || timeToRender <= 0 || elapsedSeconds <= 0 || elapsedSeconds > timeToRender) {
+    int elapsedSeconds = ((int)ofGetElapsedTimef() - timeBegan); //  20 seconds passed for example timeDelay
+    if (timeDelay) {
+        if (elapsedSeconds < timeDelay) {
+            return false;
+        }
+        else {
+            timeBegan = (int)ofGetElapsedTimef(); // here we go
+            timeDelay = 0.0f; // needs to be rest if used again
+            return false; // get it next time
+        }
+    }
+    if (text.size() == 0 || timeToRender <= 0) {
         return false;
     }
     if (!done) {
-        if (!timeSet) {
-            timeSet = true;
-        }
-        float factor = ((float)elapsedSeconds / (float)timeToRender);  // ratio of seconds that passed to our full range of time, say 20% or 0.2
+        float factor = ((float)(elapsedSeconds) / (float)timeToRender);  // ratio of seconds that passed to our full range of time, say 20% or 0.2
         
         float l = text.length();
         float t = factor * l;
@@ -50,9 +60,9 @@ void ImageAnimator::draw(const std::string& s, float x, float y) {
     font.drawStringAsShapes(s, x, y);
 }
 void ImageAnimator::credits() {
-
-    creditsText.push_back(TextTimer("one", 15.0f, 0.0f));
-    creditsText.push_back(TextTimer("two", 15.0f, 15.0f));
+    creditsText.clear();
+    creditsText.push_back(TextTimer("one", 5.0f, 0.0f));
+    creditsText.push_back(TextTimer("two", 5.0f, 5.0f));
 }
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     ofSetBackgroundColor(ofColor::black);
@@ -70,6 +80,9 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
                     i += font.getLineHeight() * 10;
                 }
             }
+        }
+        if (i == 0.0f) {
+            creditsText.clear();
         }
     }
     return;
