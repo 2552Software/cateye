@@ -4,13 +4,16 @@
 
 class TextTimer {
 public:
-
     TextTimer(const std::string& textIn, float timeToRenderIn, float delay, float x, float y);
+    void setup();
+    void update() { lasting.update(1.0f / ofGetTargetFrameRate()); }
     bool getString(std::string& text);
     bool isRunningOrWaitingToRun() {return !done; }
     float x, y;
-private:
+    ofxAnimatableOfColor lasting; // how long to draw after intial animation
     std::string text;
+
+private:
     int timeToRender, timeBegan, timeDelay;
     bool  timeSet, done;
 };

@@ -17,7 +17,10 @@ TextTimer::TextTimer(const std::string& textIn, float timeToRenderIn, float dela
     x = xIn;
     y = yIn;
 }
+void TextTimer::setup() {
 
+
+}
 bool TextTimer::getString(std::string& output) {
     output.clear(); 
     int elapsedSeconds = ((int)ofGetElapsedTimeMillis() - timeBegan); //  20 seconds passed for example timeDelay
@@ -40,17 +43,20 @@ bool TextTimer::getString(std::string& output) {
     if (!done) {
         float factor = ((float)(elapsedSeconds) / (float)timeToRender);  // ratio of seconds that passed to our full range of time, say 20% or 0.2
         
-        float l = text.length();
-        float t = factor * l;
-        int n = (int)(factor * l); //(int)(factor * text.length()); // get 20% of string
+        int n = (int)(factor * text.length()); 
+        int max = min(n, (int)text.length());
+
         if (!n) {
-            output = text.substr(0, 1);
-            return true;
+            max = 1;
         }
-        else if (n >= (int)text.length()) {
+        if (n >= (int)text.length()) {
             done = true;
+            lasting.setColor(ofColor::white);
+            lasting.setDuration(5.0f);
+            lasting.setRepeatType(PLAY_ONCE);
+            lasting.animateTo(ofColor::orangeRed);
         }
-        output = text.substr(0, min(n, (int)text.length()));
+        output = text.substr(0, min(n, max));
         if (output.size() > 0) {
             return true;
         }
@@ -81,6 +87,10 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
                 if (credit.getString(s)) {
                     draw(s, credit.x, credit.y);
                 }
+            }
+            else if (credit.lasting.isAnimating()) {
+                ofSetColor(credit.lasting.getCurrentColor());
+                draw(credit.text, credit.x, credit.y);
             }
         }
     }
@@ -440,7 +450,10 @@ void ImageAnimator::update() {
     for (auto& a : thingsToDo) {
         a.second.update();
     }
-
+    for (auto&a : creditsText) {
+        a.update();
+    }
+   
     for (SuperSphere&eye : eyes) {
         eye.update();
     }
