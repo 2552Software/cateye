@@ -6,14 +6,16 @@ void Light::setup() {
     setOrientation(ofVec3f(-200.0f, 300.0f, 00.0f));
     setPosition(0, 0, 2000);
 
-    specularcolor.setColor(ofColor::mediumVioletRed);
-    specularcolor.setDuration(1.0f);
+    float colorDuration = 5.0f; // bugbug menu
+
+    specularcolor.setColor(ofColor::white);
+    specularcolor.setDuration(colorDuration);
     specularcolor.setRepeatType(LOOP_BACK_AND_FORTH);
     specularcolor.setCurve(LINEAR);
     specularcolor.animateTo(ofColor::orangeRed);
 
     ambientcolor.setColor(ofColor::blue);
-    ambientcolor.setDuration(1.5f);
+    ambientcolor.setDuration(colorDuration);
     ambientcolor.setRepeatType(LOOP_BACK_AND_FORTH);
     ambientcolor.setCurve(LINEAR);
     ambientcolor.animateTo(ofColor::red);

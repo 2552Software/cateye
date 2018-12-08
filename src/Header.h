@@ -2,6 +2,95 @@
 
 #include "ofApp.h"
 
+/*
+ *  ofxTextWriter.h
+ *  CFText
+ *
+ *  Created by Artem Titoulenko on 1/6/10.
+ *  Copyright 2010 Artem Titoulenko. All rights reserved.
+ *
+ */
+
+class ofxTextWriter {
+    string text;
+    float timeToRender;
+    float timeBegan;
+    bool  timeSet, done;
+
+public:
+
+    //for use if you just want a blank TextWriter, for whatever reason.
+    void init() {
+        text = "";
+        timeToRender = 0;
+        timeSet = done = false;
+    }
+
+    ofxTextWriter() {
+        init();
+    }
+
+    ofxTextWriter(string _text, float _timeToRender = 5) {
+        text = _text;
+        timeToRender = _timeToRender;
+        timeSet = done = false;
+    }
+
+    string whatToRender() {
+        if (!done) {
+            if (!timeSet) {
+                timeBegan = ofGetElapsedTimef();
+                timeSet = true;
+            }
+
+            //Lets not draw it, that's too many resources we dont have.
+            //Lets just return what part of the string should be already drawn.
+            //That way people can decide what they want to do with it and how.
+            int n = (int)((ofGetElapsedTimef() / (timeSet + timeToRender)) * text.length());
+
+            if (n + 1 == (int)text.length()) {
+                done = true;
+                timeSet = false;
+            }
+            std::string s = text.substr(0, min(n, (int)text.length()));
+            if (s.size() > 0) {
+                return s;
+            }
+            else {
+                return text;
+            }
+        }
+        else {
+            resetTime();
+            return text;
+        }
+    }
+
+    /* -------- HELPER FUNCTIONS --------- */
+    void resetTime() {
+        timeSet = false;
+    }
+
+    void setTimeToRender(float _timeToRender) {
+        resetTime();
+        timeToRender = _timeToRender;
+        done = false;
+        timeSet = true;
+    }
+
+    void setTextToRender(string _text) {
+        text = _text;
+    }
+
+    bool isDone() {
+        return done;
+    }
+
+    bool isRunning() {
+        return timeSet;
+    }
+};
+
 class Light : public ofLight {
 public:
     void setup();
@@ -140,7 +229,13 @@ public:
     void setShapeMinSize(float size) { shapeMinSize = size; };
     bool isIgnighted(int count) { return count > firstMatchCount(); }
     bool isWinner(int count) { return count >= winnerCount(); } // easy mode! bugbug menu
+    bool inFireworks() { return magicZ > 0; }
+
 private:
+    void ImageAnimator::draw(const std::string& s, float x=0.0f, float y = 0.0f);
+    ofxTextWriter text;
+    ofTrueTypeFont font; //bugbug load in setup
+    void credits();
     int level;
     void fireWorks();
     float shapeMinSize;
@@ -153,7 +248,6 @@ private:
     float maxForTrigger;
     void rotate(const ofVec3f& target);
     std::vector<ofSoundPlayer> mySounds;
-    ofxAnimatableFloat crazyEyes;
     ofxAnimatableFloat animatorIndex;
     float magicZ; // used in fireworks
     ofxAnimatableQueueofVec3f rotator;

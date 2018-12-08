@@ -4,29 +4,30 @@ void  ImageAnimator::fireWorks() {
     sounds(5);
     ignight(false);
 
-    ofxAnimatableOfPoint point;
-    ofPoint target(10.0f, 20.0f, 360.0f);
-
-    // get the current point -- smooth things out
-    point.setPosition(ofPoint(0.0f, 0.0f, 0.0f));
-    point.setCurve(LINEAR);
-    point.setRepeatType(PLAY_ONCE);
-    point.setDuration(5.0f);
-    point.animateTo(target);
-    rotator.insertTransition(point, true);
-
-    crazyEyes.reset(0.0f);
-    crazyEyes.setDuration(0.5f); // draw 30 times a second
-    crazyEyes.setRepeatType(PLAY_N_TIMES);
-    crazyEyes.setRepeatTimes(10); // menu? bugbug
-    point.setCurve(SMOOTH_STEP);
-    
-    crazyEyes.animateTo(360.0f);
-
-    magicZ = 360 * 30 * 20; // 30 times a second * seconds
-
+    magicZ = 360 * 10; //bugbug parameter
+}
+void ImageAnimator::draw(const std::string& s, float x, float y) {
+    float myX=y;
+    if (x) {
+        myX -= (s.size() / 2);
+    }
+    font.drawStringAsShapes(s, myX, y);
+}
+void ImageAnimator::credits() {
+    text.setTimeToRender(300);
+    text.setTextToRender("Hello World...");
 }
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
+    ofSetBackgroundColor(ofColor::black);
+    ofSetColor(ofColor::white);
+    if (!text.isRunning()) {
+        credits();
+    }
+    else {
+        std::string s = text.whatToRender();
+        draw(s, ofGetScreenHeight() / 2, (ofGetScreenWidth() / 2)- (s.size() / 2));
+    }
+    return;
     contours.draw(cxScreen, cyScreen);
     int c = count();
 
@@ -40,7 +41,7 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     }
     else {
         // else draw boxes but only when its game on
-        if (count() >= firstMatchCount() && crazyEyes.hasFinishedAnimating()) {
+        if (count() >= firstMatchCount() && inFireworks()) {
             for (auto& item : thingsToDo) {
                 item.second.draw(175);//bugbug make menu
             }
@@ -57,6 +58,7 @@ void Map::set(int a) {
 void Map::set(const ofRectangle& r) {
     rectangle = r;
 }
+
 void Map::trigger() {
     if (!isAnimating()) {
         float duration = 25.0f;//seconds bugbug make menu
@@ -311,6 +313,10 @@ void ImageAnimator::setup() {
         mySounds.push_back(sound);
     }
 
+    font.load("alger.ttf", 100, true, true, true);
+    font.setLineHeight(18.0f);
+    font.setLetterSpacing(1.037);
+
     startPlaying();
 
 }
@@ -368,7 +374,7 @@ void ImageAnimator::windowResized(int w, int h) {
 
 void ImageAnimator::update() {
 
-    if (magicZ > 0.0f) {
+    if (inFireworks()) {
         magicZ -= 15.0f; //bugbug menu
     }
     if (((int)ofGetElapsedTimef() % 30) == 0) {//bugbug put in menu
@@ -382,7 +388,6 @@ void ImageAnimator::update() {
         eye.update();
     }
     animatorIndex.update(1.0f / ofGetTargetFrameRate());
-    crazyEyes.update(1.0f / ofGetTargetFrameRate());
     path.update();
     rotator.update();
     contours.update();
@@ -495,9 +500,9 @@ void ImageAnimator::draw() {
        // getCurrentEyeRef().blinkingEnabled = false;
 // do location later, its just for special effectgs               getCurrentEyeRef().setPosition(currentLocation);
     }
-
+    return;
     // roate current eye as needed
-    if (magicZ > 0.0f) {
+    if (inFireworks()) {
         currentRotation.set(0.0f, 0.0f, magicZ);
         ofScale(1.2f, 1.2f, 1.2f);
         getCurrentEyeRef().blinkingEnabled = false;

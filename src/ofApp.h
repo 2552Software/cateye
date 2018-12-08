@@ -27,7 +27,6 @@ public:
     void squareCountChanged(int & squareCount);
     void triggerCountChanged(float & count);
     void shapeSizeChanged(float & size);
-
     Light	light;
     Camera camera;
     ImageAnimator eyeAnimator;
