@@ -5,9 +5,10 @@
 class TextTimer {
 public:
 
-    TextTimer(const std::string& textIn, float timeToRenderIn, float delay);
+    TextTimer(const std::string& textIn, float timeToRenderIn, float delay, float x, float y);
     bool getString(std::string& text);
     bool isRunningOrWaitingToRun() {return !done; }
+    float x, y;
 private:
     void init() {
         text.clear();

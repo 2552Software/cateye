@@ -6,30 +6,35 @@ void  ImageAnimator::fireWorks() {
 
     magicZ = 360 * 10; //bugbug parameter
 }
-TextTimer::TextTimer(const std::string& textIn, float timeToRenderIn, float delay) {
+TextTimer::TextTimer(const std::string& textIn, float timeToRenderIn, float delay, float xIn, float yIn) {
     init();
-    timeBegan = (int)ofGetElapsedTimef();
+    timeBegan = (int)ofGetElapsedTimeMillis();
     text = textIn;
     timeToRender = timeToRenderIn;
     done = false;
     timeSet = true;
     if (delay) {
-        timeDelay = (int)ofGetElapsedTimef() + delay;
+        timeDelay = (int)ofGetElapsedTimeMillis() + delay;
     }
+    x = xIn;
+    y = yIn;
 }
 
 bool TextTimer::getString(std::string& output) {
     output.clear(); 
-    int elapsedSeconds = ((int)ofGetElapsedTimef() - timeBegan); //  20 seconds passed for example timeDelay
+    int elapsedSeconds = ((int)ofGetElapsedTimeMillis() - timeBegan); //  20 seconds passed for example timeDelay
     if (timeDelay) {
         if (elapsedSeconds < timeDelay) {
             return false;
         }
         else {
-            timeBegan = (int)ofGetElapsedTimef(); // here we go
+            timeBegan = (int)ofGetElapsedTimeMillis(); // here we go
             timeDelay = 0.0f; // needs to be rest if used again
             return false; // get it next time
         }
+    } 
+    if (!elapsedSeconds) {
+        return false;
     }
     if (text.size() == 0 || timeToRender <= 0) {
         return false;
@@ -40,7 +45,6 @@ bool TextTimer::getString(std::string& output) {
         float l = text.length();
         float t = factor * l;
         int n = (int)(factor * l); //(int)(factor * text.length()); // get 20% of string
-        //int n = (int)((ofGetElapsedTimef() / (timeSet + timeToRender)) * text.length());
         if (!n) {
             output = text.substr(0, 1);
             return true;
@@ -61,8 +65,10 @@ void ImageAnimator::draw(const std::string& s, float x, float y) {
 }
 void ImageAnimator::credits() {
     creditsText.clear();
-    creditsText.push_back(TextTimer("one", 5.0f, 0.0f));
-    creditsText.push_back(TextTimer("two", 5.0f, 5.0f));
+    std::string s = "one";
+    creditsText.push_back(TextTimer(s, 1500.0f, 0.0f, (ofGetScreenWidth() / 2) - (s.size() / 2), (ofGetScreenHeight() / 2)));
+    s = "two";
+    creditsText.push_back(TextTimer(s, 1500.0f, 500.0f, (ofGetScreenWidth() / 2) - (s.size() / 2), (ofGetScreenHeight() / 2) + font.getLineHeight() * 10));
 }
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     ofSetBackgroundColor(ofColor::black);
@@ -71,18 +77,13 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
         credits();
     }
     else {
-        float i = 0;
         for (auto& credit : creditsText) {
             if (credit.isRunningOrWaitingToRun()) { // if not go to next one
                 std::string s;
                 if (credit.getString(s)) {
-                    draw(s, (ofGetScreenWidth() / 2) - (s.size() / 2), (ofGetScreenHeight() / 2) + i);
-                    i += font.getLineHeight() * 10;
+                    draw(s, credit.x, credit.y);
                 }
             }
-        }
-        if (i == 0.0f) {
-            creditsText.clear();
         }
     }
     return;
