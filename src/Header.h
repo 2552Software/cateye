@@ -12,6 +12,7 @@ public:
     float x, y;
     ofxAnimatableOfColor lasting; // how long to draw after intial animation
     std::string text;
+    float holdTextTime;
 
 private:
     int timeToRender, timeBegan, timeDelay;

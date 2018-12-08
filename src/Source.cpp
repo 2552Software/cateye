@@ -16,6 +16,7 @@ TextTimer::TextTimer(const std::string& textIn, float timeToRenderIn, float dela
     timeBegan = (int)ofGetElapsedTimeMillis();
     x = xIn;
     y = yIn;
+    holdTextTime = 35.0f;
 }
 void TextTimer::setup() {
 
@@ -69,10 +70,34 @@ void ImageAnimator::draw(const std::string& s, float x, float y) {
 }
 void ImageAnimator::credits() {
     creditsText.clear();
-    std::string s = "one";
-    creditsText.push_back(TextTimer(s, 1500.0f, 0.0f, (ofGetScreenWidth() / 2) - (s.size() / 2), (ofGetScreenHeight() / 2)));
-    s = "two";
-    creditsText.push_back(TextTimer(s, 1500.0f, 1500.0f, (ofGetScreenWidth() / 2) - (s.size() / 2), (ofGetScreenHeight() / 2) + font.getLineHeight() * 10));
+
+    std::string s = "Tom And Mark";
+    float f = font.stringWidth(s);
+
+    creditsText.push_back(TextTimer(s, 1500.0f, 0.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6)));
+    s = "From Eletronic Murals";
+    f = font.stringWidth(s);
+    creditsText.push_back(TextTimer(s, 1500.0f, 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 10));
+
+    s = "Would like to Thank Can Can Wonderland ...";
+    f = font.stringWidth(s);
+    creditsText.push_back(TextTimer(s, 1500.0f, 2*1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 20));
+
+    s = "... for their support of the Arts!";
+    f = font.stringWidth(s);
+    creditsText.push_back(TextTimer(s, 1500.0f, 3 * 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 30));
+
+    s = "Now go see if they will get you a beer...";
+    f = font.stringWidth(s);
+    TextTimer t(s, 1500.0f, 8 * 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 40);
+    t.holdTextTime = 45.0f;
+    creditsText.push_back(t);
+
+    s = "Good bye!";
+    f = font.stringWidth(s);
+    creditsText.push_back(TextTimer(s, 1500.0f, 11 * 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 20));
+
+
 }
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     ofSetBackgroundColor(ofColor::black);
@@ -105,6 +130,7 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     if (isWinner(c)) { 
        // enable fireworks!!
        fireWorks();
+       credits();
     }
     else {
         // else draw boxes but only when its game on
