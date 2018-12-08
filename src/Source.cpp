@@ -6,10 +6,18 @@ void  ImageAnimator::fireWorks() {
 
     magicZ = 360 * 10; //bugbug parameter
 }
+TextTimer::TextTimer(const std::string& textIn, float timeToRenderIn, float delay) {
+    init();
+    timeBegan = (int)ofGetElapsedTimef()+delay;
+    text = textIn;
+    timeToRender = timeToRenderIn;
+    timeSet = done = false;
+    timeDelay = (int)ofGetElapsedTimef() + delay;
+}
 
 bool TextTimer::getString(std::string& output) {
-    output.clear();
-    int elapsedSeconds = (int)ofGetElapsedTimef() - timeBegan; //  20 seconds passed for example
+    output.clear(); 
+    int elapsedSeconds = (int)ofGetElapsedTimef() - timeBegan; //  20 seconds passed for example timeDelay
     if (elapsedSeconds <= timeDelay || text.size() == 0 || timeToRender <= 0 || elapsedSeconds <= 0 || elapsedSeconds > timeToRender) {
         return false;
     }
@@ -35,7 +43,6 @@ bool TextTimer::getString(std::string& output) {
             return true;
         }
     }
-    resetTime();
     return false;
 }
 
@@ -50,20 +57,18 @@ void ImageAnimator::credits() {
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     ofSetBackgroundColor(ofColor::black);
     ofSetColor(ofColor::white);
-    if (creditsText.size() == 0) {
+    if (creditsText.size() == 0) {//bugbug move to fireworks
         credits();
     }
     else {
-        if (creditsText[creditsIndex].isRunningOrWaitingToRun()) { // if not go to next one
-            std::string s;
-            float i = creditsIndex* font.getLineHeight() * 10;
-            if (creditsText[creditsIndex].getString(s)) {
-                draw(s, (ofGetScreenWidth() / 2) - (s.size() / 2), (ofGetScreenHeight() / 2) + i);
-            }
-        }
-        else {
-            if (creditsIndex < creditsText.size()-1) {
-                ++creditsIndex;
+        float i = 0;
+        for (auto& credit : creditsText) {
+            if (credit.isRunningOrWaitingToRun()) { // if not go to next one
+                std::string s;
+                if (credit.getString(s)) {
+                    draw(s, (ofGetScreenWidth() / 2) - (s.size() / 2), (ofGetScreenHeight() / 2) + i);
+                    i += font.getLineHeight() * 10;
+                }
             }
         }
     }
@@ -313,7 +318,6 @@ ImageAnimator::ImageAnimator() {
     squareCount = 10;
     level = 0;
     magicZ = 0.0f;
-    creditsIndex = 0;
 }
 void ImageAnimator::setup() {
     buildX();

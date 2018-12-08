@@ -5,51 +5,9 @@
 class TextTimer {
 public:
 
-    TextTimer() {
-        init();
-    }
-
-    TextTimer(const std::string& textIn, float timeToRenderIn, float timeDelayIn) {
-        init();
-        text = textIn;
-        timeToRender = timeToRenderIn;
-        timeSet = done = false;
-        timeDelay = timeDelayIn;
-    }
+    TextTimer(const std::string& textIn, float timeToRenderIn, float delay);
     bool getString(std::string& text);
-
-    void resetTime() {
-        timeSet = false;
-    }
-
-    void setDelay(float delay) {
-        timeDelay = delay;
-        done = false;
-    }
-
-    void setTimeToRender(float timeToRenderIn) {
-        resetTime();
-        timeToRender = timeToRenderIn;
-        timeBegan = (int)ofGetElapsedTimef();
-        done = false;
-    }
-    void stop() {
-        done = true;
-        resetTime();
-    }
-    void setTextToRender(const std::string& textIn) {
-        text = textIn;
-    }
-    bool isText() {
-        return text.size() > 0;
-    }
-    bool isDone() {
-        return done;
-    }
-
-    bool isRunningOrWaitingToRun() {
-        return !isDone();
-    }
+    bool isRunningOrWaitingToRun() {return !done; }
 private:
     void init() {
         text.clear();
@@ -229,6 +187,5 @@ private:
     std::map<Key, float> mapCameraInX; // range to rotation
     std::map<Key, float> mapCameraInY;
     std::map<std::pair<int, int>, Map> thingsToDo; // map indexes
-    int creditsIndex;
 };
 
