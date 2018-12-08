@@ -10,11 +10,6 @@ public:
     bool isRunningOrWaitingToRun() {return !done; }
     float x, y;
 private:
-    void init() {
-        text.clear();
-        timeBegan = timeDelay = timeToRender = 0;
-        timeSet = done = false;
-    }
     std::string text;
     int timeToRender, timeBegan, timeDelay;
     bool  timeSet, done;

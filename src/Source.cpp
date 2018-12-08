@@ -7,15 +7,13 @@ void  ImageAnimator::fireWorks() {
     magicZ = 360 * 10; //bugbug parameter
 }
 TextTimer::TextTimer(const std::string& textIn, float timeToRenderIn, float delay, float xIn, float yIn) {
-    init();
-    timeBegan = (int)ofGetElapsedTimeMillis();
-    text = textIn;
-    timeToRender = timeToRenderIn;
+    timeDelay = 0;
     done = false;
+    text = textIn;
     timeSet = true;
-    if (delay) {
-        timeDelay = (int)ofGetElapsedTimeMillis() + delay;
-    }
+    timeToRender = timeToRenderIn;
+    timeDelay = delay;
+    timeBegan = (int)ofGetElapsedTimeMillis();
     x = xIn;
     y = yIn;
 }
@@ -68,7 +66,7 @@ void ImageAnimator::credits() {
     std::string s = "one";
     creditsText.push_back(TextTimer(s, 1500.0f, 0.0f, (ofGetScreenWidth() / 2) - (s.size() / 2), (ofGetScreenHeight() / 2)));
     s = "two";
-    creditsText.push_back(TextTimer(s, 1500.0f, 500.0f, (ofGetScreenWidth() / 2) - (s.size() / 2), (ofGetScreenHeight() / 2) + font.getLineHeight() * 10));
+    creditsText.push_back(TextTimer(s, 1500.0f, 1500.0f, (ofGetScreenWidth() / 2) - (s.size() / 2), (ofGetScreenHeight() / 2) + font.getLineHeight() * 10));
 }
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     ofSetBackgroundColor(ofColor::black);
