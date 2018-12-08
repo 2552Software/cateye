@@ -24,7 +24,8 @@ bool TextTimer::getString(std::string& output) {
         int n = (int)(factor * l); //(int)(factor * text.length()); // get 20% of string
         //int n = (int)((ofGetElapsedTimef() / (timeSet + timeToRender)) * text.length());
         if (!n) {
-            done = true;
+            output = text.substr(0, 1);
+            return true;
         }
         else if (n >= (int)text.length()) {
             done = true;
@@ -53,12 +54,16 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
         credits();
     }
     else {
-        std::string s;
-        float i = 0;
-        for (auto& a : creditsText) {
-            if (a.getString(s)) {
+        if (creditsText[creditsIndex].isRunningOrWaitingToRun()) { // if not go to next one
+            std::string s;
+            float i = creditsIndex* font.getLineHeight() * 10;
+            if (creditsText[creditsIndex].getString(s)) {
                 draw(s, (ofGetScreenWidth() / 2) - (s.size() / 2), (ofGetScreenHeight() / 2) + i);
-                i += font.getLineHeight() * 10;
+            }
+        }
+        else {
+            if (creditsIndex < creditsText.size()-1) {
+                ++creditsIndex;
             }
         }
     }
@@ -307,7 +312,8 @@ ImageAnimator::ImageAnimator() {
     shapeMinSize = 100.0f;
     squareCount = 10;
     level = 0;
-    magicZ = 0;
+    magicZ = 0.0f;
+    creditsIndex = 0;
 }
 void ImageAnimator::setup() {
     buildX();

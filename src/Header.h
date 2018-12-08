@@ -14,6 +14,7 @@ public:
         text = textIn;
         timeToRender = timeToRenderIn;
         timeSet = done = false;
+        timeDelay = timeDelayIn;
     }
     bool getString(std::string& text);
 
@@ -23,6 +24,7 @@ public:
 
     void setDelay(float delay) {
         timeDelay = delay;
+        done = false;
     }
 
     void setTimeToRender(float timeToRenderIn) {
@@ -45,7 +47,7 @@ public:
         return done;
     }
 
-    bool isRunning() {
+    bool isRunningOrWaitingToRun() {
         return !isDone();
     }
 private:
@@ -227,5 +229,6 @@ private:
     std::map<Key, float> mapCameraInX; // range to rotation
     std::map<Key, float> mapCameraInY;
     std::map<std::pair<int, int>, Map> thingsToDo; // map indexes
+    int creditsIndex;
 };
 
