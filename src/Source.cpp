@@ -6,26 +6,59 @@ void  ImageAnimator::fireWorks() {
 
     magicZ = 360 * 10; //bugbug parameter
 }
-void ImageAnimator::draw(const std::string& s, float x, float y) {
-    float myX=y;
-    if (x) {
-        myX -= (s.size() / 2);
+
+string ofxTextWriter::whatToRender() {
+    if (ofGetElapsedTimef() < timeDelay) {
+        return "";
     }
-    font.drawStringAsShapes(s, myX, y);
+    if (!done) {
+        if (!timeSet) {
+            timeBegan = ofGetElapsedTimef();
+            timeSet = true;
+        }
+        float elapsedSeconds = ofGetElapsedTimef() - timeBegan; // time that has passed
+        float factor = (elapsedSeconds / timeToRender);
+        int n = (int)(factor * text.length());
+
+        if (!n) {
+            done = true;
+        }
+        else if (n + 1 >= (int)text.length()) {
+            done = true;
+        }
+        std::string s = text.substr(0, min(n, (int)text.length()));
+        if (s.size() > 0) {
+            return s;
+        }
+    }
+    resetTime();
+    text.clear();
+    return text;
+}
+
+void ImageAnimator::draw(const std::string& s, float x, float y) {
+    font.drawStringAsShapes(s, x, y);
 }
 void ImageAnimator::credits() {
-    text.setTimeToRender(300);
-    text.setTextToRender("Hello World...");
+    text.setTimeToRender(5);
+    text.setTextToRender("hi");
 }
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     ofSetBackgroundColor(ofColor::black);
     ofSetColor(ofColor::white);
+    std::string s;
     if (!text.isRunning()) {
         credits();
+        text.start();
     }
+    else if (!text.isDone()){
+       s = text.whatToRender();
+   }
     else {
-        std::string s = text.whatToRender();
-        draw(s, ofGetScreenHeight() / 2, (ofGetScreenWidth() / 2)- (s.size() / 2));
+        s = "hi";
+    }
+    if (s.size() > 0) {
+        draw(s, ofGetScreenHeight() / 2, (ofGetScreenWidth() / 2) - (s.size() / 2));
     }
     return;
     contours.draw(cxScreen, cyScreen);

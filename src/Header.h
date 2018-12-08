@@ -12,76 +12,53 @@
  */
 
 class ofxTextWriter {
-    string text;
-    float timeToRender;
-    float timeBegan;
-    bool  timeSet, done;
-
 public:
 
     //for use if you just want a blank TextWriter, for whatever reason.
     void init() {
         text = "";
-        timeToRender = 0;
+        timeBegan = timeDelay = timeToRender = 0.0f;
         timeSet = done = false;
+
     }
 
     ofxTextWriter() {
         init();
     }
 
-    ofxTextWriter(string _text, float _timeToRender = 5) {
-        text = _text;
-        timeToRender = _timeToRender;
+    ofxTextWriter(const std::string& textIn, float timeToRenderIn, float timeDelayIn) {
+        text = textIn;
+        timeToRender = timeToRenderIn;
         timeSet = done = false;
     }
+    string whatToRender();
 
-    string whatToRender() {
-        if (!done) {
-            if (!timeSet) {
-                timeBegan = ofGetElapsedTimef();
-                timeSet = true;
-            }
-
-            //Lets not draw it, that's too many resources we dont have.
-            //Lets just return what part of the string should be already drawn.
-            //That way people can decide what they want to do with it and how.
-            int n = (int)((ofGetElapsedTimef() / (timeSet + timeToRender)) * text.length());
-
-            if (n + 1 == (int)text.length()) {
-                done = true;
-                timeSet = false;
-            }
-            std::string s = text.substr(0, min(n, (int)text.length()));
-            if (s.size() > 0) {
-                return s;
-            }
-            else {
-                return text;
-            }
-        }
-        else {
-            resetTime();
-            return text;
-        }
-    }
-
-    /* -------- HELPER FUNCTIONS --------- */
     void resetTime() {
         timeSet = false;
+    }
+
+    void setDelay(float delay) {
+        timeDelay = delay;
     }
 
     void setTimeToRender(float _timeToRender) {
         resetTime();
         timeToRender = _timeToRender;
         done = false;
+    }
+    void start() {
         timeSet = true;
     }
-
-    void setTextToRender(string _text) {
-        text = _text;
+    void stop() {
+        done = true;
+        resetTime();
     }
-
+    void setTextToRender(const std::string& textIn) {
+        text = textIn;
+    }
+    bool isText() {
+        return text.size() > 0;
+    }
     bool isDone() {
         return done;
     }
@@ -89,6 +66,10 @@ public:
     bool isRunning() {
         return timeSet;
     }
+private:
+    std::string text;
+    float timeToRender, timeBegan, timeDelay;
+    bool  timeSet, done;
 };
 
 class Light : public ofLight {
