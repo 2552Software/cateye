@@ -102,24 +102,25 @@ void ImageAnimator::credits() {
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     ofSetBackgroundColor(ofColor::black);
     ofSetColor(ofColor::white);
-    if (creditsText.size() == 0) {//bugbug move to fireworks
-        credits();
-    }
-    else {
-        for (auto& credit : creditsText) {
-            if (credit.isRunningOrWaitingToRun()) { // if not go to next one
-                std::string s;
-                if (credit.getString(s)) {
-                    draw(s, credit.x, credit.y);
-                }
-            }
-            else if (credit.lasting.isAnimating()) {
-                ofSetColor(credit.lasting.getCurrentColor());
-                draw(credit.text, credit.x, credit.y);
+
+    bool found = false;
+    for (auto& credit : creditsText) {
+        if (credit.isRunningOrWaitingToRun()) { // if not go to next one
+            std::string s;
+            if (credit.getString(s)) {
+                found = true;
+                draw(s, credit.x, credit.y);
             }
         }
+        else if (credit.lasting.isAnimating()) {
+            found = true;
+            ofSetColor(credit.lasting.getCurrentColor());
+            draw(credit.text, credit.x, credit.y);
+        }
     }
-    return;
+    if (found) {
+        return;
+    }
     contours.draw(cxScreen, cyScreen);
     int c = count();
 
