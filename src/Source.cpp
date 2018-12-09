@@ -8,21 +8,20 @@ void  ImageAnimator::fireWorks() {
 }
 bool ImageAnimator::drawOthers() {
     bool found = false;
-    int line = 0;
+    float y = ofGetScreenWidth() / 3;
     for (auto& credit : creditsText) {
         if (credit.isRunningOrWaitingToRun()) {
             std::string s;
             if (credit.getString(s)) {
-                ++line;
                 found = true;
                 //float f = font.stringWidth(s);
-                draw(s, 0, font.getLineHeight()*line);
+                draw(s, -font.stringWidth(s)/2, y-font.getLineHeight()*credit.line*6);
             }
         }
         else if (credit.lasting.isAnimating()) {
             found = true;
             ofSetColor(credit.lasting.getCurrentColor());
-            draw(credit.text, 0, font.getLineHeight()*line);
+            draw(credit.text, -font.stringWidth(credit.text)/2, y-font.getLineHeight()*credit.line*6);
         }
     }
     return found;
@@ -32,26 +31,29 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     ofSetBackgroundColor(ofColor::black);
     ofSetColor(ofColor::white);
 
-    contours.draw(cxScreen, cyScreen);
-    int c = count();
+    if (!drawOthers()) {
+        contours.draw(cxScreen, cyScreen);
+        int c = count();
 
-    std::stringstream ss;
-    ss << c << ":" << winnerCount();
-    ofSetWindowTitle(ss.str());
+        std::stringstream ss;
+        ss << c << ":" << winnerCount();
+        ofSetWindowTitle(ss.str());
 
-    if (isWinner(c)) { 
-       // enable fireworks!!
-       fireWorks();
-       credits();
-    }
-    else {
-        // else draw boxes but only when its game 
-        if (count() >= firstMatchCount()) {
-            for (auto& item : thingsToDo) {
-                item.second.draw(175);//bugbug make menu
+        if (isWinner(c)) {
+            // enable fireworks!!
+            fireWorks();
+            credits();
+        }
+        else {
+            // else draw boxes but only when its game 
+            if (count() >= firstMatchCount()) {
+                for (auto& item : thingsToDo) {
+                    item.second.draw(175);//bugbug make menu
+                }
             }
         }
     }
+
 }
 
 void Map::setup() {

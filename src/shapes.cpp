@@ -1,6 +1,7 @@
 #include "ofApp.h"
 
-TextTimer::TextTimer(const std::string& textIn, float timeToRenderIn, float delay) {
+TextTimer::TextTimer(const std::string& textIn, float timeToRenderIn, float delay, float lineIn) {
+    line = lineIn;
     timeDelay = 0;
     done = false;
     text = textIn;
@@ -80,10 +81,11 @@ void ImageAnimator::draw(const std::string& s, float x, float y) {
 void ImageAnimator::credits() {
     creditsText.clear();
 
-    creditsText.push_back(TextTimer("Tom And Mark", 1500.0f, 0.0f));
-    creditsText.push_back(TextTimer("From Eletronic Murals", 1500.0f, 1500.0f));
-    creditsText.push_back(TextTimer("Would like to Thank Can Can Wonderland ...", 1500.0f, 2 * 1500.0f));
-    creditsText.push_back(TextTimer("... for their support of the Arts!", 1500.0f, 3 * 1500.0f));
+    creditsText.push_back(TextTimer("Tom And Mark", 1500.0f, 0.0f, 0.0f));
+    creditsText.push_back(TextTimer("From Eletronic Murals", 1500.0f, 1500.0f, 1.0f));
+    creditsText.push_back(TextTimer("Would like to Thank Can Can Wonderland ...", 1500.0f, 2 * 1500.0f, 2.0f));
+    creditsText.push_back(TextTimer("... for their support of the Arts!", 1500.0f, 3 * 1500.0f, 3.0f));
+    creditsText.push_back(TextTimer("Good bye!", 1500.0f, 5 * 1500.0f, 4.0f));
 
     //bugbug add more stuff
     std::string s;
@@ -91,12 +93,11 @@ void ImageAnimator::credits() {
         s = "Now go see if they will get you a beer...";
     }
     else {
-        s = "Go ask for a cookie...";
+        s = "Now go ask for a cookie...";
     }
-    TextTimer t(s, 1500.0f, 4 * 1500.0f);
+    TextTimer t(s, 1500.0f, 15 * 1500.0f, 6.0f);
     creditsText.push_back(t);
 
-    creditsText.push_back(TextTimer("Good bye!", 1500.0f, 6 * 1500.0f));
 }
 
 void Eye::setup(const string&texName) {
