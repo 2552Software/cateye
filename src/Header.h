@@ -157,14 +157,13 @@ public:
     void setShapeMinSize(float size) { shapeMinSize = size; };
     bool isIgnighted(int count) { return count > firstMatchCount(); }
     bool isWinner(int count) { return count >= winnerCount(); } // easy mode! bugbug menu
-    bool inFireworks() { return magicZ.isAnimating(); }
+    bool inFireworks() { return magicZ > 0.0f; }
     bool drawOthers();
 private:
     ofImage spirl;
     ofSpherePrimitive sphere4Spirl;
     ofxAnimatableFloat spirlRadius;
-    ofxAnimatableFloat magicZ; // used in fireworks
-    float currentZ;
+    float magicZ; // used in fireworks
     void draw(const std::string& s, float x=0.0f, float y = 0.0f);
     std::vector<TextTimer> creditsText;
     ofTrueTypeFont font; 

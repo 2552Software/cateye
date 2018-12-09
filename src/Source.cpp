@@ -3,8 +3,8 @@
 void  ImageAnimator::fireWorks() {
     sounds(5);
     ignight(false);
-    spirlRadius.animateFromTo(sphere4Spirl.getRadius() / 2, sphere4Spirl.getRadius()+ sphere4Spirl.getRadius()/8);
-    magicZ.animateFromTo(1.0f, 100.0f); //bugbug parameter
+    spirlRadius.animateFromTo(sphere4Spirl.getRadius() / 3, getCurrentEyeRef().getRadius()+ 100);//bugbug change with screen size
+    magicZ = 300.0f;
     spirlRadius.animateToIfFinished(sphere4Spirl.getRadius() / 10);
 }
 bool ImageAnimator::drawOthers() {
@@ -267,7 +267,7 @@ void ImageAnimator::setup() {
     font.setLineHeight(18.0f);
     font.setLetterSpacing(1.037);
 
-    currentZ = 0.0f;
+    magicZ = 0.0f;
     spirl.load("runtime\\spirl\\s1.png");
     sphere4Spirl.panDeg(180);
     sphere4Spirl.setResolution(21);
@@ -367,14 +367,9 @@ void ImageAnimator::windowResized(int w, int h) {
 
     // duration bugbug set in menu
     spirlRadius.reset();
-    spirlRadius.setDuration(10.0f);
+    spirlRadius.setDuration(20.0f);
     spirlRadius.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
     spirlRadius.setCurve(EASE_IN_EASE_OUT);
-
-    magicZ.reset();
-    magicZ.setDuration(10.0f);
-    magicZ.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
-    magicZ.setCurve(EASE_IN_EASE_OUT);
 }
 
 void ImageAnimator::update() {
@@ -393,7 +388,9 @@ void ImageAnimator::update() {
         eye.update();
     }
     spirlRadius.update(1.0f / ofGetTargetFrameRate());
-    magicZ.update(1.0f / ofGetTargetFrameRate());
+    if (magicZ > 0.0f) {
+        --magicZ;
+    }
     animatorIndex.update(1.0f / ofGetTargetFrameRate());
     path.update();
     rotator.update();
@@ -484,16 +481,19 @@ void ImageAnimator::draw() {
     // roate current eye as needed
     if (inFireworks()) {
         ofVec3f magic;
-        magic.set(0.0f, 0.0f, magicZ.val());
+        magic.set(0.0f, 0.0f, magicZ);
         ofPushMatrix();
         ofPushStyle();
         sphere4Spirl.setRadius(spirlRadius.val());
         ofTranslate((ofGetWidth() / 2) - sphere4Spirl.getRadius(), ofGetHeight() / 2 - sphere4Spirl.getRadius(), 0);
         //rotate(magic);
         spirl.bind();
-        float v = magicZ.val()*15.0f;
-        sphere4Spirl.rotate(v-currentZ, 0, 0.0, 1.0);
-        currentZ = v;
+        if (magicZ > 0) {
+            sphere4Spirl.rotateDeg(10.0, 0, 0.0, 1.0);
+        }
+        else if (magicZ < 0) { // only == 0 means ignore
+            sphere4Spirl.rotateDeg(-10.0, 0, 0.0, 1.0);
+        }
         sphere4Spirl.draw();
         spirl.unbind();
         ofPopStyle();
