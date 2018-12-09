@@ -488,20 +488,19 @@ void ImageAnimator::draw() {
     ofPushMatrix();
     ofPushStyle();
 
-    if (!drawOthers()) { // draw in camera
-        if (spirlRadius.isAnimating()) {
-            sphere4Spirl.setRadius(spirlRadius.val());
-            spirl.bind();
-            sphere4Spirl.setPosition((ofGetWidth() / 2) - sphere4Spirl.getRadius(), (ofGetHeight() / 2) - (sphere4Spirl.getRadius() / 2), 0);
-            sphere4Spirl.rotateDeg(20.0f, 0.0f, 0.0f, 1.0f);
-            sphere4Spirl.draw();
-            spirl.unbind();
-        }
-        else {
+    // show spirl eye first, if its not running try to text if al else fails show the main eye
+    if (spirlRadius.isAnimating()) {
+        sphere4Spirl.setRadius(spirlRadius.val());
+        spirl.bind();
+        sphere4Spirl.setPosition((ofGetWidth() / 2) - sphere4Spirl.getRadius(), (ofGetHeight() / 2) - (sphere4Spirl.getRadius() / 2), 0);
+        sphere4Spirl.rotateDeg(20.0f, 0.0f, 0.0f, 1.0f);
+        sphere4Spirl.draw();
+        spirl.unbind();
+    }
+    else if (!drawOthers()) { // draw in camera
             ofTranslate((ofGetWidth() / 2) - getCurrentEyeRef().getRadius(), (ofGetHeight() / 2) - (getCurrentEyeRef().getRadius() / 2), 0);
             rotate(currentRotation);
             getCurrentEyeRef().draw();
-        }
     }
 
     ofPopStyle();
