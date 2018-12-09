@@ -8,18 +8,21 @@ void  ImageAnimator::fireWorks() {
 }
 bool ImageAnimator::drawOthers() {
     bool found = false;
+    int line = 0;
     for (auto& credit : creditsText) {
         if (credit.isRunningOrWaitingToRun()) {
             std::string s;
             if (credit.getString(s)) {
+                ++line;
                 found = true;
-                draw(s, credit.x, credit.y);
+                //float f = font.stringWidth(s);
+                draw(s, 0, font.getLineHeight()*line);
             }
         }
         else if (credit.lasting.isAnimating()) {
             found = true;
             ofSetColor(credit.lasting.getCurrentColor());
-            draw(credit.text, credit.x, credit.y);
+            draw(credit.text, 0, font.getLineHeight()*line);
         }
     }
     return found;

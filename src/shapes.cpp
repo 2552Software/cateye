@@ -1,6 +1,6 @@
 #include "ofApp.h"
 
-TextTimer::TextTimer(const std::string& textIn, float timeToRenderIn, float delay, float xIn, float yIn) {
+TextTimer::TextTimer(const std::string& textIn, float timeToRenderIn, float delay) {
     timeDelay = 0;
     done = false;
     text = textIn;
@@ -8,8 +8,6 @@ TextTimer::TextTimer(const std::string& textIn, float timeToRenderIn, float dela
     timeToRender = timeToRenderIn;
     timeDelay = delay;
     timeBegan = (int)ofGetElapsedTimeMillis();
-    x = xIn;
-    y = yIn;
     holdTextTime = 35.0f;
 }
 
@@ -82,37 +80,23 @@ void ImageAnimator::draw(const std::string& s, float x, float y) {
 void ImageAnimator::credits() {
     creditsText.clear();
 
-    std::string s = "Tom And Mark";
-    float f = font.stringWidth(s);
-    creditsText.push_back(TextTimer(s, 1500.0f, 0.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6)));
-
-    s = "From Eletronic Murals";
-    f = font.stringWidth(s);
-    creditsText.push_back(TextTimer(s, 1500.0f, 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 10));
-
-    s = "Would like to Thank Can Can Wonderland ...";
-    f = font.stringWidth(s);
-    creditsText.push_back(TextTimer(s, 1500.0f, 2 * 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 20));
-
-    s = "... for their support of the Arts!";
-    f = font.stringWidth(s);
-    creditsText.push_back(TextTimer(s, 1500.0f, 3 * 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 30));
+    creditsText.push_back(TextTimer("Tom And Mark", 1500.0f, 0.0f));
+    creditsText.push_back(TextTimer("From Eletronic Murals", 1500.0f, 1500.0f));
+    creditsText.push_back(TextTimer("Would like to Thank Can Can Wonderland ...", 1500.0f, 2 * 1500.0f));
+    creditsText.push_back(TextTimer("... for their support of the Arts!", 1500.0f, 3 * 1500.0f));
 
     //bugbug add more stuff
+    std::string s;
     if (ofRandom(10.0f) > 5.0f) {
         s = "Now go see if they will get you a beer...";
     }
     else {
         s = "Go ask for a cookie...";
     }
-    f = font.stringWidth(s);
-    TextTimer t(s, 1500.0f, 5 * 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 40);
-    t.holdTextTime = 35.0f;
+    TextTimer t(s, 1500.0f, 4 * 1500.0f);
     creditsText.push_back(t);
 
-    s = "Good bye!";
-    f = font.stringWidth(s);
-    creditsText.push_back(TextTimer(s, 1500.0f, 6 * 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 20));
+    creditsText.push_back(TextTimer("Good bye!", 1500.0f, 6 * 1500.0f));
 }
 
 void Eye::setup(const string&texName) {
