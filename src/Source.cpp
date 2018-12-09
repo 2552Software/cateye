@@ -3,9 +3,8 @@
 void  ImageAnimator::fireWorks() {
     sounds(5);
     ignight(false);
-    spirlRadius.animateFromTo(sphere4Spirl.getRadius() / 3, getCurrentEyeRef().getRadius()+ 100);//bugbug change with screen size
-    magicZ = 300.0f;
-    spirlRadius.animateToIfFinished(sphere4Spirl.getRadius() / 10);
+    spirlRadius.animateFromTo(sphere4Spirl.getRadius()- sphere4Spirl.getRadius()/10, getCurrentEyeRef().getRadius() + -sphere4Spirl.getRadius() / 10);//bugbug change with screen size
+    spirlRadius.animateToIfFinished(sphere4Spirl.getRadius() / 5);
 }
 bool ImageAnimator::drawOthers() {
     bool found = false;
@@ -43,8 +42,8 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
        credits();
     }
     else {
-        // else draw boxes but only when its game on
-        if (count() >= firstMatchCount() && inFireworks()) {
+        // else draw boxes but only when its game 
+        if (count() >= firstMatchCount()) {
             for (auto& item : thingsToDo) {
                 item.second.draw(175);//bugbug make menu
             }
@@ -267,7 +266,6 @@ void ImageAnimator::setup() {
     font.setLineHeight(18.0f);
     font.setLetterSpacing(1.037);
 
-    magicZ = 0.0f;
     spirl.load("runtime\\spirl\\s1.png");
     sphere4Spirl.panDeg(180);
     sphere4Spirl.setResolution(21);
@@ -367,7 +365,7 @@ void ImageAnimator::windowResized(int w, int h) {
 
     // duration bugbug set in menu
     spirlRadius.reset();
-    spirlRadius.setDuration(20.0f);
+    spirlRadius.setDuration(5.0f);
     spirlRadius.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
     spirlRadius.setCurve(EASE_IN_EASE_OUT);
 }
@@ -388,9 +386,6 @@ void ImageAnimator::update() {
         eye.update();
     }
     spirlRadius.update(1.0f / ofGetTargetFrameRate());
-    if (magicZ > 0.0f) {
-        --magicZ;
-    }
     animatorIndex.update(1.0f / ofGetTargetFrameRate());
     path.update();
     rotator.update();
@@ -474,36 +469,26 @@ void ImageAnimator::update() {
 }
 void ImageAnimator::draw() {
 
-    getCurrentEyeRef().blinkingEnabled = true; // only blink when eye is not doing interesting things bugbug fix blinking
-
     ofPushMatrix();
+    ofPushStyle();
 
-    // roate current eye as needed
-    if (inFireworks()) {
-        ofVec3f magic;
-        magic.set(0.0f, 0.0f, magicZ);
-        ofPushMatrix();
-        ofPushStyle();
-        sphere4Spirl.setRadius(spirlRadius.val());
-        ofTranslate((ofGetWidth() / 2) - sphere4Spirl.getRadius(), ofGetHeight() / 2 - sphere4Spirl.getRadius(), 0);
-        //rotate(magic);
-        spirl.bind();
-        if (magicZ > 0) {
-            sphere4Spirl.rotateDeg(10.0, 0, 0.0, 1.0);
+    if (!drawOthers()) { // draw in camera
+        if (spirlRadius.isAnimating()) {
+            sphere4Spirl.setRadius(spirlRadius.val());
+            spirl.bind();
+            sphere4Spirl.setPosition((ofGetWidth() / 2) - sphere4Spirl.getRadius(), (ofGetHeight() / 2) - (sphere4Spirl.getRadius() / 2), 0);
+            sphere4Spirl.rotateDeg(20.0f, 0.0f, 0.0f, 1.0f);
+            sphere4Spirl.draw();
+            spirl.unbind();
         }
-        else if (magicZ < 0) { // only == 0 means ignore
-            sphere4Spirl.rotateDeg(-10.0, 0, 0.0, 1.0);
+        else {
+            ofTranslate((ofGetWidth() / 2) - getCurrentEyeRef().getRadius(), (ofGetHeight() / 2) - (getCurrentEyeRef().getRadius() / 2), 0);
+            rotate(currentRotation);
+            getCurrentEyeRef().draw();
         }
-        sphere4Spirl.draw();
-        spirl.unbind();
-        ofPopStyle();
-        ofPopMatrix();
     }
-    else {
-        ofTranslate((ofGetWidth() / 2) - getCurrentEyeRef().getRadius(), ofGetHeight() / 2 - getCurrentEyeRef().getRadius(), 0);
-        rotate(currentRotation);
-        getCurrentEyeRef().draw();
-    }
+
+    ofPopStyle();
     ofPopMatrix();
 
 }

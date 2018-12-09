@@ -100,13 +100,13 @@ void ImageAnimator::credits() {
 
     s = "Now go see if they will get you a beer...";
     f = font.stringWidth(s);
-    TextTimer t(s, 1500.0f, 8 * 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 40);
+    TextTimer t(s, 1500.0f, 5 * 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 40);
     t.holdTextTime = 45.0f;
     creditsText.push_back(t);
 
     s = "Good bye!";
     f = font.stringWidth(s);
-    creditsText.push_back(TextTimer(s, 1500.0f, 11 * 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 20));
+    creditsText.push_back(TextTimer(s, 1500.0f, 6 * 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 20));
 }
 
 void Eye::setup(const string&texName) {

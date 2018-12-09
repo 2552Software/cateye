@@ -96,16 +96,11 @@ void ofApp::draw(){
     ofSetBackgroundColor(ofColor::black);
     ofSetColor(ofColor::white);
     if (hideMenu) {
-        if (eyeAnimator.drawOthers()) {
-           return; // others gets their own screen, draws too late, not sure why yet
-        }
-
         ofEnableDepthTest();
         ofPushStyle();
         light.enable();
         camera.begin();
         ofPushMatrix();
-        ofTranslate((ofGetWidth() / 2) - eyeAnimator.getCurrentEyeRef().getRadius(), ofGetHeight() / 2 - eyeAnimator.getCurrentEyeRef().getRadius() / 2, 0);
         eyeAnimator.draw();
         ofPopMatrix();
         camera.end();
