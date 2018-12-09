@@ -3,109 +3,14 @@
 void  ImageAnimator::fireWorks() {
     sounds(5);
     ignight(false);
-
-    magicZ = 360 * 10; //bugbug parameter
+    spirlRadius.animateFromTo(sphere4Spirl.getRadius() / 3, sphere4Spirl.getRadius()+ sphere4Spirl.getRadius()/5);
+    magicZ.animateFromTo(5.0f, 1000.0f); //bugbug parameter
+    spirlRadius.animateToIfFinished(getCurrentEyeRef().getRadius());
 }
-TextTimer::TextTimer(const std::string& textIn, float timeToRenderIn, float delay, float xIn, float yIn) {
-    timeDelay = 0;
-    done = false;
-    text = textIn;
-    timeSet = true;
-    timeToRender = timeToRenderIn;
-    timeDelay = delay;
-    timeBegan = (int)ofGetElapsedTimeMillis();
-    x = xIn;
-    y = yIn;
-    holdTextTime = 35.0f;
-}
-void TextTimer::setup() {
-
-
-}
-bool TextTimer::getString(std::string& output) {
-    output.clear(); 
-    int elapsedSeconds = ((int)ofGetElapsedTimeMillis() - timeBegan); //  20 seconds passed for example timeDelay
-    if (timeDelay) {
-        if (elapsedSeconds < timeDelay) {
-            return false;
-        }
-        else {
-            timeBegan = (int)ofGetElapsedTimeMillis(); // here we go
-            timeDelay = 0.0f; // needs to be rest if used again
-            return false; // get it next time
-        }
-    } 
-    if (!elapsedSeconds) {
-        return false;
-    }
-    if (text.size() == 0 || timeToRender <= 0) {
-        return false;
-    }
-    if (!done) {
-        float factor = ((float)(elapsedSeconds) / (float)timeToRender);  // ratio of seconds that passed to our full range of time, say 20% or 0.2
-        
-        int n = (int)(factor * text.length()); 
-        int max = min(n, (int)text.length());
-
-        if (!n) {
-            max = 1;
-        }
-        if (n >= (int)text.length()) {
-            done = true;
-            lasting.setColor(ofColor::white);
-            lasting.setDuration(5.0f);
-            lasting.setRepeatType(PLAY_ONCE);
-            lasting.animateTo(ofColor::orangeRed);
-        }
-        output = text.substr(0, min(n, max));
-        if (output.size() > 0) {
-            return true;
-        }
-    }
-    return false;
-}
-
-void ImageAnimator::draw(const std::string& s, float x, float y) {
-    font.drawStringAsShapes(s, x, y);
-}
-void ImageAnimator::credits() {
-    creditsText.clear();
-
-    std::string s = "Tom And Mark";
-    float f = font.stringWidth(s);
-
-    creditsText.push_back(TextTimer(s, 1500.0f, 0.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6)));
-    s = "From Eletronic Murals";
-    f = font.stringWidth(s);
-    creditsText.push_back(TextTimer(s, 1500.0f, 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 10));
-
-    s = "Would like to Thank Can Can Wonderland ...";
-    f = font.stringWidth(s);
-    creditsText.push_back(TextTimer(s, 1500.0f, 2*1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 20));
-
-    s = "... for their support of the Arts!";
-    f = font.stringWidth(s);
-    creditsText.push_back(TextTimer(s, 1500.0f, 3 * 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 30));
-
-    s = "Now go see if they will get you a beer...";
-    f = font.stringWidth(s);
-    TextTimer t(s, 1500.0f, 8 * 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 40);
-    t.holdTextTime = 45.0f;
-    creditsText.push_back(t);
-
-    s = "Good bye!";
-    f = font.stringWidth(s);
-    creditsText.push_back(TextTimer(s, 1500.0f, 11 * 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 20));
-
-
-}
-void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
-    ofSetBackgroundColor(ofColor::black);
-    ofSetColor(ofColor::white);
-
+bool ImageAnimator::drawOthers() {
     bool found = false;
     for (auto& credit : creditsText) {
-        if (credit.isRunningOrWaitingToRun()) { // if not go to next one
+        if (credit.isRunningOrWaitingToRun()) {
             std::string s;
             if (credit.getString(s)) {
                 found = true;
@@ -118,9 +23,13 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
             draw(credit.text, credit.x, credit.y);
         }
     }
-    if (found) {
-        return;
-    }
+    return found;
+}
+void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
+
+    ofSetBackgroundColor(ofColor::black);
+    ofSetColor(ofColor::white);
+
     contours.draw(cxScreen, cyScreen);
     int c = count();
 
@@ -292,21 +201,6 @@ void ImageAnimator::sounds(int duration) {
         player.setVolume(1.0);
     }
 }
-void ImageAnimator::circle() {
-    ofxAnimatableOfPoint point;
-    point.setPosition(currentLocation);
-    point.setDuration(1.20f);
-    point.animateTo(ofVec3f(1000, 1000, 10));
-    path.addTransition(point);
-    point.animateTo(ofVec3f(1000, 2000, 200));
-    path.addTransition(point);
-    point.animateTo(ofVec3f(2000, 2000, -200));
-    path.addTransition(point);
-    point.animateTo(ofVec3f(1000, 1000, 3000));
-    path.addTransition(point);
-    point.animateTo(ofVec3f(00, 00));
-    path.addTransition(point);
-}
 
 void ImageAnimator::ignight(bool on) {
     // create hot grids
@@ -363,12 +257,21 @@ void ImageAnimator::setCount(int count) {
 }
 ImageAnimator::ImageAnimator() {
     maxForTrigger = 25.0f;
-    shapeMinSize = 100.0f;
+    shapeMinSize = 200.0f; // menus bugbug
     squareCount = 10;
     level = 0;
-    magicZ = 0.0f;
 }
 void ImageAnimator::setup() {
+
+    font.load("alger.ttf", 100, true, true, true);
+    font.setLineHeight(18.0f);
+    font.setLetterSpacing(1.037);
+
+    currentZ = 0.0f;
+    spirl.load("runtime\\spirl\\s1.png");
+    sphere4Spirl.panDeg(180);
+    sphere4Spirl.setResolution(21);
+
     buildX();
     buildY();
     reset();
@@ -380,7 +283,7 @@ void ImageAnimator::setup() {
 
     path.setup();
     rotator.setup();
-
+    credits(); // setup credits, shown at boot
     contours.setup();
 
     string path = DATAPATH;
@@ -406,10 +309,6 @@ void ImageAnimator::setup() {
         sound.load(allSounds.getPath(i));
         mySounds.push_back(sound);
     }
-
-    font.load("alger.ttf", 100, true, true, true);
-    font.setLineHeight(18.0f);
-    font.setLetterSpacing(1.037);
 
     startPlaying();
 
@@ -464,13 +363,22 @@ void ImageAnimator::windowResized(int w, int h) {
     for (SuperSphere&eye : eyes) {
         eye.setRadius(std::min(w, h));
     }
+    sphere4Spirl.setRadius(std::min(w, h));
+
+    // duration bugbug set in menu
+    spirlRadius.reset();
+    spirlRadius.setDuration(10.0f);
+    spirlRadius.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
+    spirlRadius.setCurve(EASE_IN_EASE_OUT);
+
+    magicZ.reset();
+    magicZ.setDuration(10.0f);
+    magicZ.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
+    magicZ.setCurve(EASE_IN_EASE_OUT);
 }
 
 void ImageAnimator::update() {
 
-    if (inFireworks()) {
-        magicZ -= 15.0f; //bugbug menu
-    }
     if (((int)ofGetElapsedTimef() % 30) == 0) {//bugbug put in menu
         randomize(); // mix up right in the middle of things
     }
@@ -484,16 +392,12 @@ void ImageAnimator::update() {
     for (SuperSphere&eye : eyes) {
         eye.update();
     }
+    spirlRadius.update(1.0f / ofGetTargetFrameRate());
+    magicZ.update(1.0f / ofGetTargetFrameRate());
     animatorIndex.update(1.0f / ofGetTargetFrameRate());
     path.update();
     rotator.update();
     contours.update();
-
-    /* special effects
-    if (path.hasFinishedAnimating()) {
-       circle();
-    }
-    */
 
     // track motion
     float max = 0.0f;
@@ -569,44 +473,37 @@ void ImageAnimator::update() {
             // no new data so home the eye (?should we add a time?)
             currentRotation.set(0.0L, 0.0L, 0.0L);
         }
-        //std::stringstream ss;
-        //ss << max;
-        //ofSetWindowTitle(ss.str());
-
-        /*
-        if (found && 0) {
-            ofxAnimatableOfPoint point;
-            // get the current point -- smooth things out
-            point.setPosition(currentRotation);
-            point.setCurve(LINEAR);
-            point.setRepeatType(PLAY_ONCE);
-            point.setDuration(0.2f);
-            point.animateTo(target);
-            rotator.insertTransition(point, true);
-        }
-        */
-
     }
 }
 void ImageAnimator::draw() {
 
-    getCurrentEyeRef().blinkingEnabled = false; // only blink when eye is not doing interesting things bugbug fix blinking
-    // move all eyes so when they switch things are current
-    if (!path.hasFinishedAnimating()) {
-        //currentLocation = path.getPoint();
-       // getCurrentEyeRef().blinkingEnabled = false;
-// do location later, its just for special effectgs               getCurrentEyeRef().setPosition(currentLocation);
-    }
-    return;
+    getCurrentEyeRef().blinkingEnabled = true; // only blink when eye is not doing interesting things bugbug fix blinking
+
+    ofPushMatrix();
+
     // roate current eye as needed
     if (inFireworks()) {
-        currentRotation.set(0.0f, 0.0f, magicZ);
-        ofScale(1.2f, 1.2f, 1.2f);
-        getCurrentEyeRef().blinkingEnabled = false;
+        ofVec3f magic;
+        magic.set(0.0f, 0.0f, magicZ.val());
+        ofPushMatrix();
+        ofPushStyle();
+        sphere4Spirl.setRadius(spirlRadius.val());
+        ofTranslate((ofGetWidth() / 2) - sphere4Spirl.getRadius(), ofGetHeight() / 2 - sphere4Spirl.getRadius(), 0);
+        //rotate(magic);
+        spirl.bind();
+        sphere4Spirl.rotate(magicZ.val()- currentZ, 0, 0.0, 1.0);
+        currentZ = magicZ.val();
+        sphere4Spirl.draw();
+        spirl.unbind();
+        ofPopStyle();
+        ofPopMatrix();
     }
-    rotate(currentRotation);
-    getCurrentEyeRef().draw();
-    ofScale(1.0f, 1.0f, 1.0f);
+    else {
+        ofTranslate((ofGetWidth() / 2) - getCurrentEyeRef().getRadius(), ofGetHeight() / 2 - getCurrentEyeRef().getRadius(), 0);
+        rotate(currentRotation);
+        getCurrentEyeRef().draw();
+    }
+    ofPopMatrix();
 
 }
 void ImageAnimator::startPlaying() {

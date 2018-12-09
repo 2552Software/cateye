@@ -96,6 +96,10 @@ void ofApp::draw(){
     ofSetBackgroundColor(ofColor::black);
     ofSetColor(ofColor::white);
     if (hideMenu) {
+        if (eyeAnimator.drawOthers()) {
+           return; // others gets their own screen, draws too late, not sure why yet
+        }
+
         ofEnableDepthTest();
         ofPushStyle();
         light.enable();

@@ -8,7 +8,7 @@ public:
     void setup();
     void update() { lasting.update(1.0f / ofGetTargetFrameRate()); }
     bool getString(std::string& text);
-    bool isRunningOrWaitingToRun() {return !done; }
+    bool isRunningOrWaitingToRun() {return !done && timeDelay; }
     float x, y;
     ofxAnimatableOfColor lasting; // how long to draw after intial animation
     std::string text;
@@ -157,9 +157,14 @@ public:
     void setShapeMinSize(float size) { shapeMinSize = size; };
     bool isIgnighted(int count) { return count > firstMatchCount(); }
     bool isWinner(int count) { return count >= winnerCount(); } // easy mode! bugbug menu
-    bool inFireworks() { return magicZ > 0; }
-
+    bool inFireworks() { return magicZ.isAnimating(); }
+    bool drawOthers();
 private:
+    ofImage spirl;
+    ofSpherePrimitive sphere4Spirl;
+    ofxAnimatableFloat spirlRadius;
+    ofxAnimatableFloat magicZ; // used in fireworks
+    float currentZ;
     void draw(const std::string& s, float x=0.0f, float y = 0.0f);
     std::vector<TextTimer> creditsText;
     ofTrueTypeFont font; 
@@ -177,7 +182,6 @@ private:
     void rotate(const ofVec3f& target);
     std::vector<ofSoundPlayer> mySounds;
     ofxAnimatableFloat animatorIndex;
-    float magicZ; // used in fireworks
     ofxAnimatableQueueofVec3f rotator;
     ofxAnimatableQueueofVec3f path; // path of image
     std::vector<SuperSphere> eyes;
