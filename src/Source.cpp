@@ -3,9 +3,9 @@
 void  ImageAnimator::fireWorks() {
     sounds(5);
     ignight(false);
-    spirlRadius.animateFromTo(sphere4Spirl.getRadius() / 3, sphere4Spirl.getRadius()+ sphere4Spirl.getRadius()/5);
-    magicZ.animateFromTo(5.0f, 1000.0f); //bugbug parameter
-    spirlRadius.animateToIfFinished(getCurrentEyeRef().getRadius());
+    spirlRadius.animateFromTo(sphere4Spirl.getRadius() / 2, sphere4Spirl.getRadius()+ sphere4Spirl.getRadius()/8);
+    magicZ.animateFromTo(1.0f, 100.0f); //bugbug parameter
+    spirlRadius.animateToIfFinished(sphere4Spirl.getRadius() / 10);
 }
 bool ImageAnimator::drawOthers() {
     bool found = false;
@@ -491,8 +491,9 @@ void ImageAnimator::draw() {
         ofTranslate((ofGetWidth() / 2) - sphere4Spirl.getRadius(), ofGetHeight() / 2 - sphere4Spirl.getRadius(), 0);
         //rotate(magic);
         spirl.bind();
-        sphere4Spirl.rotate(magicZ.val()- currentZ, 0, 0.0, 1.0);
-        currentZ = magicZ.val();
+        float v = magicZ.val()*15.0f;
+        sphere4Spirl.rotate(v-currentZ, 0, 0.0, 1.0);
+        currentZ = v;
         sphere4Spirl.draw();
         spirl.unbind();
         ofPopStyle();
