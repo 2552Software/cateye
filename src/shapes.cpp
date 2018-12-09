@@ -84,8 +84,8 @@ void ImageAnimator::credits() {
 
     std::string s = "Tom And Mark";
     float f = font.stringWidth(s);
-
     creditsText.push_back(TextTimer(s, 1500.0f, 0.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6)));
+
     s = "From Eletronic Murals";
     f = font.stringWidth(s);
     creditsText.push_back(TextTimer(s, 1500.0f, 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 10));
@@ -98,10 +98,16 @@ void ImageAnimator::credits() {
     f = font.stringWidth(s);
     creditsText.push_back(TextTimer(s, 1500.0f, 3 * 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 30));
 
-    s = "Now go see if they will get you a beer...";
+    //bugbug add more stuff
+    if (ofRandom(10.0f) > 5.0f) {
+        s = "Now go see if they will get you a beer...";
+    }
+    else {
+        s = "Go ask for a cookie...";
+    }
     f = font.stringWidth(s);
     TextTimer t(s, 1500.0f, 5 * 1500.0f, (ofGetScreenWidth() / 2) - (font.stringWidth(s) / 2), (ofGetScreenHeight() / 6) + font.getLineHeight() * 40);
-    t.holdTextTime = 45.0f;
+    t.holdTextTime = 35.0f;
     creditsText.push_back(t);
 
     s = "Good bye!";

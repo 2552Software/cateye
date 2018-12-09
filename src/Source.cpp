@@ -3,7 +3,7 @@
 void  ImageAnimator::fireWorks() {
     sounds(5);
     ignight(false);
-    spirlRadius.animateFromTo(sphere4Spirl.getRadius()- sphere4Spirl.getRadius()/10, getCurrentEyeRef().getRadius() + -sphere4Spirl.getRadius() / 10);//bugbug change with screen size
+    spirlRadius.animateFromTo(sphere4Spirl.getRadius()- sphere4Spirl.getRadius()/10, getCurrentEyeRef().getRadius() + -sphere4Spirl.getRadius() / 6);//bugbug change with screen size
     spirlRadius.animateToIfFinished(sphere4Spirl.getRadius() / 5);
 }
 bool ImageAnimator::drawOthers() {

@@ -107,7 +107,6 @@ void ofApp::draw(){
         eyeAnimator.drawContours(ofGetScreenWidth(), ofGetScreenHeight());
         light.disable();
         ofPopStyle();
-        ofPopMatrix();
         ofDisableDepthTest();
     }
     else  {
