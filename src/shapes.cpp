@@ -89,13 +89,27 @@ void ImageAnimator::credits() {
 
     //bugbug add more stuff
     std::string s;
-    if (ofRandom(10.0f) > 5.0f) {
+    switch ((int)ofRandom(0, 5)) {
+    case 0:
         s = "Now go see if they will get you a beer...";
+        break;
+    case 1:
+        s = "Go ask for a cookie...";
+        break;
+    case 2:
+        s = "Is it bar time?";
+        break;
+    case 3:
+        s = "Maybe go play some pinball";
+        break;
+    case 4:
+        s = "I do not have that many radom strings";
+        break;
+    default:
+        s = "Take the default action where ever you can";
+        break;
     }
-    else {
-        s = "Now go ask for a cookie...";
-    }
-    TextTimer t(s, 1500.0f, 15 * 1500.0f, 6.0f);
+    TextTimer t(s, 1500.0f, 8 * 1500.0f, 6.0f);
     creditsText.push_back(t);
 
 }
