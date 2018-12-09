@@ -6,6 +6,17 @@ void  ImageAnimator::fireWorks() {
     spirlRadius.animateFromTo(sphere4Spirl.getRadius()- sphere4Spirl.getRadius()/10, getCurrentEyeRef().getRadius() + -sphere4Spirl.getRadius() / 6);//bugbug change with screen size
     spirlRadius.animateToIfFinished(sphere4Spirl.getRadius() / 5);
 }
+bool ImageAnimator::othersDrawing() {
+    for (auto& credit : creditsText) {
+        if (credit.isRunningOrWaitingToRun()) {
+            return true;
+        }
+        else if (credit.lasting.isAnimating()) {
+            return true;
+        }
+    }
+    return false;
+}
 bool ImageAnimator::drawOthers() {
     bool found = false;
     float y = ofGetScreenWidth() / 3;
@@ -31,7 +42,7 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     ofSetBackgroundColor(ofColor::black);
     ofSetColor(ofColor::white);
 
-    if (!drawOthers()) {
+    if (!othersDrawing()) {
         contours.draw(cxScreen, cyScreen);
         int c = count();
 

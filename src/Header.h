@@ -157,6 +157,7 @@ public:
     bool isIgnighted(int count) { return count > firstMatchCount(); }
     bool isWinner(int count) { return count >= winnerCount(); } // easy mode! bugbug menu
     bool drawOthers();
+    bool othersDrawing();
 private:
     ofImage spirl;
     ofSpherePrimitive sphere4Spirl;
