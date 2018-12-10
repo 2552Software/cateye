@@ -151,17 +151,25 @@ public:
     void setCount(int count);
     void ignight(bool on=true);
     int  firstMatchCount() { return 1; } // intial game trigger bugbug make menu item
-    int  winnerCount() { return 1; } // intial game trigger bugbug make menu item
+    int  winnerCount() { return 2; } // intial game trigger bugbug make menu item
     void setTriggerCount(float count);
     void setShapeMinSize(float size) { shapeMinSize = size; };
     bool isIgnighted(int count) { return count > firstMatchCount(); }
     bool isWinner(int count) { return count >= winnerCount(); } // easy mode! bugbug menu
     bool drawOthers();
     bool othersDrawing();
+
 private:
+    struct TextEvent {
+        int i;
+    };
+    ofEvent<TextEvent> textFinished;
+    ofxAnimatableFloat eyeRadius;
+    ofxAnimatableFloat spirlRadius;
+    void spirlDone(ofxAnimatableFloat::AnimationEvent & event);
+    void creditsDone(TextEvent & event);
     ofImage spirl;
     ofSpherePrimitive sphere4Spirl;
-    ofxAnimatableFloat spirlRadius;
     void draw(const std::string& s, float x=0.0f, float y = 0.0f);
     std::vector<TextTimer> creditsText;
     ofTrueTypeFont font; 

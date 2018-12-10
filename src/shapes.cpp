@@ -83,33 +83,54 @@ void ImageAnimator::credits() {
 
     creditsText.push_back(TextTimer("Tom And Mark", 1500.0f, 0.0f, 0.0f));
     creditsText.push_back(TextTimer("From Eletronic Murals", 1500.0f, 1500.0f, 1.0f));
-    creditsText.push_back(TextTimer("Would like to Thank Can Can Wonderland ...", 1500.0f, 2 * 1500.0f, 2.0f));
-    creditsText.push_back(TextTimer("... for their support of the Arts!", 1500.0f, 3 * 1500.0f, 3.0f));
+    creditsText.push_back(TextTimer("Thank Can Can Wonderland ...", 1500.0f, 2 * 1500.0f, 2.0f));
+    creditsText.push_back(TextTimer("... For their support of the Arts!", 1500.0f, 3 * 1500.0f, 3.0f));
     creditsText.push_back(TextTimer("Good bye!", 1500.0f, 5 * 1500.0f, 4.0f));
 
     //bugbug add more stuff
     std::string s;
-    switch ((int)ofRandom(0, 5)) {
+    switch ((int)ofRandom(0, 12)) {
     case 0:
-        s = "Now go see if they will get you a beer...";
+        s = "See if they will get you a beer...";
         break;
     case 1:
-        s = "Go ask for a cookie...";
+        s = "Time to ask for a cookie?";
         break;
     case 2:
         s = "Is it bar time?";
         break;
     case 3:
-        s = "Maybe go play some pinball";
+        s = "Want to play a game?";
         break;
     case 4:
-        s = "I do not have that many radom strings";
+        s = "Hal, is that you? Hal? Hal? Way in the back";
         break;
+    case 5:
+        s = "Maybe go play some pinball";
+        break;
+    case 6:
+        s = "I do not have that many random strings";
+        break;
+    case 7:
+        s = "<your joke here>";
+        break;
+    case 8:
+        s = "Can Can Wonderland Rules!";
+        break;
+    case 9:
+        s = "0101010101010101001011010101001101001001!";
+        break;
+    case 10:
+        s = "A Squared + B Squared does not really = C squared";
+        break; 
+    case 11:
+        s = "So what's your OS?";
+        break; 
     default:
         s = "Take the default action where ever you can";
         break;
     }
-    TextTimer t(s, 1500.0f, 8 * 1500.0f, 6.0f);
+    TextTimer t(s, 1500.0f, 9 * 1500.0f, 6.0f);
     creditsText.push_back(t);
 
 }

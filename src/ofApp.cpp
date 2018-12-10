@@ -63,8 +63,8 @@ void ofApp::setup(){
     squareCount.addListener(this, &ofApp::squareCountChanged);
     maxForTrigger.addListener(this, &ofApp::triggerCountChanged);
     maxForShape.addListener(this, &ofApp::shapeSizeChanged);
-}
 
+}
 
 void ofApp::shapeSizeChanged(float &size) {
     eyeAnimator.setShapeMinSize(size);

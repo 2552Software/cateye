@@ -1,9 +1,10 @@
 #include "ofApp.h"
 
+
 void  ImageAnimator::fireWorks() {
     sounds(5);
     ignight(false);
-    spirlRadius.animateFromTo(sphere4Spirl.getRadius()- sphere4Spirl.getRadius()/10, getCurrentEyeRef().getRadius() + -sphere4Spirl.getRadius() / 6);//bugbug change with screen size
+    spirlRadius.animateFromTo(sphere4Spirl.getRadius()- sphere4Spirl.getRadius()/10, getCurrentEyeRef().getRadius() + -sphere4Spirl.getRadius() / 3);//bugbug change with screen size
     spirlRadius.animateToIfFinished(sphere4Spirl.getRadius() / 5);
 }
 bool ImageAnimator::othersDrawing() {
@@ -25,7 +26,6 @@ bool ImageAnimator::drawOthers() {
             std::string s;
             if (credit.getString(s)) {
                 found = true;
-                //float f = font.stringWidth(s);
                 draw(s, -font.stringWidth(s)/2, y-font.getLineHeight()*credit.line*6);
             }
         }
@@ -35,6 +35,12 @@ bool ImageAnimator::drawOthers() {
             draw(credit.text, -font.stringWidth(credit.text)/2, y-font.getLineHeight()*credit.line*6);
         }
     }
+    if (!found) {
+        // send envent that we are done
+        TextEvent args;
+        ofNotifyEvent(textFinished, args, this);
+    }
+
     return found;
 }
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
@@ -51,8 +57,8 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
         ofSetWindowTitle(ss.str());
 
         if (isWinner(c)) {
-            // enable fireworks!!
-            fireWorks();
+            // clear game then enable fireworks!!
+            reset();
             credits();
         }
         else {
@@ -273,18 +279,22 @@ void ImageAnimator::setCount(int count) {
 ImageAnimator::ImageAnimator() {
     maxForTrigger = 25.0f;
     shapeMinSize = 200.0f; // menus bugbug
-    squareCount = 10;
+    squareCount = 10;// menus bugbu
     level = 0;
 }
+
+
 void ImageAnimator::setup() {
 
     font.load("alger.ttf", 100, true, true, true);
     font.setLineHeight(18.0f);
     font.setLetterSpacing(1.037);
 
-    spirl.load("runtime\\spirl\\s1.png");
+    spirl.load("runtime\\spirl\\s1.png"); //bugbug use the multi load tech for main eye here
     sphere4Spirl.panDeg(180);
     sphere4Spirl.setResolution(21);
+    ofAddListener(spirlRadius.animFinished, this, &ImageAnimator::spirlDone);
+    ofAddListener(textFinished, this, &ImageAnimator::creditsDone);
 
     buildX();
     buildY();
@@ -373,6 +383,17 @@ void ImageAnimator::reset() {
     buildTable();
     randomize();
 }
+ 
+void ImageAnimator::creditsDone(TextEvent & event) {
+    fireWorks();
+}
+
+void ImageAnimator::spirlDone(ofxAnimatableFloat::AnimationEvent & event) {
+    float r = getCurrentEyeRef().getRadius();
+   
+    eyeRadius.animateFromTo(sphere4Spirl.getRadius() - sphere4Spirl.getRadius() / 10, r);
+}
+
 void ImageAnimator::windowResized(int w, int h) {
     for (SuperSphere&eye : eyes) {
         eye.setRadius(std::min(w, h));
@@ -384,6 +405,11 @@ void ImageAnimator::windowResized(int w, int h) {
     spirlRadius.setDuration(5.0f);
     spirlRadius.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
     spirlRadius.setCurve(EASE_IN_EASE_OUT);
+
+    eyeRadius.reset();
+    eyeRadius.setDuration(1.0f);
+    eyeRadius.setRepeatType(PLAY_ONCE);
+    eyeRadius.setCurve(EASE_IN_EASE_OUT);
 }
 
 void ImageAnimator::update() {
@@ -391,9 +417,11 @@ void ImageAnimator::update() {
     if (((int)ofGetElapsedTimef() % 30) == 0) {//bugbug put in menu
         randomize(); // mix up right in the middle of things
     }
+    
     for (auto& a : thingsToDo) {
         a.second.update();
     }
+
     for (auto&a : creditsText) {
         a.update();
     }
@@ -401,7 +429,10 @@ void ImageAnimator::update() {
     for (SuperSphere&eye : eyes) {
         eye.update();
     }
+
     spirlRadius.update(1.0f / ofGetTargetFrameRate());
+    eyeRadius.update(1.0f / ofGetTargetFrameRate());
+   
     animatorIndex.update(1.0f / ofGetTargetFrameRate());
     path.update();
     rotator.update();
@@ -498,9 +529,14 @@ void ImageAnimator::draw() {
         spirl.unbind();
     }
     else if (!drawOthers()) { // draw in camera
-            ofTranslate((ofGetWidth() / 2) - getCurrentEyeRef().getRadius(), (ofGetHeight() / 2) - (getCurrentEyeRef().getRadius() / 2), 0);
-            rotate(currentRotation);
-            getCurrentEyeRef().draw();
+        if (eyeRadius.isAnimating()) {
+            for (auto& a : eyes) {
+                a.setRadius(eyeRadius.val());
+            }
+        }
+        ofTranslate((ofGetWidth() / 2) - getCurrentEyeRef().getRadius(), (ofGetHeight() / 2) - (getCurrentEyeRef().getRadius() / 2), 0);
+        rotate(currentRotation);
+        getCurrentEyeRef().draw();
     }
 
     ofPopStyle();
