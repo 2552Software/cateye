@@ -7,6 +7,7 @@ void  ImageAnimator::fireWorks() {
     spirlRadius.animateFromTo(sphere4Spirl.getRadius()- sphere4Spirl.getRadius()/10, getCurrentEyeRef().getRadius() + -sphere4Spirl.getRadius() / 3);//bugbug change with screen size
     spirlRadius.animateToIfFinished(sphere4Spirl.getRadius() / 5);
 }
+// see if anything is going on
 bool ImageAnimator::othersDrawing() {
     for (auto& credit : creditsText) {
         if (credit.isRunningOrWaitingToRun()) {
@@ -16,7 +17,7 @@ bool ImageAnimator::othersDrawing() {
             return true;
         }
     }
-    return false;
+    return spirlRadius.isAnimating();
 }
 bool ImageAnimator::drawOthers() {
     bool found = false;
@@ -44,11 +45,11 @@ bool ImageAnimator::drawOthers() {
     return found;
 }
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
-
-    ofSetBackgroundColor(ofColor::black);
-    ofSetColor(ofColor::white);
-
+    // only draw contours if nothing else important is being drawn
     if (!othersDrawing()) {
+
+        ofSetBackgroundColor(ofColor::black);
+        ofSetColor(ofColor::white);
         contours.draw(cxScreen, cyScreen);
         int c = count();
 

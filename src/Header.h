@@ -135,6 +135,7 @@ private:
 class ImageAnimator {
 public:
     ImageAnimator();
+
     void setup();
     void update();
     void draw();
