@@ -1,4 +1,70 @@
 #include "ofApp.h"
+void ImageAnimator::buildTable() {
+    if (squareCount) {
+        thingsToDo.clear();
+        // all based on camera size and just grid out the screen 10x10 or what ever size we want
+        float w = imgWidth / squareCount; // menu bugbug
+        float h = imgHeight / squareCount;
+        for (float x = w; x < imgWidth - w; x += w) {
+            for (float y = h; y < imgHeight - h; y += h) {
+                // roate the x  to reflect viewer vs camera
+                thingsToDo.insert(std::make_pair(std::make_pair(x, y), Map(ofRectangle(x, y, w, h)))); // build an default table
+            }
+        }
+    }
+}
+
+void Map::setup() {
+}
+void Map::set(int a) {
+    action = a;
+}
+
+void Map::set(const ofRectangle& r) {
+    rectangle = r;
+}
+
+void Map::update() {
+    color.update(1.0f / ofGetTargetFrameRate());
+    game.update(1.0f / ofGetTargetFrameRate());
+}
+
+void Map::draw(int alpha) {
+    if (isAnimating()) {
+        ofPushStyle();
+        ofFill();
+        ofEnableAlphaBlending();
+        //color.applyCurrentColor();
+        ofColor c = color.getCurrentColor();
+        c.a = alpha;// alpha; keep it light
+        ofSetColor(c);
+        // convert to screen size
+        float xFactor = ofGetScreenWidth() / imgWidth;
+        float yFactor = ofGetScreenHeight() / imgHeight;
+        ofDrawRectangle(xFactor*rectangle.x, yFactor*rectangle.y, xFactor*rectangle.width, yFactor*rectangle.height);
+        ofDisableAlphaBlending();
+        ofPopStyle();
+    }
+}
+void ImageAnimator::buildX() {
+    float percent = 0.0f;// location as a percent of screen size
+    float r = 30.0f; // rotation
+    float incPercent = 5.0f;
+    float incRotaion = ((r * 2) / (100.0f / incPercent - 1));
+    for (int i = 1; percent < 100.0f; ++i, percent += incPercent, r -= incRotaion) {
+        mapCameraInX.insert(std::make_pair(std::make_pair(percent, percent + incPercent), r));
+    }
+}
+void ImageAnimator::buildY() {
+    float percent = 0.0f;// location as a percent of screen size
+    float r = -20.0f; // rotation
+    float incPercent = 5.0f;
+    float incRotaion = ((r * 2) / (100.0f / incPercent - 1));
+    for (int i = 1; percent < 100.0f; ++i, percent += incPercent, r -= incRotaion) {
+        mapCameraInY.insert(std::make_pair(std::make_pair(percent, percent + incPercent), r));
+    }
+}
+
 
 TextTimer::TextTimer(const std::string& textIn, float timeToRenderIn, float delay, float lineIn) {
     line = lineIn;
