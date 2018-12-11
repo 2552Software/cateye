@@ -192,6 +192,9 @@ void ImageAnimator::credits() {
     case 11:
         s = "So what's your OS?";
         break; 
+    case 12:
+        s = "E = MC Squared? what? no way";
+        break;
     default:
         s = "Take the default action where ever you can";
         break;
@@ -220,8 +223,6 @@ void Eye::stop() {
     material.end();
 }
 void SuperSphere::setup(const string&name, const string&blinkPath) {
-    eye.setup(name);
-
     blink.push_back(Eye(name)); // element 0 is the main non blinking eye
 
     if (blinkPath.size() > 0L) {

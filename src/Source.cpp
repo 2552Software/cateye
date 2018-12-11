@@ -12,7 +12,7 @@ void Eyes::add(const std::string &name, const std::string &root, bool blink) {
         }
     }
     eyes.push_back(SuperSphere());
-    eyes[eyes.size() - 1].setup(name, blinkPath);
+    eyes[eyes.size() - 1].setup(root, blinkPath);
 }
 
 void Eyes::resize(int w, int h) {
@@ -123,8 +123,6 @@ ImageAnimator::ImageAnimator() {
     level = 0;
 }
 
-
-
 // count of items selected
 int ImageAnimator::count() {
     int count = 0;
@@ -158,5 +156,6 @@ void ImageAnimator::windowResized(int w, int h) {
 }
 
 void ImageAnimator::startPlaying() {
+    reset();
     sounds();
 }

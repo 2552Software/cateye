@@ -66,7 +66,6 @@ public:
     void draw();
     bool blinkingEnabled;
 private:
-    Eye eye;
     std::vector<Eye> blink;
     ofxAnimatableFloat blinker; // blink animation
 };
