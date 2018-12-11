@@ -132,6 +132,24 @@ private:
     ofxAnimatableFloat game;
 };
 
+class Eyes {
+public:
+    void setup(AnimRepeat repeat, float seconds, const std::string& path, bool blink, float rotateIn);
+    void update();
+    void draw();
+    void resize(int w, int h);
+    bool isAnimating() {  return animator.isAnimating();   }
+    SuperSphere&getCurrentEyeRef() {   return eyes[(int)animator.getCurrentValue()];  }
+    size_t count() { return eyes.size(); }
+    ofxAnimatableFloat eyesZ;
+
+private:
+    void add(const std::string &name, const std::string &root, bool blink);
+    ofxAnimatableFloat animator;
+    std::vector<SuperSphere> eyes;
+    float rotate;
+};
+
 class ImageAnimator {
 public:
     ImageAnimator();
@@ -145,9 +163,6 @@ public:
     void circle();
     void windowResized(int w, int h);
     void startPlaying();
-    SuperSphere& getCurrentEyeRef();
-    SuperSphere& getCurrentRollingEyeRef();
-    void add(const std::string &name, const std::string &root);
     int count(); // count of items being animiated
     void reset();
     void setCount(int count);
@@ -166,8 +181,6 @@ private:
         int i;
     };
     ofEvent<TextEvent> textFinished;
-    ofxAnimatableFloat mainEyeZ;
-    ofxAnimatableFloat rotatingEyeZ;
     void spirlDone(ofxAnimatableFloat::AnimationEvent & event);
     void creditsDone(TextEvent & event);
     void draw(const std::string& s, float x=0.0f, float y = 0.0f);
@@ -186,15 +199,11 @@ private:
     float maxForTrigger;
     void rotate(const ofVec3f& target);
     std::vector<ofSoundPlayer> mySounds;
-    internalEye mainEye;
-    internalEye rotatingEye;
-    ofxAnimatableFloat mainEyeAnimatorIndex;
-    ofxAnimatableFloat rotatingEyeAnimatorIndex;
+    Eyes mainEyes;
+    Eyes rotatingEyes;
 
     ofxAnimatableQueueofVec3f rotator;
-    ofxAnimatableQueueofVec3f path; // path of image
-    std::vector<SuperSphere> eyes;
-    std::vector<SuperSphere> rollingEyes;
+    ofxAnimatableQueueofVec3f imagPath; // not used yet moves eye around
     ofVec3f currentLocation;
     ofVec3f currentRotation;
     typedef std::pair<float, float> Key;

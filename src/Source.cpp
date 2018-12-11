@@ -1,10 +1,32 @@
 #include "ofApp.h"
 
+void Eyes::add(const std::string &name, const std::string &root, bool blink) {
+    std::string blinkPath;
+    if (blink) {
+        std::string::size_type pos = root.find('.');
+        if (pos != std::string::npos) {
+            blinkPath = root.substr(0, pos);
+        }
+        else {
+            blinkPath = root;
+        }
+    }
+    eyes.push_back(SuperSphere());
+    eyes[eyes.size() - 1].setup(name, blinkPath);
+}
+
+void Eyes::resize(int w, int h) {
+    float r = std::min(w, h);
+    for (SuperSphere&eye : eyes) {
+        eye.setRadius(r);
+        eye.setPosition((w / 2) - r, (h / 2) - (r / 2), 0);
+    }
+}
 
 void  ImageAnimator::fireWorks() {
     sounds(5);
     ignight(false);
-    rotatingEyeZ.animateFromTo(-getCurrentRollingEyeRef().getRadius(), getCurrentRollingEyeRef().getRadius() / 4);
+    rotatingEyes.eyesZ.animateFromTo(-rotatingEyes.getCurrentEyeRef().getRadius(), rotatingEyes.getCurrentEyeRef().getRadius() / 4);
 }
 
 void Map::trigger() {
@@ -102,18 +124,7 @@ ImageAnimator::ImageAnimator() {
 }
 
 
-void ImageAnimator::add(const std::string &name, const std::string &root) {
-    std::string::size_type pos = root.find('.');
-    std::string blinkPath;
-    if (pos != std::string::npos) {
-        blinkPath = root.substr(0, pos);
-    }
-    else {
-        blinkPath = root;
-    }
-    eyes.push_back(SuperSphere());
-    eyes[eyes.size() - 1].setup(name, blinkPath);
-}
+
 // count of items selected
 int ImageAnimator::count() {
     int count = 0;
@@ -135,41 +146,17 @@ void ImageAnimator::creditsDone(TextEvent & event) {
 }
 
 void ImageAnimator::spirlDone(ofxAnimatableFloat::AnimationEvent & event) {
-    float r = getCurrentEyeRef().getRadius();
     
-    mainEyeZ.animateFromTo(-getCurrentRollingEyeRef().getRadius(), 0.0f);
+    mainEyes.eyesZ.animateFromTo(-rotatingEyes.getCurrentEyeRef().getRadius(), 0.0f);
 }
 
 void ImageAnimator::windowResized(int w, int h) {
-    float r = std::min(w, h);
-    for (SuperSphere&eye : eyes) {
-        eye.setRadius(r);
-        eye.setPosition((w / 2) - r, (h / 2) - (r / 2), 0);
-    }
-    for (SuperSphere&eye : rollingEyes) {
-        eye.setRadius(r);
-        eye.setPosition((w / 2) - r, (h / 2) - (r / 2), 0);
-    }
 
-    // duration bugbug set in menu
-    rotatingEyeZ.reset();
-    rotatingEyeZ.setDuration(5.0f);
-    rotatingEyeZ.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
-    rotatingEyeZ.setCurve(EASE_IN_EASE_OUT);
-
-    mainEyeZ.reset();
-    mainEyeZ.setDuration(1.0f);
-    mainEyeZ.setRepeatType(PLAY_ONCE);
-    mainEyeZ.setCurve(EASE_IN_EASE_OUT);
+    mainEyes.resize(w,h);
+    rotatingEyes.resize(w, h);
+    
 }
 
 void ImageAnimator::startPlaying() {
-    mainEyeAnimatorIndex.animateTo(eyes.size() - 1);
     sounds();
-}
-SuperSphere&ImageAnimator::getCurrentEyeRef() {
-    return eyes[(int)mainEyeAnimatorIndex.getCurrentValue()];
-}
-SuperSphere&ImageAnimator::getCurrentRollingEyeRef() {
-    return rollingEyes[(int)rotatingEyeAnimatorIndex.getCurrentValue()];
 }

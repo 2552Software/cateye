@@ -6,30 +6,30 @@ void ImageAnimator::draw() {
     ofPushStyle();
 
     // show spirl eye first, if its not running try to text if al else fails show the main eye
-    if (rotatingEyeZ.isAnimating()) {
-        for (auto& eye : rollingEyes) { // keep all eyes in sync to make it easier
-            glm::vec3 pos = eye.getPosition();
-            pos.z = rotatingEyeZ.val();
-            eye.setPosition(pos);
-            eye.rotateDeg(20.0f, 0.0f, 0.0f, 1.0f); //bugbug animate and menu degree
-        }
-        getCurrentRollingEyeRef().draw();
+    if (rotatingEyes.isAnimating()) {
+        rotatingEyes.draw();
     }
     else if (!drawText()) { // draw in camera
-        if (mainEyeZ.isAnimating()) {
-            for (auto& eye : eyes) {
-                glm::vec3 pos = eye.getPosition();
-                pos.z = mainEyeZ.val();
-                eye.setPosition(pos);
-            }
-        }
         rotate(currentRotation); // rotate screen, not object, so same rotation works every time
-        getCurrentEyeRef().draw();
+        mainEyes.draw();
     }
 
     ofPopStyle();
     ofPopMatrix();
+}
 
+void Eyes::draw() {
+    if (isAnimating()) {
+        for (auto& eye : eyes) { // keep all eyes in sync to make it easier
+            glm::vec3 pos = eye.getPosition();
+            pos.z = animator.val();
+            eye.setPosition(pos);
+            if (rotate) {
+                eye.rotateDeg(rotate, 0.0f, 0.0f, 1.0f); //bugbug animate and menu degree bugbug make a point rotate x,y,z?
+            }
+        }
+    }
+    getCurrentEyeRef().draw();
 }
 
 void ContoursBuilder::draw(float cxScreen, float cyScreen) {
@@ -66,7 +66,7 @@ void ContoursBuilder::draw(float cxScreen, float cyScreen) {
 
 // see if anything is going on
 bool ImageAnimator::othersAreDrawing() {
-    if (!rotatingEyeZ.isAnimating()) {
+    if (!rotatingEyes.isAnimating()) {
         for (auto& credit : creditsText) {
             if (credit.isRunningOrWaitingToRun()) {
                 return true;

@@ -83,15 +83,15 @@ void ImageAnimator::circle() {
     point.setPosition(currentLocation);
     point.setDuration(1.20f);
     point.animateTo(ofVec3f(1000, 1000, 10));
-    path.addTransition(point);
+    imagPath.addTransition(point);
     point.animateTo(ofVec3f(1000, 2000, 200));
-    path.addTransition(point);
+    imagPath.addTransition(point);
     point.animateTo(ofVec3f(2000, 2000, -200));
-    path.addTransition(point);
+    imagPath.addTransition(point);
     point.animateTo(ofVec3f(1000, 1000, 3000));
-    path.addTransition(point);
+    imagPath.addTransition(point);
     point.animateTo(ofVec3f(00, 00));
-    path.addTransition(point);
+    imagPath.addTransition(point);
 }
 
 void TextTimer::setup() {

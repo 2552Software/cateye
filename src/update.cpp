@@ -1,4 +1,14 @@
 #include "ofApp.h"
+
+void Eyes::update() {
+    for (SuperSphere&eye : eyes) {
+        eye.update();
+    }
+    eyesZ.update(1.0f / ofGetTargetFrameRate());
+    animator.update(1.0f / ofGetTargetFrameRate());
+}
+
+
 void ImageAnimator::update() {
 
     if (((int)ofGetElapsedTimef() % 30) == 0) {//bugbug put in menu
@@ -13,17 +23,10 @@ void ImageAnimator::update() {
         a.update();
     }
 
-    for (SuperSphere&eye : eyes) {
-        eye.update();
-    }
+    mainEyes.update();
+    rotatingEyes.update();
 
-    mainEyeZ.update(1.0f / ofGetTargetFrameRate());
-    rotatingEyeZ.update(1.0f / ofGetTargetFrameRate());
-
-    mainEyeAnimatorIndex.update(1.0f / ofGetTargetFrameRate());
-    rotatingEyeAnimatorIndex.update(1.0f / ofGetTargetFrameRate());
-
-    path.update();
+    imagPath.update();
     rotator.update();
     contours.update();
 
