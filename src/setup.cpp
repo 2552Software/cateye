@@ -3,11 +3,17 @@
 
 void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path, bool blink, float rotateIn) {
     rotate = rotateIn;
+
     animator.reset(0.0f);
     animator.setDuration(seconds);
     animator.setRepeatType(repeat);
     animator.setCurve(LINEAR);
 
+    eyesZ.reset(0.0f);
+    eyesZ.setDuration(5.0f); // menu bugbug
+    eyesZ.setRepeatType(LOOP_BACK_AND_FORTH);
+    eyesZ.setCurve(LINEAR);
+    
     ofDirectory dir(path);
     dir.allowExt("png");
     dir.allowExt("jpg");

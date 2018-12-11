@@ -15,6 +15,9 @@ void ImageAnimator::buildTable() {
 }
 
 void Map::setup() {
+    // convert to screen size
+    xFactor = ofGetScreenWidth() / imgWidth;
+    yFactor = ofGetScreenHeight() / imgHeight;
 }
 void Map::set(int a) {
     action = a;
@@ -32,16 +35,17 @@ void Map::update() {
 void Map::draw(int alpha) {
     if (isAnimating()) {
         ofPushStyle();
-        ofFill();
+        ofNoFill();
         ofEnableAlphaBlending();
-        //color.applyCurrentColor();
         ofColor c = color.getCurrentColor();
         c.a = alpha;// alpha; keep it light
         ofSetColor(c);
-        // convert to screen size
-        float xFactor = ofGetScreenWidth() / imgWidth;
-        float yFactor = ofGetScreenHeight() / imgHeight;
-        ofDrawRectangle(xFactor*rectangle.x, yFactor*rectangle.y, xFactor*rectangle.width, yFactor*rectangle.height);
+       // ofDrawRectangle(xFactor*rectangle.x, yFactor*rectangle.y, xFactor*rectangle.width, yFactor*rectangle.height);
+        ofBoxPrimitive box;
+        box.set(xFactor*rectangle.width);
+        box.setPosition(xFactor*rectangle.x, yFactor*rectangle.y, 0.0f);
+        box.rollDeg(10.0f);
+        box.drawWireframe();
         ofDisableAlphaBlending();
         ofPopStyle();
     }
@@ -145,6 +149,9 @@ void ImageAnimator::draw(const std::string& s, float x, float y) {
     font.drawStringAsShapes(s, x, y);
 }
 void ImageAnimator::credits(bool signon) {
+    /** bugbug removed */
+    return;
+
     creditsText.clear();
 
     if (signon || (int)ofRandom(0, 10) > 2) {

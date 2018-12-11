@@ -8,7 +8,6 @@ void Eyes::update() {
     animator.update(1.0f / ofGetTargetFrameRate());
 }
 
-
 void ImageAnimator::update() {
 
     for (auto& a : thingsToDo) {
@@ -26,91 +25,92 @@ void ImageAnimator::update() {
     rotator.update();
     contours.update();
 
-    int c = count();
-    std::stringstream ss;
-    ss << c << ":" << winnerCount();
-    ofSetWindowTitle(ss.str());
-
-    if (isWinner(count())) {
-        // clear game then enable fireworks!!, credits will call fireworks when done
-        credits();
-    }
-    else if (!isAnimating()) {
-        if (((int)ofGetElapsedTimef() % 30) == 0) {//bugbug put in menu
-            randomize(); // mix up right in the middle of things
+    if (!isAnimating()) {
+        int c = count();
+        std::stringstream ss;
+        ss << c << ":" << winnerCount();
+        ofSetWindowTitle(ss.str());
+        if (isWinner(count())) {
+            //credits will call fireworks when done
+         credits();
         }
-        float max = 0.0f;
-        if (contours.contourFinder.blobs.size() > 0) {
-            glm::vec3 target = currentRotation;
-            glm::vec3 centroid;
-            ofRectangle rect;
-
-            // first find any motion for the game, then find motion for drawing and eye tracking
-            for (auto& blob : contours.contourFinder.blobs) {
-                if (blob.area > max && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
-                    max = blob.area;
-                    centroid = blob.centroid;
-                    rect = blob.boundingRect;
-                    break; // first is max
-                }
+        else {
+            if (((int)ofGetElapsedTimef() % 30) == 0) {//bugbug put in menu
+                randomize(); // mix up right in the middle of things
             }
+            float max = 0.0f;
+            if (contours.contourFinder.blobs.size() > 0) {
+                glm::vec3 target = currentRotation;
+                glm::vec3 centroid;
+                ofRectangle rect;
 
-            // see if we have a trigger
-            for (auto& blob : contours.contourFinder.blobs) {
-                if (blob.area > maxForTrigger && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
-                    int c = count();
+                // first find any motion for the game, then find motion for drawing and eye tracking
+                for (auto& blob : contours.contourFinder.blobs) {
+                    if (blob.area > max && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
+                        max = blob.area;
+                        centroid = blob.centroid;
+                        rect = blob.boundingRect;
+                        break; // first is max
+                    }
+                }
 
-                    if (c >= firstMatchCount()) {
-                        ignight();
-                    }
-                    float mymax = maxForTrigger;
-                    if (c > firstMatchCount() + 1) {
-                        mymax /= 3; // see less
-                    }
-                    if (blob.area >= mymax) {
-                        // see if we can trigger with this one
-                        for (auto& item : thingsToDo) { // get all blocks within region
-                            if (item.second.match(blob.boundingRect)) {
-                                item.second.trigger();
-                                if (mymax <= maxForTrigger) {
-                                    break; // will make it much harder to get a hit
+                // see if we have a trigger
+                for (auto& blob : contours.contourFinder.blobs) {
+                    if (blob.area > maxForTrigger && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
+                        int c = count();
+
+                        if (c >= firstMatchCount()) {
+                            ignight();
+                        }
+                        float mymax = maxForTrigger;
+                        if (c > firstMatchCount() + 1) {
+                            mymax /= 3; // see less
+                        }
+                        if (blob.area >= mymax) {
+                            // see if we can trigger with this one
+                            for (auto& item : thingsToDo) { // get all blocks within region
+                                if (item.second.match(blob.boundingRect)) {
+                                    item.second.trigger();
+                                    if (mymax <= maxForTrigger) {
+                                        break; // will make it much harder to get a hit
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-            if (max > shapeMinSize) { // fine tune on site 
-                int w = imgWidth; // camera size not screen size
-                int h = imgHeight;
+                if (max > shapeMinSize) { // fine tune on site 
+                    int w = imgWidth; // camera size not screen size
+                    int h = imgHeight;
 
-                double x = (centroid.x / imgWidth)*100.0f; // make it a percent
-                double y = (centroid.y / imgHeight)*100.0f; // make it a percent
+                    double x = (centroid.x / imgWidth)*100.0f; // make it a percent
+                    double y = (centroid.y / imgHeight)*100.0f; // make it a percent
 
-                //if (mapX.find(std::make_pair(xAction, yAction)) != mapX.end()) {
-               // }
-                for (auto& row : mapCameraInX) {
-                    if (x >= row.first.first && x <= row.first.second) {
-                        target.y = row.second;
-                        // centroid
-                        break;
+                    //if (mapX.find(std::make_pair(xAction, yAction)) != mapX.end()) {
+                   // }
+                    for (auto& row : mapCameraInX) {
+                        if (x >= row.first.first && x <= row.first.second) {
+                            target.y = row.second;
+                            // centroid
+                            break;
+                        }
+                    }
+                    for (auto& row : mapCameraInY) {
+                        if (y >= row.first.first && y <= row.first.second) {
+                            target.x = row.second;
+                            break;
+                        }
                     }
                 }
-                for (auto& row : mapCameraInY) {
-                    if (y >= row.first.first && y <= row.first.second) {
-                        target.x = row.second;
-                        break;
-                    }
+                // if any data 
+                if (max > 10) {
+                    //   ofLogNotice() << "insert targert" << target;
+                    currentRotation = target;
                 }
-            }
-            // if any data 
-            if (max > 10) {
-             //   ofLogNotice() << "insert targert" << target;
-                currentRotation = target;
-            }
-            else {
-                // no new data so home the eye (?should we add a time?)
-                currentRotation.set(0.0L, 0.0L, 0.0L);
+                else {
+                    // no new data so home the eye (?should we add a time?)
+                    currentRotation.set(0.0L, 0.0L, 0.0L);
+                }
             }
         }
     }

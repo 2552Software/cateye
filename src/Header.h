@@ -121,6 +121,9 @@ public:
     void reset() { game.reset(); }
     int getAction() { return action; }
     bool match(const ofRectangle& rect) { return rectangle.inside(rect); }//return rectangle.intersects(rect); }
+    // convert to screen size
+    float xFactor;
+    float yFactor;
 
 private:
  
@@ -137,7 +140,7 @@ public:
     void update();
     void draw();
     void resize(int w, int h);
-    bool isAnimating() {  return animator.isAnimating();   }
+    bool isAnimating() {  return animator.isAnimating() || eyesZ.isAnimating();   }
     SuperSphere&getCurrentEyeRef() {   return eyes[(int)animator.getCurrentValue()];  }
     size_t count() { return eyes.size(); }
     ofxAnimatableFloat eyesZ;
@@ -167,7 +170,7 @@ public:
     void setCount(int count);
     void ignight(bool on=true);
     int  firstMatchCount() { return 1; } // intial game trigger bugbug make menu item
-    int  winnerCount() { return 2; } // intial game trigger bugbug make menu item
+    int  winnerCount() { return 5; } // intial game trigger bugbug make menu item
     void setTriggerCount(float count);
     void setShapeMinSize(float size) { shapeMinSize = size; };
     bool isIgnighted(int count) { return count > firstMatchCount(); }
