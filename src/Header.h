@@ -173,19 +173,19 @@ public:
     bool isIgnighted(int count) { return count > firstMatchCount(); }
     bool isWinner(int count) { return count >= winnerCount(); } // easy mode! bugbug menu
     bool drawText();
-    bool othersAreDrawing();
-
+    bool isAnimating();
+    void credits(bool signon = false);
+    void drawGame();
 private:
     struct TextEvent {
         int i;
     };
     ofEvent<TextEvent> textFinished;
-    void spirlDone(ofxAnimatableFloat::AnimationEvent & event);
+    void rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event);
     void creditsDone(TextEvent & event);
     void draw(const std::string& s, float x=0.0f, float y = 0.0f);
     std::vector<TextTimer> creditsText;
     ofTrueTypeFont font; 
-    void credits();
     int level;
     void fireWorks();
     float shapeMinSize;

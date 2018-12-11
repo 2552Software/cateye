@@ -2,20 +2,21 @@
 
 void ImageAnimator::draw() {
 
-    ofPushMatrix();
-    ofPushStyle();
+    if (drawText()) { // draw text first, if no text draw the eye
+        return;
+    }
 
     // show spirl eye first, if its not running try to text if al else fails show the main eye
     if (rotatingEyes.isAnimating()) {
         rotatingEyes.draw();
-    }
-    else if (!drawText()) { // draw in camera
-        rotate(currentRotation); // rotate screen, not object, so same rotation works every time
-        mainEyes.draw();
+        return;
     }
 
-    ofPopStyle();
-    ofPopMatrix();
+    rotate(currentRotation); // rotate screen, not object, so same rotation works every time
+    mainEyes.draw();
+
+    drawGame(); // draw any game that may be running
+
 }
 
 void Eyes::draw() {
@@ -33,8 +34,6 @@ void Eyes::draw() {
 }
 
 void ContoursBuilder::draw(float cxScreen, float cyScreen) {
-    ofPushStyle();
-    ofPushMatrix();
     ofNoFill();
     ofSetLineWidth(1);// ofRandom(1, 5));
     for (auto& blob : contourDrawer.blobs) {
@@ -59,14 +58,12 @@ void ContoursBuilder::draw(float cxScreen, float cyScreen) {
             //ofDrawRectangle(blob.boundingRect.x, blob.boundingRect.y, blob.boundingRect.width, blob.boundingRect.height);
         }
     }
-    ofPopMatrix();
-    ofPopStyle();
 }
 
 
 // see if anything is going on
-bool ImageAnimator::othersAreDrawing() {
-    if (!rotatingEyes.isAnimating()) {
+bool ImageAnimator::isAnimating() {
+    if (!rotatingEyes.isAnimating() && !mainEyes.isAnimating()) {
         for (auto& credit : creditsText) {
             if (credit.isRunningOrWaitingToRun()) {
                 return true;
@@ -104,32 +101,15 @@ bool ImageAnimator::drawText() {
 
     return found;
 }
-void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
-    // only draw contours if nothing else important is being drawn
-    if (!othersAreDrawing()) {
 
-        ofSetBackgroundColor(ofColor::black);
-        ofSetColor(ofColor::white);
-        contours.draw(cxScreen, cyScreen);
-        int c = count();
-
-        std::stringstream ss;
-        ss << c << ":" << winnerCount();
-        ofSetWindowTitle(ss.str());
-
-        if (isWinner(c)) {
-            // clear game then enable fireworks!!
-            reset();
-            credits();
-        }
-        else {
-            // else draw boxes but only when its game 
-            //if (count() >= firstMatchCount()) {
-                for (auto& item : thingsToDo) {
-                    item.second.draw(175);//bugbug make menu
-                }
-           // }
-        }
+void ImageAnimator::drawGame() {
+    //if (count() >= firstMatchCount()) {
+    for (auto& item : thingsToDo) {
+        item.second.draw(175);//bugbug make menu
     }
+    //}
+}
 
+void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
+    contours.draw(cxScreen, cyScreen);
 }

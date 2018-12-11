@@ -144,14 +144,14 @@ bool TextTimer::getString(std::string& output) {
 void ImageAnimator::draw(const std::string& s, float x, float y) {
     font.drawStringAsShapes(s, x, y);
 }
-void ImageAnimator::credits() {
+void ImageAnimator::credits(bool signon) {
     creditsText.clear();
 
-    if ((int)ofRandom(0, 10) > 3) {
-        creditsText.push_back(TextTimer("Tom And Mark", 1500.0f, 0.0f, 0.0f));
-        creditsText.push_back(TextTimer("From Eletronic Murals", 1500.0f, 1500.0f, 1.0f));
-        creditsText.push_back(TextTimer("Thank Can Can Wonderland ...", 1500.0f, 2 * 1500.0f, 2.0f));
-        creditsText.push_back(TextTimer("... For their support of the Arts!", 1500.0f, 3 * 1500.0f, 3.0f));
+    if (signon || (int)ofRandom(0, 10) > 2) {
+        creditsText.push_back(TextTimer("Tom And Mark", 1000.0f, 0.0f, 0.0f));
+        creditsText.push_back(TextTimer("From Eletronic Murals", 1000.0f, 1000.0f, 1.0f));
+        creditsText.push_back(TextTimer("Thank Can Can Wonderland ...", 1000.0f, 2 * 1000.0f, 2.0f));
+        creditsText.push_back(TextTimer("... For their support of the Arts!", 1000.0f, 3 * 1000.0f, 3.0f));
     }
     else {
         //bugbug add more stuff

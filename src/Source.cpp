@@ -25,7 +25,6 @@ void Eyes::resize(int w, int h) {
 
 void  ImageAnimator::fireWorks() {
     sounds(5);
-    ignight(false);
     rotatingEyes.eyesZ.animateFromTo(-rotatingEyes.getCurrentEyeRef().getRadius(), rotatingEyes.getCurrentEyeRef().getRadius() / 4);
 }
 
@@ -141,9 +140,11 @@ void ImageAnimator::creditsDone(TextEvent & event) {
     fireWorks();
 }
 
-void ImageAnimator::spirlDone(ofxAnimatableFloat::AnimationEvent & event) {
-    
+void ImageAnimator::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event) {
+    // no move main eye back into focus
     mainEyes.eyesZ.animateFromTo(-rotatingEyes.getCurrentEyeRef().getRadius(), 0.0f);
+    // reset and start again
+    randomize(); 
 }
 
 void ImageAnimator::windowResized(int w, int h) {

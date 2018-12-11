@@ -32,6 +32,7 @@ void ofApp::setup(){
     eyeAnimator.setShapeMinSize(maxForShape);
     eyeAnimator.setTriggerCount(maxForTrigger);
     eyeAnimator.setup();
+    eyeAnimator.credits(true); // setup credits, shown at boot
 
     gui.loadFont(OF_TTF_SANS, 24, true, true);
     gui.setBorderColor(ofColor::yellow);
@@ -84,12 +85,17 @@ void ofApp::draw(){
         ofPushMatrix();
         eyeAnimator.draw();
         ofPopMatrix();
-        camera.end();
-        ofPushMatrix();
-        eyeAnimator.drawContours(ofGetScreenWidth(), ofGetScreenHeight());
-        ofPopMatrix();
-        light.disable();
         ofPopStyle();
+        camera.end();
+        // if nothing else is going on draw motion outside of camera but in light
+        if (!eyeAnimator.isAnimating()) {
+            ofPushStyle();
+            ofPushMatrix();
+            eyeAnimator.drawContours(ofGetScreenWidth(), ofGetScreenHeight());
+            ofPopMatrix();
+            ofPopStyle();
+        }
+        light.disable();
         ofDisableDepthTest();
     }
     else  {

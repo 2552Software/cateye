@@ -43,7 +43,7 @@ void ImageAnimator::setup() {
     font.setLineHeight(18.0f);
     font.setLetterSpacing(1.037);
 
-    ofAddListener(rotatingEyes.eyesZ.animFinished, this, &ImageAnimator::spirlDone);
+    ofAddListener(rotatingEyes.eyesZ.animFinished, this, &ImageAnimator::rotatingEyesDone);
     ofAddListener(textFinished, this, &ImageAnimator::creditsDone);
 
     buildX();
@@ -65,7 +65,6 @@ void ImageAnimator::setup() {
 
     //path.setup();
     rotator.setup();
-    credits(); // setup credits, shown at boot
     contours.setup();
 
     ofDirectory allSounds(DATAPATH);
