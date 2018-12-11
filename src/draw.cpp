@@ -6,22 +6,24 @@ void ImageAnimator::draw() {
     ofPushStyle();
 
     // show spirl eye first, if its not running try to text if al else fails show the main eye
-    if (spirlRadius.isAnimating()) {
-        sphere4Spirl.setRadius(spirlRadius.val());
+    if (rotatingEyeZ.isAnimating()) {
         spirl.bind();
-        sphere4Spirl.setPosition((ofGetWidth() / 2) - sphere4Spirl.getRadius(), (ofGetHeight() / 2) - (sphere4Spirl.getRadius() / 2), 0);
-        sphere4Spirl.rotateDeg(20.0f, 0.0f, 0.0f, 1.0f);
+        glm::vec3 pos = sphere4Spirl.getPosition();
+        pos.z = rotatingEyeZ.val();
+        sphere4Spirl.setPosition(pos);
+        sphere4Spirl.rotateDeg(20.0f, 0.0f, 0.0f, 1.0f); //bugbug animate and menu
         sphere4Spirl.draw();
         spirl.unbind();
     }
-    else if (!drawOthers()) { // draw in camera
-        if (eyeRadius.isAnimating()) {
-            for (auto& a : eyes) {
-                a.setRadius(eyeRadius.val());
+    else if (!drawText()) { // draw in camera
+        if (mainEyeZ.isAnimating()) {
+            for (auto& eye : eyes) {
+                glm::vec3 pos = eye.getPosition();
+                pos.z = mainEyeZ.val();
+                eye.setPosition(pos);
             }
         }
-        ofTranslate((ofGetWidth() / 2) - getCurrentEyeRef().getRadius(), (ofGetHeight() / 2) - (getCurrentEyeRef().getRadius() / 2), 0);
-        rotate(currentRotation);
+        rotate(currentRotation); // rotate screen, not object, so same rotation works every time
         getCurrentEyeRef().draw();
     }
 
@@ -63,18 +65,21 @@ void ContoursBuilder::draw(float cxScreen, float cyScreen) {
 
 
 // see if anything is going on
-bool ImageAnimator::othersDrawing() {
-    for (auto& credit : creditsText) {
-        if (credit.isRunningOrWaitingToRun()) {
-            return true;
+bool ImageAnimator::othersAreDrawing() {
+    if (!rotatingEyeZ.isAnimating()) {
+        for (auto& credit : creditsText) {
+            if (credit.isRunningOrWaitingToRun()) {
+                return true;
+            }
+            else if (credit.lasting.isAnimating()) {
+                return true;
+            }
         }
-        else if (credit.lasting.isAnimating()) {
-            return true;
-        }
+        return false;
     }
-    return spirlRadius.isAnimating();
+    return true;
 }
-bool ImageAnimator::drawOthers() {
+bool ImageAnimator::drawText() {
     bool found = false;
     float y = ofGetScreenWidth() / 3;
     for (auto& credit : creditsText) {
@@ -101,7 +106,7 @@ bool ImageAnimator::drawOthers() {
 }
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
     // only draw contours if nothing else important is being drawn
-    if (!othersDrawing()) {
+    if (!othersAreDrawing()) {
 
         ofSetBackgroundColor(ofColor::black);
         ofSetColor(ofColor::white);

@@ -1,24 +1,5 @@
 #include "ofApp.h"
 
-class Scheduler : public ofThread {
-public:
-    Scheduler() {
-        timer.setPeriodicEvent(1000000000*60); // this is 1 second in nanoseconds
-        startThread();
-    }
-
-private:
-    ofTimer timer;
-    void threadedFunction() {
-        while (isThreadRunning()) {
-            timer.waitNext();
-            // Do your thing here. It will run once per 60 seconds.
-        }
-    }
-};
-
-
-
 //--------------------------------------------------------------
 void ofApp::setup(){
     hideMenu = true;

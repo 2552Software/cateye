@@ -24,7 +24,7 @@ void ImageAnimator::setup() {
     spirl.load("runtime\\spirl\\s1.png"); //bugbug use the multi load tech for main eye here
     sphere4Spirl.panDeg(180);
     sphere4Spirl.setResolution(21);
-    ofAddListener(spirlRadius.animFinished, this, &ImageAnimator::spirlDone);
+    ofAddListener(rotatingEyeZ.animFinished, this, &ImageAnimator::spirlDone);
     ofAddListener(textFinished, this, &ImageAnimator::creditsDone);
 
     buildX();

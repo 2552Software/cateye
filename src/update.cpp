@@ -17,8 +17,8 @@ void ImageAnimator::update() {
         eye.update();
     }
 
-    spirlRadius.update(1.0f / ofGetTargetFrameRate());
-    eyeRadius.update(1.0f / ofGetTargetFrameRate());
+    rotatingEyeZ.update(1.0f / ofGetTargetFrameRate());
+    mainEyeZ.update(1.0f / ofGetTargetFrameRate());
 
     animatorIndex.update(1.0f / ofGetTargetFrameRate());
     path.update();

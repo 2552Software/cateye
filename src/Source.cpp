@@ -4,8 +4,7 @@
 void  ImageAnimator::fireWorks() {
     sounds(5);
     ignight(false);
-    spirlRadius.animateFromTo(sphere4Spirl.getRadius()- sphere4Spirl.getRadius()/10, getCurrentEyeRef().getRadius() + -sphere4Spirl.getRadius() / 3);//bugbug change with screen size
-    spirlRadius.animateToIfFinished(sphere4Spirl.getRadius() / 5);
+    rotatingEyeZ.animateFromTo(-sphere4Spirl.getRadius(), 0);
 }
 
 void Map::trigger() {
@@ -138,25 +137,29 @@ void ImageAnimator::creditsDone(TextEvent & event) {
 void ImageAnimator::spirlDone(ofxAnimatableFloat::AnimationEvent & event) {
     float r = getCurrentEyeRef().getRadius();
    
-    eyeRadius.animateFromTo(sphere4Spirl.getRadius() - sphere4Spirl.getRadius() / 10, r);
+    mainEyeZ.animateFromTo(-sphere4Spirl.getRadius(), 0.0f);
 }
 
 void ImageAnimator::windowResized(int w, int h) {
+    float r = std::min(w, h);
     for (SuperSphere&eye : eyes) {
-        eye.setRadius(std::min(w, h));
+        eye.setRadius(r);
+        eye.setPosition((w / 2) - r, (h / 2) - (r / 2), 0);
     }
-    sphere4Spirl.setRadius(std::min(w, h));
+    //bugbug will into loop for more than 1 spyril
+    sphere4Spirl.setPosition((ofGetWidth() / 2) - r, (ofGetHeight() / 2) - (r / 2), 0);
+    sphere4Spirl.setRadius(r);
 
     // duration bugbug set in menu
-    spirlRadius.reset();
-    spirlRadius.setDuration(5.0f);
-    spirlRadius.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
-    spirlRadius.setCurve(EASE_IN_EASE_OUT);
+    rotatingEyeZ.reset();
+    rotatingEyeZ.setDuration(5.0f);
+    rotatingEyeZ.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
+    rotatingEyeZ.setCurve(EASE_IN_EASE_OUT);
 
-    eyeRadius.reset();
-    eyeRadius.setDuration(1.0f);
-    eyeRadius.setRepeatType(PLAY_ONCE);
-    eyeRadius.setCurve(EASE_IN_EASE_OUT);
+    mainEyeZ.reset();
+    mainEyeZ.setDuration(1.0f);
+    mainEyeZ.setRepeatType(PLAY_ONCE);
+    mainEyeZ.setCurve(EASE_IN_EASE_OUT);
 }
 
 void ImageAnimator::startPlaying() {

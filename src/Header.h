@@ -157,16 +157,16 @@ public:
     void setShapeMinSize(float size) { shapeMinSize = size; };
     bool isIgnighted(int count) { return count > firstMatchCount(); }
     bool isWinner(int count) { return count >= winnerCount(); } // easy mode! bugbug menu
-    bool drawOthers();
-    bool othersDrawing();
+    bool drawText();
+    bool othersAreDrawing();
 
 private:
     struct TextEvent {
         int i;
     };
     ofEvent<TextEvent> textFinished;
-    ofxAnimatableFloat eyeRadius;
-    ofxAnimatableFloat spirlRadius;
+    ofxAnimatableFloat mainEyeZ;
+    ofxAnimatableFloat rotatingEyeZ;
     void spirlDone(ofxAnimatableFloat::AnimationEvent & event);
     void creditsDone(TextEvent & event);
     ofImage spirl;
@@ -197,5 +197,21 @@ private:
     std::map<Key, float> mapCameraInX; // range to rotation
     std::map<Key, float> mapCameraInY;
     std::map<std::pair<int, int>, Map> thingsToDo; // map indexes
+};
+class Scheduler : public ofThread {
+public:
+    Scheduler() {
+        timer.setPeriodicEvent((uint64_t)1000000000 * 60); // this is 1 second in nanoseconds
+        startThread();
+    }
+
+private:
+    ofTimer timer;
+    void threadedFunction() {
+        while (isThreadRunning()) {
+            timer.waitNext();
+            // Do your thing here. It will run once per 60 seconds.
+        }
+    }
 };
 
