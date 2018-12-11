@@ -124,11 +124,11 @@ void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
         }
         else {
             // else draw boxes but only when its game 
-            if (count() >= firstMatchCount()) {
+            //if (count() >= firstMatchCount()) {
                 for (auto& item : thingsToDo) {
                     item.second.draw(175);//bugbug make menu
                 }
-            }
+           // }
         }
     }
 

@@ -37,6 +37,7 @@ void ContoursBuilder::setup() {
     grayDiff.allocate(imgWidth, imgHeight);
 }
 void ImageAnimator::setup() {
+    reset(); // go to a known state
 
     font.load("alger.ttf", 100, true, true, true);
     font.setLineHeight(18.0f);
@@ -47,7 +48,6 @@ void ImageAnimator::setup() {
 
     buildX();
     buildY();
-    reset();
     imagPath.setup();
 
     mainEyes.setup(LOOP_BACK_AND_FORTH, 1.0f, DATAPATH, true, 0.0f);

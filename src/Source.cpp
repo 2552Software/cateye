@@ -106,14 +106,12 @@ void ImageAnimator::randomize() {
 void ImageAnimator::setTriggerCount(float count) {
     if (count > 0) {
         maxForTrigger = count;
-        reset();
     }
 }
 
 void ImageAnimator::setCount(int count) {
     if (count > 0) {
         squareCount = count;
-        reset();
     }
 }
 ImageAnimator::ImageAnimator() {
@@ -156,6 +154,5 @@ void ImageAnimator::windowResized(int w, int h) {
 }
 
 void ImageAnimator::startPlaying() {
-    reset();
     sounds();
 }
