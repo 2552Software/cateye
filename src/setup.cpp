@@ -9,11 +9,6 @@ void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path, bool
     animator.setRepeatType(repeat);
     animator.setCurve(LINEAR);
 
-    eyesZ.reset(0.0f);
-    eyesZ.setDuration(5.0f); // menu bugbug
-    eyesZ.setRepeatType(LOOP_BACK_AND_FORTH);
-    eyesZ.setCurve(LINEAR);
-    
     ofDirectory dir(path);
     dir.allowExt("png");
     dir.allowExt("jpg");
@@ -49,7 +44,7 @@ void ImageAnimator::setup() {
     font.setLineHeight(18.0f);
     font.setLetterSpacing(1.037);
 
-    ofAddListener(rotatingEyes.eyesZ.animFinished, this, &ImageAnimator::rotatingEyesDone);
+    ofAddListener(rotatingEyes.getAnimator().animFinished, this, &ImageAnimator::rotatingEyesDone);
     ofAddListener(textFinished, this, &ImageAnimator::creditsDone);
 
     buildX();

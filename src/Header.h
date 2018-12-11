@@ -140,14 +140,13 @@ public:
     void update();
     void draw();
     void resize(int w, int h);
-    bool isAnimating() {  return animator.isAnimating() || eyesZ.isAnimating();   }
+    bool isAnimating() {  return animator.isAnimating();   }
     SuperSphere&getCurrentEyeRef() {   return eyes[(int)animator.getCurrentValue()];  }
     size_t count() { return eyes.size(); }
-    ofxAnimatableFloat eyesZ;
-
+    ofxAnimatableFloat& getAnimator() { return animator; }
 private:
     void add(const std::string &name, const std::string &root, bool blink);
-    ofxAnimatableFloat animator;
+    ofxAnimatableFloat animator; // z direcition
     std::vector<SuperSphere> eyes;
     float rotate;
 };

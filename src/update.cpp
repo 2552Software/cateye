@@ -4,7 +4,6 @@ void Eyes::update() {
     for (SuperSphere&eye : eyes) {
         eye.update();
     }
-    eyesZ.update(1.0f / ofGetTargetFrameRate());
     animator.update(1.0f / ofGetTargetFrameRate());
 }
 
