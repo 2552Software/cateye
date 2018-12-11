@@ -50,14 +50,13 @@ void ImageAnimator::setup() {
     reset();
     imagPath.setup();
 
-    std::string path = DATAPATH;
-
-    mainEyes.setup(LOOP_BACK_AND_FORTH, 1.0f, path, true, 0.0f);
+    mainEyes.setup(LOOP_BACK_AND_FORTH, 1.0f, DATAPATH, true, 0.0f);
     if (!mainEyes.count()) {
         ofLogFatalError() << "eyes missing";
         ofExit(100);
     }
 
+    std::string path = DATAPATH;
     path += "\\spirl";
     rotatingEyes.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, path, false, 20.0f);
     if (!rotatingEyes.count()) {
@@ -69,7 +68,7 @@ void ImageAnimator::setup() {
     credits(); // setup credits, shown at boot
     contours.setup();
 
-    ofDirectory allSounds(path);
+    ofDirectory allSounds(DATAPATH);
     allSounds.allowExt("wav");
     allSounds.allowExt("mp3");
     allSounds.listDir();

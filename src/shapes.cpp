@@ -147,60 +147,74 @@ void ImageAnimator::draw(const std::string& s, float x, float y) {
 void ImageAnimator::credits() {
     creditsText.clear();
 
-    creditsText.push_back(TextTimer("Tom And Mark", 1500.0f, 0.0f, 0.0f));
-    creditsText.push_back(TextTimer("From Eletronic Murals", 1500.0f, 1500.0f, 1.0f));
-    creditsText.push_back(TextTimer("Thank Can Can Wonderland ...", 1500.0f, 2 * 1500.0f, 2.0f));
-    creditsText.push_back(TextTimer("... For their support of the Arts!", 1500.0f, 3 * 1500.0f, 3.0f));
-    creditsText.push_back(TextTimer("Good bye!", 1500.0f, 5 * 1500.0f, 4.0f));
-
-    //bugbug add more stuff
-    std::string s;
-    switch ((int)ofRandom(0, 12)) {
-    case 0:
-        s = "See if they will get you a beer...";
-        break;
-    case 1:
-        s = "Time to ask for a cookie?";
-        break;
-    case 2:
-        s = "Is it bar time?";
-        break;
-    case 3:
-        s = "Want to play a game?";
-        break;
-    case 4:
-        s = "Hal, is that you? Hal? Hal? Way in the back";
-        break;
-    case 5:
-        s = "Maybe go play some pinball";
-        break;
-    case 6:
-        s = "I do not have that many random strings";
-        break;
-    case 7:
-        s = "<your joke here>";
-        break;
-    case 8:
-        s = "Can Can Wonderland Rules!";
-        break;
-    case 9:
-        s = "0101010101010101001011010101001101001001!";
-        break;
-    case 10:
-        s = "A Squared + B Squared does not really = C squared";
-        break; 
-    case 11:
-        s = "So what's your OS?";
-        break; 
-    case 12:
-        s = "E = MC Squared? what? no way";
-        break;
-    default:
-        s = "Take the default action where ever you can";
-        break;
+    if ((int)ofRandom(0, 10) > 3) {
+        creditsText.push_back(TextTimer("Tom And Mark", 1500.0f, 0.0f, 0.0f));
+        creditsText.push_back(TextTimer("From Eletronic Murals", 1500.0f, 1500.0f, 1.0f));
+        creditsText.push_back(TextTimer("Thank Can Can Wonderland ...", 1500.0f, 2 * 1500.0f, 2.0f));
+        creditsText.push_back(TextTimer("... For their support of the Arts!", 1500.0f, 3 * 1500.0f, 3.0f));
     }
-    TextTimer t(s, 1500.0f, 9 * 1500.0f, 6.0f);
-    creditsText.push_back(t);
+    else {
+        //bugbug add more stuff
+        std::string s;
+        switch ((int)ofRandom(0, 17)) {
+        case 0:
+            s = "See if they will get you a beer...";
+            break;
+        case 1:
+            s = "Time to ask for a cookie?";
+            break;
+        case 2:
+            s = "Is it bar time?";
+            break;
+        case 3:
+            s = "Want to play a game?";
+            break;
+        case 4:
+            s = "Hal, is that you? Hal? Hal? Way in the back";
+            break;
+        case 5:
+            s = "Maybe go play some pinball";
+            break;
+        case 6:
+            s = "I do not have that many random strings";
+            break;
+        case 7:
+            s = "<your joke here>";
+            break;
+        case 8:
+            s = "Can Can Wonderland Rules!";
+            break;
+        case 9:
+            s = "0101010101010101001011010101001101001001!";
+            break;
+        case 10:
+            s = "A Squared + B Squared does not really = C squared";
+            break;
+        case 11:
+            s = "So what's your OS?";
+            break;
+        case 12:
+            s = "E = MC Squared? what? no way";
+            break;
+        case 13:
+            s = "I’d like to help you out today.Which way did you come in ?";
+            break;
+        case 14:
+            s = "Have a nice day? DON'T TELL ME WHAT TO DO!";
+            break;
+        case 15:
+            s = "HippopotomonstrosesquiPedaliophobia is the fear of long words. How bad is that?";
+            break;
+        case 16:
+            s = "Beer can reduce a hangover";
+            break;
+        default:
+            s = "Take the default action where ever you can";
+            break;
+        }
+        TextTimer t(s, 1500.0f, 1500.0f, 0.0f);
+        creditsText.push_back(t);
+    }
 
 }
 
@@ -227,17 +241,11 @@ void SuperSphere::setup(const string&name, const string&blinkPath) {
 
     if (blinkPath.size() > 0L) {
         blinkingEnabled = true;
-        string path = DATAPATH;
-        path += "\\" + blinkPath + ".blink";
-        ofDirectory dir(path);
+        ofDirectory dir(blinkPath + ".blink");
         dir.listDir();
-        std::string name2;
         for (size_t i = 0; i < dir.size(); i++) {
-            name2 = path + "\\";
-            name2 += dir.getName(i);
-            blink.push_back(Eye(name2));
+            blink.push_back(Eye(dir.getPath(i)));
         }
-        blink.push_back(Eye(name2)); // last one gets skipped
         blinker.reset(0.0f);
         blinker.setCurve(LINEAR);
         blinker.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
