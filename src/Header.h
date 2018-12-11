@@ -146,6 +146,7 @@ public:
     void windowResized(int w, int h);
     void startPlaying();
     SuperSphere& getCurrentEyeRef();
+    SuperSphere& getCurrentRollingEyeRef();
     void add(const std::string &name, const std::string &root);
     int count(); // count of items being animiated
     void reset();
@@ -169,8 +170,6 @@ private:
     ofxAnimatableFloat rotatingEyeZ;
     void spirlDone(ofxAnimatableFloat::AnimationEvent & event);
     void creditsDone(TextEvent & event);
-    ofImage spirl;
-    ofSpherePrimitive sphere4Spirl;
     void draw(const std::string& s, float x=0.0f, float y = 0.0f);
     std::vector<TextTimer> creditsText;
     ofTrueTypeFont font; 
@@ -187,10 +186,15 @@ private:
     float maxForTrigger;
     void rotate(const ofVec3f& target);
     std::vector<ofSoundPlayer> mySounds;
-    ofxAnimatableFloat animatorIndex;
+    internalEye mainEye;
+    internalEye rotatingEye;
+    ofxAnimatableFloat mainEyeAnimatorIndex;
+    ofxAnimatableFloat rotatingEyeAnimatorIndex;
+
     ofxAnimatableQueueofVec3f rotator;
     ofxAnimatableQueueofVec3f path; // path of image
     std::vector<SuperSphere> eyes;
+    std::vector<SuperSphere> rollingEyes;
     ofVec3f currentLocation;
     ofVec3f currentRotation;
     typedef std::pair<float, float> Key;

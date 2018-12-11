@@ -7,13 +7,13 @@ void ImageAnimator::draw() {
 
     // show spirl eye first, if its not running try to text if al else fails show the main eye
     if (rotatingEyeZ.isAnimating()) {
-        spirl.bind();
-        glm::vec3 pos = sphere4Spirl.getPosition();
-        pos.z = rotatingEyeZ.val();
-        sphere4Spirl.setPosition(pos);
-        sphere4Spirl.rotateDeg(20.0f, 0.0f, 0.0f, 1.0f); //bugbug animate and menu
-        sphere4Spirl.draw();
-        spirl.unbind();
+        for (auto& eye : rollingEyes) { // keep all eyes in sync to make it easier
+            glm::vec3 pos = eye.getPosition();
+            pos.z = rotatingEyeZ.val();
+            eye.setPosition(pos);
+            eye.rotateDeg(20.0f, 0.0f, 0.0f, 1.0f); //bugbug animate and menu degree
+        }
+        getCurrentRollingEyeRef().draw();
     }
     else if (!drawText()) { // draw in camera
         if (mainEyeZ.isAnimating()) {

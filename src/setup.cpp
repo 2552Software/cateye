@@ -14,16 +14,29 @@ void ContoursBuilder::setup() {
     grayImage.allocate(imgWidth, imgHeight);
     grayDiff.allocate(imgWidth, imgHeight);
 }
+class internalEye {
+public:
+    void setup(AnimRepeat repeat, float seconds) {
+        mainEyeAnimatorIndex.reset(0.0f);
+        mainEyeAnimatorIndex.setDuration(seconds);
+        mainEyeAnimatorIndex.setRepeatType(repeat);
+        mainEyeAnimatorIndex.setCurve(LINEAR);
+    }
+    void update() {
 
+    }
+    void draw() {
+
+    }
+private:
+    ofxAnimatableFloat mainEyeAnimatorIndex;
+};
 void ImageAnimator::setup() {
 
     font.load("alger.ttf", 100, true, true, true);
     font.setLineHeight(18.0f);
     font.setLetterSpacing(1.037);
 
-    spirl.load("runtime\\spirl\\s1.png"); //bugbug use the multi load tech for main eye here
-    sphere4Spirl.panDeg(180);
-    sphere4Spirl.setResolution(21);
     ofAddListener(rotatingEyeZ.animFinished, this, &ImageAnimator::spirlDone);
     ofAddListener(textFinished, this, &ImageAnimator::creditsDone);
 
@@ -31,30 +44,51 @@ void ImageAnimator::setup() {
     buildY();
     reset();
 
-    animatorIndex.reset(0.0f);
-    animatorIndex.setDuration(1.0f);
-    animatorIndex.setRepeatType(LOOP_BACK_AND_FORTH);
-    animatorIndex.setCurve(LINEAR);
+    mainEyeAnimatorIndex.reset(0.0f);
+    mainEyeAnimatorIndex.setDuration(1.0f);
+    mainEyeAnimatorIndex.setRepeatType(LOOP_BACK_AND_FORTH);
+    mainEyeAnimatorIndex.setCurve(LINEAR);
 
+    rotatingEyeAnimatorIndex.reset(0.0f);
+    rotatingEyeAnimatorIndex.setDuration(1.0f);
+    rotatingEyeAnimatorIndex.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
+    rotatingEyeAnimatorIndex.setCurve(LINEAR);
+    
     path.setup();
     rotator.setup();
     credits(); // setup credits, shown at boot
     contours.setup();
 
     string path = DATAPATH;
-    ofDirectory allEyes(path);
-    allEyes.allowExt("png");
-    allEyes.allowExt("jpg");
+
+    ofDirectory rollingEyesDir(path+ "\\spirl");
+    rollingEyesDir.allowExt("png");
+    rollingEyesDir.allowExt("jpg");
     size_t i = 0;
-    if (allEyes.listDir() > 0) {
-        for (; i < allEyes.size(); i++) {
-            add(allEyes.getPath(i), allEyes.getName(i));
+    if (rollingEyesDir.listDir() > 0) {
+        for (; i < rollingEyesDir.size(); i++) {
+            rollingEyes.push_back(SuperSphere());
+            rollingEyes[rollingEyes.size() - 1].setup(rollingEyesDir.getName(i), "");
+        }
+    }
+    else {
+        ofLogError() << "rolling eyes missing"; // fatal
+    }
+
+    ofDirectory allEyesDir(path);
+    allEyesDir.allowExt("png");
+    allEyesDir.allowExt("jpg");
+    i = 0;
+    if (allEyesDir.listDir() > 0) {
+        for (; i < allEyesDir.size(); i++) {
+            add(allEyesDir.getPath(i), allEyesDir.getName(i));
         }
     }
     else {
         ofLogFatalError() << "eyes missing";
         ofExit(100);
     }
+
     ofDirectory allSounds(path);
     allSounds.allowExt("wav");
     allSounds.allowExt("mp3");

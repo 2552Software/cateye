@@ -17,10 +17,12 @@ void ImageAnimator::update() {
         eye.update();
     }
 
-    rotatingEyeZ.update(1.0f / ofGetTargetFrameRate());
     mainEyeZ.update(1.0f / ofGetTargetFrameRate());
+    rotatingEyeZ.update(1.0f / ofGetTargetFrameRate());
 
-    animatorIndex.update(1.0f / ofGetTargetFrameRate());
+    mainEyeAnimatorIndex.update(1.0f / ofGetTargetFrameRate());
+    rotatingEyeAnimatorIndex.update(1.0f / ofGetTargetFrameRate());
+
     path.update();
     rotator.update();
     contours.update();
@@ -92,7 +94,7 @@ void ImageAnimator::update() {
         }
         // if any data 
         if (max > 10) {
-            ofLogNotice() << "insert targert" << target;
+         //   ofLogNotice() << "insert targert" << target;
             currentRotation = target;
         }
         else {

@@ -4,7 +4,7 @@
 void  ImageAnimator::fireWorks() {
     sounds(5);
     ignight(false);
-    rotatingEyeZ.animateFromTo(-sphere4Spirl.getRadius(), 0);
+    rotatingEyeZ.animateFromTo(-getCurrentRollingEyeRef().getRadius(), getCurrentRollingEyeRef().getRadius() / 4);
 }
 
 void Map::trigger() {
@@ -59,7 +59,7 @@ void ImageAnimator::sounds(int duration) {
 void ImageAnimator::ignight(bool on) {
     // create hot grids
     for (auto& a : thingsToDo) {
-        a.second.set((on) ? 1:0); // clear all is 0 menu pick -- all 1s enable all
+        a.second.set((on) ? 1 : 0); // clear all is 0 menu pick -- all 1s enable all
     }
     level = (on) ? 1 : 0;
 }
@@ -71,7 +71,7 @@ void ImageAnimator::randomize() {
         int i = (int)ofRandom(10, thingsToDo.size() - 11); // keep from the edges
         int index = 0;
         for (auto& item : thingsToDo) {
-            if (index == i){
+            if (index == i) {
                 item.second.set(1);
                 ++c;
                 break;
@@ -129,15 +129,15 @@ void ImageAnimator::reset() {
     buildTable();
     randomize();
 }
- 
+
 void ImageAnimator::creditsDone(TextEvent & event) {
     fireWorks();
 }
 
 void ImageAnimator::spirlDone(ofxAnimatableFloat::AnimationEvent & event) {
     float r = getCurrentEyeRef().getRadius();
-   
-    mainEyeZ.animateFromTo(-sphere4Spirl.getRadius(), 0.0f);
+    
+    mainEyeZ.animateFromTo(-getCurrentRollingEyeRef().getRadius(), 0.0f);
 }
 
 void ImageAnimator::windowResized(int w, int h) {
@@ -146,9 +146,10 @@ void ImageAnimator::windowResized(int w, int h) {
         eye.setRadius(r);
         eye.setPosition((w / 2) - r, (h / 2) - (r / 2), 0);
     }
-    //bugbug will into loop for more than 1 spyril
-    sphere4Spirl.setPosition((ofGetWidth() / 2) - r, (ofGetHeight() / 2) - (r / 2), 0);
-    sphere4Spirl.setRadius(r);
+    for (SuperSphere&eye : rollingEyes) {
+        eye.setRadius(r);
+        eye.setPosition((w / 2) - r, (h / 2) - (r / 2), 0);
+    }
 
     // duration bugbug set in menu
     rotatingEyeZ.reset();
@@ -163,9 +164,12 @@ void ImageAnimator::windowResized(int w, int h) {
 }
 
 void ImageAnimator::startPlaying() {
-    animatorIndex.animateTo(eyes.size() - 1);
+    mainEyeAnimatorIndex.animateTo(eyes.size() - 1);
     sounds();
 }
 SuperSphere&ImageAnimator::getCurrentEyeRef() {
-    return eyes[(int)animatorIndex.getCurrentValue()];
+    return eyes[(int)mainEyeAnimatorIndex.getCurrentValue()];
+}
+SuperSphere&ImageAnimator::getCurrentRollingEyeRef() {
+    return rollingEyes[(int)rotatingEyeAnimatorIndex.getCurrentValue()];
 }

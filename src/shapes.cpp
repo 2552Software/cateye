@@ -220,36 +220,41 @@ void Eye::stop() {
     material.end();
 }
 void SuperSphere::setup(const string&name, const string&blinkPath) {
-    blinkingEnabled = true;
     eye.setup(name);
-    string path = DATAPATH;
-    path += "\\" + blinkPath + ".blink";
-    ofDirectory dir(path);
-    dir.listDir();
-    blink.push_back(Eye(name));
-    std::string name2;
-    for (size_t i = 0; i < dir.size(); i++) {
-        name2 = path + "\\";
-        name2 += dir.getName(i);
-        blink.push_back(Eye(name2));
-    }
-    blink.push_back(Eye(name2)); // last one gets skipped
 
-    blinker.reset(0.0f);
-    blinker.setCurve(LINEAR);
-    blinker.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
-    blinker.setDuration(3.2f);
-    blinker.animateTo(blink.size() - 1);
-    // blink
+    blink.push_back(Eye(name)); // element 0 is the main non blinking eye
+
+    if (blinkPath.size() > 0L) {
+        blinkingEnabled = true;
+        string path = DATAPATH;
+        path += "\\" + blinkPath + ".blink";
+        ofDirectory dir(path);
+        dir.listDir();
+        std::string name2;
+        for (size_t i = 0; i < dir.size(); i++) {
+            name2 = path + "\\";
+            name2 += dir.getName(i);
+            blink.push_back(Eye(name2));
+        }
+        blink.push_back(Eye(name2)); // last one gets skipped
+        blinker.reset(0.0f);
+        blinker.setCurve(LINEAR);
+        blinker.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
+        blinker.setDuration(3.2f);
+        blinker.animateTo(blink.size() - 1);
+    }
+
     setResolution(21);
     panDeg(180);
     // animateToAfterDelay
 }
 void SuperSphere::update() {
-    blinker.update(1.0f / ofGetTargetFrameRate());
-    if (!blinker.isOrWillBeAnimating()) {
-        blinker.reset(0.0f);
-        blinker.animateToAfterDelay(blink.size() - 1, ofRandom(15, 415));
+    if (blinkingEnabled) {
+        blinker.update(1.0f / ofGetTargetFrameRate());
+        if (!blinker.isOrWillBeAnimating()) {
+            blinker.reset(0.0f);
+            blinker.animateToAfterDelay(blink.size() - 1, ofRandom(15, 415));
+        }
     }
 }
 void SuperSphere::draw() {
