@@ -139,7 +139,7 @@ void ImageAnimator::reset() {
 }
 
 void ImageAnimator::creditsDone(TextEvent & event) {
-    if (!sendFireworks) {
+    if (sendFireworks) {
         sendFireworks = false;
         fireWorks();
     }
