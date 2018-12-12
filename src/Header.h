@@ -140,13 +140,14 @@ public:
     void update();
     void draw();
     void resize(int w, int h);
-    bool isAnimating() {  return animator.isAnimating();   }
-    SuperSphere&getCurrentEyeRef() {   return eyes[(int)animator.getCurrentValue()];  }
+    bool isAnimating() {  return getAnimator().isAnimating();   }
+    SuperSphere&getCurrentEyeRef() {   return eyes[(int)selector.getCurrentValue()];  }
     size_t count() { return eyes.size(); }
     ofxAnimatableFloat& getAnimator() { return animator; }
 private:
     void add(const std::string &name, const std::string &root, bool blink);
-    ofxAnimatableFloat animator; // z direcition
+    ofxAnimatableFloat animator; // z direction
+    ofxAnimatableFloat selector; // pick eye to draw
     std::vector<SuperSphere> eyes;
     float rotate;
 };
@@ -202,7 +203,7 @@ private:
     std::vector<ofSoundPlayer> mySounds;
     Eyes mainEyes;
     Eyes rotatingEyes;
-
+    bool sendFireworks;
     ofxAnimatableQueueofVec3f rotator;
     ofxAnimatableQueueofVec3f imagPath; // not used yet moves eye around
     ofVec3f currentLocation;

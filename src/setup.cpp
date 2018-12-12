@@ -4,16 +4,21 @@
 void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path, bool blink, float rotateIn) {
     rotate = rotateIn;
 
-    animator.reset(0.0f);
-    animator.setDuration(seconds);
-    animator.setRepeatType(repeat);
-    animator.setCurve(LINEAR);
+    getAnimator().reset(0.0f);
+    getAnimator().setDuration(seconds);
+    getAnimator().setRepeatType(repeat);
+    getAnimator().setCurve(LINEAR);
 
     ofDirectory dir(path);
     dir.allowExt("png");
     dir.allowExt("jpg");
     size_t i = 0;
     if (dir.listDir() > 0) {
+        selector.reset(0.0f);
+        selector.setDuration(60.0f); // do not pick too often bugbug menu
+        selector.setRepeatType(LOOP_BACK_AND_FORTH);
+        selector.setCurve(LINEAR);
+        selector.animateTo(dir.size()-1);
         for (; i < dir.size(); i++) {
             add(dir.getName(i), dir.getPath(i), blink);
         }
@@ -51,7 +56,7 @@ void ImageAnimator::setup() {
     buildY();
     imagPath.setup();
 
-    mainEyes.setup(LOOP_BACK_AND_FORTH, 1.0f, DATAPATH, true, 0.0f);
+    mainEyes.setup(PLAY_ONCE, 1.0f, DATAPATH, true, 0.0f);
     if (!mainEyes.count()) {
         ofLogFatalError() << "eyes missing";
         ofExit(100);
@@ -59,7 +64,7 @@ void ImageAnimator::setup() {
 
     std::string path = DATAPATH;
     path += "\\spirl";
-    rotatingEyes.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, path, false, 20.0f);
+    rotatingEyes.setup(LOOP_BACK_AND_FORTH_ONCE, 5.0f, path, false, 20.0f);
     if (!rotatingEyes.count()) {
         ofLogError() << "rotating eyes missing";
     }

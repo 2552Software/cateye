@@ -4,7 +4,8 @@ void Eyes::update() {
     for (SuperSphere&eye : eyes) {
         eye.update();
     }
-    animator.update(1.0f / ofGetTargetFrameRate());
+    getAnimator().update(1.0f / ofGetTargetFrameRate());
+    selector.update(1.0f / ofGetTargetFrameRate());
 }
 
 void ImageAnimator::update() {
@@ -31,7 +32,8 @@ void ImageAnimator::update() {
         ofSetWindowTitle(ss.str());
         if (isWinner(count())) {
             //credits will call fireworks when done
-         credits();
+            sendFireworks = true;
+            credits();
         }
         else {
             if (((int)ofGetElapsedTimef() % 30) == 0) {//bugbug put in menu

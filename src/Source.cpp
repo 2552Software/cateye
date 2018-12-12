@@ -25,7 +25,8 @@ void Eyes::resize(int w, int h) {
 
 void  ImageAnimator::fireWorks() {
     sounds(5);
-    rotatingEyes.getAnimator().animateFromTo(-rotatingEyes.getCurrentEyeRef().getRadius(), rotatingEyes.getCurrentEyeRef().getRadius() / 4);
+    //rotatingEyes.getAnimator().animateFromTo(-rotatingEyes.getCurrentEyeRef().getRadius(), rotatingEyes.getCurrentEyeRef().getRadius() / 4);
+    rotatingEyes.getAnimator().animateFromTo(-100, 100);
 }
 
 void Map::trigger() {
@@ -132,12 +133,16 @@ int ImageAnimator::count() {
 }
 
 void ImageAnimator::reset() {
+    sendFireworks = false;
     buildTable();
     randomize();
 }
 
 void ImageAnimator::creditsDone(TextEvent & event) {
-    fireWorks();
+    if (!sendFireworks) {
+        sendFireworks = false;
+        fireWorks();
+    }
 }
 
 void ImageAnimator::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event) {

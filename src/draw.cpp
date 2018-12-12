@@ -23,7 +23,7 @@ void Eyes::draw() {
     if (isAnimating()) {
         for (auto& eye : eyes) { // keep all eyes in sync to make it easier
             glm::vec3 pos = eye.getPosition();
-            pos.z = animator.val();
+            pos.z = getAnimator().val();
             eye.setPosition(pos);
             if (rotate) {
                 eye.rotateDeg(rotate, 0.0f, 0.0f, 1.0f); //bugbug animate and menu degree bugbug make a point rotate x,y,z?
