@@ -2,22 +2,8 @@
 
 void ImageAnimator::draw() {
 
-    //if (drawText()) { // draw text first, if no text draw the eye
-   //     return;
-   // }
-
-    // show spirl eye first, if its not running try to text if al else fails show the main eye
-  //  if (rotatingEyes.isAnimating()) {
-     //   rotatingEyes.draw();
-       // return;
-  //  }
-
-   /// ofPushMatrix();
-   // rotate(currentRotation); // rotate screen, not object, so same rotation works every time
-    //mainEyes.draw();
-   // ofPopMatrix();
-
-    drawGame(); // draw any game that may be running
+    rotate(currentRotation); // rotate screen, not object, so same rotation works every time
+    mainEyes.draw();
 
 }
 
@@ -141,11 +127,11 @@ void GameItem::draw(int alpha, float xFactor, float yFactor) {
 void ImageAnimator::drawGame() {
     // convert camera mapping to screen mapping and draw
     //if (count() >= firstMatchCount()) {
-    float screenW = cameraWidth * xFactor;
-    float gameW = xGameItems * xFactor*gameItemWidth;
-    float moveX = (screenW - gameW) / 2;
+    //float screenW = cameraWidth * xFactor;
+    //float gameW = xGameItems * xFactor*gameItemWidth;
+    //float moveX = (screenW - gameW) / 2;
     //ofTranslate(ofGetWidth()/2, ofGetHeight() / 3);
-    ofTranslate(-gameW, 0.0f);
+    //ofTranslate(-gameW, 0.0f);
     for (auto& item : cameraMapping) {
         item.second.draw(175, xFactor, yFactor);//bugbug make menu
     }

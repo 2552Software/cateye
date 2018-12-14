@@ -176,6 +176,8 @@ public:
     void credits(bool signon = false);
     void drawGame();
     void windowResized(int w, int h);
+    Eyes mainEyes;
+    Eyes rotatingEyes;
 
 private:
     int xGameItems; // number of blocks in game
@@ -201,8 +203,6 @@ private:
     float maxForTrigger;
     void rotate(const ofVec3f& target);
     std::vector<ofSoundPlayer> mySounds;
-    Eyes mainEyes;
-    Eyes rotatingEyes;
     bool sendFireworks;
     ofxAnimatableQueueofVec3f rotator;
     ofxAnimatableQueueofVec3f imagPath; // not used yet moves eye around

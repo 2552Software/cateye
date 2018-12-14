@@ -80,10 +80,19 @@ void ofApp::draw(){
     if (hideMenu) {
         ofEnableDepthTest();
         ofPushStyle();
+        ofPushMatrix();
         light.enable();
         camera.begin();
-        ofPushMatrix();
-        eyeAnimator.draw();
+        if (!eyeAnimator.drawText()) { // draw text first, if no text draw the eye
+                // show spirl eye first, if its not running try to text if al else fails show the main eye
+            if (eyeAnimator.rotatingEyes.isAnimating()) {
+                eyeAnimator.rotatingEyes.draw();
+                return;
+            }
+            else {
+                eyeAnimator.draw();
+            }
+        }
         ofPopMatrix();
         ofPopStyle();
         camera.end();
@@ -95,6 +104,7 @@ void ofApp::draw(){
             ofPopMatrix();
             ofPopStyle();
         }
+        eyeAnimator.drawGame(); // draw any game that may be running
         light.disable();
         ofDisableDepthTest();
     }
