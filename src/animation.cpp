@@ -10,9 +10,6 @@ void ofxAnimatableQueueofVec3f::update() {
                 animSteps.pop_front();
                 ofLogNotice() << "next";
             }
-            else {
-                ofLogNotice() << "empty";
-            }
         }
     }
 }

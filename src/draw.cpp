@@ -2,18 +2,20 @@
 
 void ImageAnimator::draw() {
 
-    if (drawText()) { // draw text first, if no text draw the eye
-        return;
-    }
+    //if (drawText()) { // draw text first, if no text draw the eye
+   //     return;
+   // }
 
     // show spirl eye first, if its not running try to text if al else fails show the main eye
-    if (rotatingEyes.isAnimating()) {
-        rotatingEyes.draw();
-        return;
-    }
+  //  if (rotatingEyes.isAnimating()) {
+     //   rotatingEyes.draw();
+       // return;
+  //  }
 
-    rotate(currentRotation); // rotate screen, not object, so same rotation works every time
-    mainEyes.draw();
+   /// ofPushMatrix();
+   // rotate(currentRotation); // rotate screen, not object, so same rotation works every time
+    //mainEyes.draw();
+   // ofPopMatrix();
 
     drawGame(); // draw any game that may be running
 
@@ -104,8 +106,9 @@ bool ImageAnimator::drawText() {
 
 void ImageAnimator::drawGame() {
     //if (count() >= firstMatchCount()) {
+    ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
     for (auto& item : thingsToDo) {
-        item.second.draw(175);//bugbug make menu
+        item.second.draw(175, xFactor, yFactor);//bugbug make menu
     }
     //}
 }

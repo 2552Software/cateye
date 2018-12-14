@@ -26,11 +26,11 @@ void ImageAnimator::update() {
     contours.update();
 
     if (!isAnimating()) {
-        int c = count();
+        int c = winnerHitCount();
         std::stringstream ss;
-        ss << c << ":" << winnerCount();
+        ss << c << ":" << winnerThreshold();
         ofSetWindowTitle(ss.str());
-        if (isWinner(count())) {
+        if (isWinner(c)) {
             //credits will call fireworks when done
             sendFireworks = true;
             credits();
@@ -58,14 +58,14 @@ void ImageAnimator::update() {
                 // see if we have a trigger
                 for (auto& blob : contours.contourFinder.blobs) {
                     if (blob.area > maxForTrigger && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
-                        int c = count();
+                        int c = winnerHitCount();
 
-                        if (c >= firstMatchCount()) {
-                            ignight();
+                        if (c >= firstMatchCount() && level == 0) {
+                            ignight(); // set all items to true -- ie ready to select
                         }
                         float mymax = maxForTrigger;
                         if (c > firstMatchCount() + 1) {
-                            mymax /= 3; // see less
+                            mymax /= 3; // see less once game stgarts
                         }
                         if (blob.area >= mymax) {
                             // see if we can trigger with this one

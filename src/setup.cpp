@@ -43,6 +43,11 @@ void ContoursBuilder::setup() {
     grayDiff.allocate(imgWidth, imgHeight);
 }
 void ImageAnimator::setup() {
+
+    // convert to screen size
+    xFactor = ofGetScreenWidth() / imgWidth;
+    yFactor = ofGetScreenHeight() / imgHeight;
+
     reset(); // go to a known state
 
     font.load("alger.ttf", 100, true, true, true);
@@ -64,7 +69,7 @@ void ImageAnimator::setup() {
 
     std::string path = DATAPATH;
     path += "\\spirl";
-    rotatingEyes.setup(LOOP_BACK_AND_FORTH_ONCE, 5.0f, path, false, 20.0f);
+    rotatingEyes.setup(LOOP_BACK_AND_FORTH_ONCE, 3.0f, path, false, 25.0f);
     if (!rotatingEyes.count()) {
         ofLogError() << "rotating eyes missing";
     }

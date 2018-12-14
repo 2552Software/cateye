@@ -105,10 +105,10 @@ private:
     ofxCvGrayscaleImage grayImage, backgroundImage, grayDiff;
 };
 
-class Map {
+class GameItem {
 public:
-    Map() {}
-    Map(const ofRectangle& rectangle) {
+    GameItem() {}
+    GameItem(const ofRectangle& rectangle) {
        set(0);  // actions can vary
        set(rectangle);
     }
@@ -117,13 +117,10 @@ public:
     void set(int action);
     void setup();
     void update();
-    void draw(int alpha=255);
+    void draw(int alpha, float xScale, float yScale);
     void reset() { game.reset(); }
     int getAction() { return action; }
     bool match(const ofRectangle& rect) { return rectangle.inside(rect); }//return rectangle.intersects(rect); }
-    // convert to screen size
-    float xFactor;
-    float yFactor;
 
 private:
  
@@ -163,22 +160,23 @@ public:
     //http://www.findsounds.com/ISAPI/search.dll?keywords=cat
     void sounds(int duration= 5); // default to full sound
     void circle();
-    void windowResized(int w, int h);
     void startPlaying();
-    int count(); // count of items being animiated
+    int winnerHitCount(); // count of items being animiated
     void reset();
     void setCount(int count);
     void ignight(bool on=true);
     int  firstMatchCount() { return 1; } // intial game trigger bugbug make menu item
-    int  winnerCount() { return 5; } // intial game trigger bugbug make menu item
+    int  winnerThreshold() { return 5; } // intial game trigger bugbug make menu item
     void setTriggerCount(float count);
     void setShapeMinSize(float size) { shapeMinSize = size; };
     bool isIgnighted(int count) { return count > firstMatchCount(); }
-    bool isWinner(int count) { return count >= winnerCount(); } // easy mode! bugbug menu
+    bool isWinner(int count) { return count >= winnerThreshold(); } // easy mode! bugbug menu
     bool drawText();
     bool isAnimating();
     void credits(bool signon = false);
     void drawGame();
+    void windowResized(int w, int h);
+
 private:
     struct TextEvent {
         int i;
@@ -211,7 +209,11 @@ private:
     typedef std::pair<float, float> Key;
     std::map<Key, float> mapCameraInX; // range to rotation
     std::map<Key, float> mapCameraInY;
-    std::map<std::pair<int, int>, Map> thingsToDo; // map indexes
+    std::map<std::pair<int, int>, GameItem> thingsToDo; // map indexes
+    // convert to screen size
+    float xFactor;
+    float yFactor;
+
 };
 class Scheduler : public ofThread {
 public:

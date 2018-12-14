@@ -8,31 +8,28 @@ void ImageAnimator::buildTable() {
         for (float x = w; x < imgWidth - w; x += w) {
             for (float y = h; y < imgHeight - h; y += h) {
                 // roate the x  to reflect viewer vs camera
-                thingsToDo.insert(std::make_pair(std::make_pair(x, y), Map(ofRectangle(x, y, w, h)))); // build an default table
+                thingsToDo.insert(std::make_pair(std::make_pair(x, y), GameItem(ofRectangle(x, y, w, h)))); // build a default table
             }
         }
     }
 }
 
-void Map::setup() {
-    // convert to screen size
-    xFactor = ofGetScreenWidth() / imgWidth;
-    yFactor = ofGetScreenHeight() / imgHeight;
+void GameItem::setup() {
 }
-void Map::set(int a) {
+void GameItem::set(int a) {
     action = a;
 }
 
-void Map::set(const ofRectangle& r) {
+void GameItem::set(const ofRectangle& r) {
     rectangle = r;
 }
 
-void Map::update() {
+void GameItem::update() {
     color.update(1.0f / ofGetTargetFrameRate());
     game.update(1.0f / ofGetTargetFrameRate());
 }
 
-void Map::draw(int alpha) {
+void GameItem::draw(int alpha, float xFactor, float yFactor) {
     if (isAnimating()) {
         ofPushStyle();
         ofNoFill();
@@ -40,12 +37,12 @@ void Map::draw(int alpha) {
         ofColor c = color.getCurrentColor();
         c.a = alpha;// alpha; keep it light
         ofSetColor(c);
-       // ofDrawRectangle(xFactor*rectangle.x, yFactor*rectangle.y, xFactor*rectangle.width, yFactor*rectangle.height);
+        ofDrawRectangle(xFactor*rectangle.x, yFactor*rectangle.y, xFactor*rectangle.width, yFactor*rectangle.height);
         ofBoxPrimitive box;
-        box.set(xFactor*rectangle.width);
+        box.set(xFactor*rectangle.width, yFactor*rectangle.height, 0.0f);
         box.setPosition(xFactor*rectangle.x, yFactor*rectangle.y, 0.0f);
-        box.rollDeg(10.0f);
-        box.drawWireframe();
+        //box.rollDeg(10.0f);
+       // box.drawWireframe();
         ofDisableAlphaBlending();
         ofPopStyle();
     }
@@ -132,8 +129,8 @@ bool TextTimer::getString(std::string& output) {
         if (n >= (int)text.length()) {
             done = true;
             lasting.setColor(ofColor::white);
-            lasting.setDuration(5.0f);
-            lasting.setRepeatType(PLAY_ONCE);
+            lasting.setDuration(1.0f);
+            lasting.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
             lasting.setCurve(EASE_IN_EASE_OUT);
             lasting.animateTo(ofColor::orangeRed);
         }
@@ -150,6 +147,7 @@ void ImageAnimator::draw(const std::string& s, float x, float y) {
 }
 void ImageAnimator::credits(bool signon) {
     /** bugbug removed */
+    creditsText.push_back(TextTimer("fast for testing", 1000.0f, 0.0f, 0.0f));
     return;
 
     creditsText.clear();

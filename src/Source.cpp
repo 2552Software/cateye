@@ -26,10 +26,10 @@ void Eyes::resize(int w, int h) {
 void  ImageAnimator::fireWorks() {
     sounds(5);
     //rotatingEyes.getAnimator().animateFromTo(-rotatingEyes.getCurrentEyeRef().getRadius(), rotatingEyes.getCurrentEyeRef().getRadius() / 4);
-    rotatingEyes.getAnimator().animateFromTo(-100, 100);
+    rotatingEyes.getAnimator().animateFromTo(-200, 200);
 }
 
-void Map::trigger() {
+void GameItem::trigger() {
     if (!isAnimating()) {
         float duration = 25.0f;//seconds bugbug make menu
         game.reset(5.0f);
@@ -87,6 +87,7 @@ void ImageAnimator::ignight(bool on) {
 }
 // call just after things are found and upon startup
 void ImageAnimator::randomize() {
+    level = 0; // start over
     ignight(false); // reset 
     // make sure we get 3 or random points used to unlock the game
     for (int c = 0; c < firstMatchCount(); ) {
@@ -122,7 +123,7 @@ ImageAnimator::ImageAnimator() {
 }
 
 // count of items selected
-int ImageAnimator::count() {
+int ImageAnimator::winnerHitCount() {
     int count = 0;
     for (auto& item : thingsToDo) {
         if (item.second.isAnimating()) {
@@ -147,11 +148,15 @@ void ImageAnimator::creditsDone(TextEvent & event) {
 
 void ImageAnimator::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event) {
     // no move main eye back into focus
+    currentRotation.set(0.0f, 0.0f); // look forward, move ahead its not too late
     mainEyes.getAnimator().animateFromTo(-rotatingEyes.getCurrentEyeRef().getRadius(), 0.0f);
     randomize(); // reset and start again
 }
 
 void ImageAnimator::windowResized(int w, int h) {
+    // convert to screen size
+    xFactor = w / imgWidth;
+    yFactor = h / imgHeight;
 
     mainEyes.resize(w,h);
     rotatingEyes.resize(w, h);
