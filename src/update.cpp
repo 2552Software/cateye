@@ -10,7 +10,7 @@ void Eyes::update() {
 
 void ImageAnimator::update() {
 
-    for (auto& a : thingsToDo) {
+    for (auto& a : cameraMapping) {
         a.second.update();
     }
 
@@ -69,7 +69,7 @@ void ImageAnimator::update() {
                         }
                         if (blob.area >= mymax) {
                             // see if we can trigger with this one
-                            for (auto& item : thingsToDo) { // get all blocks within region
+                            for (auto& item : cameraMapping) { // get all blocks within region
                                 if (item.second.match(blob.boundingRect)) {
                                     item.second.trigger();
                                     if (mymax <= maxForTrigger) {
@@ -81,11 +81,11 @@ void ImageAnimator::update() {
                     }
                 }
                 if (max > shapeMinSize) { // fine tune on site 
-                    int w = imgWidth; // camera size not screen size
-                    int h = imgHeight;
+                    int w = cameraWidth; // camera size not screen size
+                    int h = cameraHeight;
 
-                    double x = (centroid.x / imgWidth)*100.0f; // make it a percent
-                    double y = (centroid.y / imgHeight)*100.0f; // make it a percent
+                    double x = (centroid.x / cameraWidth)*100.0f; // make it a percent
+                    double y = (centroid.y / cameraHeight)*100.0f; // make it a percent
 
                     //if (mapX.find(std::make_pair(xAction, yAction)) != mapX.end()) {
                    // }
@@ -129,12 +129,12 @@ void ContoursBuilder::update() {
         }
         backgroundImage = grayImage; // only track new items -- so eye moves when objects move
         grayDiff.threshold(50); // turn any pixels above 30 white, and below 100 black
-        if (!contourFinder.findContours(grayDiff, 5, (imgWidth*imgHeight), 128, false, true)) {
+        if (!contourFinder.findContours(grayDiff, 5, (cameraWidth*cameraHeight), 128, false, true)) {
             contourFinder.blobs.clear(); // removes echo but does it make things draw too fast?
         }
         grayImage.blurGaussian(3);
         grayImage.threshold(50);
-        if (!contourDrawer.findContours(grayImage, 5, (imgWidth*imgHeight), 128, true)) {
+        if (!contourDrawer.findContours(grayImage, 5, (cameraWidth*cameraHeight), 128, true)) {
             contourDrawer.blobs.clear();
         }
     }

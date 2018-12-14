@@ -178,6 +178,8 @@ public:
     void windowResized(int w, int h);
 
 private:
+    int xGameItems; // number of blocks in game
+    int gameItemWidth; // pixels in one game item
     struct TextEvent {
         int i;
     };
@@ -209,7 +211,7 @@ private:
     typedef std::pair<float, float> Key;
     std::map<Key, float> mapCameraInX; // range to rotation
     std::map<Key, float> mapCameraInY;
-    std::map<std::pair<int, int>, GameItem> thingsToDo; // map indexes
+    std::map<std::pair<int, int>, GameItem> cameraMapping; // map indexes
     // convert to screen size
     float xFactor;
     float yFactor;

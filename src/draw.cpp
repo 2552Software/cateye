@@ -41,10 +41,10 @@ void ContoursBuilder::draw(float cxScreen, float cyScreen) {
     for (auto& blob : contourDrawer.blobs) {
         ofPolyline line;
         for (int i = 0; i < blob.nPts; i++) {
-            line.addVertex((imgWidth - blob.pts[i].x), blob.pts[i].y);
+            line.addVertex((cameraWidth - blob.pts[i].x), blob.pts[i].y);
         }
         line.close();
-        line.scale(cxScreen / imgWidth, cyScreen / imgHeight);
+        line.scale(cxScreen / cameraWidth, cyScreen / cameraHeight);
         line.draw();
     }
     ofSetLineWidth(5);// ofRandom(1, 5));
@@ -52,10 +52,10 @@ void ContoursBuilder::draw(float cxScreen, float cyScreen) {
         for (auto& blob : contourFinder.blobs) {
             ofPolyline line;
             for (int i = 0; i < blob.nPts; i++) {
-                line.addVertex((imgWidth - blob.pts[i].x), blob.pts[i].y);
+                line.addVertex((cameraWidth - blob.pts[i].x), blob.pts[i].y);
             }
             line.close();
-            line.scale(cxScreen / imgWidth, cyScreen / imgHeight);
+            line.scale(cxScreen / cameraWidth, cyScreen / cameraHeight);
             line.draw();
             //ofDrawRectangle(blob.boundingRect.x, blob.boundingRect.y, blob.boundingRect.width, blob.boundingRect.height);
         }
@@ -103,11 +103,50 @@ bool ImageAnimator::drawText() {
 
     return found;
 }
+void GameItem::draw(int alpha, float xFactor, float yFactor) {
+    if (isAnimating()) {
+        ofPushStyle();
+        ofNoFill();
+        ofEnableAlphaBlending();
+        ofColor c = color.getCurrentColor();
+        c.a = alpha;// alpha; keep it light
+        ofSetColor(c);
+        ofDrawRectangle(xFactor*rectangle.x, yFactor*rectangle.y, 0.0f,xFactor*rectangle.width, yFactor*rectangle.height);
+        ofBoxPrimitive box;
+        box.set(xFactor*rectangle.width, yFactor*rectangle.height, 0.0f);
+        box.setPosition(xFactor*rectangle.x, yFactor*rectangle.y, 0.0f);
+        //box.rollDeg(10.0f);
+       // box.drawWireframe();
+        ofDisableAlphaBlending();
+        ofPopStyle();
+    }
+    else {
+        ofPushStyle();
+        ofFill();
+        ofEnableAlphaBlending();
+        ofColor c = color.getCurrentColor();
+        c.a = alpha;// alpha; keep it light
+        ofSetColor(c);
+        ofDrawRectangle(xFactor*rectangle.x, yFactor*rectangle.y, xFactor*rectangle.width, yFactor*rectangle.height);
+        ofBoxPrimitive box;
+        box.set(xFactor*rectangle.width, yFactor*rectangle.height, 0.0f);
+        box.setPosition(xFactor*rectangle.x, yFactor*rectangle.y, 0.0f);
+        //box.rollDeg(10.0f);
+       // box.drawWireframe();
+        ofDisableAlphaBlending();
+        ofPopStyle();
+    }
+}
 
 void ImageAnimator::drawGame() {
+    // convert camera mapping to screen mapping and draw
     //if (count() >= firstMatchCount()) {
-    ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
-    for (auto& item : thingsToDo) {
+    float screenW = cameraWidth * xFactor;
+    float gameW = xGameItems * xFactor*gameItemWidth;
+    float moveX = (screenW - gameW) / 2;
+    //ofTranslate(ofGetWidth()/2, ofGetHeight() / 3);
+    ofTranslate(-gameW, 0.0f);
+    for (auto& item : cameraMapping) {
         item.second.draw(175, xFactor, yFactor);//bugbug make menu
     }
     //}

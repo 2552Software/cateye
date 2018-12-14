@@ -49,15 +49,15 @@ void ofApp::setup(){
 }
 
 void ofApp::shapeSizeChanged(float &size) {
-    eyeAnimator.setShapeMinSize(size);
+    // menu is next release bugbugeyeAnimator.setShapeMinSize(size);
 }
 
 void ofApp::triggerCountChanged(float &count) {
-    eyeAnimator.setTriggerCount(count);
+    // menu is next release bugbugeyeAnimator.setTriggerCount(count);
 }
 
 void ofApp::squareCountChanged(int &squareCount) {
-    eyeAnimator.setCount(squareCount); 
+    // menu is next release bugbug eyeAnimator.setCount(squareCount); 
 }
 
 //--------------------------------------------------------------

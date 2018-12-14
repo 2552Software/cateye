@@ -80,20 +80,19 @@ void ImageAnimator::sounds(int duration) {
 
 void ImageAnimator::ignight(bool on) {
     // create hot grids
-    for (auto& a : thingsToDo) {
+    for (auto& a : cameraMapping) {
         a.second.set((on) ? 1 : 0); // clear all is 0 menu pick -- all 1s enable all
     }
     level = (on) ? 1 : 0;
 }
 // call just after things are found and upon startup
 void ImageAnimator::randomize() {
-    level = 0; // start over
     ignight(false); // reset 
     // make sure we get 3 or random points used to unlock the game
     for (int c = 0; c < firstMatchCount(); ) {
-        int i = (int)ofRandom(10, thingsToDo.size() - 11); // keep from the edges
+        int i = (int)ofRandom(10, cameraMapping.size() - 11); // keep from the edges
         int index = 0;
-        for (auto& item : thingsToDo) {
+        for (auto& item : cameraMapping) {
             if (index == i) {
                 item.second.set(1);
                 ++c;
@@ -125,7 +124,7 @@ ImageAnimator::ImageAnimator() {
 // count of items selected
 int ImageAnimator::winnerHitCount() {
     int count = 0;
-    for (auto& item : thingsToDo) {
+    for (auto& item : cameraMapping) {
         if (item.second.isAnimating()) {
             ++count;
         }
@@ -155,8 +154,8 @@ void ImageAnimator::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event)
 
 void ImageAnimator::windowResized(int w, int h) {
     // convert to screen size
-    xFactor = w / imgWidth;
-    yFactor = h / imgHeight;
+    xFactor = w / cameraWidth;
+    yFactor = h / cameraHeight;
 
     mainEyes.resize(w,h);
     rotatingEyes.resize(w, h);

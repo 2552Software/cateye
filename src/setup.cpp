@@ -37,16 +37,18 @@ void ContoursBuilder::setup() {
         }
     }
     video.setVerbose(true);
-    video.setup(imgWidth, imgHeight);
-    colorImg.allocate(imgWidth, imgHeight);
-    grayImage.allocate(imgWidth, imgHeight);
-    grayDiff.allocate(imgWidth, imgHeight);
+    video.setup(cameraWidth, cameraHeight);
+    colorImg.allocate(cameraWidth, cameraHeight);
+    grayImage.allocate(cameraWidth, cameraHeight);
+    grayDiff.allocate(cameraWidth, cameraHeight);
 }
 void ImageAnimator::setup() {
 
     // convert to screen size
-    xFactor = ofGetScreenWidth() / imgWidth;
-    yFactor = ofGetScreenHeight() / imgHeight;
+    xFactor = ofGetScreenWidth() / cameraWidth;
+    yFactor = ofGetScreenHeight() / cameraHeight;
+    xGameItems = 0;
+    gameItemWidth = 0;
 
     reset(); // go to a known state
 

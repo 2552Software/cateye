@@ -1,14 +1,17 @@
 #include "ofApp.h"
 void ImageAnimator::buildTable() {
+    gameItemWidth = xGameItems = 0;
     if (squareCount) {
-        thingsToDo.clear();
+        cameraMapping.clear();
         // all based on camera size and just grid out the screen 10x10 or what ever size we want
-        float w = imgWidth / squareCount; // menu bugbug
-        float h = imgHeight / squareCount;
-        for (float x = w; x < imgWidth - w; x += w) {
-            for (float y = h; y < imgHeight - h; y += h) {
+        float w = cameraWidth / squareCount; // menu bugbug
+        float h = cameraHeight / squareCount;
+        gameItemWidth = w; // in camera size pixels
+        for (float x = w; x < cameraWidth - w; x += w) { // keep off the edges -- camera cannot always pick those up
+            ++xGameItems;
+            for (float y = h; y < cameraHeight - h; y += h) {
                 // roate the x  to reflect viewer vs camera
-                thingsToDo.insert(std::make_pair(std::make_pair(x, y), GameItem(ofRectangle(x, y, w, h)))); // build a default table
+                cameraMapping.insert(std::make_pair(std::make_pair(x, y), GameItem(ofRectangle(x, y, w, h)))); // build a default table
             }
         }
     }
@@ -29,24 +32,6 @@ void GameItem::update() {
     game.update(1.0f / ofGetTargetFrameRate());
 }
 
-void GameItem::draw(int alpha, float xFactor, float yFactor) {
-    if (isAnimating()) {
-        ofPushStyle();
-        ofNoFill();
-        ofEnableAlphaBlending();
-        ofColor c = color.getCurrentColor();
-        c.a = alpha;// alpha; keep it light
-        ofSetColor(c);
-        ofDrawRectangle(xFactor*rectangle.x, yFactor*rectangle.y, xFactor*rectangle.width, yFactor*rectangle.height);
-        ofBoxPrimitive box;
-        box.set(xFactor*rectangle.width, yFactor*rectangle.height, 0.0f);
-        box.setPosition(xFactor*rectangle.x, yFactor*rectangle.y, 0.0f);
-        //box.rollDeg(10.0f);
-       // box.drawWireframe();
-        ofDisableAlphaBlending();
-        ofPopStyle();
-    }
-}
 void ImageAnimator::buildX() {
     float percent = 0.0f;// location as a percent of screen size
     float r = 30.0f; // rotation
@@ -65,7 +50,6 @@ void ImageAnimator::buildY() {
         mapCameraInY.insert(std::make_pair(std::make_pair(percent, percent + incPercent), r));
     }
 }
-
 
 TextTimer::TextTimer(const std::string& textIn, float timeToRenderIn, float delay, float lineIn) {
     line = lineIn;
