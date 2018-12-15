@@ -4,7 +4,7 @@ void GameItem::setup() {
     color.setColor(ofColor(10,10,10,alpha));
     color.setDuration(5.0f);
     color.setRepeatType(PLAY_ONCE);
-    color.setCurve(QUADRATIC_EASE_IN);
+    color.setCurve(EASE_IN_EASE_OUT);
     color.animateTo(ofColor(255, 255, 255, alpha));
 }
 void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path, bool blink, float rotateIn) {

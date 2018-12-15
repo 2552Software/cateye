@@ -86,7 +86,8 @@ void ImageAnimator::update() {
                             // see if we can trigger with this one
                             for (auto& item : cameraMapping) { // get all blocks within region
                                 if (item.second.intersects(blob.boundingRect)) {
-                                    gameItems.push_back(GameItem(ofRectangle(blob.boundingRect.x*xFactor,
+                                    float cx = ofGetScreenWidth();
+                                    gameItems.push_back(GameItem(ofRectangle((cx-blob.boundingRect.x*xFactor),
                                         blob.boundingRect.y*yFactor, blob.boundingRect.width*xFactor, 
                                         blob.boundingRect.height*yFactor),
                                         mainEyes.getCurrentEyeRef().getMainEye()));
