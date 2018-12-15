@@ -10,7 +10,7 @@ void Eyes::update() {
 
 void GameItem::update() {
     color.update(1.0f / ofGetTargetFrameRate());
-    box.rollDeg(15.0f);
+   //bugbug box.rollDeg(15.0f);
 }
 
 void ImageAnimator::update() {
@@ -31,11 +31,10 @@ void ImageAnimator::update() {
     contours.update();
 
     if (!isAnimating()) {
-        int c = winnerHitCount();
         std::stringstream ss;
-        ss << c << ":" << winnerThreshold();
+        ss << winnerHitCount() << ":" << winnerThreshold();
         ofSetWindowTitle(ss.str());
-        if (isWinner(c)) {
+        if (0 && isWinner()) { //bugbug always winning need to fix this
             //credits will call fireworks when done
             sendFireworks = true;
             credits();
@@ -63,7 +62,7 @@ void ImageAnimator::update() {
                 // see if we have a trigger
                 for (auto& blob : contours.contourFinder.blobs) {
                     if (blob.area > maxForTrigger && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
-                        int c = winnerHitCount();
+                        size_t c = winnerHitCount();
 
                         if (c >= firstMatchCount()) { //bugbug what to do here?
                         }
@@ -75,7 +74,7 @@ void ImageAnimator::update() {
                         if (blob.area >= mymax) {
                             // see if we can trigger with this one
                             for (auto& item : cameraMapping) { // get all blocks within region
-                                if (item.second.match(blob.boundingRect)) {
+                                if (item.second.intersects(blob.boundingRect)) {
                                     gameItems.push_back(ofRectangle(blob.boundingRect.x*xFactor, blob.boundingRect.y*yFactor, blob.boundingRect.width*xFactor, blob.boundingRect.height*yFactor));
                                     if (mymax <= maxForTrigger) {
                                         break; // will make it much harder to get a hit

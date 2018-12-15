@@ -9,7 +9,7 @@ void ImageAnimator::buildTable() {
         for (float x = w; x < cameraWidth - w; x += w) { // keep off the edges -- camera cannot always pick those up
             for (float y = h; y < cameraHeight - h; y += h) {
                 // roate the x  to reflect viewer vs camera
-                cameraMapping.insert(std::make_pair(std::make_pair(x, y), MatchDetector(ofRectangle(x, y, w, h)))); // build a default table
+                cameraMapping.insert(std::make_pair(std::make_pair(x, y), ofRectangle(x, y, w, h))); // build a default table
             }
         }
     }
@@ -244,7 +244,7 @@ void SuperSphere::draw() {
     if (blinkingEnabled) {
         index = blinker.getCurrentValue();
     }
-    blink[index].start();
+   //bugbug blink[index].start();
     ofSpherePrimitive::draw();
-    blink[index].stop();
+//blink[index].stop();
 }

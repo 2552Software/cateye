@@ -80,12 +80,12 @@ void ImageAnimator::clear() {
 void ImageAnimator::randomize() {
     clear(); // reset 
     // make sure we get 3 or random points used to unlock the game
-    for (int c = 0; c < firstMatchCount(); ) {
+    for (size_t c = 0; c < firstMatchCount(); ) {
         int i = (int)ofRandom(10, cameraMapping.size() - 11); // keep from the edges
         int index = 0;
         for (auto& item : cameraMapping) {
             if (index == i) {
-                gameItems.push_back(GameItem(item.second.getRectangleRef()));
+                gameItems.push_back(GameItem(ofRectangle(item.second.x*xFactor, item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor)));
                 ++c;
                 break;
             }
@@ -106,7 +106,7 @@ void ImageAnimator::setCount(int count) {
     }
 }
 ImageAnimator::ImageAnimator() {
-    maxForTrigger = 25.0f;
+    maxForTrigger = 525.0f;
     shapeMinSize = 200.0f; // menus bugbug
     squareCount = 10;// menus bugbu
 }

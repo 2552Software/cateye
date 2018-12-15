@@ -111,6 +111,7 @@ public:
         box.set(rect.width, rect.height, 0.0f);
         box.setPosition(rect.x, rect.y, 0.0f);
         alpha = a;
+        setup();
     }
     void setup();
     void update();
@@ -124,17 +125,6 @@ private:
     ofxAnimatableOfColor color; // revert to black when not animating
 };
 
-class MatchDetector {
-public:
-    MatchDetector() {}
-    MatchDetector(const ofRectangle& rect) {
-        rectangle = rect;
-    }
-    ofRectangle& getRectangleRef() {   return rectangle;  }
-    bool match(const ofRectangle& rect) { return rectangle.inside(rect); }//return rectangle.intersects(rect); }
-private:
-    ofRectangle rectangle;
-};
 
 class Eyes {
 public:
@@ -170,12 +160,12 @@ public:
     void reset();
     void setCount(int count);
     void clear();
-    int  firstMatchCount() { return 3; } // intial game trigger bugbug make menu item
-    int  winnerThreshold() { return 64; } // intial game trigger bugbug make menu item
+    size_t firstMatchCount() { return 3; } // intial game trigger bugbug make menu item
+    size_t winnerThreshold() { return 64; } // intial game trigger bugbug make menu item
     void setTriggerCount(float count);
     void setShapeMinSize(float size) { shapeMinSize = size; };
-    bool isIgnighted(int count) { return count > firstMatchCount(); }
-    bool isWinner(int count) { return count >= winnerThreshold(); } // easy mode! bugbug menu
+    bool isIgnighted() { return winnerHitCount() > firstMatchCount(); }
+    bool isWinner() { return winnerHitCount() >= winnerThreshold(); } // easy mode! bugbug menu
     bool drawText();
     bool isAnimating();
     void credits(bool signon = false);
@@ -213,7 +203,7 @@ private:
     typedef std::pair<float, float> Key;
     std::map<Key, float> mapCameraInX; // range to rotation
     std::map<Key, float> mapCameraInY;
-    std::map<std::pair<int, int>, MatchDetector> cameraMapping; // map indexes, nullptr means no object found yet
+    std::map<std::pair<int, int>, ofRectangle> cameraMapping; // map indexes, nullptr means no object found yet
     // convert to screen size
     float xFactor;
     float yFactor;

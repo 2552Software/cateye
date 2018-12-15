@@ -1,11 +1,11 @@
 #include "ofApp.h"
 
 void GameItem::setup() {
-    color.setColor(ofColor::white);
-    color.setDuration(20.0f);
+    color.setColor(ofColor::black);
+    color.setDuration(5.0f);
     color.setRepeatType(LOOP_BACK_AND_FORTH);
-    color.setCurve(LINEAR);
-    color.animateTo(ofColor::orangeRed);
+    color.setCurve(QUADRATIC_EASE_IN);
+    color.animateTo(ofColor::white);
 }
 void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path, bool blink, float rotateIn) {
     rotate = rotateIn;
@@ -26,7 +26,7 @@ void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path, bool
         selector.setCurve(LINEAR);
         selector.animateTo(dir.size()-1);
         for (; i < dir.size(); i++) {
-            add(dir.getName(i), dir.getPath(i), blink);
+            add(dir.getName(i), dir.getPath(i), blink); //blink
         }
     }
     else {
