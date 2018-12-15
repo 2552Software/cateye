@@ -8,18 +8,15 @@ void Eyes::update() {
     selector.update(1.0f / ofGetTargetFrameRate());
 }
 
-void GameItem::update(float xScale, float yScale) {
+void GameItem::update() {
     color.update(1.0f / ofGetTargetFrameRate());
-    game.update(1.0f / ofGetTargetFrameRate());
-    //ofDrawRectangle(xFactor*rectangle.x, yFactor*rectangle.y, 0.0f,xFactor*rectangle.width, yFactor*rectangle.height);
-    box.set(xScale*rectangle.width, yScale*rectangle.height, 0.0f);
-    box.setPosition(xScale*rectangle.x, yScale*rectangle.y, 0.0f);
+    box.rollDeg(15.0f);
 }
 
 void ImageAnimator::update() {
 
-    for (auto& a : cameraMapping) {
-        a.second.update(xFactor, yFactor);
+    for (auto& a : gameItems) {
+        a.update();
     }
 
     for (auto&a : creditsText) {
@@ -68,9 +65,9 @@ void ImageAnimator::update() {
                     if (blob.area > maxForTrigger && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
                         int c = winnerHitCount();
 
-                        if (c >= firstMatchCount() && level == 0) {
-                            ignight(); // set all items to true -- ie ready to select
+                        if (c >= firstMatchCount()) { //bugbug what to do here?
                         }
+
                         float mymax = maxForTrigger;
                         if (c > firstMatchCount() + 1) {
                             mymax /= 3; // see less once game stgarts
@@ -79,7 +76,7 @@ void ImageAnimator::update() {
                             // see if we can trigger with this one
                             for (auto& item : cameraMapping) { // get all blocks within region
                                 if (item.second.match(blob.boundingRect)) {
-                                    item.second.trigger();
+                                    gameItems.push_back(ofRectangle(blob.boundingRect.x*xFactor, blob.boundingRect.y*yFactor, blob.boundingRect.width*xFactor, blob.boundingRect.height*yFactor));
                                     if (mymax <= maxForTrigger) {
                                         break; // will make it much harder to get a hit
                                     }

@@ -89,15 +89,7 @@ bool ImageAnimator::drawText() {
 
     return found;
 }
-void GameItem::draw(int alpha) {
-    if (isAnimating()) {
-        ofFill();
-        rotateX = 0.0f;
-    }
-    else {
-        ofNoFill();
-        rotateX += 15;
-    }
+void GameItem::draw() {
     //ofRotateDeg(rotateX, 1.0f, 0.0f, 0.0f);
     ofColor c = color.getCurrentColor();
     c.a = alpha;// alpha; keep it light
@@ -108,9 +100,9 @@ void GameItem::draw(int alpha) {
 void ImageAnimator::drawGame() {
     ofPushStyle();
     ofEnableAlphaBlending();
-    for (auto& item : cameraMapping) {
+    for (auto& item : gameItems) {
         ofPushMatrix();
-        item.second.draw(175);//bugbug make menu
+        item.draw();
         ofPopMatrix();
     }
     ofDisableAlphaBlending();

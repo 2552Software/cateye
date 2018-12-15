@@ -1,6 +1,12 @@
 #include "ofApp.h"
 
-
+void GameItem::setup() {
+    color.setColor(ofColor::white);
+    color.setDuration(20.0f);
+    color.setRepeatType(LOOP_BACK_AND_FORTH);
+    color.setCurve(LINEAR);
+    color.animateTo(ofColor::orangeRed);
+}
 void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path, bool blink, float rotateIn) {
     rotate = rotateIn;
 

@@ -107,30 +107,33 @@ private:
 
 class GameItem {
 public:
-    GameItem() {}
-    GameItem(const ofRectangle& rectangle) {
-       set(0);  // actions can vary
-       set(rectangle);
+    GameItem(const ofRectangle& rect, int a = 175) {
+        box.set(rect.width, rect.height, 0.0f);
+        box.setPosition(rect.x, rect.y, 0.0f);
+        alpha = a;
     }
-    void trigger();
-    bool isAnimating() { return action > 0 && game.isAnimating();   }
-    void set(int action);
     void setup();
-    void update(float xScale, float yScale);
-    void draw(int alpha);
-    void reset() { game.reset(); }
-    int getAction() { return action; }
-    bool match(const ofRectangle& rect) { return rectangle.inside(rect); }//return rectangle.intersects(rect); }
+    void update();
+    void draw();
+    void trigger();
+    bool isAnimating() { return color.isAnimating(); }
 
 private:
-    float rotateX;
-    void set(const ofRectangle& rectangle);
-    int action; // things like have the  cat noise when hit
-    ofxAnimatableOfColor color; // revert to black when not animating
-    ofRectangle rectangle;
-    ofxAnimatableFloat game;
     ofBoxPrimitive box;
+    int alpha;
+    ofxAnimatableOfColor color; // revert to black when not animating
+};
 
+class MatchDetector {
+public:
+    MatchDetector() {}
+    MatchDetector(const ofRectangle& rect) {
+        rectangle = rect;
+    }
+    ofRectangle& getRectangleRef() {   return rectangle;  }
+    bool match(const ofRectangle& rect) { return rectangle.inside(rect); }//return rectangle.intersects(rect); }
+private:
+    ofRectangle rectangle;
 };
 
 class Eyes {
@@ -163,10 +166,10 @@ public:
     void sounds(int duration= 5); // default to full sound
     void circle();
     void startPlaying();
-    int winnerHitCount(); // count of items being animiated
+    size_t winnerHitCount(); // count of items being animiated
     void reset();
     void setCount(int count);
-    void ignight(bool on=true);
+    void clear();
     int  firstMatchCount() { return 3; } // intial game trigger bugbug make menu item
     int  winnerThreshold() { return 64; } // intial game trigger bugbug make menu item
     void setTriggerCount(float count);
@@ -191,7 +194,6 @@ private:
     void draw(const std::string& s, float x=0.0f, float y = 0.0f);
     std::vector<TextTimer> creditsText;
     ofTrueTypeFont font; 
-    int level;
     void fireWorks();
     float shapeMinSize;
     void buildTable();
@@ -211,10 +213,11 @@ private:
     typedef std::pair<float, float> Key;
     std::map<Key, float> mapCameraInX; // range to rotation
     std::map<Key, float> mapCameraInY;
-    std::map<std::pair<int, int>, GameItem> cameraMapping; // map indexes
+    std::map<std::pair<int, int>, MatchDetector> cameraMapping; // map indexes, nullptr means no object found yet
     // convert to screen size
     float xFactor;
     float yFactor;
+    std::list<GameItem> gameItems; // if you are in this list you have been found and not time out has occured bugbug add time out
 
 };
 class Scheduler : public ofThread {

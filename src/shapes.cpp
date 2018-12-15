@@ -1,4 +1,5 @@
 #include "ofApp.h"
+
 void ImageAnimator::buildTable() {
     if (squareCount) {
         cameraMapping.clear();
@@ -8,23 +9,11 @@ void ImageAnimator::buildTable() {
         for (float x = w; x < cameraWidth - w; x += w) { // keep off the edges -- camera cannot always pick those up
             for (float y = h; y < cameraHeight - h; y += h) {
                 // roate the x  to reflect viewer vs camera
-                cameraMapping.insert(std::make_pair(std::make_pair(x, y), GameItem(ofRectangle(x, y, w, h)))); // build a default table
+                cameraMapping.insert(std::make_pair(std::make_pair(x, y), MatchDetector(ofRectangle(x, y, w, h)))); // build a default table
             }
         }
     }
 }
-
-void GameItem::setup() {
-    rotateX = 0.0f;
-}
-void GameItem::set(int a) {
-    action = a;
-}
-
-void GameItem::set(const ofRectangle& r) {
-    rectangle = r;
-}
-
 
 void ImageAnimator::buildX() {
     float percent = 0.0f;// location as a percent of screen size
@@ -35,6 +24,7 @@ void ImageAnimator::buildX() {
         mapCameraInX.insert(std::make_pair(std::make_pair(percent, percent + incPercent), r));
     }
 }
+
 void ImageAnimator::buildY() {
     float percent = 0.0f;// location as a percent of screen size
     float r = -20.0f; // rotation

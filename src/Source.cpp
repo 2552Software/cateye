@@ -31,13 +31,8 @@ void  ImageAnimator::fireWorks() {
 void GameItem::trigger() {
     if (!isAnimating()) {
         float duration = 25.0f;//seconds bugbug make menu
-        game.reset(5.0f);
-        game.setCurve(LINEAR);
-        game.setRepeatType(PLAY_ONCE);
-        game.setDuration(duration);
-        game.animateTo(255.0f);
-        ofColor c1(ofColor::orange);// (0.0f, 0.0f, ofRandom(200, 255));
-        ofColor c2(ofColor::cyan);//ofRandom(200, 255), 0.0f, 0.0f);
+        ofColor c1(ofColor::red);// (0.0f, 0.0f, ofRandom(200, 255));
+        ofColor c2(ofColor::blue);//ofRandom(200, 255), 0.0f, 0.0f);
         color.setColor(c1);
         color.setDuration(duration);
         color.setRepeatType(PLAY_ONCE);
@@ -77,23 +72,20 @@ void ImageAnimator::sounds(int duration) {
     }
 }
 
-void ImageAnimator::ignight(bool on) {
-    // create hot grids
-    for (auto& a : cameraMapping) {
-        a.second.set((on) ? 1 : 0); // clear all is 0 menu pick -- all 1s enable all
-    }
-    level = (on) ? 1 : 0;
+// turn on/off came items
+void ImageAnimator::clear() {
+    gameItems.clear();
 }
-// call just after things are found and upon startup
+// put the first few items in that must before the entire game is unlocked
 void ImageAnimator::randomize() {
-    ignight(false); // reset 
+    clear(); // reset 
     // make sure we get 3 or random points used to unlock the game
     for (int c = 0; c < firstMatchCount(); ) {
         int i = (int)ofRandom(10, cameraMapping.size() - 11); // keep from the edges
         int index = 0;
         for (auto& item : cameraMapping) {
             if (index == i) {
-                item.second.set(1);
+                gameItems.push_back(GameItem(item.second.getRectangleRef()));
                 ++c;
                 break;
             }
@@ -117,18 +109,11 @@ ImageAnimator::ImageAnimator() {
     maxForTrigger = 25.0f;
     shapeMinSize = 200.0f; // menus bugbug
     squareCount = 10;// menus bugbu
-    level = 0;
 }
 
 // count of items selected
-int ImageAnimator::winnerHitCount() {
-    int count = 0;
-    for (auto& item : cameraMapping) {
-        if (item.second.isAnimating()) {
-            ++count;
-        }
-    }
-    return count;
+size_t ImageAnimator::winnerHitCount() {
+    return gameItems.size();
 }
 
 void ImageAnimator::reset() {
@@ -158,6 +143,8 @@ void ImageAnimator::windowResized(int w, int h) {
 
     mainEyes.resize(w,h);
     rotatingEyes.resize(w, h);
+
+    clear(); // reset game to assure all sizes are correct
     
 }
 
