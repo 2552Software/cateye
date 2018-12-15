@@ -127,13 +127,12 @@ private:
 
 class GameItem {
 public:
-    GameItem(const ofRectangle& rect, Eye eye, int a = 30) {
-        myeye = eye;
-        sphere.setRadius(rect.width / 2);
-        // use with squares etc sphere.set(rect.width, rect.height, 0.0f);
-        sphere.setPosition(rect.x, rect.y, 0.0f);
-        alpha = a;
-        setup();
+    GameItem(const ofRectangle& rect, Eye eye, int a = 30);
+    bool operator==(const GameItem& rhs) const {
+        return rectangle == rhs.rectangle;
+    }
+    bool operator==(const ofRectangle& rhs) const {
+        return rectangle == rhs;
     }
     void setup();
     void update();
@@ -142,6 +141,8 @@ public:
     bool isAnimating() { return color.isAnimating(); }
 
 private:
+    ofBoxPrimitive box; // pick a shape bugbug
+    ofRectangle rectangle;
     ofSpherePrimitive sphere;
     Eye myeye;
     //ofSpherePrimitive eye;
@@ -179,6 +180,7 @@ public:
     void windowResized(int w, int h);
     Eyes mainEyes;
     Eyes rotatingEyes;
+    bool find(const ofRectangle& item) { return std::find(gameItems.begin(), gameItems.end(), item) != gameItems.end(); }
 
 private:
     struct TextEvent {

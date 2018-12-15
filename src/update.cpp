@@ -85,12 +85,12 @@ void ImageAnimator::update() {
                         if (blob.area >= mymax) {
                             // see if we can trigger with this one
                             for (auto& item : cameraMapping) { // get all blocks within region
-                                if (item.second.intersects(blob.boundingRect)) {
-                                    float cx = ofGetScreenWidth();
-                                    gameItems.push_back(GameItem(ofRectangle((cx-blob.boundingRect.x*xFactor),
-                                        blob.boundingRect.y*yFactor, blob.boundingRect.width*xFactor, 
-                                        blob.boundingRect.height*yFactor),
-                                        mainEyes.getCurrentEyeRef().getMainEye()));
+                                if (item.second.intersects(blob.boundingRect) && !find(blob.boundingRect)) {
+                                    float cx = ofGetScreenWidth();/// ofGetScreenWidth();
+                                    ofRectangle rect2Use((cx - item.second.x*xFactor),
+                                        item.second.y*yFactor, item.second.width*xFactor,
+                                        item.second.height*yFactor);
+                                    gameItems.push_back(GameItem(rect2Use, mainEyes.getCurrentEyeRef().getMainEye()));
                                     if (mymax <= maxForTrigger) {
                                         break; // will make it much harder to get a hit
                                     }

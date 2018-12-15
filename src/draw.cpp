@@ -93,9 +93,10 @@ void GameItem::draw() {
     ofColor c = color.getCurrentColor();
     c.a = alpha;// alpha; keep it light
     ofSetColor(c);
-   // myeye.start();
-    sphere.drawWireframe();
-  //  myeye.stop();
+    myeye.start();
+    box.draw();
+    //sphere.drawWireframe();
+    myeye.stop();
 }
 
 void ImageAnimator::drawGame() {

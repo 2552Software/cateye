@@ -1,11 +1,13 @@
 #include "ofApp.h"
 
 void GameItem::setup() {
-    color.setColor(ofColor(10,10,10,alpha));
+    //color.setColor(ofColor(10, 10, 10, alpha));
+    color.setColor(ofColor::white);
     color.setDuration(5.0f);
     color.setRepeatType(PLAY_ONCE);
     color.setCurve(EASE_IN_EASE_OUT);
-    color.animateTo(ofColor(255, 255, 255, alpha));
+    color.setColor(ofColor::blue);
+    //color.animateTo(ofColor(255, 255, 255, alpha));
 }
 void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path, bool blink, float rotateIn) {
     rotate = rotateIn;
