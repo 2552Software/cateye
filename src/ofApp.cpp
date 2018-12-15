@@ -83,28 +83,30 @@ void ofApp::draw(){
         ofPushMatrix();
         light.enable();
         camera.begin();
+
         if (!eyeAnimator.drawText()) { // draw text first, if no text draw the eye
                 // show spirl eye first, if its not running try to text if al else fails show the main eye
             if (eyeAnimator.rotatingEyes.isAnimating()) {
                 eyeAnimator.rotatingEyes.draw();
-                return;
             }
             else {
                 eyeAnimator.draw();
             }
         }
+
         ofPopMatrix();
         ofPopStyle();
         camera.end();
+
         // if nothing else is going on draw motion outside of camera but in light
+        ofPushStyle();
+        ofPushMatrix();
         if (!eyeAnimator.isAnimating()) {
-            ofPushStyle();
-            ofPushMatrix();
             eyeAnimator.drawContours(ofGetScreenWidth(), ofGetScreenHeight());
-            ofPopMatrix();
-            ofPopStyle();
         }
         eyeAnimator.drawGame(); // draw any game that may be running
+        ofPopMatrix();
+        ofPopStyle();
         light.disable();
         ofDisableDepthTest();
     }

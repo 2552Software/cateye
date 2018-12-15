@@ -25,8 +25,7 @@ void Eyes::resize(int w, int h) {
 
 void  ImageAnimator::fireWorks() {
     sounds(5);
-    //rotatingEyes.getAnimator().animateFromTo(-rotatingEyes.getCurrentEyeRef().getRadius(), rotatingEyes.getCurrentEyeRef().getRadius() / 4);
-    rotatingEyes.getAnimator().animateFromTo(-200, 200);
+   rotatingEyes.getAnimator().animateFromTo(-300, 300);//bugbug will need to adjsut for pi
 }
 
 void GameItem::trigger() {

@@ -116,19 +116,21 @@ public:
     bool isAnimating() { return action > 0 && game.isAnimating();   }
     void set(int action);
     void setup();
-    void update();
-    void draw(int alpha, float xScale, float yScale);
+    void update(float xScale, float yScale);
+    void draw(int alpha);
     void reset() { game.reset(); }
     int getAction() { return action; }
     bool match(const ofRectangle& rect) { return rectangle.inside(rect); }//return rectangle.intersects(rect); }
 
 private:
- 
+    float rotateX;
     void set(const ofRectangle& rectangle);
     int action; // things like have the  cat noise when hit
     ofxAnimatableOfColor color; // revert to black when not animating
     ofRectangle rectangle;
     ofxAnimatableFloat game;
+    ofBoxPrimitive box;
+
 };
 
 class Eyes {
@@ -165,8 +167,8 @@ public:
     void reset();
     void setCount(int count);
     void ignight(bool on=true);
-    int  firstMatchCount() { return 1; } // intial game trigger bugbug make menu item
-    int  winnerThreshold() { return 5; } // intial game trigger bugbug make menu item
+    int  firstMatchCount() { return 3; } // intial game trigger bugbug make menu item
+    int  winnerThreshold() { return 64; } // intial game trigger bugbug make menu item
     void setTriggerCount(float count);
     void setShapeMinSize(float size) { shapeMinSize = size; };
     bool isIgnighted(int count) { return count > firstMatchCount(); }
@@ -180,8 +182,6 @@ public:
     Eyes rotatingEyes;
 
 private:
-    int xGameItems; // number of blocks in game
-    int gameItemWidth; // pixels in one game item
     struct TextEvent {
         int i;
     };

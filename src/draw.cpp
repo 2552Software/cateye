@@ -89,53 +89,32 @@ bool ImageAnimator::drawText() {
 
     return found;
 }
-void GameItem::draw(int alpha, float xFactor, float yFactor) {
+void GameItem::draw(int alpha) {
     if (isAnimating()) {
-        ofPushStyle();
-        ofNoFill();
-        ofEnableAlphaBlending();
-        ofColor c = color.getCurrentColor();
-        c.a = alpha;// alpha; keep it light
-        ofSetColor(c);
-        ofDrawRectangle(xFactor*rectangle.x, yFactor*rectangle.y, 0.0f,xFactor*rectangle.width, yFactor*rectangle.height);
-        ofBoxPrimitive box;
-        box.set(xFactor*rectangle.width, yFactor*rectangle.height, 0.0f);
-        box.setPosition(xFactor*rectangle.x, yFactor*rectangle.y, 0.0f);
-        //box.rollDeg(10.0f);
-       // box.drawWireframe();
-        ofDisableAlphaBlending();
-        ofPopStyle();
+        ofFill();
+        rotateX = 0.0f;
     }
     else {
-        ofPushStyle();
-        ofFill();
-        ofEnableAlphaBlending();
-        ofColor c = color.getCurrentColor();
-        c.a = alpha;// alpha; keep it light
-        ofSetColor(c);
-        ofDrawRectangle(xFactor*rectangle.x, yFactor*rectangle.y, xFactor*rectangle.width, yFactor*rectangle.height);
-        ofBoxPrimitive box;
-        box.set(xFactor*rectangle.width, yFactor*rectangle.height, 0.0f);
-        box.setPosition(xFactor*rectangle.x, yFactor*rectangle.y, 0.0f);
-        //box.rollDeg(10.0f);
-       // box.drawWireframe();
-        ofDisableAlphaBlending();
-        ofPopStyle();
+        ofNoFill();
+        rotateX += 15;
     }
+    //ofRotateDeg(rotateX, 1.0f, 0.0f, 0.0f);
+    ofColor c = color.getCurrentColor();
+    c.a = alpha;// alpha; keep it light
+    ofSetColor(c);
+    box.drawWireframe();
 }
 
 void ImageAnimator::drawGame() {
-    // convert camera mapping to screen mapping and draw
-    //if (count() >= firstMatchCount()) {
-    //float screenW = cameraWidth * xFactor;
-    //float gameW = xGameItems * xFactor*gameItemWidth;
-    //float moveX = (screenW - gameW) / 2;
-    //ofTranslate(ofGetWidth()/2, ofGetHeight() / 3);
-    //ofTranslate(-gameW, 0.0f);
+    ofPushStyle();
+    ofEnableAlphaBlending();
     for (auto& item : cameraMapping) {
-        item.second.draw(175, xFactor, yFactor);//bugbug make menu
+        ofPushMatrix();
+        item.second.draw(175);//bugbug make menu
+        ofPopMatrix();
     }
-    //}
+    ofDisableAlphaBlending();
+    ofPopStyle();
 }
 
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {

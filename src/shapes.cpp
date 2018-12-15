@@ -1,14 +1,11 @@
 #include "ofApp.h"
 void ImageAnimator::buildTable() {
-    gameItemWidth = xGameItems = 0;
     if (squareCount) {
         cameraMapping.clear();
         // all based on camera size and just grid out the screen 10x10 or what ever size we want
         float w = cameraWidth / squareCount; // menu bugbug
         float h = cameraHeight / squareCount;
-        gameItemWidth = w; // in camera size pixels
         for (float x = w; x < cameraWidth - w; x += w) { // keep off the edges -- camera cannot always pick those up
-            ++xGameItems;
             for (float y = h; y < cameraHeight - h; y += h) {
                 // roate the x  to reflect viewer vs camera
                 cameraMapping.insert(std::make_pair(std::make_pair(x, y), GameItem(ofRectangle(x, y, w, h)))); // build a default table
@@ -18,6 +15,7 @@ void ImageAnimator::buildTable() {
 }
 
 void GameItem::setup() {
+    rotateX = 0.0f;
 }
 void GameItem::set(int a) {
     action = a;
@@ -27,10 +25,6 @@ void GameItem::set(const ofRectangle& r) {
     rectangle = r;
 }
 
-void GameItem::update() {
-    color.update(1.0f / ofGetTargetFrameRate());
-    game.update(1.0f / ofGetTargetFrameRate());
-}
 
 void ImageAnimator::buildX() {
     float percent = 0.0f;// location as a percent of screen size

@@ -8,10 +8,18 @@ void Eyes::update() {
     selector.update(1.0f / ofGetTargetFrameRate());
 }
 
+void GameItem::update(float xScale, float yScale) {
+    color.update(1.0f / ofGetTargetFrameRate());
+    game.update(1.0f / ofGetTargetFrameRate());
+    //ofDrawRectangle(xFactor*rectangle.x, yFactor*rectangle.y, 0.0f,xFactor*rectangle.width, yFactor*rectangle.height);
+    box.set(xScale*rectangle.width, yScale*rectangle.height, 0.0f);
+    box.setPosition(xScale*rectangle.x, yScale*rectangle.y, 0.0f);
+}
+
 void ImageAnimator::update() {
 
     for (auto& a : cameraMapping) {
-        a.second.update();
+        a.second.update(xFactor, yFactor);
     }
 
     for (auto&a : creditsText) {
@@ -128,7 +136,7 @@ void ContoursBuilder::update() {
             grayDiff.absDiff(backgroundImage, grayImage);
         }
         backgroundImage = grayImage; // only track new items -- so eye moves when objects move
-        grayDiff.threshold(50); // turn any pixels above 30 white, and below 100 black
+        grayDiff.threshold(50); // turn any pixels above 50 white, and below 100 black bugbug menu can tune game here too
         if (!contourFinder.findContours(grayDiff, 5, (cameraWidth*cameraHeight), 128, false, true)) {
             contourFinder.blobs.clear(); // removes echo but does it make things draw too fast?
         }

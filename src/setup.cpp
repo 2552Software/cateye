@@ -47,8 +47,6 @@ void ImageAnimator::setup() {
     // convert to screen size
     xFactor = ofGetScreenWidth() / cameraWidth;
     yFactor = ofGetScreenHeight() / cameraHeight;
-    xGameItems = 0;
-    gameItemWidth = 0;
 
     reset(); // go to a known state
 
