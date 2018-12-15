@@ -90,22 +90,23 @@ bool ImageAnimator::drawText() {
     return found;
 }
 void GameItem::draw() {
-    //ofRotateDeg(rotateX, 1.0f, 0.0f, 0.0f);
     ofColor c = color.getCurrentColor();
     c.a = alpha;// alpha; keep it light
     ofSetColor(c);
-    box.drawWireframe();
+   // myeye.start();
+    sphere.drawWireframe();
+  //  myeye.stop();
 }
 
 void ImageAnimator::drawGame() {
     ofPushStyle();
+    ofPushMatrix();
     ofEnableAlphaBlending();
     for (auto& item : gameItems) {
-        ofPushMatrix();
         item.draw();
-        ofPopMatrix();
     }
     ofDisableAlphaBlending();
+    ofPopMatrix();
     ofPopStyle();
 }
 

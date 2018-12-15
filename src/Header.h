@@ -65,6 +65,8 @@ public:
     void update();
     void draw();
     bool blinkingEnabled;
+    Eye& getMainEye() { return blink[0]; }
+
 private:
     std::vector<Eye> blink;
     ofxAnimatableFloat blinker; // blink animation
@@ -105,27 +107,6 @@ private:
     ofxCvGrayscaleImage grayImage, backgroundImage, grayDiff;
 };
 
-class GameItem {
-public:
-    GameItem(const ofRectangle& rect, int a = 175) {
-        box.set(rect.width, rect.height, 0.0f);
-        box.setPosition(rect.x, rect.y, 0.0f);
-        alpha = a;
-        setup();
-    }
-    void setup();
-    void update();
-    void draw();
-    void trigger();
-    bool isAnimating() { return color.isAnimating(); }
-
-private:
-    ofBoxPrimitive box;
-    int alpha;
-    ofxAnimatableOfColor color; // revert to black when not animating
-};
-
-
 class Eyes {
 public:
     void setup(AnimRepeat repeat, float seconds, const std::string& path, bool blink, float rotateIn);
@@ -143,6 +124,31 @@ private:
     std::vector<SuperSphere> eyes;
     float rotate;
 };
+
+class GameItem {
+public:
+    GameItem(const ofRectangle& rect, Eye eye, int a = 30) {
+        myeye = eye;
+        sphere.setRadius(rect.width / 2);
+        // use with squares etc sphere.set(rect.width, rect.height, 0.0f);
+        sphere.setPosition(rect.x, rect.y, 0.0f);
+        alpha = a;
+        setup();
+    }
+    void setup();
+    void update();
+    void draw();
+    void trigger();
+    bool isAnimating() { return color.isAnimating(); }
+
+private:
+    ofSpherePrimitive sphere;
+    Eye myeye;
+    //ofSpherePrimitive eye;
+    int alpha;
+    ofxAnimatableOfColor color; // revert to black when not animating
+};
+
 
 class ImageAnimator {
 public:

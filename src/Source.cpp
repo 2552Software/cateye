@@ -85,7 +85,7 @@ void ImageAnimator::randomize() {
         int index = 0;
         for (auto& item : cameraMapping) {
             if (index == i) {
-                gameItems.push_back(GameItem(ofRectangle(item.second.x*xFactor, item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor)));
+                gameItems.push_back(GameItem(ofRectangle(item.second.x*xFactor, item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor), mainEyes.getCurrentEyeRef().getMainEye()));
                 ++c;
                 break;
             }

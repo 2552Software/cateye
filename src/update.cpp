@@ -10,10 +10,21 @@ void Eyes::update() {
 
 void GameItem::update() {
     color.update(1.0f / ofGetTargetFrameRate());
-   //bugbug box.rollDeg(15.0f);
+    sphere.rollDeg(5.0f);
 }
 
 void ImageAnimator::update() {
+
+    // if not animating time to go...
+    std::list<GameItem>::iterator i = gameItems.begin();
+    while (i != gameItems.end())   {
+        if (!(*i).isAnimating())    {
+            i = gameItems.erase(i); 
+        }
+        else {
+            ++i;
+        }
+    }
 
     for (auto& a : gameItems) {
         a.update();
@@ -75,7 +86,10 @@ void ImageAnimator::update() {
                             // see if we can trigger with this one
                             for (auto& item : cameraMapping) { // get all blocks within region
                                 if (item.second.intersects(blob.boundingRect)) {
-                                    gameItems.push_back(ofRectangle(blob.boundingRect.x*xFactor, blob.boundingRect.y*yFactor, blob.boundingRect.width*xFactor, blob.boundingRect.height*yFactor));
+                                    gameItems.push_back(GameItem(ofRectangle(blob.boundingRect.x*xFactor,
+                                        blob.boundingRect.y*yFactor, blob.boundingRect.width*xFactor, 
+                                        blob.boundingRect.height*yFactor),
+                                        mainEyes.getCurrentEyeRef().getMainEye()));
                                     if (mymax <= maxForTrigger) {
                                         break; // will make it much harder to get a hit
                                     }

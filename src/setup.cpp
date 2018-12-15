@@ -1,11 +1,11 @@
 #include "ofApp.h"
 
 void GameItem::setup() {
-    color.setColor(ofColor::black);
+    color.setColor(ofColor(10,10,10,alpha));
     color.setDuration(5.0f);
-    color.setRepeatType(LOOP_BACK_AND_FORTH);
+    color.setRepeatType(PLAY_ONCE);
     color.setCurve(QUADRATIC_EASE_IN);
-    color.animateTo(ofColor::white);
+    color.animateTo(ofColor(255, 255, 255, alpha));
 }
 void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path, bool blink, float rotateIn) {
     rotate = rotateIn;
@@ -54,8 +54,6 @@ void ImageAnimator::setup() {
     xFactor = ofGetScreenWidth() / cameraWidth;
     yFactor = ofGetScreenHeight() / cameraHeight;
 
-    reset(); // go to a known state
-
     font.load("alger.ttf", 100, true, true, true);
     font.setLineHeight(18.0f);
     font.setLetterSpacing(1.037);
@@ -94,6 +92,7 @@ void ImageAnimator::setup() {
         mySounds.push_back(sound);
     }
 
+    reset(); // go to a known state (call last like this as it may depend on othe settings)
     startPlaying();
 
 }
