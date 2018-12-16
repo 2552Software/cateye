@@ -5,13 +5,9 @@ void ImageAnimator::draw() {
     mainEyes.draw();
 }
 void SuperSphere::draw() {
-    int index = 0; // the non blink index
-    if (blinkingEnabled) {
-       // index = blinker.getCurrentValue();
-    }
-    eyes[index].start();
+    eye.start();
     ofSpherePrimitive::draw();
-    eyes[index].stop();
+    eye.stop();
 }
 void Eyes::draw() {
     if (isAnimating()) {

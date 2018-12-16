@@ -1,27 +1,26 @@
 #include "ofApp.h"
 
-void SuperSphere::blink() {
+void ImageAnimator::setTitle() {
+    std::stringstream ss;
+    ss << winnerHitCount() << " of " << winnerThreshold();
+    std::string s = "Game On! Find ";
+    s += ss.str();
+    ofSetColor(ofColor::white);
+    font.drawStringAsShapes(s, ofGetScreenWidth() / 2 - font.stringWidth(s) / 2, font.getLineHeight() * 5);
+
+}
+void ImageAnimator::blink() {
+    // blink upon request
     ofSetColor(ofColor::black);
     ofPushStyle();
     ofFill();
-    ofDrawRectangle(0, 0, ofGetScreenWidth(), (ofGetScreenHeight()/2)*blinker.val());
+    ofDrawRectangle(0, 0, ofGetScreenWidth(), (ofGetScreenHeight() / 2)*blinker.val());
     ofDrawRectangle(0, ofGetScreenHeight(), ofGetScreenWidth(), -(ofGetScreenHeight() / 2)*blinker.val());
     ofPopStyle();
-
 }
-void Eyes::add(const std::string &name, const std::string &root, bool blink) {
-    std::string blinkPath;
-    if (blink) {
-        std::string::size_type pos = root.find('.');
-        if (pos != std::string::npos) {
-            blinkPath = root.substr(0, pos);
-        }
-        else {
-            blinkPath = root;
-        }
-    }
-    eyes.push_back(SuperSphere());
-    eyes[eyes.size() - 1].setup(root, blinkPath);
+
+void Eyes::add(const std::string &name, const std::string &root) {
+    eyes.push_back(SuperSphere(root));
 }
 
 void Eyes::resize(int w, int h) {

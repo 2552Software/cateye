@@ -59,17 +59,13 @@ private:
 // always knows it rotation coordindates
 class SuperSphere : public ofSpherePrimitive {
 public:
-    const int maxListSize = 100;
-
-    void setup(const string&name, const string&blinkPath);
+    SuperSphere(const string&name) { setup(name); }
+    void setup(const string&name);
     void update();
     void draw();
-    bool blinkingEnabled;
-    Eye& getMainEye() { return eyes[0]; }
-    void blink();
+    Eye& getMainEye() { return eye; }
 private:
-    std::vector<Eye> eyes;
-    ofxAnimatableFloat blinker; // blink animation
+    Eye eye;
 };
 
 class ofxAnimatableQueueofVec3f {
@@ -109,7 +105,7 @@ private:
 
 class Eyes {
 public:
-    void setup(AnimRepeat repeat, float seconds, const std::string& path, bool blink, float rotateIn);
+    void setup(AnimRepeat repeat, float seconds, const std::string& path, float rotateIn);
     void update();
     void draw();
     void resize(int w, int h);
@@ -118,7 +114,7 @@ public:
     size_t count() { return eyes.size(); }
     ofxAnimatableFloat& getAnimator() { return animator; }
 private:
-    void add(const std::string &name, const std::string &root, bool blink);
+    void add(const std::string &name, const std::string &root);
     ofxAnimatableFloat animator; // z direction
     ofxAnimatableFloat selector; // pick eye to draw
     std::vector<SuperSphere> eyes;
@@ -177,10 +173,13 @@ public:
     Eyes mainEyes;
     Eyes rotatingEyes;
     bool find(const ofRectangle& item) { return std::find(gameItems.begin(), gameItems.end(), item) != gameItems.end(); }
-    ofTrueTypeFont font;
     void setCount(int count);
     bool inGame() { return level >= 0; }
+    void blink();
+    void setTitle();
+
 private:
+    ofTrueTypeFont font;
     int level;
     void getCountours();
     struct TextEvent {
@@ -214,6 +213,9 @@ private:
     float xFactor;
     float yFactor;
     std::list<GameItem> gameItems; // if you are in this list you have been found and not time out has occured bugbug add time out
+    ofxAnimatableFloat blinker; // blink animation
+
+
 };
 class Scheduler : public ofThread {
 public:

@@ -1,13 +1,6 @@
 #include "ofApp.h"
 
 void SuperSphere::update() {
-    if (blinkingEnabled) {
-        blinker.update(1.0f / ofGetTargetFrameRate());
-        if (!blinker.isOrWillBeAnimating()) {
-            blinker.reset(0.0f);
-            blinker.animateToAfterDelay(1.0f, ofRandom(1.0f, 10.0f)); // blink every few seconds
-        }
-    }
 }
 
 void Eyes::update() {
@@ -24,6 +17,13 @@ void GameItem::update() {
 }
 
 void ImageAnimator::update() {
+
+    // blinker always moving but only drawn up request
+    blinker.update(1.0f / ofGetTargetFrameRate());
+    if (!blinker.isOrWillBeAnimating()) {
+        blinker.reset(0.0f);
+        blinker.animateToAfterDelay(1.0f, ofRandom(1.0f, 10.0f)); // blink every few seconds bugbug menu
+    }
 
     // if not animating time to go...
     std::list<GameItem>::iterator i = gameItems.begin();

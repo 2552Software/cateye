@@ -1,25 +1,9 @@
 #include "ofApp.h"
 
-void SuperSphere::setup(const string&name, const string&blinkPath) {
-    eyes.push_back(Eye(name)); // element 0 is the main non blinking eye
-
-    if (blinkPath.size() > 0L) {
-        blinkingEnabled = true;
-        ofDirectory dir(blinkPath + ".blink");
-        dir.listDir();
-        for (size_t i = 0; i < dir.size(); i++) {
-            eyes.push_back(Eye(dir.getPath(i)));
-        }
-        blinker.reset(0.0f);
-        blinker.setCurve(LINEAR);
-        blinker.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
-        blinker.setDuration(1.2f);
-        blinker.animateTo(1.0f);
-    }
-
+void SuperSphere::setup(const string&name) {
+    eye.setup(name);
     setResolution(21);
     panDeg(180);
-    // animateToAfterDelay
 }
 void TextTimer::setup() {
 
@@ -56,7 +40,7 @@ void GameItem::setup() {
     color.animateTo(ofColor::blue);
 }
 
-void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path, bool blink, float rotateIn) {
+void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path, float rotateIn) {
     rotate = rotateIn;
 
     getAnimator().reset(0.0f);
@@ -75,7 +59,7 @@ void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path, bool
         selector.setCurve(LINEAR);
         selector.animateTo(dir.size()-1);
         for (; i < dir.size(); i++) {
-            add(dir.getName(i), dir.getPath(i), blink); //blink
+            add(dir.getName(i), dir.getPath(i));
         }
     }
     else {
@@ -116,7 +100,7 @@ void ImageAnimator::setup() {
     buildY();
     imagPath.setup();
 
-    mainEyes.setup(PLAY_ONCE, 1.0f, DATAPATH, true, 0.0f);
+    mainEyes.setup(PLAY_ONCE, 1.0f, DATAPATH, 0.0f);
     if (!mainEyes.count()) {
         ofLogFatalError() << "eyes missing";
         ofExit(100);
@@ -124,12 +108,12 @@ void ImageAnimator::setup() {
 
     std::string path = DATAPATH;
     path += "\\spirl";
-    rotatingEyes.setup(LOOP_BACK_AND_FORTH_ONCE, 3.0f, path, false, 25.0f);
+    rotatingEyes.setup(LOOP_BACK_AND_FORTH_ONCE, 3.0f, path, 25.0f);
     if (!rotatingEyes.count()) {
         ofLogError() << "rotating eyes missing";
     }
 
-    //path.setup();
+    //path.setup(); path not used this release, allows eye to move all over
     rotator.setup();
     contours.setup();
 
@@ -142,6 +126,12 @@ void ImageAnimator::setup() {
         sound.load(allSounds.getPath(i));
         mySounds.push_back(sound);
     }
+
+    blinker.reset(0.0f);
+    blinker.setCurve(EASE_IN_EASE_OUT);
+    blinker.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
+    blinker.setDuration(1.0f);
+    blinker.animateTo(1.0f);
 
     clear(); // go to a known state (call last like this as it may depend on othe settings)
     startPlaying();

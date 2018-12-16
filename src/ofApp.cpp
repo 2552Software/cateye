@@ -109,15 +109,10 @@ void ofApp::draw(){
         ofDisableDepthTest();
 
         if (!textOnly && eyeAnimator.inGame() && eyeAnimator.winnerHitCount() > 0) {
-            std::stringstream ss;
-            ss << eyeAnimator.winnerHitCount() << " of " << eyeAnimator.winnerThreshold();
-            std::string s = "Game On! Find ";
-            s += ss.str();
-            ofSetColor(ofColor::white);
-            eyeAnimator.font.drawStringAsShapes(s, ofGetScreenWidth() / 2 - eyeAnimator.font.stringWidth(s)/2, eyeAnimator.font.getLineHeight() * 5);
+            eyeAnimator.setTitle();
         }
         else if (eyeDrawn) { // blink as needed
-            eyeAnimator.mainEyes.getCurrentEyeRef().blink();
+            eyeAnimator.blink();
         }
     }
     else  {
