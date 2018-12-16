@@ -107,12 +107,13 @@ void ofApp::draw(){
         ofPopStyle();
         light.disable();
         ofDisableDepthTest();
-
-        if (!textOnly && eyeAnimator.inGame() && eyeAnimator.winnerHitCount() > 0) {
-            eyeAnimator.setTitle();
-        }
-        else if (eyeDrawn) { // blink as needed
-            eyeAnimator.blink();
+        if (!textOnly) {
+            if (eyeAnimator.inGame() && eyeAnimator.winnerHitCount() > 0) {
+                eyeAnimator.setTitle();
+            }
+            else if (eyeDrawn) { // blink as needed
+                eyeAnimator.blink();
+            }
         }
     }
     else  {

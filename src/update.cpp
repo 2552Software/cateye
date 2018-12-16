@@ -59,14 +59,13 @@ void ImageAnimator::update() {
             level = 0;
         }
     }
-    if (secondsPassed(20)) { // if no activity end game after 20 seconds
+    if (secondsPassed(20)) { // if no activity reset game after 20 seconds
         if (level >= 0 && !winnerHitCount()) {
             level = -1;
         }
     }
-    if (secondsPassed(45)) { // say something now and then
+    if (secondsPassed((int)ofRandom(45, 60*3))) { // say something now and then
         credits();
-        displayText.push_back(TextTimer("Howdy howdy!", 1000.0f, 0.0f, 0.0f));
     }
 
     if (!isAnimating()) {
