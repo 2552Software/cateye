@@ -244,7 +244,7 @@ void SuperSphere::draw() {
     if (blinkingEnabled) {
         index = blinker.getCurrentValue();
     }
-   //bugbug blink[index].start();
+    blink[index].start();
     ofSpherePrimitive::draw();
-//blink[index].stop();
+    blink[index].stop();
 }

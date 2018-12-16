@@ -1,10 +1,8 @@
 #include "ofApp.h"
 
 void ImageAnimator::draw() {
-
     rotate(currentRotation); // rotate screen, not object, so same rotation works every time
     mainEyes.draw();
-
 }
 
 void Eyes::draw() {

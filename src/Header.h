@@ -179,9 +179,9 @@ public:
     bool find(const ofRectangle& item) { return std::find(gameItems.begin(), gameItems.end(), item) != gameItems.end(); }
     ofTrueTypeFont font;
     void setCount(int count);
-    int level;
-
+    bool inGame() { return level >= 0; }
 private:
+    int level;
     void getCountours();
     struct TextEvent {
         int i;

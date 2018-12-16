@@ -11,7 +11,6 @@ void Eyes::update() {
 void GameItem::update() {
     color.update(1.0f / ofGetTargetFrameRate());
     sphere.tiltDeg(5.0f);
-   //  box.tilt(5.0f); looks terrible
 }
 
 void ImageAnimator::update() {
@@ -42,8 +41,14 @@ void ImageAnimator::update() {
     rotator.update();
     contours.update();
 
+    // control game state
     if ((int)ofGetElapsedTimef() % 20 == 0) {
-        level = 0; // trigger a game every so often
+        if (level >= 0 && !winnerHitCount()) {
+            level = -1;
+        }
+        else {
+            level = 0; // trigger a game every so often, or drop back from level 2 if its taking too long
+        }
     }
 
     if (!isAnimating()) {

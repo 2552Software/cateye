@@ -66,7 +66,7 @@ void ContoursBuilder::setup() {
 }
 
 void ImageAnimator::setup() {
-    level = 0;
+    level = -1; // no game at the start
     // convert to screen size
     xFactor = ofGetScreenWidth() / cameraWidth;
     yFactor = ofGetScreenHeight() / cameraHeight;

@@ -103,7 +103,7 @@ void ofApp::draw(){
         light.disable();
         ofDisableDepthTest();
 
-        if (eyeAnimator.level >= 0 && eyeAnimator.winnerHitCount() > 0) {
+        if (eyeAnimator.inGame() && eyeAnimator.winnerHitCount() > 0) {
             std::stringstream ss;
             ss << eyeAnimator.winnerHitCount() << " of " << eyeAnimator.winnerThreshold();
             std::string s = "Game On! Find ";
