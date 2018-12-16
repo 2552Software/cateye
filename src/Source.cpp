@@ -36,19 +36,6 @@ void  ImageAnimator::fireWorks() {
    rotatingEyes.getAnimator().animateFromTo(-300, 300);//bugbug will need to adjsut for pi
 }
 
-void GameItem::trigger() {
-    if (!isAnimating()) {
-        float duration = 25.0f;//seconds bugbug make menu
-        ofColor c1(ofColor::red);// (0.0f, 0.0f, ofRandom(200, 255));
-        ofColor c2(ofColor::blue);//ofRandom(200, 255), 0.0f, 0.0f);
-        color.setColor(c1);
-        color.setDuration(duration);
-        color.setRepeatType(PLAY_ONCE);
-        color.setCurve(LINEAR);
-        color.animateTo(c2);
-    }
-}
-
 void ImageAnimator::rotate(const ofVec3f& target) {
     std::stringstream ss;
     ss << target;
@@ -83,7 +70,6 @@ void ImageAnimator::sounds(int duration) {
 // turn on/off came items
 void ImageAnimator::clear() {
     gameItems.clear();
-    level = -1;
     sendFireworks = false;
 }
 
@@ -168,7 +154,7 @@ void ImageAnimator::getCountours() {
                                 float cx = ofGetScreenWidth() - (item.second.width)*xFactor;/// ofGetScreenWidth();
                                 ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);
                                 if (!find(rect2Use)) {
-                                    gameItems.push_back(GameItem(rect2Use, mainEyes.getCurrentEyeRef().getMainEye()));
+                                    gameItems.push_back(GameItem(rect2Use, mainEyes.getCurrentEyeRef().getMainEye(), level));
                                     break;
                                 }
                             }

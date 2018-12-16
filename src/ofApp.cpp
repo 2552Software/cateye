@@ -107,6 +107,7 @@ void ofApp::draw(){
         ofPopStyle();
         light.disable();
         ofDisableDepthTest();
+        // need pure light/color and no camera
         if (!textOnly) {
             if (eyeAnimator.inGame() && eyeAnimator.winnerHitCount() > 0) {
                 eyeAnimator.setTitle();

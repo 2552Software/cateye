@@ -123,7 +123,7 @@ private:
 
 class GameItem {
 public:
-    GameItem(const ofRectangle& rect, Eye eye, int a = 30);
+    GameItem(const ofRectangle& rect, Eye eye, int level);
     bool operator==(const GameItem& rhs) const {
         return rectangle == rhs.rectangle;
     }
@@ -132,18 +132,18 @@ public:
     }
     void setup();
     void update();
-    void draw(int level);
-    void trigger();
-    bool isAnimating() { return color.isAnimating(); }
+    void draw();
+    bool isAnimating() { return animater.isAnimating(); }
 
 private:
-    ofBoxPrimitive box; // pick a shape bugbug
+    int level;
+    ofBoxPrimitive box; // pick a shape 
     ofRectangle rectangle;
     ofSpherePrimitive sphere;
     Eye myeye;
     //ofSpherePrimitive eye;
     int alpha;
-    ofxAnimatableOfColor color; // revert to black when not animating
+    ofxAnimatableFloat animater; 
 };
 
 

@@ -6,7 +6,6 @@ void SuperSphere::setup(const string&name) {
     panDeg(180);
 }
 void TextTimer::setup() {
-
 }
 
 void Eye::setup(const string&texName) {
@@ -19,8 +18,9 @@ void Eye::setup(const string&texName) {
     //assimp not supported model.loadModel(objName);
 }
 
-GameItem::GameItem(const ofRectangle& rect, Eye eye, int a) {
+GameItem::GameItem(const ofRectangle& rect, Eye eye, int levelIn) {
     rectangle = rect;
+    level = levelIn;
     myeye = eye;
     box.setPosition(rect.x, rect.y + rect.height, 0.0f);
     box.setWidth(rect.width);
@@ -28,16 +28,21 @@ GameItem::GameItem(const ofRectangle& rect, Eye eye, int a) {
     sphere.setRadius(min(rect.height, rect.width) / 2);
     // use with squares etc sphere.set(rect.width, rect.height, 0.0f);
     sphere.setPosition(rect.x, rect.y, 0.0f);
-    alpha = a;
     setup();
 }
 
 void GameItem::setup() {
-    color.setColor(ofColor::white);
-    color.setDuration(5.0f);
-    color.setRepeatType(PLAY_ONCE);
-    color.setCurve(EASE_IN_EASE_OUT);
-    color.animateTo(ofColor::blue);
+    animater.reset(0.0f);
+    animater.setCurve(EASE_IN_EASE_OUT);
+    animater.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
+    if (level > 1) {
+        animater.setDuration(20.0f); //bugbug menu
+        box.dolly(-100.0f); ///bugbug tune on pi
+    }
+    else {
+        animater.setDuration(40.0f); //bugbug menu
+    }
+    animater.animateTo(1.0f);
 }
 
 void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path, float rotateIn) {

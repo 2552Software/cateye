@@ -93,12 +93,9 @@ bool ImageAnimator::drawText() {
 
     return found;
 }
-void GameItem::draw(int level) {
-    ofColor c = color.getCurrentColor();
-    c.a = alpha;// alpha; keep it light
-    ofSetColor(c);
+void GameItem::draw() {
     myeye.start();
-    if (level > 0) {
+    if (level > 0) { // 2nd level is boxes
         box.draw();
     }
     else {
@@ -108,16 +105,12 @@ void GameItem::draw(int level) {
 }
 
 void ImageAnimator::drawGame() {
-    // only draw when something triggers to avoid a confusing ui
-    if (level > 0) {
-        ofRotateDeg(-5.0f, 1.0f, 0.0f, 0.0f); // a little something interesting
-    }
     ofPushStyle();
     ofPushMatrix();
     ofTranslate(0.0f, ofGetScreenHeight() / 20);
     ofEnableAlphaBlending();
     for (auto& item : gameItems) {
-        item.draw(level);
+        item.draw();
     }
     ofDisableAlphaBlending();
     ofPopMatrix();

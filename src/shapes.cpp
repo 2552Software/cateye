@@ -177,7 +177,7 @@ void ImageAnimator::credits(bool signon) {
 
     if (signon || (int)ofRandom(0, 10) > 2) {
         displayText.push_back(TextTimer("Tom And Mark", 1000.0f, 0.0f, 0.0f));
-        displayText.push_back(TextTimer("From Eletronic Murals", 1000.0f, 1000.0f, 1.0f));
+        displayText.push_back(TextTimer("From Electronic Murals", 1000.0f, 1000.0f, 1.0f));
         displayText.push_back(TextTimer("Thank Can Can Wonderland ...", 1000.0f, 2 * 1000.0f, 2.0f));
         displayText.push_back(TextTimer("... For their support of the Arts!", 1000.0f, 3 * 1000.0f, 3.0f));
     }

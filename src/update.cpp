@@ -12,8 +12,13 @@ void Eyes::update() {
 }
 
 void GameItem::update() {
-    color.update(1.0f / ofGetTargetFrameRate());
-    sphere.tiltDeg(5.0f);
+    animater.update(1.0f / ofGetTargetFrameRate());
+    if (level > 0) {
+        box.dolly(10.0f*animater.val());
+    }
+    else {
+        sphere.rollDeg(90.0f*animater.val());
+    }
 }
 bool secondsPassed(int val) {
     return ((int)ofGetElapsedTimef() % val) == 0;
@@ -24,7 +29,7 @@ void ImageAnimator::update() {
     blinker.update(1.0f / ofGetTargetFrameRate());
     if (!blinker.isOrWillBeAnimating()) {
         blinker.reset(0.0f);
-        blinker.animateToAfterDelay(1.0f, ofRandom(1.0f, 10.0f)); // blink every few seconds bugbug menu
+        blinker.animateToAfterDelay(1.0f, ofRandom(10.0f, 30.0f)); // blink every few seconds bugbug menu
     }
 
     // if not animating time to go...
@@ -54,7 +59,7 @@ void ImageAnimator::update() {
     contours.update();
 
     // control game state
-    if (secondsPassed(60)) { // start a game every minute
+    if (secondsPassed((int)ofRandom(5,6))) { // start a game every minute or so bugbug set once working
         if (level < 0) {
             level = 0;
         }
@@ -64,7 +69,7 @@ void ImageAnimator::update() {
             level = -1;
         }
     }
-    if (secondsPassed((int)ofRandom(45, 60*3))) { // say something now and then
+    if (secondsPassed((int)ofRandom(45, 60*3)) && displayText.size() == 0) { // say something now and then
         credits();
     }
 
@@ -75,6 +80,11 @@ void ImageAnimator::update() {
                 //credits will call fireworks when done
                 sendFireworks = true;
                 credits(true);
+                level = 0; // go to first level
+            }
+            else {
+                clear();
+                level = 1; // go to next level
             }
         }
         else {
