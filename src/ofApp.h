@@ -39,5 +39,13 @@ public:
         eyeAnimator.windowResized(w, h);
     }
     void keyPressed(int key);
+    void audioOut(ofSoundBuffer &outBuffer);
 private:
+    ofSoundStream soundStream;
+    double wavePhase;
+    double pulsePhase;
+
+    std::mutex audioMutex;
+    ofSoundBuffer lastBuffer;
+    float rms;
 };

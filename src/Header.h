@@ -161,7 +161,7 @@ public:
     void startPlaying();
     size_t winnerHitCount(); // count of items being animiated
     void clear();
-    size_t winnerThreshold() { return 64; } // intial game trigger bugbug make menu item
+    size_t winnerThreshold() { return cameraMapping.size(); } // have to get them all
     void setTriggerCount(float count);
     void setShapeMinSize(float size) { shapeMinSize = size; };
     bool isWinner() { return winnerHitCount() >= winnerThreshold(); } // easy mode! bugbug menu
@@ -178,6 +178,8 @@ public:
     void blink();
     void setTitle();
     std::string sillyString();
+    float frequency = 172.5;
+
 private:
     ofTrueTypeFont font;
     int level;

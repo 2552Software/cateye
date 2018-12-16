@@ -1,9 +1,66 @@
 #include "ofApp.h"
 
+void ofApp::audioOut(ofSoundBuffer & outBuffer) {
+    if (eyeAnimator.winnerHitCount() == 0){
+        return;
+    }
+    // base frequency of the lowest sine wave in cycles per second (hertz)
+    // mapping frequencies from Hz into full oscillations of sin() (two pi)
+    float wavePhaseStep = (eyeAnimator.frequency / outBuffer.getSampleRate()) * TWO_PI;
+    float pulsePhaseStep = (0.5 / outBuffer.getSampleRate()) * TWO_PI;
+
+    // this loop builds a buffer of audio containing 3 sine waves at different
+    // frequencies, and pulses the volume of each sine wave individually. In
+    // other words, 3 oscillators and 3 LFOs.
+
+    for (size_t i = 0; i < outBuffer.getNumFrames(); i++) {
+
+        // build up a chord out of sine waves at 3 different frequencies
+        float sampleLow = sin(wavePhase);
+        float sampleMid = sin(wavePhase * 1.5);
+        float sampleHi = sin(wavePhase * 2.0);
+
+        // pulse each sample's volume
+        sampleLow *= sin(pulsePhase);
+        sampleMid *= sin(pulsePhase * 1.04);
+        sampleHi *= sin(pulsePhase * 1.09);
+
+        float fullSample = (sampleLow + sampleMid + sampleHi);
+
+        // reduce the full sample's volume so it doesn't exceed 1
+        fullSample *= 0.3;
+
+        // write the computed sample to the left and right channels
+        outBuffer.getSample(i, 0) = fullSample;
+        outBuffer.getSample(i, 1) = fullSample;
+
+        // get the two phase variables ready for the next sample
+        wavePhase += wavePhaseStep;
+        pulsePhase += pulsePhaseStep;
+    }
+
+    unique_lock<mutex> lock(audioMutex);
+    lastBuffer = outBuffer;
+}
 //--------------------------------------------------------------
 void ofApp::setup(){
+
     hideMenu = true;
     ofSetFrameRate(30.0f); // camers 30 so why go higher?
+
+    wavePhase = 0;
+    pulsePhase = 0;
+
+    // start the sound stream with a sample rate of 44100 Hz, and a buffer
+    // size of 512 samples per audioOut() call
+    ofSoundStreamSettings settings;
+    settings.numOutputChannels = 2;
+    settings.sampleRate = 44100;
+    settings.bufferSize = 512;
+    settings.numBuffers = 4;
+    settings.setOutListener(this);
+    soundStream.setup(settings);
+    //soundStream.printDeviceList();
 
     //ofEnableSeparateSpecularLight();
     ofSetWindowShape(ofGetScreenWidth(), ofGetScreenHeight());
@@ -24,7 +81,7 @@ void ofApp::setup(){
 
     // setup(const std::string& collectionName = "", const std::string& filename = ofxPanelDefaultFilename, float x = 10, float y = 10);
 
-    gui.add(squareCount.setup("Squares", 10, 10, 100));
+    gui.add(squareCount.setup("Squares", 15, 15, 100));
     gui.add(maxForTrigger.setup("Triggers", 50.0f, 200.0f, 100.0f));
     gui.add(maxForShape.setup("Shapes", 100.0f, 200.0f, 500.f));
 
@@ -45,7 +102,6 @@ void ofApp::setup(){
     squareCount.addListener(this, &ofApp::squareCountChanged);
     maxForTrigger.addListener(this, &ofApp::triggerCountChanged);
     maxForShape.addListener(this, &ofApp::shapeSizeChanged);
-
 }
 
 void ofApp::shapeSizeChanged(float &size) {
@@ -64,10 +120,24 @@ void ofApp::squareCountChanged(int &squareCount) {
 void ofApp::update(){
     eyeAnimator.update();
     light.update();
+    
+    // "lastBuffer" is shared between update() and audioOut(), which are called
+    // on two different threads. This lock makes sure we don't use lastBuffer
+    // from both threads simultaneously (see the corresponding lock in audioOut())
+    unique_lock<mutex> lock(audioMutex);
+
+    // this loop is building up a polyline representing the audio contained in
+    // the left channel of the buffer
+
+    // the x coordinates are evenly spaced on a grid from 0 to the window's width
+    // the y coordinates map each audio sample's range (-1 to 1) to the height
+    // of the window
+
+    rms = lastBuffer.getRMSAmplitude();
 }
 
 //--------------------------------------------------------------
-void ofApp::draw(){
+void ofApp::draw() {
     ofSetBackgroundColor(ofColor::black);
     ofSetColor(ofColor::white);
     if (hideMenu) {

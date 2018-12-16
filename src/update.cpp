@@ -14,7 +14,9 @@ void Eyes::update() {
 void GameItem::update() {
     animater.update(1.0f / ofGetTargetFrameRate());
     if (level > 0) {
-        box.dolly(10.0f*animater.val());
+        glm::vec3 newPos= box.getPosition();
+        newPos.z += box.getWidth()*animater.val()/3;
+        box.setPosition(newPos);
     }
     else {
         sphere.rollDeg(90.0f*animater.val());
@@ -64,7 +66,8 @@ void ImageAnimator::update() {
             level = 0;
         }
     }
-    if (secondsPassed(20)) { // if no activity reset game after 20 seconds
+    if
+        (secondsPassed(30)) { // if no activity reset game after 30 seconds
         if (level >= 0 && !winnerHitCount()) {
             level = -1;
         }

@@ -150,10 +150,22 @@ void ImageAnimator::getCountours() {
                     if (blob.area >= maxForTrigger) {
                         // see if we can trigger with this one
                         for (auto& item : cameraMapping) { // get all blocks within region
-                            if (item.second.intersects(blob.boundingRect)) {
+                            if (item.second.inside(blob.boundingRect)) { //
                                 float cx = ofGetScreenWidth() - (item.second.width)*xFactor;/// ofGetScreenWidth();
                                 ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);
                                 if (!find(rect2Use)) {
+                                    if (ofRandom(10.0f) > 5.0) {
+                                        frequency += ofRandom(30.0f);
+                                    }
+                                    else {
+                                        frequency -= ofRandom(30.0f);
+                                    }
+                                    if (frequency < 10.0f) {
+                                        frequency = 20.0f;
+                                    }
+                                    else if (frequency > 320.0f) {
+                                        frequency = 300.0f;
+                                    }
                                     gameItems.push_back(GameItem(rect2Use, mainEyes.getCurrentEyeRef().getMainEye(), level));
                                     break;
                                 }

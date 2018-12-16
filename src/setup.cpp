@@ -22,12 +22,6 @@ GameItem::GameItem(const ofRectangle& rect, Eye eye, int levelIn) {
     rectangle = rect;
     level = levelIn;
     myeye = eye;
-    box.setPosition(rect.x, rect.y + rect.height, 0.0f);
-    box.setWidth(rect.width);
-    box.setHeight(rect.height);
-    sphere.setRadius(min(rect.height, rect.width) / 2);
-    // use with squares etc sphere.set(rect.width, rect.height, 0.0f);
-    sphere.setPosition(rect.x, rect.y, 0.0f);
     setup();
 }
 
@@ -35,12 +29,19 @@ void GameItem::setup() {
     animater.reset(0.0f);
     animater.setCurve(EASE_IN_EASE_OUT);
     animater.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
+
+    box.setPosition(rectangle.x, rectangle.y + rectangle.height, -2*rectangle.width);
+    box.setWidth(rectangle.width);
+    box.setHeight(rectangle.height);
+    sphere.setRadius(min(rectangle.height, rectangle.width) / 2);
+    // use with squares etc sphere.set(rect.width, rect.height, 0.0f);
+    sphere.setPosition(rectangle.x, rectangle.y, 0.0f);
+
     if (level > 1) {
         animater.setDuration(20.0f); //bugbug menu
-        box.dolly(-100.0f); ///bugbug tune on pi
     }
     else {
-        animater.setDuration(40.0f); //bugbug menu
+        animater.setDuration(30.0f); //bugbug menu
     }
     animater.animateTo(1.0f);
 }
