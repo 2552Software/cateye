@@ -10,7 +10,8 @@ void Eyes::update() {
 
 void GameItem::update() {
     color.update(1.0f / ofGetTargetFrameRate());
-    sphere.rollDeg(5.0f);
+    sphere.tilt(5.0f);
+    box.tilt(5.0f);
 }
 
 void ImageAnimator::update() {
@@ -86,7 +87,7 @@ void ImageAnimator::update() {
                             // see if we can trigger with this one
                             for (auto& item : cameraMapping) { // get all blocks within region
                                 if (item.second.intersects(blob.boundingRect) && !find(blob.boundingRect)) {
-                                    float cx = ofGetScreenWidth();/// ofGetScreenWidth();
+                                    float cx = ofGetScreenWidth()- (item.second.width)*xFactor;/// ofGetScreenWidth();
                                     ofRectangle rect2Use((cx - item.second.x*xFactor),
                                         item.second.y*yFactor, item.second.width*xFactor,
                                         item.second.height*yFactor);

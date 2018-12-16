@@ -1,14 +1,28 @@
 #include "ofApp.h"
 
+GameItem::GameItem(const ofRectangle& rect, Eye eye, int a) {
+    rectangle = rect;
+    myeye = eye;
+    box.setPosition(rect.x, rect.y + rect.height, 0.0f);
+    box.setWidth(rect.width);
+    box.setHeight(rect.height);
+    sphere.setRadius(min(rect.height, rect.width) / 2);
+    // use with squares etc sphere.set(rect.width, rect.height, 0.0f);
+    sphere.setPosition(rect.x, rect.y, 0.0f);
+    alpha = a;
+    setup();
+}
+
+
+
 void GameItem::setup() {
-    //color.setColor(ofColor(10, 10, 10, alpha));
     color.setColor(ofColor::white);
     color.setDuration(5.0f);
     color.setRepeatType(PLAY_ONCE);
     color.setCurve(EASE_IN_EASE_OUT);
-    color.setColor(ofColor::blue);
-    //color.animateTo(ofColor(255, 255, 255, alpha));
+    color.animateTo(ofColor::blue);
 }
+
 void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path, bool blink, float rotateIn) {
     rotate = rotateIn;
 

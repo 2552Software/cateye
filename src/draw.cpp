@@ -94,8 +94,12 @@ void GameItem::draw() {
     c.a = alpha;// alpha; keep it light
     ofSetColor(c);
     myeye.start();
-    box.draw();
-    //sphere.drawWireframe();
+    if (ofRandom(10.0f) > 5.0f) {
+        box.draw();
+    }
+    else {
+        sphere.draw();
+    }
     myeye.stop();
 }
 

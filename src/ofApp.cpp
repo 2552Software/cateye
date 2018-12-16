@@ -109,6 +109,16 @@ void ofApp::draw(){
         ofPopStyle();
         light.disable();
         ofDisableDepthTest();
+
+        if (eyeAnimator.winnerHitCount() > eyeAnimator.firstMatchCount()) {
+            std::stringstream ss;
+            ss << eyeAnimator.winnerHitCount() << " of " << eyeAnimator.winnerThreshold();
+            std::string s = "Game On! Find ";
+            s += ss.str();
+            ofSetColor(ofColor::white);
+            eyeAnimator.font.drawStringAsShapes(s, ofGetScreenWidth() / 2 - eyeAnimator.font.stringWidth(s)/2, eyeAnimator.font.getLineHeight() * 5);
+        }
+
     }
     else  {
         gui.draw();

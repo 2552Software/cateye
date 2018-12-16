@@ -181,6 +181,7 @@ public:
     Eyes mainEyes;
     Eyes rotatingEyes;
     bool find(const ofRectangle& item) { return std::find(gameItems.begin(), gameItems.end(), item) != gameItems.end(); }
+    ofTrueTypeFont font;
 
 private:
     struct TextEvent {
@@ -191,7 +192,6 @@ private:
     void creditsDone(TextEvent & event);
     void draw(const std::string& s, float x=0.0f, float y = 0.0f);
     std::vector<TextTimer> creditsText;
-    ofTrueTypeFont font; 
     void fireWorks();
     float shapeMinSize;
     void buildTable();

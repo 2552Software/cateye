@@ -6,8 +6,8 @@ void ImageAnimator::buildTable() {
         // all based on camera size and just grid out the screen 10x10 or what ever size we want
         float w = cameraWidth / squareCount; // menu bugbug
         float h = cameraHeight / squareCount;
-        for (float x = w; x < cameraWidth - w; x += w) { // keep off the edges -- camera cannot always pick those up
-            for (float y = h; y < cameraHeight - h; y += h) {
+        for (float x = w; x < cameraWidth-w; x += w) { // keep off the edges -- camera cannot always pick those up
+            for (float y = h; y < cameraHeight-h; y += h) {
                 // roate the x  to reflect viewer vs camera
                 cameraMapping.insert(std::make_pair(std::make_pair(x, y), ofRectangle(x, y, w, h))); // build a default table
             }

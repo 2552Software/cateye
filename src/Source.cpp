@@ -1,18 +1,5 @@
 #include "ofApp.h"
 
-GameItem::GameItem(const ofRectangle& rect, Eye eye, int a) {
-    rectangle = rect;
-    myeye = eye;
-    box.setPosition(rect.x, rect.y, 0.0f);
-    box.setWidth(rect.width);
-    box.setHeight(rect.height);
-    sphere.setRadius(rect.width / 2);
-    // use with squares etc sphere.set(rect.width, rect.height, 0.0f);
-    sphere.setPosition(rect.x, rect.y, 0.0f);
-    alpha = a;
-    setup();
-}
-
 void Eyes::add(const std::string &name, const std::string &root, bool blink) {
     std::string blinkPath;
     if (blink) {
@@ -98,7 +85,7 @@ void ImageAnimator::randomize() {
         int index = 0;
         for (auto& item : cameraMapping) {
             if (index == i) {
-                float cx = ofGetScreenWidth();/// ofGetScreenWidth();
+                float cx = ofGetScreenWidth()- (item.second.width)*xFactor;/// ofGetScreenWidth();
                 gameItems.push_back(GameItem(ofRectangle((cx-item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor), mainEyes.getCurrentEyeRef().getMainEye()));
                 ++c;
                 break;
