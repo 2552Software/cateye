@@ -64,6 +64,7 @@ void ContoursBuilder::setup() {
     grayImage.allocate(cameraWidth, cameraHeight);
     grayDiff.allocate(cameraWidth, cameraHeight);
 }
+
 void ImageAnimator::setup() {
     level = 0;
     // convert to screen size

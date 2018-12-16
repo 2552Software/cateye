@@ -182,6 +182,7 @@ public:
     int level;
 
 private:
+    void getCountours();
     struct TextEvent {
         int i;
     };

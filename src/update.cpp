@@ -42,8 +42,12 @@ void ImageAnimator::update() {
     rotator.update();
     contours.update();
 
+    if ((int)ofGetElapsedTimef() % 20 == 0) {
+        level = 0; // trigger a game every so often
+    }
+
     if (!isAnimating()) {
-        if (isWinner()) { //bugbug always winning need to fix this
+        if (isWinner()) { 
             clear();
             if (++level > 1) {
                 //credits will call fireworks when done
@@ -52,73 +56,7 @@ void ImageAnimator::update() {
             }
         }
         else {
-            float max = 0.0f;
-            if (contours.contourFinder.blobs.size() > 0) {
-                glm::vec3 target = currentRotation;
-                glm::vec3 centroid;
-                ofRectangle rect;
-
-                // first find any motion for the game, then find motion for drawing and eye tracking
-                for (auto& blob : contours.contourFinder.blobs) {
-                    if (blob.area > max && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
-                        max = blob.area;
-                        centroid = blob.centroid;
-                        rect = blob.boundingRect;
-                        break; // first is max
-                    }
-                }
-
-                // see if we have a trigger
-                for (auto& blob : contours.contourFinder.blobs) {
-                    if (blob.area > maxForTrigger && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
-                        if (blob.area >= maxForTrigger) {
-                            // see if we can trigger with this one
-                            for (auto& item : cameraMapping) { // get all blocks within region
-                                if (item.second.intersects(blob.boundingRect)) {
-                                    float cx = ofGetScreenWidth()- (item.second.width)*xFactor;/// ofGetScreenWidth();
-                                    ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);
-                                    if (!find(rect2Use)) {
-                                        gameItems.push_back(GameItem(rect2Use, mainEyes.getCurrentEyeRef().getMainEye()));
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if (max > shapeMinSize) { // fine tune on site 
-                    int w = cameraWidth; // camera size not screen size
-                    int h = cameraHeight;
-
-                    double x = (centroid.x / cameraWidth)*100.0f; // make it a percent
-                    double y = (centroid.y / cameraHeight)*100.0f; // make it a percent
-
-                    //if (mapX.find(std::make_pair(xAction, yAction)) != mapX.end()) {
-                   // }
-                    for (auto& row : mapCameraInX) {
-                        if (x >= row.first.first && x <= row.first.second) {
-                            target.y = row.second;
-                            // centroid
-                            break;
-                        }
-                    }
-                    for (auto& row : mapCameraInY) {
-                        if (y >= row.first.first && y <= row.first.second) {
-                            target.x = row.second;
-                            break;
-                        }
-                    }
-                }
-                // if any data 
-                if (max > 15) {
-                    //   ofLogNotice() << "insert targert" << target;
-                    currentRotation = target;
-                }
-                else {
-                    // no new data so home the eye (?should we add a time?)
-                    currentRotation.set(0.0L, 0.0L, 0.0L);
-                }
-            }
+            getCountours();
         }
     }
 }
