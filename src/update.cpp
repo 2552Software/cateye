@@ -46,7 +46,7 @@ void ImageAnimator::update() {
         std::stringstream ss;
         ss << winnerHitCount() << ":" << winnerThreshold();
         ofSetWindowTitle(ss.str());
-        if (0 && isWinner()) { //bugbug always winning need to fix this
+        if (isWinner()) { //bugbug always winning need to fix this
             ++level;
             if (level > 1) {
                 //credits will call fireworks when done
@@ -96,9 +96,7 @@ void ImageAnimator::update() {
                                         item.second.height*yFactor);
                                     if (!find(rect2Use)) {
                                         gameItems.push_back(GameItem(rect2Use, mainEyes.getCurrentEyeRef().getMainEye()));
-                                    }
-                                    if (mymax <= maxForTrigger) {
-                                        break; // will make it much harder to get a hit
+                                        break;
                                     }
                                 }
                             }
@@ -129,7 +127,7 @@ void ImageAnimator::update() {
                     }
                 }
                 // if any data 
-                if (max > 10) {
+                if (max > 15) {
                     //   ofLogNotice() << "insert targert" << target;
                     currentRotation = target;
                 }
