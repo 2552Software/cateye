@@ -10,8 +10,8 @@ void Eyes::update() {
 
 void GameItem::update() {
     color.update(1.0f / ofGetTargetFrameRate());
-    sphere.tilt(5.0f);
-    box.tilt(5.0f);
+    sphere.tiltDeg(5.0f);
+   //  box.tilt(5.0f); looks terrible
 }
 
 void ImageAnimator::update() {
@@ -47,9 +47,12 @@ void ImageAnimator::update() {
         ss << winnerHitCount() << ":" << winnerThreshold();
         ofSetWindowTitle(ss.str());
         if (0 && isWinner()) { //bugbug always winning need to fix this
-            //credits will call fireworks when done
-            sendFireworks = true;
-            credits();
+            ++level;
+            if (level > 1) {
+                //credits will call fireworks when done
+                sendFireworks = true;
+                credits();
+            }
         }
         else {
             if (((int)ofGetElapsedTimef() % 30) == 0) {//bugbug put in menu
@@ -86,12 +89,14 @@ void ImageAnimator::update() {
                         if (blob.area >= mymax) {
                             // see if we can trigger with this one
                             for (auto& item : cameraMapping) { // get all blocks within region
-                                if (item.second.intersects(blob.boundingRect) && !find(blob.boundingRect)) {
+                                if (item.second.intersects(blob.boundingRect)) {
                                     float cx = ofGetScreenWidth()- (item.second.width)*xFactor;/// ofGetScreenWidth();
                                     ofRectangle rect2Use((cx - item.second.x*xFactor),
                                         item.second.y*yFactor, item.second.width*xFactor,
                                         item.second.height*yFactor);
-                                    gameItems.push_back(GameItem(rect2Use, mainEyes.getCurrentEyeRef().getMainEye()));
+                                    if (!find(rect2Use)) {
+                                        gameItems.push_back(GameItem(rect2Use, mainEyes.getCurrentEyeRef().getMainEye()));
+                                    }
                                     if (mymax <= maxForTrigger) {
                                         break; // will make it much harder to get a hit
                                     }

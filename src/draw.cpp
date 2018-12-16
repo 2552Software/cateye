@@ -89,12 +89,12 @@ bool ImageAnimator::drawText() {
 
     return found;
 }
-void GameItem::draw() {
+void GameItem::draw(int level) {
     ofColor c = color.getCurrentColor();
     c.a = alpha;// alpha; keep it light
     ofSetColor(c);
     myeye.start();
-    if (ofRandom(10.0f) > 5.0f) {
+    if (level > 0) {
         box.draw();
     }
     else {
@@ -108,7 +108,7 @@ void ImageAnimator::drawGame() {
     ofPushMatrix();
     ofEnableAlphaBlending();
     for (auto& item : gameItems) {
-        item.draw();
+        item.draw(level);
     }
     ofDisableAlphaBlending();
     ofPopMatrix();

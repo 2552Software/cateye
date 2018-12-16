@@ -65,7 +65,7 @@ void ContoursBuilder::setup() {
     grayDiff.allocate(cameraWidth, cameraHeight);
 }
 void ImageAnimator::setup() {
-
+    level = 0;
     // convert to screen size
     xFactor = ofGetScreenWidth() / cameraWidth;
     yFactor = ofGetScreenHeight() / cameraHeight;

@@ -75,6 +75,7 @@ void ImageAnimator::sounds(int duration) {
 // turn on/off came items
 void ImageAnimator::clear() {
     gameItems.clear();
+    level = 0;
 }
 // put the first few items in that must before the entire game is unlocked
 void ImageAnimator::randomize() {

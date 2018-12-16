@@ -136,7 +136,7 @@ public:
     }
     void setup();
     void update();
-    void draw();
+    void draw(int level);
     void trigger();
     bool isAnimating() { return color.isAnimating(); }
 
@@ -216,7 +216,7 @@ private:
     float xFactor;
     float yFactor;
     std::list<GameItem> gameItems; // if you are in this list you have been found and not time out has occured bugbug add time out
-
+    int level;
 };
 class Scheduler : public ofThread {
 public:
