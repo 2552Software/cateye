@@ -177,7 +177,7 @@ public:
     bool inGame() { return level >= 0; }
     void blink();
     void setTitle();
-
+    std::string sillyString();
 private:
     ofTrueTypeFont font;
     int level;
@@ -189,7 +189,7 @@ private:
     void rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event);
     void creditsDone(TextEvent & event);
     void draw(const std::string& s, float x=0.0f, float y = 0.0f);
-    std::vector<TextTimer> creditsText;
+    std::vector<TextTimer> displayText;
     void fireWorks();
     float shapeMinSize;
     void buildTable();

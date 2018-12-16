@@ -15,7 +15,9 @@ void GameItem::update() {
     color.update(1.0f / ofGetTargetFrameRate());
     sphere.tiltDeg(5.0f);
 }
-
+bool secondsPassed(int val) {
+    return ((int)ofGetElapsedTimef() % val) == 0;
+}
 void ImageAnimator::update() {
 
     // blinker always moving but only drawn up request
@@ -40,7 +42,7 @@ void ImageAnimator::update() {
         a.update();
     }
 
-    for (auto&a : creditsText) {
+    for (auto&a : displayText) {
         a.update();
     }
 
@@ -52,13 +54,19 @@ void ImageAnimator::update() {
     contours.update();
 
     // control game state
-    if ((int)ofGetElapsedTimef() % 60 == 0) {
+    if (secondsPassed(60)) { // start a game every minute
+        if (level < 0) {
+            level = 0;
+        }
+    }
+    if (secondsPassed(20)) { // if no activity end game after 20 seconds
         if (level >= 0 && !winnerHitCount()) {
             level = -1;
         }
-        else {
-            level = 0; // trigger a game every so often, or drop back from level 2 if its taking too long
-        }
+    }
+    if (secondsPassed(45)) { // say something now and then
+        credits();
+        displayText.push_back(TextTimer("Howdy howdy!", 1000.0f, 0.0f, 0.0f));
     }
 
     if (!isAnimating()) {
@@ -67,7 +75,7 @@ void ImageAnimator::update() {
             if (++level > 1) {
                 //credits will call fireworks when done
                 sendFireworks = true;
-                credits();
+                credits(true);
             }
         }
         else {

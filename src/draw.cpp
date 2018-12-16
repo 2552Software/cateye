@@ -56,7 +56,7 @@ void ContoursBuilder::draw(float cxScreen, float cyScreen) {
 // see if anything is going on
 bool ImageAnimator::isAnimating() {
     if (!rotatingEyes.isAnimating() && !mainEyes.isAnimating()) {
-        for (auto& credit : creditsText) {
+        for (auto& credit : displayText) {
             if (credit.isRunningOrWaitingToRun()) {
                 return true;
             }
@@ -71,7 +71,7 @@ bool ImageAnimator::isAnimating() {
 bool ImageAnimator::drawText() {
     bool found = false;
     float y = ofGetScreenWidth() / 3;
-    for (auto& credit : creditsText) {
+    for (auto& credit : displayText) {
         if (credit.isRunningOrWaitingToRun()) {
             std::string s;
             if (credit.getString(s)) {
