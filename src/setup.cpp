@@ -1,5 +1,40 @@
 #include "ofApp.h"
 
+void SuperSphere::setup(const string&name, const string&blinkPath) {
+    eyes.push_back(Eye(name)); // element 0 is the main non blinking eye
+
+    if (blinkPath.size() > 0L) {
+        blinkingEnabled = true;
+        ofDirectory dir(blinkPath + ".blink");
+        dir.listDir();
+        for (size_t i = 0; i < dir.size(); i++) {
+            eyes.push_back(Eye(dir.getPath(i)));
+        }
+        blinker.reset(0.0f);
+        blinker.setCurve(LINEAR);
+        blinker.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
+        blinker.setDuration(1.2f);
+        blinker.animateTo(1.0f);
+    }
+
+    setResolution(21);
+    panDeg(180);
+    // animateToAfterDelay
+}
+void TextTimer::setup() {
+
+}
+
+void Eye::setup(const string&texName) {
+    if (ofLoadImage(*this, texName)) {
+        ofLogNotice("Eye") << "loaded " << texName;
+    }
+    else {
+        ofLogError("Eye") << "not loaded " << texName;
+    }
+    //assimp not supported model.loadModel(objName);
+}
+
 GameItem::GameItem(const ofRectangle& rect, Eye eye, int a) {
     rectangle = rect;
     myeye = eye;
@@ -12,8 +47,6 @@ GameItem::GameItem(const ofRectangle& rect, Eye eye, int a) {
     alpha = a;
     setup();
 }
-
-
 
 void GameItem::setup() {
     color.setColor(ofColor::white);
@@ -66,7 +99,7 @@ void ContoursBuilder::setup() {
 }
 
 void ImageAnimator::setup() {
-    level = -1; // no game at the start
+    level = -1;
     // convert to screen size
     xFactor = ofGetScreenWidth() / cameraWidth;
     yFactor = ofGetScreenHeight() / cameraHeight;

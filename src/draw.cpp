@@ -4,7 +4,15 @@ void ImageAnimator::draw() {
     rotate(currentRotation); // rotate screen, not object, so same rotation works every time
     mainEyes.draw();
 }
-
+void SuperSphere::draw() {
+    int index = 0; // the non blink index
+    if (blinkingEnabled) {
+       // index = blinker.getCurrentValue();
+    }
+    eyes[index].start();
+    ofSpherePrimitive::draw();
+    eyes[index].stop();
+}
 void Eyes::draw() {
     if (isAnimating()) {
         for (auto& eye : eyes) { // keep all eyes in sync to make it easier
@@ -17,6 +25,9 @@ void Eyes::draw() {
         }
     }
     getCurrentEyeRef().draw();
+}
+void ImageAnimator::draw(const std::string& s, float x, float y) {
+    font.drawStringAsShapes(s, x, y);
 }
 
 void ContoursBuilder::draw(float cxScreen, float cyScreen) {

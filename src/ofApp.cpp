@@ -76,34 +76,39 @@ void ofApp::draw(){
         ofPushMatrix();
         light.enable();
         camera.begin();
-
-        if (!eyeAnimator.drawText()) { // draw text first, if no text draw the eye
+        bool textOnly = eyeAnimator.drawText();
+        bool eyeDrawn = false;
+        if (!textOnly) { // draw text first, if no text draw the eye
                 // show spirl eye first, if its not running try to text if al else fails show the main eye
             if (eyeAnimator.rotatingEyes.isAnimating()) {
                 eyeAnimator.rotatingEyes.draw();
             }
             else {
                 eyeAnimator.draw();
+                eyeDrawn = true;
             }
         }
 
         ofPopMatrix();
         ofPopStyle();
         camera.end();
-
-        // if nothing else is going on draw motion outside of camera but in light
         ofPushStyle();
         ofPushMatrix();
-        if (!eyeAnimator.isAnimating()) {
+
+        // if nothing else is going on draw motion outside of camera but in light
+
+        if (!textOnly && !eyeAnimator.isAnimating()) {
             eyeAnimator.drawContours(ofGetScreenWidth(), ofGetScreenHeight());
         }
-        eyeAnimator.drawGame(); // draw any game that may be running
+        if (!textOnly) {
+            eyeAnimator.drawGame(); // draw any game that may be running
+        }
         ofPopMatrix();
         ofPopStyle();
         light.disable();
         ofDisableDepthTest();
 
-        if (eyeAnimator.inGame() && eyeAnimator.winnerHitCount() > 0) {
+        if (!textOnly && eyeAnimator.inGame() && eyeAnimator.winnerHitCount() > 0) {
             std::stringstream ss;
             ss << eyeAnimator.winnerHitCount() << " of " << eyeAnimator.winnerThreshold();
             std::string s = "Game On! Find ";
@@ -111,7 +116,9 @@ void ofApp::draw(){
             ofSetColor(ofColor::white);
             eyeAnimator.font.drawStringAsShapes(s, ofGetScreenWidth() / 2 - eyeAnimator.font.stringWidth(s)/2, eyeAnimator.font.getLineHeight() * 5);
         }
-
+        else if (eyeDrawn) { // blink as needed
+            eyeAnimator.mainEyes.getCurrentEyeRef().blink();
+        }
     }
     else  {
         gui.draw();

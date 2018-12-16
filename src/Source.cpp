@@ -1,5 +1,14 @@
 #include "ofApp.h"
 
+void SuperSphere::blink() {
+    ofSetColor(ofColor::black);
+    ofPushStyle();
+    ofFill();
+    ofDrawRectangle(0, 0, ofGetScreenWidth(), (ofGetScreenHeight()/2)*blinker.val());
+    ofDrawRectangle(0, ofGetScreenHeight(), ofGetScreenWidth(), -(ofGetScreenHeight() / 2)*blinker.val());
+    ofPopStyle();
+
+}
 void Eyes::add(const std::string &name, const std::string &root, bool blink) {
     std::string blinkPath;
     if (blink) {

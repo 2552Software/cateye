@@ -63,9 +63,6 @@ void ImageAnimator::circle() {
     imagPath.addTransition(point);
 }
 
-void TextTimer::setup() {
-    
-}
 bool TextTimer::getString(std::string& output) {
     output.clear();
     int elapsedSeconds = ((int)ofGetElapsedTimeMillis() - timeBegan); //  20 seconds passed for example timeDelay
@@ -110,9 +107,6 @@ bool TextTimer::getString(std::string& output) {
     return false;
 }
 
-void ImageAnimator::draw(const std::string& s, float x, float y) {
-    font.drawStringAsShapes(s, x, y);
-}
 void ImageAnimator::credits(bool signon) {
     /** bugbug removed */
     creditsText.push_back(TextTimer("fast for testing", 1000.0f, 0.0f, 0.0f));
@@ -191,15 +185,6 @@ void ImageAnimator::credits(bool signon) {
 
 }
 
-void Eye::setup(const string&texName) {
-    if (ofLoadImage(*this, texName)) {
-        ofLogNotice("Eye") << "loaded " << texName;
-    }
-    else {
-        ofLogError("Eye") << "not loaded " << texName;
-    }
-    //assimp not supported model.loadModel(objName);
-}
 void Eye::start() {
     //color.applyCurrentColor();
     material.begin();
@@ -209,42 +194,4 @@ void Eye::stop() {
     unbind();
     material.end();
 }
-void SuperSphere::setup(const string&name, const string&blinkPath) {
-    blink.push_back(Eye(name)); // element 0 is the main non blinking eye
 
-    if (blinkPath.size() > 0L) {
-        blinkingEnabled = true;
-        ofDirectory dir(blinkPath + ".blink");
-        dir.listDir();
-        for (size_t i = 0; i < dir.size(); i++) {
-            blink.push_back(Eye(dir.getPath(i)));
-        }
-        blinker.reset(0.0f);
-        blinker.setCurve(LINEAR);
-        blinker.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
-        blinker.setDuration(3.2f);
-        blinker.animateTo(blink.size() - 1);
-    }
-
-    setResolution(21);
-    panDeg(180);
-    // animateToAfterDelay
-}
-void SuperSphere::update() {
-    if (blinkingEnabled) {
-        blinker.update(1.0f / ofGetTargetFrameRate());
-        if (!blinker.isOrWillBeAnimating()) {
-            blinker.reset(0.0f);
-            blinker.animateToAfterDelay(blink.size() - 1, ofRandom(15, 415));
-        }
-    }
-}
-void SuperSphere::draw() {
-    int index = 0; // the non blink index
-    if (blinkingEnabled) {
-        index = blinker.getCurrentValue();
-    }
-    blink[index].start();
-    ofSpherePrimitive::draw();
-    blink[index].stop();
-}

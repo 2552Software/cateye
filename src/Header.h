@@ -65,10 +65,10 @@ public:
     void update();
     void draw();
     bool blinkingEnabled;
-    Eye& getMainEye() { return blink[0]; }
-
+    Eye& getMainEye() { return eyes[0]; }
+    void blink();
 private:
-    std::vector<Eye> blink;
+    std::vector<Eye> eyes;
     ofxAnimatableFloat blinker; // blink animation
 };
 
