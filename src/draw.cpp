@@ -104,15 +104,22 @@ void GameItem::draw(int level) {
 }
 
 void ImageAnimator::drawGame() {
-    ofPushStyle();
-    ofPushMatrix();
-    ofEnableAlphaBlending();
-    for (auto& item : gameItems) {
-        item.draw(level);
+    // want a secret way to unlock
+    if (level == 0 && winnerHitCount() > firstMatchCount()) {
+        // only draw when something triggers to avoid a confusing ui
+        if (level > 0) {
+            ofRotateDeg(-5.0f, 1.0f, 0.0f, 0.0f); // a little something interesting
+        }
+        ofPushStyle();
+        ofPushMatrix();
+        ofEnableAlphaBlending();
+        for (auto& item : gameItems) {
+            item.draw(level);
+        }
+        ofDisableAlphaBlending();
+        ofPopMatrix();
+        ofPopStyle();
     }
-    ofDisableAlphaBlending();
-    ofPopMatrix();
-    ofPopStyle();
 }
 
 void ImageAnimator::drawContours(float cxScreen, float cyScreen) {

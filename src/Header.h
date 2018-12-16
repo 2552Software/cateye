@@ -165,9 +165,8 @@ public:
     void startPlaying();
     size_t winnerHitCount(); // count of items being animiated
     void reset();
-    void setCount(int count);
     void clear();
-    size_t firstMatchCount() { return 3; } // intial game trigger bugbug make menu item
+    size_t firstMatchCount() { return 5; } // intial game trigger bugbug make menu item
     size_t winnerThreshold() { return 64; } // intial game trigger bugbug make menu item
     void setTriggerCount(float count);
     void setShapeMinSize(float size) { shapeMinSize = size; };
@@ -182,6 +181,7 @@ public:
     Eyes rotatingEyes;
     bool find(const ofRectangle& item) { return std::find(gameItems.begin(), gameItems.end(), item) != gameItems.end(); }
     ofTrueTypeFont font;
+    void setCount(int count);
 
 private:
     struct TextEvent {

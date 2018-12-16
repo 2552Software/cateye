@@ -43,10 +43,8 @@ void ImageAnimator::update() {
     contours.update();
 
     if (!isAnimating()) {
-        std::stringstream ss;
-        ss << winnerHitCount() << ":" << winnerThreshold();
-        ofSetWindowTitle(ss.str());
         if (isWinner()) { //bugbug always winning need to fix this
+            clear();
             ++level;
             if (level > 1) {
                 //credits will call fireworks when done
@@ -77,23 +75,12 @@ void ImageAnimator::update() {
                 // see if we have a trigger
                 for (auto& blob : contours.contourFinder.blobs) {
                     if (blob.area > maxForTrigger && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
-                        size_t c = winnerHitCount();
-
-                        if (c >= firstMatchCount()) { //bugbug what to do here?
-                        }
-
-                        float mymax = maxForTrigger;
-                        if (c > firstMatchCount() + 1) {
-                            mymax /= 3; // see less once game stgarts
-                        }
-                        if (blob.area >= mymax) {
+                        if (blob.area >= maxForTrigger) {
                             // see if we can trigger with this one
                             for (auto& item : cameraMapping) { // get all blocks within region
                                 if (item.second.intersects(blob.boundingRect)) {
                                     float cx = ofGetScreenWidth()- (item.second.width)*xFactor;/// ofGetScreenWidth();
-                                    ofRectangle rect2Use((cx - item.second.x*xFactor),
-                                        item.second.y*yFactor, item.second.width*xFactor,
-                                        item.second.height*yFactor);
+                                    ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);
                                     if (!find(rect2Use)) {
                                         gameItems.push_back(GameItem(rect2Use, mainEyes.getCurrentEyeRef().getMainEye()));
                                         break;

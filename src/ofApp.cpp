@@ -64,13 +64,6 @@ void ofApp::squareCountChanged(int &squareCount) {
 void ofApp::update(){
     eyeAnimator.update();
     light.update();
-    //too much only use when needed camera.setDistance(eyeAnimator.camera.getCurrentValue());
-    // light.setPosition(0, 0, eyeAnimator.camera.getCurrentValue() - 1500);
-    // debug helper
-    //std::stringstream ss;
-    //ss << camera.getDistance();
-   // ofSetWindowTitle(ss.str());
-
 }
 
 //--------------------------------------------------------------

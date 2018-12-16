@@ -75,12 +75,12 @@ void ImageAnimator::sounds(int duration) {
 // turn on/off came items
 void ImageAnimator::clear() {
     gameItems.clear();
-    level = 0;
 }
 // put the first few items in that must before the entire game is unlocked
 void ImageAnimator::randomize() {
-    clear(); // reset 
-    // make sure we get 3 or random points used to unlock the game
+    level = 0;
+    clear();
+    // make sure we get firstMatchCount or random points used to unlock the game
     for (size_t c = 0; c < firstMatchCount(); ) {
         int i = (int)ofRandom(10, cameraMapping.size() - 11); // keep from the edges
         int index = 0;
