@@ -77,6 +77,7 @@ void ImageAnimator::setup() {
     ofAddListener(rotatingEyes.getAnimator().animFinished, this, &ImageAnimator::rotatingEyesDone);
     ofAddListener(textFinished, this, &ImageAnimator::creditsDone);
 
+    buildTable();
     buildX();
     buildY();
     imagPath.setup();
@@ -108,7 +109,7 @@ void ImageAnimator::setup() {
         mySounds.push_back(sound);
     }
 
-    reset(); // go to a known state (call last like this as it may depend on othe settings)
+    clear(); // go to a known state (call last like this as it may depend on othe settings)
     startPlaying();
 
 }

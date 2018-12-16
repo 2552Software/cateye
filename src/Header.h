@@ -164,13 +164,10 @@ public:
     void circle();
     void startPlaying();
     size_t winnerHitCount(); // count of items being animiated
-    void reset();
     void clear();
-    size_t firstMatchCount() { return 5; } // intial game trigger bugbug make menu item
     size_t winnerThreshold() { return 64; } // intial game trigger bugbug make menu item
     void setTriggerCount(float count);
     void setShapeMinSize(float size) { shapeMinSize = size; };
-    bool isIgnighted() { return winnerHitCount() > firstMatchCount(); }
     bool isWinner() { return winnerHitCount() >= winnerThreshold(); } // easy mode! bugbug menu
     bool drawText();
     bool isAnimating();
@@ -182,6 +179,7 @@ public:
     bool find(const ofRectangle& item) { return std::find(gameItems.begin(), gameItems.end(), item) != gameItems.end(); }
     ofTrueTypeFont font;
     void setCount(int count);
+    int level;
 
 private:
     struct TextEvent {
@@ -196,7 +194,6 @@ private:
     float shapeMinSize;
     void buildTable();
     int squareCount;
-    void randomize();
     ContoursBuilder contours;
     void buildX();
     void buildY();
@@ -216,7 +213,6 @@ private:
     float xFactor;
     float yFactor;
     std::list<GameItem> gameItems; // if you are in this list you have been found and not time out has occured bugbug add time out
-    int level;
 };
 class Scheduler : public ofThread {
 public:

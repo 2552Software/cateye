@@ -75,26 +75,10 @@ void ImageAnimator::sounds(int duration) {
 // turn on/off came items
 void ImageAnimator::clear() {
     gameItems.clear();
-}
-// put the first few items in that must before the entire game is unlocked
-void ImageAnimator::randomize() {
     level = 0;
-    clear();
-    // make sure we get firstMatchCount or random points used to unlock the game
-    for (size_t c = 0; c < firstMatchCount(); ) {
-        int i = (int)ofRandom(10, cameraMapping.size() - 11); // keep from the edges
-        int index = 0;
-        for (auto& item : cameraMapping) {
-            if (index == i) {
-                float cx = ofGetScreenWidth()- (item.second.width)*xFactor;/// ofGetScreenWidth();
-                gameItems.push_back(GameItem(ofRectangle((cx-item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor), mainEyes.getCurrentEyeRef().getMainEye()));
-                ++c;
-                break;
-            }
-            ++index;
-        }
-    }
+    sendFireworks = false;
 }
+
 
 void ImageAnimator::setTriggerCount(float count) {
     if (count > 0) {
@@ -118,12 +102,6 @@ size_t ImageAnimator::winnerHitCount() {
     return gameItems.size();
 }
 
-void ImageAnimator::reset() {
-    sendFireworks = false;
-    buildTable();
-    randomize();
-}
-
 void ImageAnimator::creditsDone(TextEvent & event) {
     if (sendFireworks) {
         sendFireworks = false;
@@ -135,7 +113,7 @@ void ImageAnimator::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event)
     // no move main eye back into focus
     currentRotation.set(0.0f, 0.0f); // look forward, move ahead its not too late
     mainEyes.getAnimator().animateFromTo(-rotatingEyes.getCurrentEyeRef().getRadius(), 0.0f);
-    randomize(); // reset and start again
+    clear(); // reset and start again
 }
 
 void ImageAnimator::windowResized(int w, int h) {

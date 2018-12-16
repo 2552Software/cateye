@@ -45,17 +45,13 @@ void ImageAnimator::update() {
     if (!isAnimating()) {
         if (isWinner()) { //bugbug always winning need to fix this
             clear();
-            ++level;
-            if (level > 1) {
+            if (++level > 1) {
                 //credits will call fireworks when done
                 sendFireworks = true;
                 credits();
             }
         }
         else {
-            if (((int)ofGetElapsedTimef() % 30) == 0) {//bugbug put in menu
-                randomize(); // mix up right in the middle of things
-            }
             float max = 0.0f;
             if (contours.contourFinder.blobs.size() > 0) {
                 glm::vec3 target = currentRotation;
