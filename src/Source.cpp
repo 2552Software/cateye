@@ -75,7 +75,7 @@ void ImageAnimator::sounds(int duration) {
 // turn on/off came items
 void ImageAnimator::clear() {
     gameItems.clear();
-    level = 0;
+    level = -1;
     sendFireworks = false;
 }
 

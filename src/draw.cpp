@@ -41,7 +41,6 @@ void ContoursBuilder::draw(float cxScreen, float cyScreen) {
             line.close();
             line.scale(cxScreen / cameraWidth, cyScreen / cameraHeight);
             line.draw();
-            //ofDrawRectangle(blob.boundingRect.x, blob.boundingRect.y, blob.boundingRect.width, blob.boundingRect.height);
         }
     }
 }

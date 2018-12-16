@@ -42,7 +42,7 @@ void ImageAnimator::update() {
     contours.update();
 
     // control game state
-    if ((int)ofGetElapsedTimef() % 20 == 0) {
+    if ((int)ofGetElapsedTimef() % 60 == 0) {
         if (level >= 0 && !winnerHitCount()) {
             level = -1;
         }
