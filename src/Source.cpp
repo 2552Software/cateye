@@ -155,10 +155,10 @@ void ImageAnimator::getCountours() {
                                 ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);
                                 if (!find(rect2Use)) {
                                     if (ofRandom(10.0f) > 5.0) {
-                                        frequency += ofRandom(30.0f);
+                                        frequency += ofRandom(50.0f);
                                     }
                                     else {
-                                        frequency -= ofRandom(30.0f);
+                                        frequency -= ofRandom(50.0f);
                                     }
                                     if (frequency < 10.0f) {
                                         frequency = 20.0f;
@@ -166,7 +166,17 @@ void ImageAnimator::getCountours() {
                                     else if (frequency > 320.0f) {
                                         frequency = 300.0f;
                                     }
-                                    gameItems.push_back(GameItem(rect2Use, mainEyes.getCurrentEyeRef().getMainEye(), level));
+                                    if (level > 1) {
+                                        std::string name = DATAPATH;
+                                        name += "\\cube\\cube.jpg";
+                                        gameItems.push_back(GameItem(rect2Use, Eye(name), level));
+                                    }
+                                    else {
+                                        std::string name = DATAPATH;
+                                        name += "\\cube\\cube.jpg";
+                                        gameItems.push_back(GameItem(rect2Use, Eye(name), level));
+                                       // gameItems.push_back(GameItem(rect2Use, mainEyes.getCurrentEyeRef().getMainEye(), level));
+                                    }
                                     break;
                                 }
                             }

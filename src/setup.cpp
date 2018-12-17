@@ -15,7 +15,6 @@ void Eye::setup(const string&texName) {
     else {
         ofLogError("Eye") << "not loaded " << texName;
     }
-    //assimp not supported model.loadModel(objName);
 }
 
 GameItem::GameItem(const ofRectangle& rect, Eye eye, int levelIn) {

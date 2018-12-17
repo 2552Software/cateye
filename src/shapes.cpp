@@ -187,7 +187,6 @@ void ImageAnimator::credits(bool signon) {
 }
 
 void Eye::start() {
-    //color.applyCurrentColor();
     material.begin();
     bind();
 }
