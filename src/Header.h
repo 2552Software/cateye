@@ -181,6 +181,8 @@ public:
     float frequency = 172.5;
 
 private:
+    Eye cube;
+    Eye sphere;
     ofTrueTypeFont font;
     int level;
     void getCountours();

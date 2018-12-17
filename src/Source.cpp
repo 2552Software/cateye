@@ -154,26 +154,23 @@ void ImageAnimator::getCountours() {
                                 float cx = ofGetScreenWidth() - (item.second.width)*xFactor;/// ofGetScreenWidth();
                                 ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);
                                 if (!find(rect2Use)) {
-                                    if (ofRandom(10.0f) > 5.0) {
-                                        frequency += ofRandom(50.0f);
+                                    if (blob.boundingRect.y < ofGetScreenHeight()/4) {
+                                        frequency = ofRandom(500, 750.0f);
                                     }
-                                    else {
-                                        frequency -= ofRandom(50.0f);
+                                    else if (blob.boundingRect.y < ofGetScreenHeight() / 2) {
+                                        frequency = ofRandom(300, 500.0f);
                                     }
-                                    if (frequency < 10.0f) {
-                                        frequency = 20.0f;
+                                    else if (blob.boundingRect.y < 3*ofGetScreenHeight() / 4) {
+                                        frequency = ofRandom(100, 300.0f);
                                     }
-                                    else if (frequency > 320.0f) {
-                                        frequency = 300.0f;
+                                    else  {
+                                        frequency = ofRandom(50, 100.0f);
                                     }
-                                    std::string name = DATAPATH;
                                     if (level > 1) {
-                                        name += "\\cube\\cube.jpg";
-                                        gameItems.push_back(GameItem(rect2Use, Eye(name), level));
+                                        gameItems.push_back(GameItem(rect2Use, cube, level));
                                     }
                                     else {
-                                        name += "\\circle\\eye1.jpg";
-                                        gameItems.push_back(GameItem(rect2Use, Eye(name), level));
+                                        gameItems.push_back(GameItem(rect2Use, sphere, level));
                                        // gameItems.push_back(GameItem(rect2Use, mainEyes.getCurrentEyeRef().getMainEye(), level));
                                     }
                                     break;

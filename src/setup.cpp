@@ -118,6 +118,14 @@ void ImageAnimator::setup() {
         ofLogError() << "rotating eyes missing";
     }
 
+    path = DATAPATH;
+    path += "\\cube\\cube.jpg";
+    cube.setup(path);
+    path = DATAPATH;
+    path += "\\circle\\eye1.jpg";
+    sphere.setup(path);
+
+
     //path.setup(); path not used this release, allows eye to move all over
     rotator.setup();
     contours.setup();
