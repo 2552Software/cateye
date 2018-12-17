@@ -166,14 +166,13 @@ void ImageAnimator::getCountours() {
                                     else if (frequency > 320.0f) {
                                         frequency = 300.0f;
                                     }
+                                    std::string name = DATAPATH;
                                     if (level > 1) {
-                                        std::string name = DATAPATH;
                                         name += "\\cube\\cube.jpg";
                                         gameItems.push_back(GameItem(rect2Use, Eye(name), level));
                                     }
                                     else {
-                                        std::string name = DATAPATH;
-                                        name += "\\cube\\cube.jpg";
+                                        name += "\\circle\\eye1.jpg";
                                         gameItems.push_back(GameItem(rect2Use, Eye(name), level));
                                        // gameItems.push_back(GameItem(rect2Use, mainEyes.getCurrentEyeRef().getMainEye(), level));
                                     }

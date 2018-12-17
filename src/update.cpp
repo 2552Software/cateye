@@ -19,7 +19,7 @@ void GameItem::update() {
         box.setPosition(newPos);
     }
     else {
-        sphere.rollDeg(90.0f*animater.val());
+        sphere.rotate(20.0f*animater.val(), 0.0f, 1.0f, 0.0f);
     }
 }
 bool secondsPassed(int val) {
