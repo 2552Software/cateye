@@ -123,7 +123,7 @@ void ImageAnimator::windowResized(int w, int h) {
 }
 
 void ImageAnimator::startPlaying() {
-    sounds();
+   //bugbug sounds();
 }
 
 void ImageAnimator::getCountours() {
@@ -154,18 +154,7 @@ void ImageAnimator::getCountours() {
                                 float cx = ofGetScreenWidth() - (item.second.width)*xFactor;/// ofGetScreenWidth();
                                 ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);
                                 if (!find(rect2Use)) {
-                                    if (blob.boundingRect.y < ofGetScreenHeight()/4) {
-                                        frequency = ofRandom(500, 750.0f);
-                                    }
-                                    else if (blob.boundingRect.y < ofGetScreenHeight() / 2) {
-                                        frequency = ofRandom(300, 500.0f);
-                                    }
-                                    else if (blob.boundingRect.y < 3*ofGetScreenHeight() / 4) {
-                                        frequency = ofRandom(100, 300.0f);
-                                    }
-                                    else  {
-                                        frequency = ofRandom(50, 100.0f);
-                                    }
+                                    frequencies.push_front(item.second.frequency);
                                     if (level > 1) {
                                         gameItems.push_back(GameItem(rect2Use, cube, level));
                                     }

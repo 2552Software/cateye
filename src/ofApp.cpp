@@ -1,12 +1,18 @@
 #include "ofApp.h"
 
 void ofApp::audioOut(ofSoundBuffer & outBuffer) {
-    if (eyeAnimator.winnerHitCount() == 0){
+    if (eyeAnimator.winnerHitCount() == 0) {
         return;
     }
+    if (eyeAnimator.frequencies.size() != 0){
+        frequency = eyeAnimator.frequencies.back();
+        eyeAnimator.frequencies.pop_back();
+    }
+
     // base frequency of the lowest sine wave in cycles per second (hertz)
+
     // mapping frequencies from Hz into full oscillations of sin() (two pi)
-    float wavePhaseStep = (eyeAnimator.frequency / outBuffer.getSampleRate()) * TWO_PI;
+    float wavePhaseStep = (frequency / outBuffer.getSampleRate()) * TWO_PI;
     float pulsePhaseStep = (0.5 / outBuffer.getSampleRate()) * TWO_PI;
 
     // this loop builds a buffer of audio containing 3 sine waves at different
@@ -61,6 +67,8 @@ void ofApp::setup(){
     settings.setOutListener(this);
     soundStream.setup(settings);
     //soundStream.printDeviceList();
+    volume = 0.1f;
+    soundStream.start();
 
     //ofEnableSeparateSpecularLight();
     ofSetWindowShape(ofGetScreenWidth(), ofGetScreenHeight());

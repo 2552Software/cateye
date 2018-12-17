@@ -134,6 +134,7 @@ public:
     void update();
     void draw();
     bool isAnimating() { return animater.isAnimating(); }
+    float frequency;
 
 private:
     int level;
@@ -146,6 +147,12 @@ private:
     ofxAnimatableFloat animater; 
 };
 
+// map location to interesting things
+class LocationToInfoMap : public ofRectangle {
+public:
+    float frequency = 172.0f;
+
+};
 
 class ImageAnimator {
 public:
@@ -178,8 +185,7 @@ public:
     void blink();
     void setTitle();
     std::string sillyString();
-    float frequency = 172.5;
-
+    std::list<float> frequencies;
 private:
     Eye cube;
     Eye sphere;
@@ -212,15 +218,14 @@ private:
     typedef std::pair<float, float> Key;
     std::map<Key, float> mapCameraInX; // range to rotation
     std::map<Key, float> mapCameraInY;
-    std::map<std::pair<int, int>, ofRectangle> cameraMapping; // map indexes, nullptr means no object found yet
+    std::map<std::pair<int, int>, LocationToInfoMap> cameraMapping; // map indexes, nullptr means no object found yet
     // convert to screen size
     float xFactor;
     float yFactor;
     std::list<GameItem> gameItems; // if you are in this list you have been found and not time out has occured bugbug add time out
     ofxAnimatableFloat blinker; // blink animation
-
-
-};
+}
+;
 class Scheduler : public ofThread {
 public:
     Scheduler() {
