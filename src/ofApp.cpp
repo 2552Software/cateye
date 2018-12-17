@@ -4,9 +4,10 @@ void ofApp::audioOut(ofSoundBuffer & outBuffer) {
     if (eyeAnimator.winnerHitCount() == 0) {
         return;
     }
-    if (eyeAnimator.frequencies.size() != 0){
-        frequency = eyeAnimator.frequencies.back();
-        eyeAnimator.frequencies.pop_back();
+    if (eyeAnimator.listOfMusic.size() != 0){
+        frequency = eyeAnimator.listOfMusic.back().frequency;
+        volume = eyeAnimator.listOfMusic.back().volume;
+        eyeAnimator.listOfMusic.pop_back();
     }
 
     // base frequency of the lowest sine wave in cycles per second (hertz)

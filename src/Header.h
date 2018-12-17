@@ -147,11 +147,16 @@ private:
     ofxAnimatableFloat animater; 
 };
 
+class Music {
+public:
+    float frequency = 172.0f;
+    float volume = 0.1f;
+};
+
 // map location to interesting things
 class LocationToInfoMap : public ofRectangle {
 public:
-    float frequency = 172.0f;
-
+    Music music;
 };
 
 class ImageAnimator {
@@ -168,7 +173,7 @@ public:
     void startPlaying();
     size_t winnerHitCount(); // count of items being animiated
     void clear();
-    size_t winnerThreshold() { return cameraMapping.size(); } // have to get them all
+    size_t winnerThreshold() { return screenToAnimationMap.size(); } // have to get them all
     void setTriggerCount(float count);
     void setShapeMinSize(float size) { shapeMinSize = size; };
     bool isWinner() { return winnerHitCount() >= winnerThreshold(); } // easy mode! bugbug menu
@@ -185,7 +190,7 @@ public:
     void blink();
     void setTitle();
     std::string sillyString();
-    std::list<float> frequencies;
+    std::list<Music>listOfMusic;
 private:
     Eye cube;
     Eye sphere;
@@ -218,7 +223,7 @@ private:
     typedef std::pair<float, float> Key;
     std::map<Key, float> mapCameraInX; // range to rotation
     std::map<Key, float> mapCameraInY;
-    std::map<std::pair<int, int>, LocationToInfoMap> cameraMapping; // map indexes, nullptr means no object found yet
+    std::map<std::pair<int, int>, LocationToInfoMap> screenToAnimationMap; // map indexes, nullptr means no object found yet
     // convert to screen size
     float xFactor;
     float yFactor;

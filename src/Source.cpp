@@ -149,12 +149,12 @@ void ImageAnimator::getCountours() {
                 if (blob.area > maxForTrigger && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
                     if (blob.area >= maxForTrigger) {
                         // see if we can trigger with this one
-                        for (auto& item : cameraMapping) { // get all blocks within region
+                        for (auto& item : screenToAnimationMap) { // get all blocks within region
                             if (item.second.inside(blob.boundingRect)) { //
                                 float cx = ofGetScreenWidth() - (item.second.width)*xFactor;/// ofGetScreenWidth();
                                 ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);
                                 if (!find(rect2Use)) {
-                                    frequencies.push_front(item.second.frequency);
+                                    listOfMusic.push_front(item.second.music);
                                     if (level > 1) {
                                         gameItems.push_back(GameItem(rect2Use, cube, level));
                                     }

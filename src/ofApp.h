@@ -44,7 +44,7 @@ private:
     ofSoundStream soundStream;
     double wavePhase;
     double pulsePhase;
-    float volume;
+    float volume=0.1f;
     float frequency=172.0f;
     std::mutex audioMutex;
     ofSoundBuffer lastBuffer;
