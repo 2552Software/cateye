@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofApp.h"
+#include "sound.h"
 
 class TextTimer {
 public:
@@ -68,27 +69,6 @@ private:
     Eye eye;
 };
 
-class ofxAnimatableQueueofVec3f {
-public:
-    const size_t maxListSize = 100;
-
-    void setup() { startPlaying(); }
-    void update();
-    void addTransition(ofxAnimatableOfPoint targetValue);
-    void insertTransition(ofxAnimatableOfPoint targetValue, bool forceNext);
-    bool hasFinishedAnimating();
-    ofxAnimatableOfPoint getCurrentValue();
-    ofPoint getPoint();
-    void append(const ofVec3f& target);
-    void startPlaying() {  playing = true; }
-
-protected:
-    bool playing = false;
-private:
-    ofxAnimatableOfPoint currentAnimation;
-    std::list<ofxAnimatableOfPoint> animSteps;
-};
-
 class ContoursBuilder {
 public:
     void setup();
@@ -147,34 +127,6 @@ private:
     ofxAnimatableFloat animater; 
 };
 
-class Music {
-public:
-    Music(float f = 172.0f, float v = 0.1f) { frequency = f; volume = v; }
-    float frequency = 172.0f;
-    float volume = 0.1f;
-};
-
-class ofApp;
-class Sound {
-public:
-    void setup(ofApp*p);
-    void update();
-    void audioOut(ofSoundBuffer & outBuffer);
-
-    float volume;
-    float frequency;
-    float frequencyTarget;
-
-private:
-    double wavePhase;
-    double pulsePhase;
-
-    std::mutex audioMutex;
-    ofSoundStream soundStream;
-    ofSoundBuffer lastBuffer;
-    ofPolyline waveform;
-    float rms;
-};
 // map location to interesting things
 class LocationToInfoMap : public ofRectangle {
 public:
@@ -192,7 +144,6 @@ public:
     void drawContours(float cxScreen, float cyScreen);
     //http://www.findsounds.com/ISAPI/search.dll?keywords=cat
     void sounds(int duration= 5); // default to full sound
-    void circle();
     void startPlaying();
     size_t winnerHitCount(); // count of items being animiated
     void clear();
@@ -241,8 +192,6 @@ private:
     void rotate(const ofVec3f& target);
     std::vector<ofSoundPlayer> mySounds;
     bool sendFireworks;
-    ofxAnimatableQueueofVec3f rotator;
-    ofxAnimatableQueueofVec3f imagPath; // not used yet moves eye around
     ofVec3f currentLocation;
     ofVec3f currentRotation;
     typedef std::pair<float, float> Key;
@@ -254,22 +203,4 @@ private:
     float yFactor;
     std::list<GameItem> gameItems; // if you are in this list you have been found and not time out has occured bugbug add time out
     ofxAnimatableFloat blinker; // blink animation
-}
-;
-class Scheduler : public ofThread {
-public:
-    Scheduler() {
-        timer.setPeriodicEvent((uint64_t)1000000000 * 60); // this is 1 second in nanoseconds
-        startThread();
-    }
-
-private:
-    ofTimer timer;
-    void threadedFunction() {
-        while (isThreadRunning()) {
-            timer.waitNext();
-            // Do your thing here. It will run once per 60 seconds.
-        }
-    }
 };
-

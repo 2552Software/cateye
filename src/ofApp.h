@@ -18,7 +18,10 @@ const int cameraHeight = 480;//240;
 class ofApp : public ofBaseApp {
 
 public:
-    
+    void setup();
+    void update();
+    void draw();
+
     bool hideMenu;
     ofxPanel gui;
     ofxIntSlider squareCount;
@@ -31,15 +34,8 @@ public:
     Camera camera;
     ImageAnimator eyeAnimator;
     ofMesh m;
-    void setup();
-    void update();
-    void draw();
-    //--------------------------------------------------------------
-    void windowResized(int w, int h) {
-        eyeAnimator.windowResized(w, h);
-    }
+    void windowResized(int w, int h) {  eyeAnimator.windowResized(w, h);  }
     void keyPressed(int key);
-    void audioOut(ofSoundBuffer &outBuffer);
 
 private:
 };

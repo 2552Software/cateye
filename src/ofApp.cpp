@@ -1,15 +1,12 @@
 #include "ofApp.h"
-
-void ofApp::audioOut(ofSoundBuffer & outBuffer) {
-    eyeAnimator.sound.audioOut(outBuffer);
-}
+#include "sound.h"
 //--------------------------------------------------------------
 void ofApp::setup(){
     //ofSetFullscreen(true);
     hideMenu = true;
     ofSetFrameRate(30.0f); // camers 30 so why go higher?
     
-    eyeAnimator.sound.setup(this); // tie to app
+    eyeAnimator.sound.setup(); // tie to app
 
     //ofEnableSeparateSpecularLight();
     ofSetWindowShape(ofGetScreenWidth(), ofGetScreenHeight());
@@ -140,7 +137,88 @@ void ofApp::keyPressed(int key) {
     else if (key == 'l') {
         gui.loadFromFile("settings.xml");
     }
+
+    // we can launch our sequences with the launch method, with optional quantization
+    switch (key) {
+    case '1':
+        eyeAnimator.sound.engine.sequencer.sections[0].launch(0, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        break;
+    case '2':
+        eyeAnimator.sound.engine.sequencer.sections[0].launch(1, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        break;
+    case '3':
+        eyeAnimator.sound.engine.sequencer.sections[0].launch(2, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        break;
+    case '4':
+        eyeAnimator.sound.engine.sequencer.sections[0].launch(3, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        break;
+    case '5':
+        eyeAnimator.sound.engine.sequencer.sections[0].launch(-1, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        break;
+    case '6':
+        eyeAnimator.sound.quantize = true;
+        eyeAnimator.sound.quantime = 1.0;
+        break;
+    case '7':
+        eyeAnimator.sound.quantize = true;
+        eyeAnimator.sound.quantime = 1.0 / 4.0;
+        break;
+    case '8':
+        eyeAnimator.sound.quantize = true;
+        eyeAnimator.sound.quantime = 1.0 / 8.0;
+        break;
+    case '9':
+        eyeAnimator.sound.quantize = true;
+        eyeAnimator.sound.quantime = 1.0 / 16.0;
+        break;
+    case '0':
+        eyeAnimator.sound.quantize = false;
+        break;
+    case 'q':
+        eyeAnimator.sound.engine.sequencer.sections[1].launch(0, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        break;
+    case 'w':
+        eyeAnimator.sound.engine.sequencer.sections[1].launch(1, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        break;
+    case 'e':
+        eyeAnimator.sound.engine.sequencer.sections[1].launch(2, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        break;
+    case 'r':
+        eyeAnimator.sound.engine.sequencer.sections[1].launch(3, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        break;
+    case 't':
+        eyeAnimator.sound.engine.sequencer.sections[1].launch(-1, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        break;
+
+    case 'a':
+        eyeAnimator.sound.seq_mode = eyeAnimator.sound.seq_mode ? 0 : 1;
+        switch (eyeAnimator.sound.seq_mode) {
+        case 0:
+            for (int i = 0; i < 4; ++i) {
+                eyeAnimator.sound.engine.sequencer.sections[1].oneshot(i);
+            }
+            break;
+        case 1:
+            for (int i = 0; i < 4; ++i) {
+                eyeAnimator.sound.engine.sequencer.sections[1].loop(i);
+            }
+            break;
+        }
+        break;
+    case ' ': // pause / play
+        if (eyeAnimator.sound.engine.sequencer.isPlaying()) {
+            eyeAnimator.sound.engine.sequencer.pause();
+        }
+        else {
+            eyeAnimator.sound.engine.sequencer.play();
+        }
+        break;
+    case 's': // stop
+        eyeAnimator.sound.engine.sequencer.stop();
+        break;
+    }
 }
+
 
 
 

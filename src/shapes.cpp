@@ -85,22 +85,6 @@ TextTimer::TextTimer(const std::string& textIn, float timeToRenderIn, float dela
     holdTextTime = 35.0f;
 }
 
-void ImageAnimator::circle() {
-    ofxAnimatableOfPoint point;
-    point.setPosition(currentLocation);
-    point.setDuration(1.20f);
-    point.animateTo(ofVec3f(1000, 1000, 10));
-    imagPath.addTransition(point);
-    point.animateTo(ofVec3f(1000, 2000, 200));
-    imagPath.addTransition(point);
-    point.animateTo(ofVec3f(2000, 2000, -200));
-    imagPath.addTransition(point);
-    point.animateTo(ofVec3f(1000, 1000, 3000));
-    imagPath.addTransition(point);
-    point.animateTo(ofVec3f(00, 00));
-    imagPath.addTransition(point);
-}
-
 bool TextTimer::getString(std::string& output) {
     output.clear();
     int elapsedSeconds = ((int)ofGetElapsedTimeMillis() - timeBegan); //  20 seconds passed for example timeDelay

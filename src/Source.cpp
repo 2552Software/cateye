@@ -1,52 +1,5 @@
 #include "ofApp.h"
 
-void Sound::audioOut(ofSoundBuffer & outBuffer) {
-    if ((int)frequencyTarget == (int)frequency) {
-        return;
-    }
-    // base frequency of the lowest sine wave in cycles per second (hertz)
-
-// mapping frequencies from Hz into full oscillations of sin() (two pi)
-    float wavePhaseStep = (frequency / outBuffer.getSampleRate()) * TWO_PI;
-    float pulsePhaseStep = (0.5 / outBuffer.getSampleRate()) * TWO_PI;
-
-    // this loop builds a buffer of audio containing 3 sine waves at different
-    // frequencies, and pulses the volume of each sine wave individually. In
-    // other words, 3 oscillators and 3 LFOs.
-
-    for (size_t i = 0; i < outBuffer.getNumFrames(); i++) {
-
-        // build up a chord out of sine waves at 3 different frequencies
-        float sampleLow = sin(wavePhase);
-        float sampleMid = sin(wavePhase * 1.5);
-        float sampleHi = sin(wavePhase * 1.6);
-
-        // pulse each sample's volume
-        sampleLow *= sin(pulsePhase);
-        sampleMid *= sin(pulsePhase * 1.04);
-        sampleHi *= sin(pulsePhase * 1.09);
-
-        float fullSample = (sampleLow + sampleMid + sampleHi);
-
-        // reduce the full sample's volume so it doesn't exceed 1
-        //fullSample *= 0.3;
-        fullSample = std::min(fullSample, 1.0f);
-
-        // write the computed sample to the left and right channels
-        outBuffer.getSample(i, 0) = fullSample*volume;
-        outBuffer.getSample(i, 1) = fullSample * volume;
-
-        // get the two phase variables ready for the next sample
-        wavePhase += wavePhaseStep;
-        pulsePhase += pulsePhaseStep;
-    }
-
-    unique_lock<mutex> lock(audioMutex);
-    lastBuffer = outBuffer;
-
-    
-}
-
 void ImageAnimator::setTitle() {
     std::stringstream ss;
     ss << winnerHitCount() << " of " << winnerThreshold();
@@ -201,10 +154,10 @@ void ImageAnimator::getCountours() {
                                 if (schoolOfRock.size() > 1) {
                                     schoolOfRock.pop_front(); // drop the oldest
                                 }
+                                float size = cameraWidth * cameraHeight;
+                                float rectSize = blob.boundingRect.height*blob.boundingRect.width;
+                                float ratio = rectSize / size;
                                 Music music(item.second.music.frequency, item.second.music.volume);
-                                float c = std::min(ofGetWindowWidth(), ofGetWindowHeight());
-                                // see what formula is best bugbug
-                                music.volume = 10.0f*((xFactor*std::max((float)blob.boundingRect.getWidth(), (float)blob.boundingRect.getHeight())) /c);
                                 schoolOfRock.push_back(music); // always play music
                                 float cx = ofGetScreenWidth() - (item.second.width)*xFactor;/// ofGetScreenWidth();
                                 ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);

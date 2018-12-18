@@ -1,3 +1,8 @@
 ofxAnimatable
+ofxAudioFile
 ofxGui
+ofxMidi
 ofxOpenCv
+ofxOsc
+ofxPDSP
+ofxSIMDFloats

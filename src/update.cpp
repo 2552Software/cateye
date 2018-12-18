@@ -4,8 +4,15 @@ void SuperSphere::update() {
 }
 
 void Sound::update() {
-    frequency = ofLerp(frequency, frequencyTarget, 0.4);
-    volume = ofLerp(volume, 0, 0.1); // fade to zero
+    frequency = ofLerp(frequency, frequencyTarget, 0.4); // let it fade to 0
+
+    // envelop
+    if (volumnTarget == volume) {
+        volume = ofLerp(volume, 0, 0.1); // fade to zero
+    }
+    else {
+        volume = ofLerp(volume, volumnTarget, 0.8); // jump quickly to 1
+    }
 
     // "lastBuffer" is shared between update() and audioOut(), which are called
     // on two different threads. This lock makes sure we don't use lastBuffer
@@ -39,8 +46,8 @@ bool secondsPassed(int val) {
 void ImageAnimator::update() {
 
     if (schoolOfRock.size() != 0) {
-        sound.frequencyTarget = schoolOfRock.front().frequency;
-        sound.volume = schoolOfRock.front().volume;
+        //bugbug sound.frequencyTarget = schoolOfRock.front().frequency;
+        //bugbug sound.volume = schoolOfRock.front().volume;
         schoolOfRock.pop_front();
     }
     
@@ -74,9 +81,6 @@ void ImageAnimator::update() {
 
     mainEyes.update();
     rotatingEyes.update();
-
-    imagPath.update();
-    rotator.update();
     contours.update();
 
     // control game state
