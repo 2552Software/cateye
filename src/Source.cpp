@@ -16,8 +16,8 @@ void Sound::audioOut(ofSoundBuffer & outBuffer) {
 
         // build up a chord out of sine waves at 3 different frequencies
         float sampleLow = sin(wavePhase);
-        float sampleMid = sin(wavePhase * 1.5);
-        float sampleHi = sin(wavePhase * 2.0);
+        float sampleMid = sin(wavePhase * 1.1);
+        float sampleHi = sin(wavePhase * 1.3);
 
         // pulse each sample's volume
         sampleLow *= sin(pulsePhase);
