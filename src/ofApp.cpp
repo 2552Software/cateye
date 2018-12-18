@@ -2,11 +2,12 @@
 #include "sound.h"
 //--------------------------------------------------------------
 void ofApp::setup(){
+    ofSetWindowTitle("Robocat");
     //ofSetFullscreen(true);
     hideMenu = true;
     ofSetFrameRate(30.0f); // camers 30 so why go higher?
     
-    eyeAnimator.sound.setup(); // tie to app
+    eyeAnimator.sound.setup(cameraWidth, cameraHeight); // tie to app
 
     //ofEnableSeparateSpecularLight();
     ofSetWindowShape(ofGetScreenWidth(), ofGetScreenHeight());
@@ -124,8 +125,13 @@ void ofApp::draw() {
         gui.draw();
     }
 }
-
+void ofApp::keyReleased(int key) {
+    // sends key messages to ofxPDSPComputerKeyboard
+    eyeAnimator.sound.keyboard.keyReleased(key);
+}
 void ofApp::keyPressed(int key) {
+    eyeAnimator.sound.keyboard.keyPressed('a');
+
     if (key == 'm') {
         gui.saveToFile("settings.xml");
         hideMenu = !hideMenu;

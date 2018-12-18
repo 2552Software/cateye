@@ -198,13 +198,14 @@ private: // --------------------------------------------------
     std::vector<float> partials_vector;
 
 };
+
 class Music {
 public:
-    void setup();
+    void setup(int len, int maxPartials);
     void update();
+    
+    void setPixels(ofxCvContourFinder&contours);
 
-    float volume;
-    float frequency;
     // pdsp modules
     pdsp::Engine            engine;
     pdsp::VAOscillator      osc;
@@ -227,11 +228,12 @@ public:
     Reese           reese;
     PolySynth                   synth;
     std::vector<int>     states;
-
     pdsp::Scope drumScope;
     pdsp::Scope reeseScope;
+    pdsp::ComputerKeyboard  keyboard; // simulate bugbug
     ofParameter<float> smooth;
     void smoothCall(float & value);
+    int mode;
 private:
 
 };

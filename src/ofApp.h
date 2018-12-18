@@ -36,6 +36,7 @@ public:
     ofMesh m;
     void windowResized(int w, int h) {  eyeAnimator.windowResized(w, h);  }
     void keyPressed(int key);
+    void keyReleased(int key);
 
 private:
 };

@@ -30,12 +30,6 @@ bool secondsPassed(int val) {
 }
 void ImageAnimator::update() {
 
-    if (schoolOfRock.size() != 0) {
-        //bugbug sound.frequencyTarget = schoolOfRock.front().frequency;
-        //bugbug sound.volume = schoolOfRock.front().volume;
-        schoolOfRock.pop_front();
-    }
-    
     sound.update();
 
     // blinker always moving but only drawn up request
@@ -68,6 +62,9 @@ void ImageAnimator::update() {
     rotatingEyes.update();
     contours.update();
 
+    sound.setPixels(contours.contourFinder);
+
+
     // control game state
     if (secondsPassed((int)ofRandom(5,6))) { // start a game every minute or so bugbug set once working
         if (level < 0) {
@@ -83,9 +80,8 @@ void ImageAnimator::update() {
     if (secondsPassed((int)ofRandom(45, 60*3)) && displayText.size() == 0) { // say something now and then
         credits();
     }
-
     if (!isAnimating()) {
-        if (isWinner()) { 
+        if (0 && isWinner()) {  //bugbug
             clear();
             if (++level > 1) {
                 //credits will call fireworks when done
@@ -110,6 +106,7 @@ void ContoursBuilder::update() {
     if (video.isFrameNew()) { // && (ofGetFrameNum() & 1) to slow things down
                               // clear less often
         colorImg.setFromPixels(video.getPixels());
+
         grayImage = colorImg; // convert our color image to a grayscale image
         if (backgroundImage.bAllocated) {
             grayDiff.absDiff(backgroundImage, grayImage);

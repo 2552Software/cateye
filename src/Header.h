@@ -167,7 +167,6 @@ public:
     Music sound;
 
 private:
-    std::list<Music>schoolOfRock;
     Eye cube;
     Eye sphere;
     ofTrueTypeFont font;

@@ -32,7 +32,7 @@ void Eyes::resize(int w, int h) {
 }
 
 void  ImageAnimator::fireWorks() {
-   sounds(5);
+   //bugbug sounds(5);
    rotatingEyes.getAnimator().animateFromTo(-300, 300);//bugbug will need to adjsut for pi
 }
 
@@ -151,9 +151,6 @@ void ImageAnimator::getCountours() {
                         // see if we can trigger with this one
                         for (auto& item : screenToAnimationMap) { // get all blocks within region
                             if (item.second.inside(blob.boundingRect)) { //
-                                if (schoolOfRock.size() > 1) {
-                                    schoolOfRock.pop_front(); // drop the oldest
-                                }
                                 float size = cameraWidth * cameraHeight;
                                 float rectSize = blob.boundingRect.height*blob.boundingRect.width;
                                 float ratio = rectSize / size;
