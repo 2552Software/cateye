@@ -151,6 +151,7 @@ void ImageAnimator::getCountours() {
                         // see if we can trigger with this one
                         for (auto& item : screenToAnimationMap) { // get all blocks within region
                             if (item.second.inside(blob.boundingRect)) { //
+
                                 float size = cameraWidth * cameraHeight;
                                 float rectSize = blob.boundingRect.height*blob.boundingRect.width;
                                 float ratio = rectSize / size;
@@ -159,6 +160,7 @@ void ImageAnimator::getCountours() {
                                 float cx = ofGetScreenWidth() - (item.second.width)*xFactor;/// ofGetScreenWidth();
                                 ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);
                                 if (!find(rect2Use)) {
+                                    gameItems.push_back(GameItem(rect2Use, musicNote, 3)); //bugbug will be level 3, the big prize
                                     if (level > 1) {
                                         gameItems.push_back(GameItem(rect2Use, cube, level));
                                     }

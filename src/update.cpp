@@ -16,7 +16,10 @@ void Eyes::update() {
 
 void GameItem::update() {
     animater.update(1.0f / ofGetTargetFrameRate());
-    if (level > 0) {
+    if (level == 3) {
+        cylinder.rotateDeg(20.0f*animater.val(), 0.0f, 1.0f, 0.0f);
+    }
+    else if (level == 2) {
         glm::vec3 newPos= box.getPosition();
         newPos.z += box.getWidth()*animater.val()/3;
         box.setPosition(newPos);

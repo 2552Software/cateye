@@ -316,18 +316,24 @@ void GameItem::setup() {
     animater.setCurve(EASE_IN_EASE_OUT);
     animater.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
 
-    box.setPosition(rectangle.x, rectangle.y + rectangle.height, -2*rectangle.width);
-    box.setWidth(rectangle.width);
-    box.setHeight(rectangle.height);
-    sphere.setRadius(min(rectangle.height, rectangle.width) / 2);
-    // use with squares etc sphere.set(rect.width, rect.height, 0.0f);
-    sphere.setPosition(rectangle.x, rectangle.y, 0.0f);
-
-    if (level > 1) {
+    if (level == 3) {
+        cylinder.setRadius(min(rectangle.height, rectangle.width) / 2);
+        cylinder.setHeight(10); // thin
+        // use with squares etc sphere.set(rect.width, rect.height, 0.0f);
+        cylinder.setPosition(rectangle.x, rectangle.y, 0.0f);
+        animater.setDuration(60.0f); //this is the big prize, enjoy it
+    }
+    else if (level == 2) {
+        box.setPosition(rectangle.x, rectangle.y + rectangle.height, -2 * rectangle.width);
+        box.setWidth(rectangle.width);
+        box.setHeight(rectangle.height);
         animater.setDuration(20.0f); //bugbug menu
     }
     else {
-        animater.setDuration(30.0f); //bugbug menu
+        sphere.setRadius(min(rectangle.height, rectangle.width) / 2);
+        // use with squares etc sphere.set(rect.width, rect.height, 0.0f);
+        sphere.setPosition(rectangle.x, rectangle.y, 0.0f);
+        animater.setDuration(30.0f);
     }
     animater.animateTo(1.0f);
 }
@@ -410,6 +416,9 @@ void ImageAnimator::setup() {
     path = DATAPATH;
     path += "\\circle\\eye1.jpg";
     sphere.setup(path);
+    path = DATAPATH;
+    path += "\\music\\musicnote.jpg";
+    musicNote.setup(path);
 
     contours.setup();
 

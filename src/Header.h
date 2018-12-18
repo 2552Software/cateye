@@ -121,6 +121,7 @@ private:
     ofBoxPrimitive box; // pick a shape 
     ofRectangle rectangle;
     ofSpherePrimitive sphere;
+    ofCylinderPrimitive cylinder; // like a coin -- for music notes
     Eye myeye;
     //ofSpherePrimitive eye;
     int alpha;
@@ -165,10 +166,11 @@ public:
     void setTitle();
     std::string sillyString();
     Music sound;
-
+    
 private:
     Eye cube;
     Eye sphere;
+    Eye musicNote;
     ofTrueTypeFont font;
     int level;
     void getCountours();

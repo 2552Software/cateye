@@ -95,7 +95,10 @@ bool ImageAnimator::drawText() {
 }
 void GameItem::draw() {
     myeye.start();
-    if (level > 0) { // 2nd level is boxes
+    if (level == 3) {
+        cylinder.draw();
+    }
+    else if (level == 2) { // 2nd level is boxes
         box.draw();
     }
     else {
