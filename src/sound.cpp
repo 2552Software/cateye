@@ -24,3 +24,18 @@ void KickSynth::patch() {
     ampEnv.enableDBTriggering(-24.0f);
 }
 
+void BassSynth::patch() {
+    //set inputs/outputs
+    addModuleInput("trig", trigger_in);
+    addModuleInput("pitch", osc.in_pitch());
+    addModuleOutput("signal", amp);
+
+    //patching
+    osc.out_saw() * 2.5f >> drive >> filter >> amp;
+
+    trigger_in >> ampEnv.set(0.0f, 50.0f, 1.0f, 200.0f) * 0.7f >> amp.in_mod();
+    trigger_in >> filterEnv.set(0.0f, 80.0f, 0.0f, 200.0f) * 60.0f >> filter.in_cutoff();
+    50.0f >> filter.in_cutoff();
+    0.2f >> filter.in_reso();
+}
+

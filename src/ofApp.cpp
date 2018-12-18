@@ -152,9 +152,6 @@ void ofApp::keyPressed(int key) {
     case '4':
         eyeAnimator.sound.engine.sequencer.sections[0].launch(3, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
         break;
-    case '5':
-        eyeAnimator.sound.engine.sequencer.sections[0].launch(-1, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
-        break;
     case '6':
         eyeAnimator.sound.quantize = true;
         eyeAnimator.sound.quantime = 1.0;
@@ -189,7 +186,6 @@ void ofApp::keyPressed(int key) {
     case 't':
         eyeAnimator.sound.engine.sequencer.sections[1].launch(-1, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
         break;
-
     case 'a':
         eyeAnimator.sound.seq_mode = eyeAnimator.sound.seq_mode ? 0 : 1;
         switch (eyeAnimator.sound.seq_mode) {
@@ -215,6 +211,25 @@ void ofApp::keyPressed(int key) {
         break;
     case 's': // stop
         eyeAnimator.sound.engine.sequencer.stop();
+        break;
+    }
+
+    switch (key) {
+    case '5': // select one shot / loop pattern behavior
+        if (eyeAnimator.sound.oneShot) {
+            eyeAnimator.sound.engine.sequencer.sections[0].setChange(0, pdsp::Behavior::Next);
+            eyeAnimator.sound.engine.sequencer.sections[0].setChange(1, pdsp::Behavior::Next);
+            eyeAnimator.sound.engine.sequencer.sections[0].setChange(2, pdsp::Behavior::Next);
+            eyeAnimator.sound.engine.sequencer.sections[0].setChange(3, pdsp::Behavior::Next);
+            eyeAnimator.sound.oneShot = false;
+        }
+        else {
+            eyeAnimator.sound.engine.sequencer.sections[0].setChange(0, pdsp::Behavior::Nothing);
+            eyeAnimator.sound.engine.sequencer.sections[0].setChange(1, pdsp::Behavior::Nothing);
+            eyeAnimator.sound.engine.sequencer.sections[0].setChange(2, pdsp::Behavior::Nothing);
+            eyeAnimator.sound.engine.sequencer.sections[0].setChange(3, pdsp::Behavior::Nothing);
+            eyeAnimator.sound.oneShot = true;
+        }
         break;
     }
 }

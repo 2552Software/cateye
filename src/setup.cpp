@@ -116,6 +116,60 @@ void Sound::setup() {
     }
 
 
+    oneShot = false;
+
+    //-------------------------SETTING UP SCORE--------------
+
+    o = 0.0f; // we need at least two values for each dimension to avoid ambigous calls
+
+    bleeps.resize(4);
+    for (size_t i = 0; i < bleeps.size(); ++i) {
+        bleeps[i].steplen = 1.0 / 16.0;
+        bleeps[i].bars = 1.0 / 4.0;
+    }
+    bleeps[0].set({ {1.0f, o}, {77.0f, o} });
+    bleeps[1].set({ {1.0f, o}, {80.0f, o} });
+    bleeps[2].set({ {1.0f, o}, {84.0f, o} });
+    bleeps[3].set({ {1.0f, o}, {89.0f, o} });
+
+    // SequencerProcessor setup
+    engine.sequencer.setTempo(120.0);
+    engine.sequencer.setMaxBars(16.0);
+    engine.sequencer.sections.resize(2);
+
+    // adding the bleep patterns and settings their timings
+    for (size_t i = 0; i < bleeps.size(); ++i) {
+        engine.sequencer.sections[0].setCell(i, bleeps[i], pdsp::Behavior::Next);
+    }
+    engine.sequencer.sections[0].launch(0);
+
+    // set bass sequence
+    engine.sequencer.sections[1].setCell(0, bassPattern);
+    engine.sequencer.sections[1].launch(0);
+
+    //-------------------------PATCHING--------------
+    engine.sequencer.sections[0].out_trig(0) >> bleep.in("trig");
+    engine.sequencer.sections[0].out_value(1) >> bleep.in("pitch");
+
+    // connect section outputs to bass
+    engine.sequencer.sections[1].out_trig(0) >> bass.in("trig");
+    engine.sequencer.sections[1].out_value(1) >> bass.in("pitch");
+
+    engine.sequencer.sections[1].out_value(1).setSlewTime(80.0f); // 50ms slew
+    engine.sequencer.sections[1].linkSlewControl(1, 2);
+    // now the out 2 will control the slew time of the value output 1
+    // slew time is multiplied by the message value
+    // so for example 0.0f deativates slew and 2.0f doubles it
+    // useful for 303-like glides
+    // (the effect is subtle in this example but it's there)
+
+// connect synths to stereo output
+    bass * (pdsp::panL(-0.5f) * dB(-6.0f)) >> engine.audio_out(0);
+    bass * (pdsp::panR(-0.5f) * dB(-6.0f)) >> engine.audio_out(1);
+
+    bleep * (pdsp::panL(0.5f) * dB(-6.0f)) >> engine.audio_out(0);
+    bleep * (pdsp::panR(0.5f) * dB(-6.0f)) >> engine.audio_out(1);
+
     //------------SETUPS AND START AUDIO-------------
     engine.listDevices();
     engine.setDeviceID(0); // REMEMBER TO SET THIS AT THE RIGHT INDEX!!!!
