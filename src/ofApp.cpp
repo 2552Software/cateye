@@ -5,7 +5,7 @@ void ofApp::audioOut(ofSoundBuffer & outBuffer) {
 }
 //--------------------------------------------------------------
 void ofApp::setup(){
-
+    //ofSetFullscreen(true);
     hideMenu = true;
     ofSetFrameRate(30.0f); // camers 30 so why go higher?
     

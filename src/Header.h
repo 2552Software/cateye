@@ -149,6 +149,7 @@ private:
 
 class Music {
 public:
+    Music(float f = 172.0f, float v = 0.1f) { frequency = f; volume = v; }
     float frequency = 172.0f;
     float volume = 0.1f;
 };
@@ -177,6 +178,7 @@ private:
 // map location to interesting things
 class LocationToInfoMap : public ofRectangle {
 public:
+    LocationToInfoMap() {}
     Music music;
 };
 

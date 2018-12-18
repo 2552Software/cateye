@@ -10,9 +10,9 @@ void ImageAnimator::buildTable() {
         float freqsLow[] = {
             82.407, 87.307f, 92.499f, 97.999f, 103.826f, 110.0f, 116.541f, 123.471f, 130.813f, 138.591f, 146.8325f,155.563f, 164.814, 174.614, 184.997,
             195.998, 207.652, 220.0, 233.082,246.942, 261.626, 277.183, 293.665, 311.127, 329.628, 349.228, 369.994, 391.995, 415.305, 440.0,466.164,
-            493.883, 523.251, 554.365, 587.33, 622.254, 659.255, 698.456, 739.989, 783.991, 880.0, 932.328,  987.767 };
+            493.883, 523.251, 554.365, 587.33, 622.254, 659.255, 698.456, 739.989, 783.991, 880.0, 932.328,  987.767, 1046.502, 1108.731, 1174.659 };
         
-        float freqsHigh[] = { 1046.502, 1108.731, 1174.659,
+        float freqsHigh[] = {
             1244.50, 1318.51,1396.913,1479.978,1567.982,1661.219,1760.0, 1864.655, 1975.533,2093.005,2217.461,2349.318,2489.016,2637.021,2793.826,
             2793.826,2959.955, 3135.964,3322.438,3520.0, 3729.31,3951.066,4186.009,4434.922,4698.636,4978.032,5274.042,5587.652, 5919.91,6271.92,6644.876,7040.0, 
             7458.62,7902.132,8372.018,8869.844,9397.272,9956.064,10548.084,11175.304, 11839.82, 12543.856, 12543.856, 13289.752, 14917.24, 15804.264
@@ -28,7 +28,7 @@ void ImageAnimator::buildTable() {
         LocationToInfoMap map;
         map.width = w;
         map.height = h;
-        map.music.volume = 0.5f;
+        map.music.volume = 0.1f;
         for (float x = w; x < cameraWidth-w; x += w) { // keep off the edges -- camera cannot always pick those up
             map.x = x;
             for (float y = h; y < cameraHeight-h; y += h) {
@@ -36,7 +36,6 @@ void ImageAnimator::buildTable() {
                 if (x < cameraWidth / 2) {
                     if (iLow < 0) {
                         iLow = maxLow; // i is a fixed sized array index
-                        map.music.volume += 0.5f;
                     }
                     map.music.frequency = freqsLow[iLow]; // left side is high pitch, right side low pitch
                     --iLow;
@@ -44,7 +43,6 @@ void ImageAnimator::buildTable() {
                 else {
                     if (iHigh < 0) {
                         iHigh = maxHigh; // i is a fixed sized array index
-                        map.music.volume += 0.5f;
                     }
                     map.music.frequency = freqsLow[iHigh]; // left side is high pitch, right side low pitch
                     --iHigh;
