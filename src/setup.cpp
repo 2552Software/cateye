@@ -85,7 +85,7 @@ void PolySynth::Voice::setup(PolySynth & m, int v) {
 
 void Music::setup(int len, int maxPartials) {
     
-    mode = 0;
+    mode = 1;
 
     //patching-------------------------------
     keyboard.setPolyMode(8);

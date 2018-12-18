@@ -130,8 +130,8 @@ void ofApp::keyReleased(int key) {
     eyeAnimator.sound.keyboard.keyReleased(key);
 }
 void ofApp::keyPressed(int key) {
-    eyeAnimator.sound.keyboard.keyPressed('a');
-
+    eyeAnimator.sound.keyboard.keyPressed(key);
+    return;//bugbug
     if (key == 'm') {
         gui.saveToFile("settings.xml");
         hideMenu = !hideMenu;
