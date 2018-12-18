@@ -198,7 +198,10 @@ void ImageAnimator::getCountours() {
                         // see if we can trigger with this one
                         for (auto& item : screenToAnimationMap) { // get all blocks within region
                             if (item.second.inside(blob.boundingRect)) { //
-                                schoolOfRock.push_front(item.second.music); // always play music
+                                if (schoolOfRock.size() > 1) {
+                                    schoolOfRock.pop_front(); // drop the oldest
+                                }
+                                schoolOfRock.push_back(item.second.music); // always play music
                                 float cx = ofGetScreenWidth() - (item.second.width)*xFactor;/// ofGetScreenWidth();
                                 ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);
                                 if (!find(rect2Use)) {

@@ -34,18 +34,20 @@ void ImageAnimator::buildTable() {
             for (float y = h; y < cameraHeight-h; y += h) {
                 map.y = y;
                 if (x < cameraWidth / 2) {
-                    if (--iLow < 0) {
+                    if (iLow < 0) {
                         iLow = maxLow; // i is a fixed sized array index
                         map.music.volume += 0.5f;
                     }
                     map.music.frequency = freqsLow[iLow]; // left side is high pitch, right side low pitch
+                    --iLow;
                 }
                 else {
-                    if (--iHigh < 0) {
+                    if (iHigh < 0) {
                         iHigh = maxHigh; // i is a fixed sized array index
                         map.music.volume += 0.5f;
                     }
                     map.music.frequency = freqsLow[iHigh]; // left side is high pitch, right side low pitch
+                    --iHigh;
                 }
                 screenToAnimationMap.insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
             }

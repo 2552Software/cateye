@@ -38,9 +38,9 @@ bool secondsPassed(int val) {
 void ImageAnimator::update() {
 
     if (schoolOfRock.size() != 0) {
-        sound.frequencyTarget = schoolOfRock.back().frequency;
-        sound.volume = schoolOfRock.back().volume;
-        schoolOfRock.pop_back();
+        sound.frequencyTarget = schoolOfRock.front().frequency;
+        sound.volume = schoolOfRock.front().volume;
+        schoolOfRock.pop_front();
     }
     
     sound.update();
