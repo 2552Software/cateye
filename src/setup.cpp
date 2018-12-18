@@ -1,5 +1,23 @@
 #include "ofApp.h"
 
+void Sound::setup(ofApp*pApp) {
+    wavePhase = 0;
+    pulsePhase = 0;
+
+    // start the sound stream with a sample rate of 44100 Hz, and a buffer
+    // size of 512 samples per audioOut() call
+    ofSoundStreamSettings settings;
+    settings.numOutputChannels = 2;
+    settings.sampleRate = 44100;
+    settings.bufferSize = 512;
+    settings.numBuffers = 4;
+    settings.setOutListener(pApp);
+    soundStream.setup(settings);
+
+    volume = 0.1f;
+    frequencyTarget = 172.0f;
+    frequency = 0.0f;
+}
 void SuperSphere::setup(const string&name) {
     eye.setup(name);
     setResolution(21);

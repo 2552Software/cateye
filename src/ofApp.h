@@ -40,13 +40,6 @@ public:
     }
     void keyPressed(int key);
     void audioOut(ofSoundBuffer &outBuffer);
+
 private:
-    ofSoundStream soundStream;
-    double wavePhase;
-    double pulsePhase;
-    float volume=0.1f;
-    float frequency=172.0f;
-    std::mutex audioMutex;
-    ofSoundBuffer lastBuffer;
-    float rms;
 };

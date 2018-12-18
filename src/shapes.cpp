@@ -17,17 +17,19 @@ void ImageAnimator::buildTable() {
         };
         const int max = sizeof(freqs) / sizeof(float);
         // all based on camera size and just grid out the screen 10x10 or what ever size we want
-        int i = max-1;
+        int i = max;
         LocationToInfoMap map;
         map.width = w;
         map.height = h;
+        float vol = 0.0f;
         for (float x = w; x < cameraWidth-w; x += w) { // keep off the edges -- camera cannot always pick those up
             for (float y = h; y < cameraHeight-h; y += h) {
                 map.x = x;
                 map.y = y;
-                if (i < 0) {
-                    i = max-1;
-                    map.music.volume += 0.2f;
+                if (--i < 0) {
+                    i = max;
+                    vol += 0.2f;
+                    map.music.volume = vol;
                 }
                 map.music.frequency = freqs[i];
                 screenToAnimationMap.insert(std::make_pair(std::make_pair(x, y), map)); // build a default table

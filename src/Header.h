@@ -153,6 +153,27 @@ public:
     float volume = 0.1f;
 };
 
+class ofApp;
+class Sound {
+public:
+    void setup(ofApp*p);
+    void update();
+    void audioOut(ofSoundBuffer & outBuffer);
+
+    float volume;
+    float frequency;
+    float frequencyTarget;
+
+private:
+    double wavePhase;
+    double pulsePhase;
+
+    std::mutex audioMutex;
+    ofSoundStream soundStream;
+    ofSoundBuffer lastBuffer;
+    ofPolyline waveform;
+    float rms;
+};
 // map location to interesting things
 class LocationToInfoMap : public ofRectangle {
 public:
@@ -190,8 +211,10 @@ public:
     void blink();
     void setTitle();
     std::string sillyString();
-    std::list<Music>listOfMusic;
+    Sound sound;
+
 private:
+    std::list<Music>schoolOfRock;
     Eye cube;
     Eye sphere;
     ofTrueTypeFont font;

@@ -3,6 +3,16 @@
 void SuperSphere::update() {
 }
 
+void Sound::update() {
+    frequency = ofLerp(frequency, frequencyTarget, 0.4);
+
+    // "lastBuffer" is shared between update() and audioOut(), which are called
+    // on two different threads. This lock makes sure we don't use lastBuffer
+    // from both threads simultaneously (see the corresponding lock in audioOut())
+    unique_lock<mutex> lock(audioMutex);
+    rms = lastBuffer.getRMSAmplitude();
+
+}
 void Eyes::update() {
     for (SuperSphere&eye : eyes) {
         eye.update();
@@ -19,13 +29,21 @@ void GameItem::update() {
         box.setPosition(newPos);
     }
     else {
-        sphere.rotate(20.0f*animater.val(), 0.0f, 1.0f, 0.0f);
+        sphere.rotateDeg(20.0f*animater.val(), 0.0f, 1.0f, 0.0f);
     }
 }
 bool secondsPassed(int val) {
     return ((int)ofGetElapsedTimef() % val) == 0;
 }
 void ImageAnimator::update() {
+
+    if (schoolOfRock.size() != 0) {
+        sound.frequencyTarget = schoolOfRock.back().frequency;
+        sound.volume = schoolOfRock.back().volume;
+        schoolOfRock.pop_back();
+    }
+    
+    sound.update();
 
     // blinker always moving but only drawn up request
     blinker.update(1.0f / ofGetTargetFrameRate());
