@@ -1,7 +1,9 @@
 #include "ofApp.h"
 
 void Sound::audioOut(ofSoundBuffer & outBuffer) {
-
+    if ((int)frequencyTarget == (int)frequency) {
+        return;
+    }
     // base frequency of the lowest sine wave in cycles per second (hertz)
 
 // mapping frequencies from Hz into full oscillations of sin() (two pi)
@@ -16,8 +18,8 @@ void Sound::audioOut(ofSoundBuffer & outBuffer) {
 
         // build up a chord out of sine waves at 3 different frequencies
         float sampleLow = sin(wavePhase);
-        float sampleMid = sin(wavePhase * 1.1);
-        float sampleHi = sin(wavePhase * 1.3);
+        float sampleMid = sin(wavePhase * 1.5);
+        float sampleHi = sin(wavePhase * 1.6);
 
         // pulse each sample's volume
         sampleLow *= sin(pulsePhase);
@@ -196,10 +198,10 @@ void ImageAnimator::getCountours() {
                         // see if we can trigger with this one
                         for (auto& item : screenToAnimationMap) { // get all blocks within region
                             if (item.second.inside(blob.boundingRect)) { //
+                                schoolOfRock.push_front(item.second.music); // always play music
                                 float cx = ofGetScreenWidth() - (item.second.width)*xFactor;/// ofGetScreenWidth();
                                 ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);
                                 if (!find(rect2Use)) {
-                                    schoolOfRock.push_front(item.second.music);
                                     if (level > 1) {
                                         gameItems.push_back(GameItem(rect2Use, cube, level));
                                     }

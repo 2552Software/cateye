@@ -4,7 +4,7 @@ void SuperSphere::update() {
 }
 
 void Sound::update() {
-    frequency = ofLerp(frequency, frequencyTarget, 0.4);
+    frequency = ofLerp(frequency, frequencyTarget, 0.2);
 
     // "lastBuffer" is shared between update() and audioOut(), which are called
     // on two different threads. This lock makes sure we don't use lastBuffer
@@ -125,7 +125,7 @@ void ContoursBuilder::update() {
             grayDiff.absDiff(backgroundImage, grayImage);
         }
         backgroundImage = grayImage; // only track new items -- so eye moves when objects move
-        grayDiff.threshold(50); // turn any pixels above 50 white, and below 100 black bugbug menu can tune game here too
+        grayDiff.threshold(30); // turn any pixels above 30 white, and below 100 black bugbug menu can tune game here too
         if (!contourFinder.findContours(grayDiff, 5, (cameraWidth*cameraHeight), 128, false, true)) {
             contourFinder.blobs.clear(); // removes echo but does it make things draw too fast?
         }
