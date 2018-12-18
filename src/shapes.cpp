@@ -47,7 +47,7 @@ void ImageAnimator::buildTable() {
                     map.music.frequency = freqsLow[iHigh]; // left side is high pitch, right side low pitch
                     --iHigh;
                 }
-                screenToAnimationMap.insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
+               //bugbug screenToAnimationMap.insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
             }
         }
     }

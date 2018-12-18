@@ -3,22 +3,7 @@
 void SuperSphere::update() {
 }
 
-void Sound::update() {
-    frequency = ofLerp(frequency, frequencyTarget, 0.4); // let it fade to 0
-
-    // envelop
-    if (volumnTarget == volume) {
-        volume = ofLerp(volume, 0, 0.1); // fade to zero
-    }
-    else {
-        volume = ofLerp(volume, volumnTarget, 0.8); // jump quickly to 1
-    }
-
-    // "lastBuffer" is shared between update() and audioOut(), which are called
-    // on two different threads. This lock makes sure we don't use lastBuffer
-    // from both threads simultaneously (see the corresponding lock in audioOut())
-    unique_lock<mutex> lock(audioMutex);
-    rms = lastBuffer.getRMSAmplitude();
+void Music::update() {
 
 }
 void Eyes::update() {

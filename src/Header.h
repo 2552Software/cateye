@@ -164,7 +164,7 @@ public:
     void blink();
     void setTitle();
     std::string sillyString();
-    Sound sound;
+    Music sound;
 
 private:
     std::list<Music>schoolOfRock;

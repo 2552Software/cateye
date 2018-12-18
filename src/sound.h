@@ -17,78 +17,21 @@ struct BassPattern : public pdsp::Sequence {
     // helper routine to add notes to the score
     // this routin also add a message for stopping the note
     // so we have to be careful that notes durations don't overlap
-    void note(double step16, float gate, float pitch, float slew, double duration) {
-        message(step16, gate, 0); // adds a trigger on to the gate output
-        message(step16, pitch, 1); // adds a value to the pitch output
-        message(step16, slew, 2); // adds a trigger on to the gate output
-        message(step16 + duration, 0.0f, 0);  // adds a trigger off value to the gate output
-    }
+    void note(double step16, float gate, float pitch, float slew, double duration);
 
     // this routine shuffles the pitches inside of the sequence vector
-    void shuffleSequence() {
-        int seqLen = static_cast<int> (sequence.size());
-        int index1 = pdsp::dice(seqLen);
-        int index2 = index1 + pdsp::dice(seqLen - 1);
-        while (index2 >= seqLen) { index2 -= seqLen; }
-        float temp = sequence[index1];
-        sequence[index1] = sequence[index2];
-        sequence[index2] = temp;
-    }
-
+    void shuffleSequence();
 
     // this returns the pitches for the generative routine
     // returns the pitches from the sequence the first, second and third bar
     // on the fourth bar the second part of the returned pitches will be random values
     // counter() returns the value of an internal counter that measure how many time the sequence restarted
-    float pfun(int index) {
-        if (index > 4 && counter() == 3) {
-            float nextPitch = static_cast<float> (pdsp::dice(12) + 41.0f);
-            return nextPitch;
-        }
-        else {
-            return sequence[index];
-        }
-    }
-
+    float pfun(int index);
     //inits the pattern and set the pitches to use
-    BassPattern() {
-
-        sequence = { 29.0f, 31.f, 34.f, 36.f, 38.f, 41.f, 43.f, 29.f };
-
-        code = [&]() noexcept {
-            if (counter() == 4) resetCount();
-            // pdsp::Sequence has an internal counter() 
-            // to count how many times the sequence restarted 
-            // that you can reset it with resetCount() 
-            // this counter is automatically reset on Sequence change or launch
-
-            shuffleSequence();
-
-            steplen = 1.0 / 16.0;
-
-            begin();
-
-            //   step   velo    pitch       slew%    duration
-            note(0.0, 1.0f, 29.0f, 0.0f, gate_long);
-            note(2.0, 0.5f, pfun(0), 0.0f, gate_long);
-            note(4.0, 0.5f, pfun(1), 1.0f, gate_short);
-            note(6.0, 1.0f, pfun(2), 0.0f, gate_long);
-            note(8.0, 0.5f, pfun(3), 2.0f, gate_long);
-            note(10.0, 1.0f, pfun(4), 0.0f, gate_short);
-            note(11.0, 0.5f, pfun(5), 0.0f, gate_short);
-            note(12.0, 0.5f, pfun(6), 0.0f, gate_short);
-            note(13.0, 0.5f, pfun(7), 0.0f, gate_short);
-
-            end();
-
-        };
-
-    }
-
+    BassPattern();
     const double gate_long = 0.95;  // a bit more than 1/16       
     const double gate_short = 0.4; // almost 1/32th
     std::vector<float> sequence;
-
 };
 
 class SineBleep : public pdsp::Patchable {
@@ -134,15 +77,55 @@ private:
     pdsp::PatchNode     trigger_in;
 };
 
-
-class Music {
+class Reese : public pdsp::Patchable {
 public:
-    Music(float f = 172.0f, float v = 0.1f) { frequency = f; volume = v; }
-    float frequency = 172.0f;
-    float volume = 0.1f;
+    Reese() { patch(); }
+    Reese(const Reese & other) { patch(); }
+
+    void patch();
+private:
+    pdsp::PatchNode     pitchNode;
+    pdsp::VAOscillator  osc1;
+    pdsp::VAOscillator  osc2;
+    pdsp::Saturator1    drive;
+    pdsp::VAFilter      filter;
+    pdsp::ADSR          env;
+    pdsp::Amp           amp;
+
 };
 
-class Sound {
+class MultiSampler : public pdsp::Patchable{
+
+public:
+    MultiSampler() { patch(); }
+    MultiSampler(const MultiSampler & other) { patch(); }
+
+    ~MultiSampler() { // deallocate elements
+        for (size_t i = 0; i < samples.size(); ++i) delete samples[i];
+    }
+
+    void patch();
+
+    void add(string path, bool setHoldTime = false);
+
+    void gain(float dBvalue) {       sampler * dB(dBvalue) >> amp;    }
+
+    float meter_env() const {       return env.meter_output();    }
+
+    float meter_position() const {      return sampler.meter_position();    }
+
+    void setAHR(float attack, float hold, float release) {      env.set(attack, hold, release);    }
+
+private:
+    pdsp::PatchNode     triggers;
+    pdsp::Sampler       sampler;
+    pdsp::AHR           env;
+    pdsp::Amp           amp;
+
+    std::vector<pdsp::SampleBuffer*> samples;
+};
+
+class Music {
 public:
     void setup();
     void update();
@@ -167,19 +150,17 @@ public:
     int                     seq_mode;
     std::atomic<bool>       quantize;
     std::atomic<double>     quantime;
+    MultiSampler    drums;
+    Reese           reese;
+
+    std::vector<int>     states;
+
+    pdsp::Scope drumScope;
+    pdsp::Scope reeseScope;
 
 private:
 
-    float frequencyTarget; // remove old stuff when brave enough
-    float volumnTarget;
-
-    double wavePhase;
-    double pulsePhase;
-
-    std::mutex audioMutex;
-    ofSoundStream soundStream;
-    ofSoundBuffer lastBuffer;
-    ofPolyline waveform;
-    float rms;
 };
+
+
 

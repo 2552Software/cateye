@@ -157,8 +157,8 @@ void ImageAnimator::getCountours() {
                                 float size = cameraWidth * cameraHeight;
                                 float rectSize = blob.boundingRect.height*blob.boundingRect.width;
                                 float ratio = rectSize / size;
-                                Music music(item.second.music.frequency, item.second.music.volume);
-                                schoolOfRock.push_back(music); // always play music
+                               // Music music(item.second.music.frequency, item.second.music.volume);
+                                //schoolOfRock.push_back(music); // always play music
                                 float cx = ofGetScreenWidth() - (item.second.width)*xFactor;/// ofGetScreenWidth();
                                 ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);
                                 if (!find(rect2Use)) {

@@ -1,6 +1,6 @@
 #include "ofApp.h"
 
-void Sound::setup() {
+void Music::setup() {
     // ------------------------- PATCHING -------------------------------------
     seq_mode = 0;
     quantize = true;
