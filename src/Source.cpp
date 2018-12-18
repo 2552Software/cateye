@@ -202,8 +202,9 @@ void ImageAnimator::getCountours() {
                                     schoolOfRock.pop_front(); // drop the oldest
                                 }
                                 Music music(item.second.music.frequency, item.second.music.volume);
-                                int c = std::min(ofGetWindowWidth(), ofGetWindowHeight());
-                                music.volume = 10.0f*(xFactor*std::max(blob.boundingRect.getWidth(), blob.boundingRect.getHeight())) /c;
+                                float c = std::min(ofGetWindowWidth(), ofGetWindowHeight());
+                                // see what formula is best bugbug
+                                music.volume = 10.0f*((xFactor*std::max((float)blob.boundingRect.getWidth(), (float)blob.boundingRect.getHeight())) /c);
                                 schoolOfRock.push_back(music); // always play music
                                 float cx = ofGetScreenWidth() - (item.second.width)*xFactor;/// ofGetScreenWidth();
                                 ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);

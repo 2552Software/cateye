@@ -4,7 +4,8 @@ void SuperSphere::update() {
 }
 
 void Sound::update() {
-    frequency = ofLerp(frequency, frequencyTarget, 0.2);
+    frequency = ofLerp(frequency, frequencyTarget, 0.4);
+    volume = ofLerp(volume, 0, 0.1); // fade to zero
 
     // "lastBuffer" is shared between update() and audioOut(), which are called
     // on two different threads. This lock makes sure we don't use lastBuffer
