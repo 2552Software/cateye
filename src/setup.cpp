@@ -310,7 +310,6 @@ GameItem::GameItem(const ofRectangle& rect, Eye eye, int levelIn) {
 }
 
 void GameItem::setup() {
-    frequency = 0.0f;
 
     animater.reset(0.0f);
     animater.setCurve(EASE_IN_EASE_OUT);

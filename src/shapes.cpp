@@ -40,7 +40,7 @@ void ImageAnimator::buildTable() {
         screenToAnimationMap.clear();
         float w = cameraWidth / squareCount; // menu bugbug
         float h = cameraHeight / squareCount;
-
+        //bugbug move these outa hre
         float freqsLow[] = {
             82.407, 87.307f, 92.499f, 97.999f, 103.826f, 110.0f, 116.541f, 123.471f, 130.813f, 138.591f, 146.8325f,155.563f, 164.814, 174.614, 184.997,
             195.998, 207.652, 220.0, 233.082,246.942, 261.626, 277.183, 293.665, 311.127, 329.628, 349.228, 369.994, 391.995, 415.305, 440.0,466.164,
@@ -81,7 +81,7 @@ void ImageAnimator::buildTable() {
                     //map.music.frequency = freqsLow[iHigh]; // left side is high pitch, right side low pitch
                     --iHigh;
                 }
-               //bugbug screenToAnimationMap.insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
+               screenToAnimationMap.insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
             }
         }
     }

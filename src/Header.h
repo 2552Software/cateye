@@ -114,7 +114,6 @@ public:
     void update();
     void draw();
     bool isAnimating() { return animater.isAnimating(); }
-    float frequency;
 
 private:
     int level;
@@ -123,8 +122,6 @@ private:
     ofSpherePrimitive sphere;
     ofCylinderPrimitive cylinder; // like a coin -- for music notes
     Eye myeye;
-    //ofSpherePrimitive eye;
-    int alpha;
     ofxAnimatableFloat animater; 
 };
 
@@ -132,7 +129,6 @@ private:
 class LocationToInfoMap : public ofRectangle {
 public:
     LocationToInfoMap() {}
-    Music music;
 };
 
 class ImageAnimator {
