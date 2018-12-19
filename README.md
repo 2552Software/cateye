@@ -1,4 +1,4 @@
 # cateye
 demo
 
-Please not some images may not be public domain. 
+Please note some images may not be public domain. 
