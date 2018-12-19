@@ -15,12 +15,12 @@ void PolySynth::setup(int numVoices) {
     leakDC >> chorus.ch(1) >> gain.ch(1);
 
     // pdsp::Switch EXAMPLE ---------------------------------------------------
-    lfo_switch.resize(5);  // resize input channels
+    lfo_switch.resize(2);  // resize input channels
     lfo.out_triangle() >> lfo_switch.input(0); // you cannot use this input() method in a chain
     lfo.out_saw() >> lfo_switch.input(1); // because: API reasons
-    lfo.out_square() >> lfo_switch.input(2);
-    lfo.out_sine() >> lfo_switch.input(3);
-    lfo.out_sample_and_hold() >> lfo_switch.input(4);
+   //bugbug lfo.out_square() >> lfo_switch.input(2);
+   //bugbug lfo.out_sine() >> lfo_switch.input(3);
+    //bugbug lfo.out_sample_and_hold() >> lfo_switch.input(4);
 
     lfo_wave_ctrl >> lfo_switch.in_select(); // input for output selection
 
@@ -38,7 +38,7 @@ void PolySynth::setup(int numVoices) {
     cutoff_ctrl.enableSmoothing(200.0f);
 
     ui.add(env_attack_ctrl.set("env attack", 50, 5, 1200));
-    ui.add(env_decay_ctrl.set("env decay", 400, 5, 1200));
+    ui.add(env_decay_ctrl.set("env decay", 600, 5, 1200));
     ui.add(env_sustain_ctrl.set("env sustain", 1.0f, 0.0f, 1.0f));
     ui.add(env_release_ctrl.set("env release", 900, 5, 2000));
     ui.add(env_filter_amt.set("env to filter", 30, 0, 60));
@@ -84,11 +84,10 @@ void PolySynth::Voice::setup(PolySynth & m, int v) {
 }
 
 void Music::setup(int len, int maxPartials) {
-    
     mode = 0;
-
+  
     //patching-------------------------------
-    keyboard.setPolyMode(8);
+   // keyboard.setPolyMode(8);
 
     int voicesNum = keyboard.getVoicesNumber();
 
@@ -219,7 +218,12 @@ void Music::setup(int len, int maxPartials) {
         engine.sequencer.sections[0].setCell(i, kick_seqs[i]);
         engine.sequencer.sections[1].setCell(i, lead_seqs[i], pdsp::Behavior::OneShot);
     }
+    //------------SETUPS AND START AUDIO-------------
+    engine.listDevices();
+    engine.setDeviceID(0); // REMEMBER TO SET THIS AT THE RIGHT INDEX!!!!
+    engine.setup(44100, 512, 3);
 
+    return;
 
     oneShot = false;
 
@@ -275,10 +279,6 @@ void Music::setup(int len, int maxPartials) {
     bleep * (pdsp::panL(0.5f) * dB(-6.0f)) >> engine.audio_out(0);
     bleep * (pdsp::panR(0.5f) * dB(-6.0f)) >> engine.audio_out(1);
 
-    //------------SETUPS AND START AUDIO-------------
-    engine.listDevices();
-    engine.setDeviceID(0); // REMEMBER TO SET THIS AT THE RIGHT INDEX!!!!
-    engine.setup(44100, 512, 3);
 }
 void SuperSphere::setup(const string&name) {
     eye.setup(name);

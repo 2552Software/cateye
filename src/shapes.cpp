@@ -1,7 +1,7 @@
 #include "ofApp.h"
 
 void Music::setPixels(ofxCvContourFinder&contours) {
-    if (contours.blobs.size() > 0) {
+    if (contours.blobs.size() > 0) { 
         size_t c = contours.blobs.size();
         switch (mode) {
         case 0: // converting pixels to waveform samples
