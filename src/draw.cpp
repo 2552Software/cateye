@@ -20,7 +20,7 @@ void Eyes::draw() {
             }
         }
     }
-    getCurrentEyeRef().draw();
+    getCurrentSphereRef().draw();
 }
 void ImageAnimator::draw(const std::string& s, float x, float y) {
     font.drawStringAsShapes(s, x, y);

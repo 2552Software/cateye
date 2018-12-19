@@ -106,7 +106,7 @@ void ImageAnimator::creditsDone(TextEvent & event) {
 void ImageAnimator::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event) {
     // no move main eye back into focus
     currentRotation.set(0.0f, 0.0f); // look forward, move ahead its not too late
-    mainEyes.getAnimator().animateFromTo(-rotatingEyes.getCurrentEyeRef().getRadius(), 0.0f);
+    mainEyes.getAnimator().animateFromTo(-rotatingEyes.getCurrentSphereRef().getRadius(), 0.0f);
     clear(); // reset and start again
 }
 
@@ -172,32 +172,32 @@ void ImageAnimator::getCountours() {
                                     switch (level) {
                                     case Basic: // only 1/3 items saved etc
                                         if ((item.second.c) % 3 == 0) {
-                                            gameItems.push_back(GameItem(rect2Use, sphere, level, item.second.c));
+                                            gameItems.push_back(GameItem(rect2Use, spheres.getCurrentSphereRef().getMainEye(), level, item.second.c));
                                         }
                                         break;
                                     case Medium:
                                         if ((item.second.c) % 2 == 0) {
-                                            gameItems.push_back(GameItem(rect2Use, cube, level, item.second.c));
+                                            gameItems.push_back(GameItem(rect2Use, cubes.getCurrentSphereRef().getMainEye(), level, item.second.c));
                                         }
                                         break;
                                     case Difficult:
-                                        gameItems.push_back(GameItem(rect2Use, cylinder, level, item.second.c));
+                                        gameItems.push_back(GameItem(rect2Use, cylinders.getCurrentSphereRef().getMainEye(), level, item.second.c));
                                         break;
                                     case EndGame:
                                         if (item.second.c == 1) { // just a few notes, 1 is a magic note
-                                            gameItems.push_back(GameItem(rect2Use, musicNote, EndGame, item.second.c));
+                                            gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getMainEye(), EndGame, item.second.c));
                                             music.keyboard.keyPressed('a');
                                         }
                                         else if (item.second.c == 5) { // just a few notes, 1 is a magic note
-                                            gameItems.push_back(GameItem(rect2Use, musicNote, EndGame, item.second.c));
+                                            gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getMainEye(), EndGame, item.second.c));
                                             music.keyboard.keyPressed('g');
                                         }
                                         else if (item.second.c == 7) { // just a few notes, 1 is a magic note
-                                            gameItems.push_back(GameItem(rect2Use, musicNote, EndGame, item.second.c));
+                                            gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getMainEye(), EndGame, item.second.c));
                                             music.keyboard.keyPressed('t');
                                         }
                                         else if (item.second.c == 9) { // just a few notes, 1 is a magic note
-                                            gameItems.push_back(GameItem(rect2Use, musicNote, EndGame, item.second.c));
+                                            gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getMainEye(), EndGame, item.second.c));
                                             music.keyboard.keyPressed('k');
                                         }
                                         break;

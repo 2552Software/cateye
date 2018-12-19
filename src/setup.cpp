@@ -361,7 +361,7 @@ void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path, floa
         }
     }
     else {
-        ofLogError() << "eyes missing"; // fatal?
+        ofLogError() << path << " missing"; // fatal?
     }
 }
 
@@ -402,34 +402,14 @@ void ImageAnimator::setup() {
 
     mainEyes.setup(PLAY_ONCE, 1.0f, EYES, 0.0f);
     if (!mainEyes.count()) {
-        ofLogFatalError() << "eyes missing";
         ofExit(100);
     }
 
     rotatingEyes.setup(LOOP_BACK_AND_FORTH_ONCE, 3.0f, SPIRALS, 25.0f);
-    if (!rotatingEyes.count()) {
-        ofLogError() << "SPIRALS eyes missing";
-    }
-
     cubes.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, CUBES, 25.0f);
-    if (!cubes.count()) {
-        ofLogError() << "cubes missing";
-    }
-
     spheres.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, SPHERES, 25.0f);
-    if (!spheres.count()) {
-        ofLogError() << "SPHERES missing";
-    }
-
     musicNotes.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, MUSICNOTES, 25.0f);
-    if (!musicNotes.count()) {
-        ofLogError() << "musicNotes missing";
-    }
-
     cylinders.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, CYLINDERS, 25.0f);
-    if (!cylinders.count()) {
-        ofLogError() << "cylinders missing";
-    }
 
     contours.setup();
 

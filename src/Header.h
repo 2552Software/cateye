@@ -92,9 +92,10 @@ public:
     void draw();
     void resize(int w, int h);
     bool isAnimating() {  return getAnimator().isAnimating();   }
-    SuperSphere&getCurrentEyeRef() {   return eyes[(int)selector.getCurrentValue()];  }
+    SuperSphere&getCurrentSphereRef() {   return eyes[(int)selector.getCurrentValue()];  }
     size_t count() { return eyes.size(); }
     ofxAnimatableFloat& getAnimator() { return animator; }
+    Eye& getEyeRef() { return getCurrentSphereRef().getMainEye(); }
 private:
     void add(const std::string &name, const std::string &root);
     ofxAnimatableFloat animator; // z direction

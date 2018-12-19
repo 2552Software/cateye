@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<a_Big_Electric_Cat>
+	<Squares>10</Squares>
+</a_Big_Electric_Cat>
+<group>
+	<Squares>10</Squares>
+	<Triggers>50</Triggers>
+	<Shapes>100</Shapes>
+</group>
