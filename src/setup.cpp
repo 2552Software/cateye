@@ -85,7 +85,7 @@ void PolySynth::Voice::setup(PolySynth & m, int v) {
 
 void Music::setup(int len, int maxPartials) {
     
-    mode = 1;
+    mode = 0;
 
     //patching-------------------------------
     keyboard.setPolyMode(8);
@@ -102,14 +102,9 @@ void Music::setup(int len, int maxPartials) {
         keyboard.out_pitch(i) >> synth.voices[i].in("pitch");
     }
     //------------SETUPS AND START AUDIO-------------
-    engine.listDevices();
-    engine.setDeviceID(0); // REMEMBER TO SET THIS AT THE RIGHT INDEX!!!!
-    engine.setup(44100, 512, 3);
     // patch synth to the engine
     synth.ch(0) >> engine.audio_out(0);
     synth.ch(1) >> engine.audio_out(1);
-
-    return; // phase 1 later do the rest, like a snare upon a hit, maybe music is level 3
 
     // ------------------------- PATCHING -------------------------------------
     seq_mode = 0;
@@ -129,7 +124,7 @@ void Music::setup(int len, int maxPartials) {
     engine.sequencer.sections[1].out_value(1) >> lead.in("pitch"); // assign the second sequence output to values
 
     // decomment this to slew the lead value output signal
-    // engine.sequencer.sections[1].out_value(1).enableSmoothing(100.0f);
+    engine.sequencer.sections[1].out_value(1).enableSmoothing(100.0f);
 
     // patching (with panning)
     kick * (dB(-6.0f) * pdsp::panL(-0.25f)) >> engine.audio_out(0);
@@ -389,6 +384,8 @@ void ImageAnimator::setup() {
     xFactor = ofGetScreenWidth() / cameraWidth;
     yFactor = ofGetScreenHeight() / cameraHeight;
 
+    music.setup(cameraWidth, cameraHeight); // tie to app
+
     font.load("alger.ttf", 100, true, true, true);
     font.setLineHeight(18.0f);
     font.setLetterSpacing(1.037);
@@ -422,6 +419,9 @@ void ImageAnimator::setup() {
     path = DATAPATH;
     path += "\\music\\musicnote.jpg";
     musicNote.setup(path);
+
+    player.load("wargames_play_game.wav");
+    player.play();
 
     contours.setup();
 

@@ -125,6 +125,20 @@ void ImageAnimator::windowResized(int w, int h) {
 void ImageAnimator::startPlaying() {
    //bugbug sounds();
 }
+size_t ImageAnimator::winnerThreshold() { 
+    switch (level) {
+    case 0:
+        return 0;
+    case 1:
+        return screenToAnimationMap.size()/3;
+    case 2:
+        return screenToAnimationMap.size() / 2;
+    case 3:
+        return screenToAnimationMap.size();
+    default:
+        return 1; // it just ages out
+    }
+} // have to get them all
 
 void ImageAnimator::getCountours() {
     float max = 0.0f;
@@ -157,10 +171,23 @@ void ImageAnimator::getCountours() {
                                 float cx = ofGetScreenWidth() - (item.second.width)*xFactor;/// ofGetScreenWidth();
                                 ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);
                                 if (!find(rect2Use)) {
-                                    if (item.second.c == 34) { // just a few notes, 34 is a magic note
+                                    if (item.second.c == 1) { // just a few notes, 1 is a magic note
                                         gameItems.push_back(GameItem(rect2Use, musicNote, 4, item.second.c));
                                         music.keyboard.keyPressed('a');
                                     }
+                                    else if (item.second.c == 5) { // just a few notes, 1 is a magic note
+                                        gameItems.push_back(GameItem(rect2Use, musicNote, 4, item.second.c));
+                                        music.keyboard.keyPressed('g');
+                                    }
+                                    else if (item.second.c == 7) { // just a few notes, 1 is a magic note
+                                        gameItems.push_back(GameItem(rect2Use, musicNote, 4, item.second.c));
+                                        music.keyboard.keyPressed('t');
+                                    }
+                                    else if (item.second.c == 9) { // just a few notes, 1 is a magic note
+                                        gameItems.push_back(GameItem(rect2Use, musicNote, 4, item.second.c));
+                                        music.keyboard.keyPressed('k');
+                                    }
+
                                     switch (level) {
                                     case 1:
                                         gameItems.push_back(GameItem(rect2Use, sphere, level, item.second.c));
@@ -172,9 +199,26 @@ void ImageAnimator::getCountours() {
                                     break;
                                 }
                                 else {
-                                    // found, remove it for music
-                                    gameItems.remove_if(GameItem::isMusicNote);
-                                    music.keyboard.keyReleased('a');
+                                    if (item.second.c == 1) {
+                                        // found, remove it for music
+                                        gameItems.remove_if(GameItem::isAkey);
+                                        music.keyboard.keyReleased('a');
+                                    }
+                                    else if (item.second.c == 5) {
+                                        // found, remove it for music
+                                        gameItems.remove_if(GameItem::isGkey);
+                                        music.keyboard.keyReleased('g');
+                                    }
+                                    else if (item.second.c == 7) {
+                                        // found, remove it for music
+                                        gameItems.remove_if(GameItem::isTkey);
+                                        music.keyboard.keyReleased('t');
+                                    }
+                                    else if (item.second.c == 9) {
+                                        // found, remove it for music
+                                        gameItems.remove_if(GameItem::isKkey);
+                                        music.keyboard.keyReleased('k');
+                                    }
                                 }
                             }
                         }

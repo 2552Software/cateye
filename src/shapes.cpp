@@ -10,9 +10,10 @@ void Music::setPixels(ofxCvContourFinder&contours) {
             for (size_t n = 0; n < cameraWidth; ++n) {
                 float sample = 0.0f;
                 if (n < c) {
-                    sample = contours.blobs[n].centroid.x*contours.blobs[0].centroid.y;     // contours.blobs[0].pts[n].x*y;
+                    sample = contours.blobs[n].boundingRect.x+ contours.blobs[n].boundingRect.width + 
+                             contours.blobs[n].boundingRect.height+ contours.blobs[n].boundingRect.y;
                 }
-                synth.datatable.data(n, ofMap(sample, 0, cameraWidth*cameraHeight, -0.5f, 0.5f));
+                synth.datatable.data(n, ofMap(sample, 0, cameraWidth+cameraHeight, -0.5f, 0.5f));
             }
             synth.datatable.end(false);
             break; // remember, raw waveform could have DC offsets, we have filtered them in the synth using an hpf
@@ -22,9 +23,10 @@ void Music::setPixels(ofxCvContourFinder&contours) {
             for (size_t n = 0; n < cameraWidth; ++n) {
                 float partial = 0.0f;
                 if (n < c) {
-                    partial = contours.blobs[n].centroid.x*contours.blobs[0].centroid.y;     // contours.blobs[0].pts[n].x*y;
+                    partial = contours.blobs[n].boundingRect.x + contours.blobs[n].boundingRect.width +
+                        contours.blobs[n].boundingRect.height + contours.blobs[n].boundingRect.y;
                 }
-                partial = ofMap(partial, 0, cameraWidth*cameraHeight, 0.0f, 1.0f);
+                partial = ofMap(partial, 0, cameraWidth*cameraHeight, 0.0f, 1.5f);
                 synth.datatable.data(n, partial);
             }
             synth.datatable.end(true);

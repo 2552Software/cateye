@@ -7,8 +7,6 @@ void ofApp::setup(){
     hideMenu = true;
     ofSetFrameRate(30.0f); // camers 30 so why go higher?
     
-    eyeAnimator.music.setup(cameraWidth, cameraHeight); // tie to app
-
     //ofEnableSeparateSpecularLight();
     ofSetWindowShape(ofGetScreenWidth(), ofGetScreenHeight());
     ofSetLogLevel(OF_LOG_VERBOSE);

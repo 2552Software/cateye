@@ -120,6 +120,10 @@ public:
     int id;
     int level;
     static bool isMusicNote(const GameItem& item) { return (item.level == 4); }
+    static bool isAkey(const GameItem& item) { return (item.id == 1); }
+    static bool isGkey(const GameItem& item) { return (item.id == 5); }
+    static bool isTkey(const GameItem& item) { return (item.id == 7); }
+    static bool isKkey(const GameItem& item) { return (item.id == 9); }
 
 private:
     ofBoxPrimitive box; // pick a shape 
@@ -150,7 +154,7 @@ public:
     void startPlaying();
     size_t winnerHitCount(); // count of items being animiated
     void clear();
-    size_t winnerThreshold() { return screenToAnimationMap.size(); } // have to get them all
+    size_t winnerThreshold();
     void setTriggerCount(float count);
     void setShapeMinSize(float size) { shapeMinSize = size; };
     bool isWinner() { return winnerHitCount() >= winnerThreshold(); } // easy mode! bugbug menu
@@ -168,7 +172,7 @@ public:
     void setTitle();
     std::string sillyString();
     Music music;
-    
+    AudioPlayer player;
 private:
     Eye cube; // cache images
     Eye sphere;
