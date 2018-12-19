@@ -426,9 +426,6 @@ void ImageAnimator::setup() {
     path += "\\circle\\eye1.jpg";
     cylinder.setup(path);
 
-    player.load("wargames_play_game.wav");
-    player.play();
-
     contours.setup();
 
     ofDirectory allSounds(DATAPATH);

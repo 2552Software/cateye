@@ -87,7 +87,7 @@ void ImageAnimator::update() {
             level = NoGame;
         }
     }
-    if (secondsPassed((int)ofRandom(45, 60*3)) && displayText.size() == 0) { // say something now and then
+    if (secondsPassed((int)ofRandom(75, 60*3)) && displayText.size() == 0) { // say something now and then
         credits();
     }
     if (!isAnimating()) {
@@ -129,12 +129,12 @@ void ContoursBuilder::update() {
         }
         backgroundImage = grayImage; // only track new items -- so eye moves when objects move
         grayDiff.threshold(30); // turn any pixels above 30 white, and below 100 black bugbug menu can tune game here too
-        if (!contourFinder.findContours(grayDiff, 5, (cameraWidth*cameraHeight), 128, false, true)) {
+        if (!contourFinder.findContours(grayDiff, 5, (cameraWidth*cameraHeight), 255, false, true)) {
             contourFinder.blobs.clear(); // removes echo but does it make things draw too fast?
         }
         grayImage.blurGaussian(3);
         grayImage.threshold(50);
-        if (!contourDrawer.findContours(grayImage, 5, (cameraWidth*cameraHeight), 128, true)) {
+        if (!contourDrawer.findContours(grayImage, 5, (cameraWidth*cameraHeight), 255, false)) {
             contourDrawer.blobs.clear();
         }
     }

@@ -234,14 +234,9 @@ void ImageAnimator::getCountours() {
         }
 
         if (max > shapeMinSize) { // fine tune on site 
-            int w = cameraWidth; // camera size not screen size
-            int h = cameraHeight;
-
             double x = (centroid.x / cameraWidth)*100.0f; // make it a percent
             double y = (centroid.y / cameraHeight)*100.0f; // make it a percent
 
-            //if (mapX.find(std::make_pair(xAction, yAction)) != mapX.end()) {
-           // }
             for (auto& row : mapCameraInX) {
                 if (x >= row.first.first && x <= row.first.second) {
                     target.y = row.second;

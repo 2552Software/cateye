@@ -34,6 +34,11 @@ void ofApp::setup(){
     eyeAnimator.setShapeMinSize(maxForShape);
     eyeAnimator.setTriggerCount(maxForTrigger);
     eyeAnimator.setup();
+    eyeAnimator.player.load("wargames.wav");
+    eyeAnimator.player.out("0") >> eyeAnimator.music.engine.audio_out(0);
+    eyeAnimator.player.play();
+
+
     //bugbug eyeAnimator.credits(true); // setup credits, shown at boot bugbug spin eyes at boot too -- and restore text
 
     gui.loadFont(OF_TTF_SANS, 24, true, true);
