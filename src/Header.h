@@ -3,6 +3,8 @@
 #include "ofApp.h"
 #include "sound.h"
 
+enum Levels { NoGame = -1, Basic = 0, Medium = 1, Difficult = 2, EndGame = 3 };
+
 class TextTimer {
 public:
     TextTimer(const std::string& textIn, float timeToRenderIn, float delay, float lineIn);
@@ -103,7 +105,7 @@ private:
 
 class GameItem {
 public:
-    GameItem(const ofRectangle& rect, Eye eye, int level, int id);
+    GameItem(const ofRectangle& rect, Eye eye, Levels level, int id);
     bool operator==(const GameItem& rhs) const {
         return rectangle == rhs.rectangle;
     }
@@ -118,8 +120,8 @@ public:
     void draw();
     bool isAnimating() { return animater.isAnimating(); }
     int id;
-    int level;
-    static bool isMusicNote(const GameItem& item) { return (item.level == 4); }
+    Levels level;
+    static bool isMusicNote(const GameItem& item) { return (item.level == EndGame); }
     static bool isAkey(const GameItem& item) { return (item.id == 1); }
     static bool isGkey(const GameItem& item) { return (item.id == 5); }
     static bool isTkey(const GameItem& item) { return (item.id == 7); }
@@ -143,6 +145,7 @@ public:
 
 class ImageAnimator {
 public:
+
     ImageAnimator();
 
     void setup();
@@ -167,7 +170,7 @@ public:
     Eyes rotatingEyes;
     bool find(const ofRectangle& item) { return std::find(gameItems.begin(), gameItems.end(), item) != gameItems.end(); }
     void setCount(int count);
-    bool inGame() { return level >= 0; }
+    bool inGame() { return level > NoGame; }
     void blink();
     void setTitle();
     std::string sillyString();
@@ -176,9 +179,11 @@ public:
 private:
     Eye cube; // cache images
     Eye sphere;
+    Eye cylinder;
     Eye musicNote;
     ofTrueTypeFont font;
-    int level;
+    Levels level;
+    
     void getCountours();
     struct TextEvent {
         int i;

@@ -297,7 +297,7 @@ void Eye::setup(const string&texName) {
     }
 }
 
-GameItem::GameItem(const ofRectangle& rect, Eye eye, int levelIn, int idIn) {
+GameItem::GameItem(const ofRectangle& rect, Eye eye, Levels levelIn, int idIn) {
     id = idIn;
     rectangle = rect;
     level = levelIn;
@@ -310,29 +310,31 @@ void GameItem::setup() {
     animater.reset(0.0f);
     animater.setCurve(EASE_IN_EASE_OUT);
     animater.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
+    float duration;
 
-    if (level == 4) {
-        animater.setDuration(60.0f); //this is the big prize, enjoy it
+    if (level == EndGame) {
+        duration = 60.0f; //this is the big prize, enjoy it
     }
-    else if (level == 3) {
+    else if (level == Difficult) {
         cylinder.setRadius(min(rectangle.height, rectangle.width) / 2);
         cylinder.setHeight(10); // thin
         // use with squares etc sphere.set(rect.width, rect.height, 0.0f);
         cylinder.setPosition(rectangle.x, rectangle.y, 0.0f);
-        animater.setDuration(60.0f); //this is the big prize, enjoy it
+        duration = 60.0f; 
     }
-    else if (level == 2) {
+    else if (level == Medium) {
         box.setPosition(rectangle.x, rectangle.y + rectangle.height, -2 * rectangle.width);
         box.setWidth(rectangle.width);
         box.setHeight(rectangle.height);
-        animater.setDuration(20.0f); //bugbug menu
+        duration = 20.0f;
     }
-    else if (level == 1) {
+    else if (level == Basic) {
         sphere.setRadius(min(rectangle.height, rectangle.width) / 2);
         // use with squares etc sphere.set(rect.width, rect.height, 0.0f);
         sphere.setPosition(rectangle.x, rectangle.y, 0.0f);
-        animater.setDuration(30.0f);
+        duration = 30.0f;
     }
+    animater.setDuration(duration);
     animater.animateTo(1.0f);
 }
 
@@ -379,7 +381,8 @@ void ContoursBuilder::setup() {
 }
 
 void ImageAnimator::setup() {
-    level = -1;
+
+    level = NoGame;
     // convert to screen size
     xFactor = ofGetScreenWidth() / cameraWidth;
     yFactor = ofGetScreenHeight() / cameraHeight;
@@ -419,6 +422,9 @@ void ImageAnimator::setup() {
     path = DATAPATH;
     path += "\\music\\musicnote.jpg";
     musicNote.setup(path);
+    path = DATAPATH;
+    path += "\\circle\\eye1.jpg";
+    cylinder.setup(path);
 
     player.load("wargames_play_game.wav");
     player.play();

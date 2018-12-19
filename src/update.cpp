@@ -16,18 +16,23 @@ void Eyes::update() {
 
 void GameItem::update() {
     animater.update(1.0f / ofGetTargetFrameRate());
+
     switch (level) {
-    case 1:
+    case NoGame:
+        break;
+    case Basic:
         sphere.rotateDeg(20.0f*animater.val(), 0.0f, 1.0f, 0.0f);
         break;
-    case 2: {
+    case Medium: {
         glm::vec3 newPos = box.getPosition();
         newPos.z += box.getWidth()*animater.val() / 3;
         box.setPosition(newPos);
         }
         break;
-    case 3:
+    case Difficult:
         cylinder.rotateDeg(20.0f*animater.val(), 0.0f, 1.0f, 0.0f);
+        break;
+    case EndGame:
         break;
     }
 }
@@ -70,34 +75,39 @@ void ImageAnimator::update() {
 
     music.setPixels(contours.contourFinder);
 
-
     // control game state
     if (secondsPassed((int)ofRandom(5,6))) { // start a game every minute or so bugbug set once working
-        if (level < 0) {
-            level = 0;
+        if (level == NoGame) {
+            level = Basic;
         }
     }
     if
         (secondsPassed(30)) { // if no activity reset game after 30 seconds
-        if (level >= 0 && !winnerHitCount()) {
-            level = -1;
+        if (level > NoGame && !winnerHitCount()) {
+            level = NoGame;
         }
     }
     if (secondsPassed((int)ofRandom(45, 60*3)) && displayText.size() == 0) { // say something now and then
         credits();
     }
     if (!isAnimating()) {
-        if (0 && isWinner()) {  //bugbug
+        if (level != NoGame &&  isWinner()) {  //bugbug
             clear();
-            if (++level > 1) {
-                //credits will call fireworks when done
+            switch (level) {
+            case Basic:
+                level = Medium; // go to next level
+                break;
+            case Medium:
+                level = Difficult; // go to next level
+                break;
+            case Difficult:
                 sendFireworks = true;
                 credits(true);
-                level = 0; // go to first level
-            }
-            else {
-                clear();
-                level = 1; // go to next level
+                level = EndGame; // go to next level
+                break;
+            case EndGame:
+                level = NoGame; // go to next level
+                break;
             }
         }
         else {
