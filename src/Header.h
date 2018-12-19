@@ -177,10 +177,10 @@ public:
     Music music;
     AudioPlayer player;
 private:
-    Eye cube; // cache images
-    Eye sphere;
-    Eye cylinder;
-    Eye musicNote;
+    Eyes cubes; // cache images
+    Eyes spheres;
+    Eyes cylinders;
+    Eyes musicNotes;
     ofTrueTypeFont font;
     Levels level;
     

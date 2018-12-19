@@ -11,7 +11,13 @@
 
 const int cameraWidth = 640;// 320; // the motion image from the camera
 const int cameraHeight = 480;//240;
-#define DATAPATH "runtime"
+#define EYES "eyes"
+#define SPIRALS "spirals"
+#define SOUNDS "sounds"
+#define CUBES "cubes"
+#define SPHERES "spheres"
+#define MUSICNOTES "musicnotes"
+#define CYLINDERS "cylinders"
 
 #include "Header.h"
 

@@ -400,35 +400,40 @@ void ImageAnimator::setup() {
     buildX();
     buildY();
 
-    mainEyes.setup(PLAY_ONCE, 1.0f, DATAPATH, 0.0f);
+    mainEyes.setup(PLAY_ONCE, 1.0f, EYES, 0.0f);
     if (!mainEyes.count()) {
         ofLogFatalError() << "eyes missing";
         ofExit(100);
     }
 
-    std::string path = DATAPATH;
-    path += "\\spirl";
-    rotatingEyes.setup(LOOP_BACK_AND_FORTH_ONCE, 3.0f, path, 25.0f);
+    rotatingEyes.setup(LOOP_BACK_AND_FORTH_ONCE, 3.0f, SPIRALS, 25.0f);
     if (!rotatingEyes.count()) {
-        ofLogError() << "rotating eyes missing";
+        ofLogError() << "SPIRALS eyes missing";
     }
 
-    path = DATAPATH;
-    path += "\\cube\\cube.jpg";
-    cube.setup(path);
-    path = DATAPATH;
-    path += "\\circle\\eye1.jpg";
-    sphere.setup(path);
-    path = DATAPATH;
-    path += "\\music\\musicnote.jpg";
-    musicNote.setup(path);
-    path = DATAPATH;
-    path += "\\circle\\eye1.jpg";
-    cylinder.setup(path);
+    cubes.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, CUBES, 25.0f);
+    if (!cubes.count()) {
+        ofLogError() << "cubes missing";
+    }
+
+    spheres.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, SPHERES, 25.0f);
+    if (!spheres.count()) {
+        ofLogError() << "SPHERES missing";
+    }
+
+    musicNotes.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, MUSICNOTES, 25.0f);
+    if (!musicNotes.count()) {
+        ofLogError() << "musicNotes missing";
+    }
+
+    cylinders.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, CYLINDERS, 25.0f);
+    if (!cylinders.count()) {
+        ofLogError() << "cylinders missing";
+    }
 
     contours.setup();
 
-    ofDirectory allSounds(DATAPATH);
+    ofDirectory allSounds(SOUNDS);
     allSounds.allowExt("wav");
     allSounds.allowExt("mp3");
     allSounds.listDir();
