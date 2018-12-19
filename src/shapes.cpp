@@ -2,16 +2,15 @@
 
 void Music::setPixels(ofxCvContourFinder&contours) {
     if (contours.blobs.size() > 0) {
-        float y;
+        size_t c = contours.blobs.size();
         switch (mode) {
         case 0: // converting pixels to waveform samples
             synth.datatable.begin();
             // first blob is the biggest, take that blob and use every 3rd point, if that is too much data?
-            y = contours.blobs[0].centroid.y;
             for (size_t n = 0; n < cameraWidth; ++n) {
                 float sample = 0.0f;
-                if (n < contours.blobs[0].pts.size()) {
-                    sample = contours.blobs[0].pts[n].x*y;
+                if (n < c) {
+                    sample = contours.blobs[n].centroid.x*contours.blobs[0].centroid.y;     // contours.blobs[0].pts[n].x*y;
                 }
                 synth.datatable.data(n, ofMap(sample, 0, cameraWidth*cameraHeight, -0.5f, 0.5f));
             }
@@ -20,11 +19,10 @@ void Music::setPixels(ofxCvContourFinder&contours) {
 
         case 1: // converting pixels to partials for additive synthesis
             synth.datatable.begin();
-            y = contours.blobs[0].centroid.y;
             for (size_t n = 0; n < cameraWidth; ++n) {
                 float partial = 0.0f;
-                if (n < contours.blobs[0].pts.size()) {
-                    partial = contours.blobs[0].pts[n].x*y;
+                if (n < c) {
+                    partial = contours.blobs[n].centroid.x*contours.blobs[0].centroid.y;     // contours.blobs[0].pts[n].x*y;
                 }
                 partial = ofMap(partial, 0, cameraWidth*cameraHeight, 0.0f, 1.0f);
                 synth.datatable.data(n, partial);
@@ -62,7 +60,6 @@ void ImageAnimator::buildTable() {
         LocationToInfoMap map;
         map.width = w;
         map.height = h;
-        //map.music.volume = 0.1f;
         for (float x = w; x < cameraWidth-w; x += w) { // keep off the edges -- camera cannot always pick those up
             map.x = x;
             for (float y = h; y < cameraHeight-h; y += h) {
@@ -81,7 +78,8 @@ void ImageAnimator::buildTable() {
                     //map.music.frequency = freqsLow[iHigh]; // left side is high pitch, right side low pitch
                     --iHigh;
                 }
-               screenToAnimationMap.insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
+                screenToAnimationMap.insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
+                map.c++;
             }
         }
     }

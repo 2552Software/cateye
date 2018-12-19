@@ -103,20 +103,25 @@ private:
 
 class GameItem {
 public:
-    GameItem(const ofRectangle& rect, Eye eye, int level);
+    GameItem(const ofRectangle& rect, Eye eye, int level, int id);
     bool operator==(const GameItem& rhs) const {
         return rectangle == rhs.rectangle;
     }
     bool operator==(const ofRectangle& rhs) const {
         return rectangle == rhs;
     }
+    bool operator==(const int rhs) const {
+        return id == rhs;
+    }
     void setup();
     void update();
     void draw();
     bool isAnimating() { return animater.isAnimating(); }
+    int id;
+    int level;
+    static bool isMusicNote(const GameItem& item) { return (item.level == 4); }
 
 private:
-    int level;
     ofBoxPrimitive box; // pick a shape 
     ofRectangle rectangle;
     ofSpherePrimitive sphere;
@@ -128,7 +133,8 @@ private:
 // map location to interesting things
 class LocationToInfoMap : public ofRectangle {
 public:
-    LocationToInfoMap() {}
+    LocationToInfoMap() { c = 0; }
+    int c; // count
 };
 
 class ImageAnimator {
@@ -161,10 +167,10 @@ public:
     void blink();
     void setTitle();
     std::string sillyString();
-    Music sound;
+    Music music;
     
 private:
-    Eye cube;
+    Eye cube; // cache images
     Eye sphere;
     Eye musicNote;
     ofTrueTypeFont font;

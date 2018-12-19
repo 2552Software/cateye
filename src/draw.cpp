@@ -94,17 +94,26 @@ bool ImageAnimator::drawText() {
     return found;
 }
 void GameItem::draw() {
-    myeye.start();
-    if (level == 3) {
-        cylinder.draw();
-    }
-    else if (level == 2) { // 2nd level is boxes
-        box.draw();
-    }
-    else {
+    switch (level) {
+    case 1:
+        myeye.start();
         sphere.draw();
+        myeye.stop();
+        break;
+    case 2:
+        myeye.start();
+        box.draw();
+        myeye.stop();
+        break;
+    case 3:
+        myeye.start();
+        cylinder.draw();
+        myeye.stop();
+        break;
+    case 4:
+        myeye.draw(rectangle.x, rectangle.y,  rectangle.width, rectangle.height);
+        break;
     }
-    myeye.stop();
 }
 
 void ImageAnimator::drawGame() {

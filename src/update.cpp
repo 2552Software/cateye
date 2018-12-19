@@ -16,16 +16,19 @@ void Eyes::update() {
 
 void GameItem::update() {
     animater.update(1.0f / ofGetTargetFrameRate());
-    if (level == 3) {
-        cylinder.rotateDeg(20.0f*animater.val(), 0.0f, 1.0f, 0.0f);
-    }
-    else if (level == 2) {
-        glm::vec3 newPos= box.getPosition();
-        newPos.z += box.getWidth()*animater.val()/3;
-        box.setPosition(newPos);
-    }
-    else {
+    switch (level) {
+    case 1:
         sphere.rotateDeg(20.0f*animater.val(), 0.0f, 1.0f, 0.0f);
+        break;
+    case 2: {
+        glm::vec3 newPos = box.getPosition();
+        newPos.z += box.getWidth()*animater.val() / 3;
+        box.setPosition(newPos);
+        }
+        break;
+    case 3:
+        cylinder.rotateDeg(20.0f*animater.val(), 0.0f, 1.0f, 0.0f);
+        break;
     }
 }
 bool secondsPassed(int val) {
@@ -33,7 +36,7 @@ bool secondsPassed(int val) {
 }
 void ImageAnimator::update() {
 
-    sound.update();
+    music.update();
 
     // blinker always moving but only drawn up request
     blinker.update(1.0f / ofGetTargetFrameRate());
@@ -65,7 +68,7 @@ void ImageAnimator::update() {
     rotatingEyes.update();
     contours.update();
 
-    sound.setPixels(contours.contourFinder);
+    music.setPixels(contours.contourFinder);
 
 
     // control game state

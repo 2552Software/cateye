@@ -151,22 +151,30 @@ void ImageAnimator::getCountours() {
                         // see if we can trigger with this one
                         for (auto& item : screenToAnimationMap) { // get all blocks within region
                             if (item.second.inside(blob.boundingRect)) { //
-
                                 float size = cameraWidth * cameraHeight;
                                 float rectSize = blob.boundingRect.height*blob.boundingRect.width;
                                 float ratio = rectSize / size;
                                 float cx = ofGetScreenWidth() - (item.second.width)*xFactor;/// ofGetScreenWidth();
                                 ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);
                                 if (!find(rect2Use)) {
-                                    gameItems.push_back(GameItem(rect2Use, musicNote, 3)); //bugbug will be level 3, the big prize
-                                    if (level == 2) {
-                                        gameItems.push_back(GameItem(rect2Use, cube, level));
+                                    if (item.second.c == 34) { // just a few notes, 34 is a magic note
+                                        gameItems.push_back(GameItem(rect2Use, musicNote, 4, item.second.c));
+                                        music.keyboard.keyPressed('a');
                                     }
-                                    else if (level == 1) {
-                                        gameItems.push_back(GameItem(rect2Use, sphere, level));
-                                       // gameItems.push_back(GameItem(rect2Use, mainEyes.getCurrentEyeRef().getMainEye(), level));
+                                    switch (level) {
+                                    case 1:
+                                        gameItems.push_back(GameItem(rect2Use, sphere, level, item.second.c));
+                                        break;
+                                    case 2:
+                                        gameItems.push_back(GameItem(rect2Use, cube, level, item.second.c));
+                                        break;
                                     }
                                     break;
+                                }
+                                else {
+                                    // found, remove it for music
+                                    gameItems.remove_if(GameItem::isMusicNote);
+                                    music.keyboard.keyReleased('a');
                                 }
                             }
                         }

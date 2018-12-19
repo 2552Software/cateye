@@ -302,7 +302,8 @@ void Eye::setup(const string&texName) {
     }
 }
 
-GameItem::GameItem(const ofRectangle& rect, Eye eye, int levelIn) {
+GameItem::GameItem(const ofRectangle& rect, Eye eye, int levelIn, int idIn) {
+    id = idIn;
     rectangle = rect;
     level = levelIn;
     myeye = eye;
@@ -315,7 +316,10 @@ void GameItem::setup() {
     animater.setCurve(EASE_IN_EASE_OUT);
     animater.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
 
-    if (level == 3) {
+    if (level == 4) {
+        animater.setDuration(60.0f); //this is the big prize, enjoy it
+    }
+    else if (level == 3) {
         cylinder.setRadius(min(rectangle.height, rectangle.width) / 2);
         cylinder.setHeight(10); // thin
         // use with squares etc sphere.set(rect.width, rect.height, 0.0f);
@@ -328,7 +332,7 @@ void GameItem::setup() {
         box.setHeight(rectangle.height);
         animater.setDuration(20.0f); //bugbug menu
     }
-    else {
+    else if (level == 1) {
         sphere.setRadius(min(rectangle.height, rectangle.width) / 2);
         // use with squares etc sphere.set(rect.width, rect.height, 0.0f);
         sphere.setPosition(rectangle.x, rectangle.y, 0.0f);

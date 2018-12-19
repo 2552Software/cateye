@@ -7,7 +7,7 @@ void ofApp::setup(){
     hideMenu = true;
     ofSetFrameRate(30.0f); // camers 30 so why go higher?
     
-    eyeAnimator.sound.setup(cameraWidth, cameraHeight); // tie to app
+    eyeAnimator.music.setup(cameraWidth, cameraHeight); // tie to app
 
     //ofEnableSeparateSpecularLight();
     ofSetWindowShape(ofGetScreenWidth(), ofGetScreenHeight());
@@ -127,10 +127,10 @@ void ofApp::draw() {
 }
 void ofApp::keyReleased(int key) {
     // sends key messages to ofxPDSPComputerKeyboard
-    eyeAnimator.sound.keyboard.keyReleased(key);
+    eyeAnimator.music.keyboard.keyReleased(key);
 }
 void ofApp::keyPressed(int key) {
-    eyeAnimator.sound.keyboard.keyPressed(key);
+    eyeAnimator.music.keyboard.keyPressed(key);
     return;//bugbug
     if (key == 'm') {
         gui.saveToFile("settings.xml");
@@ -147,94 +147,94 @@ void ofApp::keyPressed(int key) {
     // we can launch our sequences with the launch method, with optional quantization
     switch (key) {
     case '1':
-        eyeAnimator.sound.engine.sequencer.sections[0].launch(0, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        eyeAnimator.music.engine.sequencer.sections[0].launch(0, eyeAnimator.music.quantize, eyeAnimator.music.quantime);
         break;
     case '2':
-        eyeAnimator.sound.engine.sequencer.sections[0].launch(1, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        eyeAnimator.music.engine.sequencer.sections[0].launch(1, eyeAnimator.music.quantize, eyeAnimator.music.quantime);
         break;
     case '3':
-        eyeAnimator.sound.engine.sequencer.sections[0].launch(2, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        eyeAnimator.music.engine.sequencer.sections[0].launch(2, eyeAnimator.music.quantize, eyeAnimator.music.quantime);
         break;
     case '4':
-        eyeAnimator.sound.engine.sequencer.sections[0].launch(3, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        eyeAnimator.music.engine.sequencer.sections[0].launch(3, eyeAnimator.music.quantize, eyeAnimator.music.quantime);
         break;
     case '6':
-        eyeAnimator.sound.quantize = true;
-        eyeAnimator.sound.quantime = 1.0;
+        eyeAnimator.music.quantize = true;
+        eyeAnimator.music.quantime = 1.0;
         break;
     case '7':
-        eyeAnimator.sound.quantize = true;
-        eyeAnimator.sound.quantime = 1.0 / 4.0;
+        eyeAnimator.music.quantize = true;
+        eyeAnimator.music.quantime = 1.0 / 4.0;
         break;
     case '8':
-        eyeAnimator.sound.quantize = true;
-        eyeAnimator.sound.quantime = 1.0 / 8.0;
+        eyeAnimator.music.quantize = true;
+        eyeAnimator.music.quantime = 1.0 / 8.0;
         break;
     case '9':
-        eyeAnimator.sound.quantize = true;
-        eyeAnimator.sound.quantime = 1.0 / 16.0;
+        eyeAnimator.music.quantize = true;
+        eyeAnimator.music.quantime = 1.0 / 16.0;
         break;
     case '0':
-        eyeAnimator.sound.quantize = false;
+        eyeAnimator.music.quantize = false;
         break;
     case 'q':
-        eyeAnimator.sound.engine.sequencer.sections[1].launch(0, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        eyeAnimator.music.engine.sequencer.sections[1].launch(0, eyeAnimator.music.quantize, eyeAnimator.music.quantime);
         break;
     case 'w':
-        eyeAnimator.sound.engine.sequencer.sections[1].launch(1, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        eyeAnimator.music.engine.sequencer.sections[1].launch(1, eyeAnimator.music.quantize, eyeAnimator.music.quantime);
         break;
     case 'e':
-        eyeAnimator.sound.engine.sequencer.sections[1].launch(2, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        eyeAnimator.music.engine.sequencer.sections[1].launch(2, eyeAnimator.music.quantize, eyeAnimator.music.quantime);
         break;
     case 'r':
-        eyeAnimator.sound.engine.sequencer.sections[1].launch(3, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        eyeAnimator.music.engine.sequencer.sections[1].launch(3, eyeAnimator.music.quantize, eyeAnimator.music.quantime);
         break;
     case 't':
-        eyeAnimator.sound.engine.sequencer.sections[1].launch(-1, eyeAnimator.sound.quantize, eyeAnimator.sound.quantime);
+        eyeAnimator.music.engine.sequencer.sections[1].launch(-1, eyeAnimator.music.quantize, eyeAnimator.music.quantime);
         break;
     case 'a':
-        eyeAnimator.sound.seq_mode = eyeAnimator.sound.seq_mode ? 0 : 1;
-        switch (eyeAnimator.sound.seq_mode) {
+        eyeAnimator.music.seq_mode = eyeAnimator.music.seq_mode ? 0 : 1;
+        switch (eyeAnimator.music.seq_mode) {
         case 0:
             for (int i = 0; i < 4; ++i) {
-                eyeAnimator.sound.engine.sequencer.sections[1].oneshot(i);
+                eyeAnimator.music.engine.sequencer.sections[1].oneshot(i);
             }
             break;
         case 1:
             for (int i = 0; i < 4; ++i) {
-                eyeAnimator.sound.engine.sequencer.sections[1].loop(i);
+                eyeAnimator.music.engine.sequencer.sections[1].loop(i);
             }
             break;
         }
         break;
     case ' ': // pause / play
-        if (eyeAnimator.sound.engine.sequencer.isPlaying()) {
-            eyeAnimator.sound.engine.sequencer.pause();
+        if (eyeAnimator.music.engine.sequencer.isPlaying()) {
+            eyeAnimator.music.engine.sequencer.pause();
         }
         else {
-            eyeAnimator.sound.engine.sequencer.play();
+            eyeAnimator.music.engine.sequencer.play();
         }
         break;
     case 's': // stop
-        eyeAnimator.sound.engine.sequencer.stop();
+        eyeAnimator.music.engine.sequencer.stop();
         break;
     }
 
     switch (key) {
     case '5': // select one shot / loop pattern behavior
-        if (eyeAnimator.sound.oneShot) {
-            eyeAnimator.sound.engine.sequencer.sections[0].setChange(0, pdsp::Behavior::Next);
-            eyeAnimator.sound.engine.sequencer.sections[0].setChange(1, pdsp::Behavior::Next);
-            eyeAnimator.sound.engine.sequencer.sections[0].setChange(2, pdsp::Behavior::Next);
-            eyeAnimator.sound.engine.sequencer.sections[0].setChange(3, pdsp::Behavior::Next);
-            eyeAnimator.sound.oneShot = false;
+        if (eyeAnimator.music.oneShot) {
+            eyeAnimator.music.engine.sequencer.sections[0].setChange(0, pdsp::Behavior::Next);
+            eyeAnimator.music.engine.sequencer.sections[0].setChange(1, pdsp::Behavior::Next);
+            eyeAnimator.music.engine.sequencer.sections[0].setChange(2, pdsp::Behavior::Next);
+            eyeAnimator.music.engine.sequencer.sections[0].setChange(3, pdsp::Behavior::Next);
+            eyeAnimator.music.oneShot = false;
         }
         else {
-            eyeAnimator.sound.engine.sequencer.sections[0].setChange(0, pdsp::Behavior::Nothing);
-            eyeAnimator.sound.engine.sequencer.sections[0].setChange(1, pdsp::Behavior::Nothing);
-            eyeAnimator.sound.engine.sequencer.sections[0].setChange(2, pdsp::Behavior::Nothing);
-            eyeAnimator.sound.engine.sequencer.sections[0].setChange(3, pdsp::Behavior::Nothing);
-            eyeAnimator.sound.oneShot = true;
+            eyeAnimator.music.engine.sequencer.sections[0].setChange(0, pdsp::Behavior::Nothing);
+            eyeAnimator.music.engine.sequencer.sections[0].setChange(1, pdsp::Behavior::Nothing);
+            eyeAnimator.music.engine.sequencer.sections[0].setChange(2, pdsp::Behavior::Nothing);
+            eyeAnimator.music.engine.sequencer.sections[0].setChange(3, pdsp::Behavior::Nothing);
+            eyeAnimator.music.oneShot = true;
         }
         break;
     }
