@@ -386,7 +386,7 @@ void ContoursBuilder::setup() {
     video.setDesiredFrameRate(15);
     if (!video.setup(cameraWidth, cameraHeight, false)) {
         ofLogFatalError("ContoursBuilder::setup video.setup failed");
-            ofExit(1);
+        ofExit(1);
     }
     ofLogNotice("ContoursBuilder::setup camera setup ");
     colorImg.allocate(cameraWidth, cameraHeight);
