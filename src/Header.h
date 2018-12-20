@@ -47,8 +47,8 @@ private:
 
 class Eye : public ofTexture {
 public:
-    Eye() {}
-    Eye(const string&name) {     setup(name);  }
+    Eye() { }
+    Eye(const string&name) {  setup(name);  }
 
     void setup(const string&texName);
     void update() {   }
@@ -66,6 +66,7 @@ public:
     void update();
     void draw();
     Eye& getMainEye() { return eye; }
+    ofVec3f currentRotation;
 private:
     Eye eye;
 };
@@ -75,7 +76,7 @@ public:
     void setup();
     // return true if updated
     void update();
-    void draw(float cxScreen, float cyScreen);
+    void draw(float w, float h, float z);
     ofxCvContourFinder contourFinder;
     ofxCvContourFinder contourDrawer;
 private:
@@ -89,7 +90,7 @@ public:
     void setup(AnimRepeat repeat, float seconds, const std::string& path, float rotateIn);
     void update();
     void draw();
-    void resize(int w, int h);
+    float resize(int w, int h);
     bool isAnimating() {  return getAnimator().isAnimating();   }
     SuperSphere&getCurrentSphereRef() {   return eyes[(int)selector.getCurrentValue()];  }
     size_t count() { return eyes.size(); }
@@ -151,7 +152,7 @@ public:
     void setup();
     void update();
     void draw();
-    void drawContours(float cxScreen, float cyScreen);
+    void drawContours();
     //http://www.findsounds.com/ISAPI/search.dll?keywords=cat
     void sounds(int duration= 5); // default to full sound
     void startPlaying();
@@ -176,14 +177,17 @@ public:
     std::string sillyString();
     Music music;
     AudioPlayer player;
+    float w, h, r;
+
 private:
+    float gameStartTime; // in seconds
     Eyes cubes; // cache images
     Eyes spheres;
     Eyes cylinders;
     Eyes musicNotes;
     ofTrueTypeFont font;
     Levels level;
-    
+    void updateLevel();
     void getCountours();
     struct TextEvent {
         int i;

@@ -398,9 +398,10 @@ void ContoursBuilder::setup() {
 void ImageAnimator::setup() {
 
     level = NoGame;
-    // convert to screen size
-    xFactor = ofGetScreenWidth() / cameraWidth;
-    yFactor = ofGetScreenHeight() / cameraHeight;
+    gameStartTime = 0.0f; // zero time
+    // convert to window size from camera sized
+    xFactor = w / cameraWidth;
+    yFactor = h / cameraHeight;
 
     music.setup(cameraWidth, cameraHeight); // tie to app
     font.load("DejaVuSans.ttf", 100, true, true, true);

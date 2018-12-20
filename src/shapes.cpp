@@ -210,6 +210,10 @@ void ImageAnimator::credits(bool signon) {
 }
 
 void Eye::start() {
+    if (!isAllocated()) {
+        ofLogError("Eye::start") << "not loaded ";
+        return;
+    }
     material.begin();
     bind();
 }

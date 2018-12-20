@@ -39,6 +39,43 @@ void GameItem::update() {
 bool secondsPassed(int val) {
     return ((int)ofGetElapsedTimef() % val) == 0;
 }
+void ImageAnimator::updateLevel() {
+
+    float duration = ofGetElapsedTimeMillis() - gameStartTime;
+    switch (level) {
+    case NoGame:
+        if (duration > 60) { // start game every 60 seconds
+            gameStartTime = ofGetElapsedTimeMillis();
+            level = Basic; // go to next level
+        }
+        break;
+    case Basic:
+        if (duration > 60) { // stop game after 1 minute at a level
+            gameStartTime = ofGetElapsedTimeMillis();
+            level = NoGame; // go to previous level
+        }
+        break;
+    case Medium:
+        if (duration > 60) { // stop game after 1 minute at a level
+            gameStartTime = ofGetElapsedTimeMillis();
+            level = Basic; 
+        }
+        break;
+    case Difficult:
+        if (duration > 60) { // stop game after 1 minute at a level
+            gameStartTime = ofGetElapsedTimeMillis();
+            level = Medium;
+        }
+        break;
+    case EndGame:
+        if (duration > 60) { // start game every 60 seconds
+            gameStartTime = ofGetElapsedTimeMillis();
+            level = NoGame; // go to next level
+        }
+        break;
+    }
+
+}
 void ImageAnimator::update() {
 
     music.update();
@@ -75,23 +112,14 @@ void ImageAnimator::update() {
 
     music.setPixels(contours.contourFinder);
 
+    updateLevel();
+
     // control game state
-    if (secondsPassed((int)ofRandom(5,6))) { // start a game every minute or so bugbug set once working
-        if (level == NoGame) {
-            level = Basic;
-        }
-    }
-    if
-        (secondsPassed(30)) { // if no activity reset game after 30 seconds
-        if (level > NoGame && !winnerHitCount()) {
-            level = NoGame;
-        }
-    }
     if (secondsPassed((int)ofRandom(75, 60*3)) && displayText.size() == 0) { // say something now and then
         credits();
     }
     if (!isAnimating()) {
-        if (level != NoGame &&  isWinner()) {  //bugbug
+        if (level != NoGame &&  isWinner()) {  
             clear();
             switch (level) {
             case Basic:

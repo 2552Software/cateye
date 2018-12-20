@@ -1,11 +1,27 @@
 #include "ofApp.h"
 
 void ImageAnimator::draw() {
-    rotate(currentRotation); // rotate screen, not object, so same rotation works every time
+    //rotate(currentRotation); // rotate screen, not object, so same rotation works every time
+    //ofLogNotice() << "rotate to targert" << target;
+    ofVec3f current = mainEyes.getCurrentSphereRef().currentRotation;
+
+    if (current != currentRotation){
+        std::stringstream ss;
+        ss << currentRotation << " old " << current;
+        ofSetWindowTitle(ss.str());
+
+        // z ignored
+        mainEyes.getCurrentSphereRef().rotateDeg(-current.x, 1.0f, 0.0f, 0.0f);
+        mainEyes.getCurrentSphereRef().rotateDeg(-current.y, 0.0f, 1.0f, 0.0f);
+        mainEyes.getCurrentSphereRef().rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
+        mainEyes.getCurrentSphereRef().rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
+        mainEyes.getCurrentSphereRef().currentRotation = currentRotation;
+    }
     mainEyes.draw();
 }
 void SuperSphere::draw() {
     eye.start();
+    //ofLogNotice("SuperSphere::draw()") << getPosition();
     ofSpherePrimitive::draw();
     eye.stop();
 }
@@ -26,16 +42,16 @@ void ImageAnimator::draw(const std::string& s, float x, float y) {
     font.drawStringAsShapes(s, x, y);
 }
 
-void ContoursBuilder::draw(float cxScreen, float cyScreen) {
+void ContoursBuilder::draw(float w, float h, float z) {
     ofNoFill();
     ofSetLineWidth(1);// ofRandom(1, 5));
     for (auto& blob : contourDrawer.blobs) {
         ofPolyline line;
         for (int i = 0; i < blob.nPts; i++) {
-            line.addVertex((cameraWidth - blob.pts[i].x), blob.pts[i].y);
+            line.addVertex((cameraWidth - blob.pts[i].x), blob.pts[i].y, z);
         }
         line.close();
-        line.scale(cxScreen / cameraWidth, cyScreen / cameraHeight);
+        line.scale(w / cameraWidth, h / cameraHeight);
         line.draw();
     }
     ofSetLineWidth(5);// ofRandom(1, 5));
@@ -43,10 +59,10 @@ void ContoursBuilder::draw(float cxScreen, float cyScreen) {
         for (auto& blob : contourFinder.blobs) {
             ofPolyline line;
             for (int i = 0; i < blob.nPts; i++) {
-                line.addVertex((cameraWidth - blob.pts[i].x), blob.pts[i].y);
+                line.addVertex((cameraWidth - blob.pts[i].x), blob.pts[i].y, z);
             }
             line.close();
-            line.scale(cxScreen / cameraWidth, cyScreen / cameraHeight);
+            line.scale(w / cameraWidth, h / cameraHeight);
             line.draw();
         }
     }
@@ -70,7 +86,7 @@ bool ImageAnimator::isAnimating() {
 }
 bool ImageAnimator::drawText() {
     bool found = false;
-    float y = ofGetScreenWidth() / 3;
+    float y = (w) ? w : 1 / 3;
     for (auto& credit : displayText) {
         if (credit.isRunningOrWaitingToRun()) {
             std::string s;
@@ -94,32 +110,28 @@ bool ImageAnimator::drawText() {
     return found;
 }
 void GameItem::draw() {
+    myeye.start();
     switch (level) {
-    case 1:
-        myeye.start();
+    case Basic:
         sphere.draw();
-        myeye.stop();
         break;
-    case 2:
-        myeye.start();
+    case Medium:
         box.draw();
-        myeye.stop();
         break;
-    case 3:
-        myeye.start();
+    case Difficult:
         cylinder.draw();
-        myeye.stop();
         break;
-    case 4:
-        myeye.draw(rectangle.x, rectangle.y,  rectangle.width, rectangle.height);
+    case EndGame:
+        box.draw();
         break;
     }
+    myeye.stop();
 }
 
 void ImageAnimator::drawGame() {
     ofPushStyle();
     ofPushMatrix();
-    ofTranslate(0.0f, ofGetScreenHeight() / 20);
+   //bugbug whjat is this? ofTranslate(0.0f, w / 20);
     ofEnableAlphaBlending();
     for (auto& item : gameItems) {
         item.draw();
@@ -129,6 +141,6 @@ void ImageAnimator::drawGame() {
     ofPopStyle();
 }
 
-void ImageAnimator::drawContours(float cxScreen, float cyScreen) {
-    contours.draw(cxScreen, cyScreen);
+void ImageAnimator::drawContours() {
+    contours.draw(w, h, r);
 }

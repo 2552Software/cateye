@@ -2,15 +2,19 @@
 #include "sound.h"
 //--------------------------------------------------------------
 void ofApp::setup(){
-    ofSetWindowTitle("Robocat");
-    //ofSetFullscreen(true);
-    hideMenu = true;
-    ofSetFrameRate(30.0f); // camers 30 so why go higher?
-    
-    //ofEnableSeparateSpecularLight();
-    ofSetWindowShape(ofGetScreenWidth(), ofGetScreenHeight());
     ofSetLogLevel(OF_LOG_VERBOSE);
     ofLogToConsole();
+
+    //ofSetFullscreen(true);
+    //ofSetWindowShape(ofGetScreenWidth(), ofGetScreenHeight());
+
+    hideMenu = true;
+    ofSetFrameRate(30.0f); 
+
+    ofLogNotice("ofApp::setup") << "of version " << ofGetVersionInfo();
+
+    //ofEnableSeparateSpecularLight();
+
     //ofEnableLighting();
     ofSetVerticalSync(true);
     ofDisableArbTex();
@@ -46,8 +50,8 @@ void ofApp::setup(){
     gui.setTextColor(ofColor::black);
     gui.setHeaderBackgroundColor(ofColor::orangeRed);
     gui.setBackgroundColor(ofColor::yellowGreen);
-    gui.setPosition(ofGetScreenWidth() / 2, ofGetScreenHeight() / 2);
-    gui.setShape(ofGetScreenWidth() / 2, ofGetScreenHeight() / 2, ofGetScreenWidth() / 10, ofGetScreenHeight() / 10 );
+    gui.setPosition(ofGetWidth() / 2, ofGetHeight() / 2);
+    gui.setShape(ofGetWidth() / 2, ofGetHeight() / 2, ofGetWidth() / 10, ofGetHeight() / 10 );
     gui.loadFromFile("settings.xml");
     squareCount.addListener(this, &ofApp::squareCountChanged);
     maxForTrigger.addListener(this, &ofApp::triggerCountChanged);
@@ -67,17 +71,13 @@ void ofApp::squareCountChanged(int &squareCount) {
 }
 void ofApp::windowResized(int w, int h) {
     eyeAnimator.windowResized(w, h);
-    camera.setDistance(std::min(w, h)*2);// radius which is y max of screen
+   // camera.setDistance(10.0f);// radius which is y max of screen
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
     eyeAnimator.update();
     light.update();
-    std::stringstream ss;
-    ss << camera.getPosition();
-    ofSetWindowTitle(ss.str());
-
 }
 
 //--------------------------------------------------------------
@@ -89,7 +89,7 @@ void ofApp::draw() {
         ofPushStyle();
         ofPushMatrix();
         light.enable();
-        camera.begin();
+        //camera.begin();
         bool textOnly = eyeAnimator.drawText();
         bool eyeDrawn = false;
         if (!textOnly) { // draw text first, if no text draw the eye
@@ -105,14 +105,13 @@ void ofApp::draw() {
 
         ofPopMatrix();
         ofPopStyle();
-        camera.end();
+       // camera.end();
         ofPushStyle();
         ofPushMatrix();
 
         // if nothing else is going on draw motion outside of camera but in light
-
         if (!textOnly && !eyeAnimator.isAnimating()) {
-            eyeAnimator.drawContours(ofGetScreenWidth(), ofGetScreenHeight());
+            eyeAnimator.drawContours();
         }
         if (!textOnly) {
             eyeAnimator.drawGame(); // draw any game that may be running

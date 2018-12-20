@@ -6,7 +6,7 @@ void ImageAnimator::setTitle() {
     std::string s = "Game On! Find ";
     s += ss.str();
     ofSetColor(ofColor::white);
-    font.drawStringAsShapes(s, ofGetScreenWidth() / 2 - font.stringWidth(s) / 2, font.getLineHeight() * 5);
+    font.drawStringAsShapes(s, w / 2 - font.stringWidth(s) / 2, font.getLineHeight() * 5);
 
 }
 void ImageAnimator::blink() {
@@ -14,8 +14,8 @@ void ImageAnimator::blink() {
     ofSetColor(ofColor::black);
     ofPushStyle();
     ofFill();
-    ofDrawRectangle(0, 0, ofGetScreenWidth(), (ofGetScreenHeight() / 2)*blinker.val());
-    ofDrawRectangle(0, ofGetScreenHeight(), ofGetScreenWidth(), -(ofGetScreenHeight() / 2)*blinker.val());
+    ofDrawRectangle(0, 0, w, (h / 2)*blinker.val());
+    ofDrawRectangle(0, h, w, -(h / 2)*blinker.val());
     ofPopStyle();
 }
 
@@ -23,12 +23,13 @@ void Eyes::add(const std::string &name, const std::string &root) {
     eyes.push_back(SuperSphere(root));
 }
 
-void Eyes::resize(int w, int h) {
-    float r = std::min(w, h);
+float Eyes::resize(int w, int h) {
+    float r = std::min(w, h)/2;
     for (SuperSphere&eye : eyes) {
         eye.setRadius(r);
-        eye.setPosition((w / 2) - r, (h / 2) - (r / 2), 0);
+        eye.setPosition((w/2), (h/2), 0);
     }
+    return r;
 }
 
 void  ImageAnimator::fireWorks() {
@@ -37,8 +38,8 @@ void  ImageAnimator::fireWorks() {
 }
 
 void ImageAnimator::rotate(const ofVec3f& target) {
-    std::stringstream ss;
-    ss << target;
+    //std::stringstream ss;
+   // ss << target;
     //ofSetWindowTitle(ss.str());
     if (target.x || target.y || target.z) {
         //ofLogNotice() << "rotate to targert" << target;
@@ -89,6 +90,9 @@ ImageAnimator::ImageAnimator() {
     maxForTrigger = 525.0f;
     shapeMinSize = 200.0f; // menus bugbug
     squareCount = 10;// menus bugbu
+    w = ofGetWidth();
+    h = ofGetHeight();
+    r = std::min(w, h) / 2;
 }
 
 // count of items selected
@@ -110,12 +114,16 @@ void ImageAnimator::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event)
     clear(); // reset and start again
 }
 
-void ImageAnimator::windowResized(int w, int h) {
+void ImageAnimator::windowResized(int wIn, int hIn) {
+    w = wIn;
+    h = hIn;
+    ofLogNotice("ofApp::setup") << "Window size " << w << " by " << h;
+
     // convert to screen size
     xFactor = w / cameraWidth;
     yFactor = h / cameraHeight;
 
-    mainEyes.resize(w,h);
+    r = mainEyes.resize(w,h);
     rotatingEyes.resize(w, h);
     clear(); // reset game to assure all sizes are correct
     
@@ -165,7 +173,7 @@ void ImageAnimator::getCountours() {
                         // see if we can trigger with this one
                         for (auto& item : screenToAnimationMap) { // get all blocks within region
                             if (item.second.inside(blob.boundingRect)) { //
-                                float cx = ofGetScreenWidth() - (item.second.width)*xFactor;
+                                float cx = w - (item.second.width)*xFactor;
                                 ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);
                                 if (!find(rect2Use)) {
                                     switch (level) {
