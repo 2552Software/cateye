@@ -3,9 +3,6 @@
 void SuperSphere::update() {
 }
 
-void Music::update() {
-
-}
 void Eyes::update() {
     for (SuperSphere&eye : eyes) {
         eye.update();
@@ -76,9 +73,7 @@ void ImageAnimator::updateLevel() {
     }
 
 }
-void ImageAnimator::update() {
-
-    music.update();
+void ImageAnimator::update(Music*music) {
 
     // blinker always moving but only drawn up request
     blinker.update(1.0f / ofGetTargetFrameRate());
@@ -110,8 +105,6 @@ void ImageAnimator::update() {
     rotatingEyes.update();
     contours.update();
 
-    music.setPixels(contours.contourFinder);
-
     updateLevel();
 
     // control game state
@@ -139,7 +132,7 @@ void ImageAnimator::update() {
             }
         }
         else {
-            getCountours();
+            getCountours(music);
         }
     }
 }

@@ -1,5 +1,10 @@
 #include "ofApp.h"
 #include "sound.h"
+
+Music* music=nullptr; // never deleted since its need for the life of the app, nor allocation checked -- let it crash if we cannot get his
+AudioPlayer *player = nullptr;
+
+
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetLogLevel(OF_LOG_VERBOSE);
@@ -22,6 +27,8 @@ void ofApp::setup(){
   
     // camera.lookAt(eyeAnimator.sphere);
     light.setup();
+    music = new Music;
+    music->setup(cameraWidth, cameraHeight); // tie to app
 
     // Works like shit on 4k a does most of OF.
     gui.setup();
@@ -38,9 +45,11 @@ void ofApp::setup(){
     eyeAnimator.setShapeMinSize(maxForShape);
     eyeAnimator.setTriggerCount(maxForTrigger);
     eyeAnimator.setup();
-    eyeAnimator.player.load("wargames.wav");
-    eyeAnimator.player.out("0") >> eyeAnimator.music.engine.audio_out(0);
-    eyeAnimator.player.play();
+
+    player = new AudioPlayer; //bugbug replace cat calls with this
+    player->load("wargames.wav");
+    player->out("0") >> music->engine.audio_out(0);
+    player->play();
 
 
     //bugbug eyeAnimator.credits(true); // setup credits, shown at boot bugbug spin eyes at boot too -- and restore text
@@ -76,8 +85,11 @@ void ofApp::windowResized(int w, int h) {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-    eyeAnimator.update();
+    eyeAnimator.update(music);
     light.update();
+    music->update();
+    music->setPixels(eyeAnimator.contours.contourFinder);
+
 }
 
 //--------------------------------------------------------------
@@ -136,10 +148,10 @@ void ofApp::draw() {
 }
 void ofApp::keyReleased(int key) {
     // sends key messages to ofxPDSPComputerKeyboard
-    eyeAnimator.music.keyboard.keyReleased(key);
+    music->keyboard.keyReleased(key);
 }
 void ofApp::keyPressed(int key) {
-    eyeAnimator.music.keyboard.keyPressed(key);
+    music->keyboard.keyPressed(key);
     return;//bugbug
     if (key == 'm') {
         gui.saveToFile("settings.xml");
@@ -156,94 +168,94 @@ void ofApp::keyPressed(int key) {
     // we can launch our sequences with the launch method, with optional quantization
     switch (key) {
     case '1':
-        eyeAnimator.music.engine.sequencer.sections[0].launch(0, eyeAnimator.music.quantize, eyeAnimator.music.quantime);
+        music->engine.sequencer.sections[0].launch(0, music->quantize, music->quantime);
         break;
     case '2':
-        eyeAnimator.music.engine.sequencer.sections[0].launch(1, eyeAnimator.music.quantize, eyeAnimator.music.quantime);
+        music->engine.sequencer.sections[0].launch(1, music->quantize, music->quantime);
         break;
     case '3':
-        eyeAnimator.music.engine.sequencer.sections[0].launch(2, eyeAnimator.music.quantize, eyeAnimator.music.quantime);
+        music->engine.sequencer.sections[0].launch(2, music->quantize, music->quantime);
         break;
     case '4':
-        eyeAnimator.music.engine.sequencer.sections[0].launch(3, eyeAnimator.music.quantize, eyeAnimator.music.quantime);
+        music->engine.sequencer.sections[0].launch(3, music->quantize, music->quantime);
         break;
     case '6':
-        eyeAnimator.music.quantize = true;
-        eyeAnimator.music.quantime = 1.0;
+        music->quantize = true;
+        music->quantime = 1.0;
         break;
     case '7':
-        eyeAnimator.music.quantize = true;
-        eyeAnimator.music.quantime = 1.0 / 4.0;
+        music->quantize = true;
+        music->quantime = 1.0 / 4.0;
         break;
     case '8':
-        eyeAnimator.music.quantize = true;
-        eyeAnimator.music.quantime = 1.0 / 8.0;
+        music->quantize = true;
+        music->quantime = 1.0 / 8.0;
         break;
     case '9':
-        eyeAnimator.music.quantize = true;
-        eyeAnimator.music.quantime = 1.0 / 16.0;
+        music->quantize = true;
+        music->quantime = 1.0 / 16.0;
         break;
     case '0':
-        eyeAnimator.music.quantize = false;
+        music->quantize = false;
         break;
     case 'q':
-        eyeAnimator.music.engine.sequencer.sections[1].launch(0, eyeAnimator.music.quantize, eyeAnimator.music.quantime);
+        music->engine.sequencer.sections[1].launch(0, music->quantize, music->quantime);
         break;
     case 'w':
-        eyeAnimator.music.engine.sequencer.sections[1].launch(1, eyeAnimator.music.quantize, eyeAnimator.music.quantime);
+        music->engine.sequencer.sections[1].launch(1, music->quantize, music->quantime);
         break;
     case 'e':
-        eyeAnimator.music.engine.sequencer.sections[1].launch(2, eyeAnimator.music.quantize, eyeAnimator.music.quantime);
+        music->engine.sequencer.sections[1].launch(2, music->quantize, music->quantime);
         break;
     case 'r':
-        eyeAnimator.music.engine.sequencer.sections[1].launch(3, eyeAnimator.music.quantize, eyeAnimator.music.quantime);
+        music->engine.sequencer.sections[1].launch(3, music->quantize, music->quantime);
         break;
     case 't':
-        eyeAnimator.music.engine.sequencer.sections[1].launch(-1, eyeAnimator.music.quantize, eyeAnimator.music.quantime);
+        music->engine.sequencer.sections[1].launch(-1, music->quantize, music->quantime);
         break;
     case 'a':
-        eyeAnimator.music.seq_mode = eyeAnimator.music.seq_mode ? 0 : 1;
-        switch (eyeAnimator.music.seq_mode) {
+        music->seq_mode = music->seq_mode ? 0 : 1;
+        switch (music->seq_mode) {
         case 0:
             for (int i = 0; i < 4; ++i) {
-                eyeAnimator.music.engine.sequencer.sections[1].oneshot(i);
+                music->engine.sequencer.sections[1].oneshot(i);
             }
             break;
         case 1:
             for (int i = 0; i < 4; ++i) {
-                eyeAnimator.music.engine.sequencer.sections[1].loop(i);
+                music->engine.sequencer.sections[1].loop(i);
             }
             break;
         }
         break;
     case ' ': // pause / play
-        if (eyeAnimator.music.engine.sequencer.isPlaying()) {
-            eyeAnimator.music.engine.sequencer.pause();
+        if (music->engine.sequencer.isPlaying()) {
+            music->engine.sequencer.pause();
         }
         else {
-            eyeAnimator.music.engine.sequencer.play();
+            music->engine.sequencer.play();
         }
         break;
     case 's': // stop
-        eyeAnimator.music.engine.sequencer.stop();
+        music->engine.sequencer.stop();
         break;
     }
 
     switch (key) {
     case '5': // select one shot / loop pattern behavior
-        if (eyeAnimator.music.oneShot) {
-            eyeAnimator.music.engine.sequencer.sections[0].setChange(0, pdsp::Behavior::Next);
-            eyeAnimator.music.engine.sequencer.sections[0].setChange(1, pdsp::Behavior::Next);
-            eyeAnimator.music.engine.sequencer.sections[0].setChange(2, pdsp::Behavior::Next);
-            eyeAnimator.music.engine.sequencer.sections[0].setChange(3, pdsp::Behavior::Next);
-            eyeAnimator.music.oneShot = false;
+        if (music->oneShot) {
+            music->engine.sequencer.sections[0].setChange(0, pdsp::Behavior::Next);
+            music->engine.sequencer.sections[0].setChange(1, pdsp::Behavior::Next);
+            music->engine.sequencer.sections[0].setChange(2, pdsp::Behavior::Next);
+            music->engine.sequencer.sections[0].setChange(3, pdsp::Behavior::Next);
+            music->oneShot = false;
         }
         else {
-            eyeAnimator.music.engine.sequencer.sections[0].setChange(0, pdsp::Behavior::Nothing);
-            eyeAnimator.music.engine.sequencer.sections[0].setChange(1, pdsp::Behavior::Nothing);
-            eyeAnimator.music.engine.sequencer.sections[0].setChange(2, pdsp::Behavior::Nothing);
-            eyeAnimator.music.engine.sequencer.sections[0].setChange(3, pdsp::Behavior::Nothing);
-            eyeAnimator.music.oneShot = true;
+            music->engine.sequencer.sections[0].setChange(0, pdsp::Behavior::Nothing);
+            music->engine.sequencer.sections[0].setChange(1, pdsp::Behavior::Nothing);
+            music->engine.sequencer.sections[0].setChange(2, pdsp::Behavior::Nothing);
+            music->engine.sequencer.sections[0].setChange(3, pdsp::Behavior::Nothing);
+            music->oneShot = true;
         }
         break;
     }

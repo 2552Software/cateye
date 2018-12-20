@@ -1,39 +1,5 @@
 #include "ofApp.h"
 
-void Music::setPixels(ofxCvContourFinder&contours) {
-    if (contours.blobs.size() > 0) { 
-        size_t c = contours.blobs.size();
-        switch (mode) {
-        case 0: // converting pixels to waveform samples
-            synth.datatable.begin();
-            // first blob is the biggest, take that blob and use every 3rd point, if that is too much data?
-            for (size_t n = 0; n < cameraWidth; ++n) {
-                float sample = 0.0f;
-                if (n < c) {
-                    sample = contours.blobs[n].boundingRect.x+ contours.blobs[n].boundingRect.width + 
-                             contours.blobs[n].boundingRect.height+ contours.blobs[n].boundingRect.y;
-                }
-                synth.datatable.data(n, ofMap(sample, 0, cameraWidth+cameraHeight, -0.5f, 0.5f));
-            }
-            synth.datatable.end(false);
-            break; // remember, raw waveform could have DC offsets, we have filtered them in the synth using an hpf
-
-        case 1: // converting pixels to partials for additive synthesis
-            synth.datatable.begin();
-            for (size_t n = 0; n < cameraWidth; ++n) {
-                float partial = 0.0f;
-                if (n < c) {
-                    partial = contours.blobs[n].boundingRect.x + contours.blobs[n].boundingRect.width +
-                        contours.blobs[n].boundingRect.height + contours.blobs[n].boundingRect.y;
-                }
-                partial = ofMap(partial, 0, cameraWidth*cameraHeight, 0.0f, 1.5f);
-                synth.datatable.data(n, partial);
-            }
-            synth.datatable.end(true);
-            break;
-        }
-    }
-}
 // sound https://www.liutaiomottola.com/formulae/freqtab.htm
 void ImageAnimator::buildTable() {
     if (squareCount) {

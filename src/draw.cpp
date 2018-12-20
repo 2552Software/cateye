@@ -15,7 +15,7 @@ void SuperSphere::draw() {
     eye.start();
     ofSpherePrimitive sphere;
     r = std::min(ofGetWidth(), ofGetHeight()) / 2;
-    ofLogNotice() << "Radius" << r << " W " << ofGetWidth() << " H " << ofGetHeight();
+    // for heavy debug ofLogNotice() << "Radius" << r << " W " << ofGetWidth() << " H " << ofGetHeight();
     sphere.setRadius(r);
     sphere.setPosition((ofGetWidth() / 2), (ofGetHeight() / 2), 0);
     sphere.panDeg(180);

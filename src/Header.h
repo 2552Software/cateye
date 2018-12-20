@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ofApp.h"
-#include "sound.h"
 
 enum Levels { NoGame = -1, Basic = 0, Medium = 1, Difficult = 2, EndGame = 3 };
 
@@ -144,14 +143,15 @@ public:
     LocationToInfoMap() { c = 0; }
     int c; // count
 };
-
+ 
+class Music;
 class ImageAnimator {
 public:
 
     ImageAnimator();
 
     void setup();
-    void update();
+    void update(Music*music);
     void draw();
     void drawContours();
     //http://www.findsounds.com/ISAPI/search.dll?keywords=cat
@@ -176,9 +176,8 @@ public:
     void blink();
     void setTitle();
     std::string sillyString();
-    Music music;
-    AudioPlayer player;
     float w, h;
+    ContoursBuilder contours;
 
 private:
     float gameStartTime; // in seconds
@@ -189,7 +188,7 @@ private:
     ofTrueTypeFont font;
     Levels level;
     void updateLevel();
-    void getCountours();
+    void getCountours(Music*music);
     struct TextEvent {
         int i;
     };
@@ -202,7 +201,6 @@ private:
     float shapeMinSize;
     void buildTable();
     int squareCount;
-    ContoursBuilder contours;
     void buildX();
     void buildY();
     float maxForTrigger;

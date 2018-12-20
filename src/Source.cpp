@@ -1,4 +1,5 @@
 #include "ofApp.h"
+#include "sound.h"
 
 void ImageAnimator::setTitle() {
     std::stringstream ss;
@@ -137,7 +138,7 @@ size_t ImageAnimator::winnerThreshold() {
     return 0;
 }
 
-void ImageAnimator::getCountours() {
+void ImageAnimator::getCountours(Music*music) {
     float max = 0.0f;
     if (contours.contourFinder.blobs.size() > 0) {
         glm::vec3 target = currentRotation;
@@ -182,19 +183,19 @@ void ImageAnimator::getCountours() {
                                     case EndGame:
                                         if (item.second.c == 1) { // just a few notes, 1 is a magic note
                                             gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getMainEye(), EndGame, item.second.c));
-                                            music.keyboard.keyPressed('a');
+                                            music->keyboard.keyPressed('a');
                                         }
                                         else if (item.second.c == 5) { // just a few notes, 1 is a magic note
                                             gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getMainEye(), EndGame, item.second.c));
-                                            music.keyboard.keyPressed('g');
+                                            music->keyboard.keyPressed('g');
                                         }
                                         else if (item.second.c == 7) { // just a few notes, 1 is a magic note
                                             gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getMainEye(), EndGame, item.second.c));
-                                            music.keyboard.keyPressed('t');
+                                            music->keyboard.keyPressed('t');
                                         }
                                         else if (item.second.c == 9) { // just a few notes, 1 is a magic note
                                             gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getMainEye(), EndGame, item.second.c));
-                                            music.keyboard.keyPressed('k');
+                                            music->keyboard.keyPressed('k');
                                         }
                                         break;
                                     }
@@ -204,22 +205,22 @@ void ImageAnimator::getCountours() {
                                     if (item.second.c == 1) {
                                         // found, remove it for music
                                         gameItems.remove_if(GameItem::isAkey);
-                                        music.keyboard.keyReleased('a');
+                                        music->keyboard.keyReleased('a');
                                     }
                                     else if (item.second.c == 5) {
                                         // found, remove it for music
                                         gameItems.remove_if(GameItem::isGkey);
-                                        music.keyboard.keyReleased('g');
+                                        music->keyboard.keyReleased('g');
                                     }
                                     else if (item.second.c == 7) {
                                         // found, remove it for music
                                         gameItems.remove_if(GameItem::isTkey);
-                                        music.keyboard.keyReleased('t');
+                                        music->keyboard.keyReleased('t');
                                     }
                                     else if (item.second.c == 9) {
                                         // found, remove it for music
                                         gameItems.remove_if(GameItem::isKkey);
-                                        music.keyboard.keyReleased('k');
+                                        music->keyboard.keyReleased('k');
                                     }
                                 }
                             }
