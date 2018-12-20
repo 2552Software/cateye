@@ -8,8 +8,21 @@ void Eyes::rotate(ofVec3f r) {
 }
 void ImageAnimator::draw() {
     //ofLogNotice() << "rotate to targert" << target;
-    mainEyes.rotate(currentRotation);
-    mainEyes.draw();
+    if (!drawText()) { // draw text first and give it the full screen
+        if (rotatingEyes.isAnimating()) {
+            drawRotatingEyes();
+        }
+        else {
+            setTitle();
+            mainEyes.rotate(currentRotation);
+            //mainEyes.draw();
+            if (!mainEyes.isAnimating()) {
+                drawContours();
+                blink();
+            }
+            drawGame(); // draw any game that may be running
+        }
+    }
 }
 void SuperSphere::draw() {
     eye.start();
@@ -81,29 +94,39 @@ bool ImageAnimator::isAnimating() {
     }
     return true;
 }
-bool ImageAnimator::drawText() {
-    bool found = false;
-    float y = (w) ? w : 1 / 3;
-    for (auto& credit : displayText) {
-        if (credit.isRunningOrWaitingToRun()) {
-            std::string s;
-            if (credit.getString(s)) {
-                found = true;
-                draw(s, -font.stringWidth(s) / 2, y - font.getLineHeight()*credit.line * 6);
-            }
-        }
-        else if (credit.lasting.isAnimating()) {
-            found = true;
-            ofSetColor(credit.lasting.getCurrentColor());
-            draw(credit.text, -font.stringWidth(credit.text) / 2, y - font.getLineHeight()*credit.line * 6);
-        }
-    }
-    if (!found) {
-        // send envent that we are done
-        TextEvent args;
-        ofNotifyEvent(textFinished, args, this);
+void ImageAnimator::drawRotatingEyes() {
+    if (rotatingEyes.isAnimating()) {
+        rotatingEyes.draw();
     }
 
+}
+bool ImageAnimator::drawText() {
+    bool found = false;
+    if (displayText.size() > 0) {
+        ofPushMatrix();
+        ofTranslate(0.0f, 0.0f, -getRadius());
+        float y = (w) ? w : 1 / 3;
+        for (auto& text : displayText) {
+            if (text.isRunningOrWaitingToRun()) {
+                std::string s;
+                if (text.getString(s)) {
+                    found = true;
+                    draw(s, -font.stringWidth(s) / 2, y - font.getLineHeight()*text.line * 6);
+                }
+            }
+            else if (text.lasting.isAnimating()) {
+                found = true;
+                ofSetColor(text.lasting.getCurrentColor());
+                draw(text.text, -font.stringWidth(text.text) / 2, y - font.getLineHeight()*text.line * 6);
+            }
+        }
+        ofPopMatrix();
+        if (!found) {
+            // send envent that we are done
+            TextEvent args;
+            ofNotifyEvent(textFinished, args, this);
+        }
+    }
     return found;
 }
 void GameItem::draw() {
@@ -139,5 +162,5 @@ void ImageAnimator::drawGame() {
 }
 
 void ImageAnimator::drawContours() {
-    contours.draw(w, h, std::min(w, h) / 2);
+    contours.draw(w, h, getRadius());
 }

@@ -3,6 +3,9 @@
 #include "ofApp.h"
 
 enum Levels { NoGame = -1, Basic = 0, Medium = 1, Difficult = 2, EndGame = 3 };
+inline float getRadius() {
+    return std::min(ofGetWidth(), ofGetHeight()) / 2;
+}
 
 class TextTimer {
 public:
@@ -153,7 +156,6 @@ public:
     void setup();
     void update(Music*music);
     void draw();
-    void drawContours();
     //http://www.findsounds.com/ISAPI/search.dll?keywords=cat
     void sounds(int duration= 5); // default to full sound
     void startPlaying();
@@ -163,29 +165,31 @@ public:
     void setTriggerCount(float count);
     void setShapeMinSize(float size) { shapeMinSize = size; };
     bool isWinner() { return winnerHitCount() >= winnerThreshold(); } // easy mode! bugbug menu
-    bool drawText();
     bool isAnimating();
     void credits(bool signon = false);
-    void drawGame();
     void windowResized(int w, int h);
-    Eyes mainEyes;
-    Eyes rotatingEyes;
     bool find(const ofRectangle& item) { return std::find(gameItems.begin(), gameItems.end(), item) != gameItems.end(); }
     void setCount(int count);
     bool inGame() { return level > NoGame; }
-    void blink();
-    void setTitle();
     std::string sillyString();
     float w, h;
     ContoursBuilder contours;
 
 private:
+    void drawContours();
+    ofTrueTypeFont font;
+    void drawRotatingEyes();
+    void drawGame();
+    bool drawText();
+    void blink();
+    void setTitle();
+    Eyes mainEyes;
+    Eyes rotatingEyes;
     float gameStartTime; // in seconds
     Eyes cubes; // cache images
     Eyes spheres;
     Eyes cylinders;
     Eyes musicNotes;
-    ofTrueTypeFont font;
     Levels level;
     void updateLevel();
     void getCountours(Music*music);

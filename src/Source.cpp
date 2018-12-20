@@ -1,22 +1,44 @@
 #include "ofApp.h"
 #include "sound.h"
 
+// let folks know we are in a game
 void ImageAnimator::setTitle() {
-    std::stringstream ss;
-    ss << winnerHitCount() << " of " << winnerThreshold();
-    std::string s = "Game On! Find ";
-    s += ss.str();
-    ofSetColor(ofColor::white);
-    font.drawStringAsShapes(s, w / 2 - font.stringWidth(s) / 2, font.getLineHeight() * 5);
+    if (inGame()) {
+        std::stringstream ss;
+        ss << winnerHitCount() << " of " << winnerThreshold();
+        std::string s = "Game On! Find ";
+        s += ss.str();
+        /*
+        ofPushMatrix();
+        ofTranslate(w / 2, h / 2);// , getRadius());
+        // get the string as paths
+        vector < ofPath > paths = font.getStringAsPoints(s);
+        for (int i = 0; i < paths.size(); i++) {
+            // for every character break it out to polylines
+            vector <ofPolyline> polylines = paths[i].getOutline();
+            // for every polyline, draw every fifth point
+            for (int j = 0; j < polylines.size(); j++) {
+                for (int k = 0; k < polylines[j].size(); k += 5) {         // draw every "fifth" point
+                    ofDrawCircle(polylines[j][k], 3);
+                }
+            }
+        }
+        */
 
+        ofPushMatrix();
+        float stringw = font.stringWidth(s);
+        ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
+        font.drawStringAsShapes(s, w / 2 - stringw / 2, font.getLineHeight() * 5);
+        ofPopMatrix();
+    }
 }
 void ImageAnimator::blink() {
     // blink upon request
     ofSetColor(ofColor::black);
     ofPushStyle();
     ofFill();
-    ofDrawRectangle(0, 0, w, (h / 2)*blinker.val());
-    ofDrawRectangle(0, h, w, -(h / 2)*blinker.val());
+    ofDrawRectangle(0, 0, w, (h / 2)*blinker.val(), getRadius());
+    ofDrawRectangle(0, h, w, -(h / 2)*blinker.val(), getRadius());
     ofPopStyle();
 }
 

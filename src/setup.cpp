@@ -2,7 +2,7 @@
 
 void SuperSphere::setup(const string&name) {
     eye.setup(name);
-    r = std::min(ofGetWidth(), ofGetHeight()) / 2;
+    r = getRadius();
 }
 void TextTimer::setup() {
 }
@@ -120,9 +120,7 @@ void ImageAnimator::setup() {
     xFactor = w / cameraWidth;
     yFactor = h / cameraHeight;
 
-    font.load("DejaVuSans.ttf", 100, true, true, true);
-    font.setLineHeight(18.0f);
-    font.setLetterSpacing(1.037);
+    font.load("DejaVuSans.ttf", 100, false, false, true);
 
     ofAddListener(rotatingEyes.getAnimator().animFinished, this, &ImageAnimator::rotatingEyesDone);
     ofAddListener(textFinished, this, &ImageAnimator::creditsDone);

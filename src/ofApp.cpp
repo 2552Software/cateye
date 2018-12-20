@@ -14,7 +14,7 @@ void ofApp::setup(){
     //ofSetWindowShape(ofGetScreenWidth(), ofGetScreenHeight());
 
     hideMenu = true;
-    ofSetFrameRate(30.0f); 
+    ofSetFrameRate(15.0f); 
 
     ofLogNotice("ofApp::setup") << "of version " << ofGetVersionInfo();
 
@@ -80,6 +80,8 @@ void ofApp::squareCountChanged(int &squareCount) {
 }
 void ofApp::windowResized(int w, int h) {
     eyeAnimator.windowResized(w, h);
+    //eyeAnimator.font.
+
    // camera.setDistance(10.0f);// radius which is y max of screen
 }
 
@@ -102,45 +104,14 @@ void ofApp::draw() {
         ofPushMatrix();
         light.enable();
         //camera.begin();
-        bool textOnly = eyeAnimator.drawText();
-        bool eyeDrawn = false;
-        if (!textOnly) { // draw text first, if no text draw the eye
-                // show spirl eye first, if its not running try to text if al else fails show the main eye
-            if (eyeAnimator.rotatingEyes.isAnimating()) {
-                eyeAnimator.rotatingEyes.draw();
-            }
-            else {
-                eyeAnimator.draw();
-                eyeDrawn = true;
-            }
-        }
-
+    // show spirl eye first, if its not running try to text if al else fails show the main eye
+        eyeAnimator.draw();
         ofPopMatrix();
         ofPopStyle();
        // camera.end();
-        ofPushStyle();
-        ofPushMatrix();
 
-        // if nothing else is going on draw motion outside of camera but in light
-        if (!textOnly && !eyeAnimator.isAnimating()) {
-            eyeAnimator.drawContours();
-        }
-        if (!textOnly) {
-            eyeAnimator.drawGame(); // draw any game that may be running
-        }
-        ofPopMatrix();
-        ofPopStyle();
         light.disable();
         ofDisableDepthTest();
-        // need pure light/color and no camera
-        if (!textOnly) {
-            if (eyeAnimator.inGame() && eyeAnimator.winnerHitCount() > 0) {
-                eyeAnimator.setTitle();
-            }
-            else if (eyeDrawn) { // blink as needed
-                eyeAnimator.blink();
-            }
-        }
     }
     else  {
         gui.draw();
