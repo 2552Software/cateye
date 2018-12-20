@@ -23,13 +23,6 @@ void Eyes::add(const std::string &name, const std::string &root) {
     eyes.push_back(SuperSphere(root));
 }
 
-float Eyes::resize(int w, int h) {
-    float r = std::min(w, h)/2;
-    for (SuperSphere&eye : eyes) {
-        eye.setRadius(r);
-    }
-    return r;
-}
 
 void  ImageAnimator::fireWorks() {
    //bugbug sounds(5);
@@ -91,7 +84,6 @@ ImageAnimator::ImageAnimator() {
     squareCount = 10;// menus bugbu
     w = ofGetWidth();
     h = ofGetHeight();
-    r = std::min(w, h) / 2;
 }
 
 // count of items selected
@@ -122,8 +114,6 @@ void ImageAnimator::windowResized(int wIn, int hIn) {
     xFactor = w / cameraWidth;
     yFactor = h / cameraHeight;
 
-    r = mainEyes.resize(w,h);
-    rotatingEyes.resize(w, h);
     clear(); // reset game to assure all sizes are correct
     
 }

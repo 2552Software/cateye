@@ -282,8 +282,7 @@ void Music::setup(int len, int maxPartials) {
 }
 void SuperSphere::setup(const string&name) {
     eye.setup(name);
-    setResolution(27);
-    panDeg(180);
+    r = std::min(ofGetWidth(), ofGetHeight()) / 2;
 }
 void TextTimer::setup() {
 }

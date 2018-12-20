@@ -22,27 +22,23 @@ void ImageAnimator::draw() {
 }
 void SuperSphere::draw() {
     eye.start();
-    //ofLogNotice("SuperSphere::draw()") << getPosition();
-    //glm::vec3 v = getPosition();
-    //eye.setPosition((w / 2) - r, (h / 2), 0);
-   // ofDrawSphere(ofGetWidth() / 2, ofGetHeight() / 2, getRadius());
     ofSpherePrimitive sphere;
-    sphere.setRadius(getRadius());
+    r = std::min(ofGetWidth(), ofGetHeight()) / 2;
+    sphere.setRadius(r);
     sphere.setPosition((ofGetWidth() / 2), (ofGetHeight() / 2), 0);
     sphere.panDeg(180);
     sphere.rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
     sphere.rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
     sphere.setResolution(27);
     sphere.draw();
-    //ofSpherePrimitive::draw();
     eye.stop();
 }
 void Eyes::draw() {
     if (isAnimating()) {
         for (auto& eye : eyes) { // keep all eyes in sync to make it easier
-            glm::vec3 pos = eye.getPosition();
-            pos.z = getAnimator().val();
-            eye.setPosition(pos);//bug does this break animiation?
+           // glm::vec3 pos = eye.getPosition();
+            //pos.z = getAnimator().val();
+            //bugbug do later eye.setPosition(pos);//bug does this break animiation?
         }
     }
     getCurrentSphereRef().draw();
@@ -151,5 +147,5 @@ void ImageAnimator::drawGame() {
 }
 
 void ImageAnimator::drawContours() {
-    contours.draw(w, h, r);
+    contours.draw(w, h, std::min(w, h) / 2);
 }

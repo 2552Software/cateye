@@ -70,7 +70,7 @@ void ImageAnimator::buildY() {
     float incPercent = 5.0f;
     float incRotaion = ((r * 2) / (100.0f / incPercent - 1));
     for (int i = 1; percent < 100.0f; ++i, percent += incPercent, r -= incRotaion) {
-        mapCameraInY.insert(std::make_pair(std::make_pair(percent, percent + incPercent), r));
+        mapCameraInY.insert(std::make_pair(std::make_pair(percent, percent + incPercent), -r));
     }
 }
 

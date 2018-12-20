@@ -59,7 +59,7 @@ private:
 };
 
 // always knows it rotation coordindates
-class SuperSphere : public ofSpherePrimitive {
+class SuperSphere {
 public:
     SuperSphere(const string&name) { setup(name); }
     void setup(const string&name);
@@ -67,8 +67,10 @@ public:
     void draw();
     Eye& getMainEye() { return eye; }
     ofVec3f currentRotation;
+    float getRadius() { return r; }
 private:
     Eye eye;
+    float r;
 };
 
 class ContoursBuilder {
@@ -91,7 +93,6 @@ public:
     void rotate(ofVec3f r);
     void update();
     void draw();
-    float resize(int w, int h);
     bool isAnimating() {  return getAnimator().isAnimating();   }
     SuperSphere&getCurrentSphereRef() {   return eyes[(int)selector.getCurrentValue()];  }
     size_t count() { return eyes.size(); }
@@ -177,7 +178,7 @@ public:
     std::string sillyString();
     Music music;
     AudioPlayer player;
-    float w, h, r;
+    float w, h;
 
 private:
     float gameStartTime; // in seconds
