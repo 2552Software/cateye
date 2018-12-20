@@ -367,11 +367,19 @@ void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path, floa
 
 void ContoursBuilder::setup() {
     vector<ofVideoDevice> devices = video.listDevices();
+    bool found = false;
     for (auto& device : devices) {
+        ofLogNotice("ContoursBuilder::setup") << device.deviceName << " " << device.id;
         if (device.deviceName.find("facetime") == std::string::npos) {
             video.setDeviceID(device.id);
+            ofLogNotice("ContoursBuilder::setup found ") << device.deviceName;
+            found = true;
             break;
         }
+    }
+    if (!found) {
+        ofLogFatalError("ContoursBuilder::setup no device found");
+        ofExit(1);
     }
     video.setVerbose(true);
     video.setup(cameraWidth, cameraHeight);
@@ -388,8 +396,7 @@ void ImageAnimator::setup() {
     yFactor = ofGetScreenHeight() / cameraHeight;
 
     music.setup(cameraWidth, cameraHeight); // tie to app
-
-    font.load("alger.ttf", 100, true, true, true);
+    font.load("DejaVuSans.ttf", 100, true, true, true);
     font.setLineHeight(18.0f);
     font.setLetterSpacing(1.037);
 
@@ -432,5 +439,5 @@ void ImageAnimator::setup() {
     clear(); // go to a known state (call last like this as it may depend on othe settings)
     startPlaying();
 
-    ofLogError("ImageAnimator::setup") << "finshed";
+    ofLogNotice("ImageAnimator::setup") << "finshed";
 }
