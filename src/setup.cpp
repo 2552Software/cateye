@@ -120,7 +120,7 @@ void ImageAnimator::setup() {
     xFactor = w / cameraWidth;
     yFactor = h / cameraHeight;
 
-    font.load("DejaVuSans.ttf", 100, false, false, true);
+    font.load("DejaVuSans.ttf", 15, false, false, true);
 
     ofAddListener(rotatingEyes.getAnimator().animFinished, this, &ImageAnimator::rotatingEyesDone);
     ofAddListener(textFinished, this, &ImageAnimator::creditsDone);

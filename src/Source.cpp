@@ -8,7 +8,7 @@ void ImageAnimator::setTitle() {
         ss << winnerHitCount() << " of " << winnerThreshold();
         std::string s = "Game On! Find ";
         s += ss.str();
-        /*
+        /* good example for later
         ofPushMatrix();
         ofTranslate(w / 2, h / 2);// , getRadius());
         // get the string as paths
@@ -27,10 +27,10 @@ void ImageAnimator::setTitle() {
 
         ofPushMatrix();
         float stringw = font.stringWidth(s);
-        ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
-        font.drawStringAsShapes(s, w / 2 - stringw / 2, font.getLineHeight() * 5);
+        ofTranslate(ofGetWidth() / 2- stringw/2, ofGetHeight() / 2, getRadius());
+        font.drawStringAsShapes(s, 0, 0);
         ofPopMatrix();
-    }
+   }
 }
 void ImageAnimator::blink() {
     // blink upon request

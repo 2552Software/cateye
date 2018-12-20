@@ -15,7 +15,7 @@ void ImageAnimator::draw() {
         else {
             setTitle();
             mainEyes.rotate(currentRotation);
-            //mainEyes.draw();
+            mainEyes.draw();
             if (!mainEyes.isAnimating()) {
                 drawContours();
                 blink();
