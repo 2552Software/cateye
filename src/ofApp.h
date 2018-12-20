@@ -40,7 +40,7 @@ public:
     Camera camera;
     ImageAnimator eyeAnimator;
     ofMesh m;
-    void windowResized(int w, int h) {  eyeAnimator.windowResized(w, h);  }
+    void windowResized(int w, int h);
     void keyPressed(int key);
     void keyReleased(int key);
 

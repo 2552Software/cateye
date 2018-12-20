@@ -33,7 +33,6 @@ private:
 
 class Camera : public ofEasyCam {
 public:
-    void setup() {    setDistance(4286);   } // magic number
 };
 
 class Material : public ofMaterial {

@@ -15,7 +15,7 @@ void ofApp::setup(){
     ofSetVerticalSync(true);
     ofDisableArbTex();
     //ofSetSmoothLighting(true);
-    camera.setup();
+  
     // camera.lookAt(eyeAnimator.sphere);
     light.setup();
 
@@ -65,12 +65,19 @@ void ofApp::triggerCountChanged(float &count) {
 void ofApp::squareCountChanged(int &squareCount) {
     // menu is next release bugbug eyeAnimator.setCount(squareCount); 
 }
+void ofApp::windowResized(int w, int h) {
+    eyeAnimator.windowResized(w, h);
+    camera.setDistance(std::min(w, h)*2);// radius which is y max of screen
+}
 
 //--------------------------------------------------------------
 void ofApp::update() {
     eyeAnimator.update();
     light.update();
-    
+    std::stringstream ss;
+    ss << camera.getPosition();
+    ofSetWindowTitle(ss.str());
+
 }
 
 //--------------------------------------------------------------

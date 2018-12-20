@@ -120,16 +120,17 @@ void ImageAnimator::update() {
 void ContoursBuilder::update() {
     video.update();
     if (video.isFrameNew()) { // && (ofGetFrameNum() & 1) to slow things down
-        ofLogNotice("ontoursBuilder::update 1");
+
         colorImg.setFromPixels(video.getPixels());
 
         grayImage = colorImg; // convert our color image to a grayscale image
-        ofLogNotice("ontoursBuilder::update 2");
+
         if (backgroundImage.bAllocated) {
             grayDiff.absDiff(backgroundImage, grayImage);
         }
+
         backgroundImage = grayImage; // only track new items -- so eye moves when objects move
-        ofLogNotice("ontoursBuilder::update 3");
+
         grayDiff.threshold(30); // turn any pixels above 30 white, and below 100 black bugbug menu can tune game here too
         if (!contourFinder.findContours(grayDiff, 5, (cameraWidth*cameraHeight), 255, false, true)) {
             contourFinder.blobs.clear(); // removes echo but does it make things draw too fast?
@@ -139,7 +140,7 @@ void ContoursBuilder::update() {
         if (!contourDrawer.findContours(grayImage, 5, (cameraWidth*cameraHeight), 255, false)) {
             contourDrawer.blobs.clear();
         }
-        ofLogNotice("ontoursBuilder::update 3");
+
     }
 }
 

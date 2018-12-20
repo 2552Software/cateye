@@ -282,7 +282,7 @@ void Music::setup(int len, int maxPartials) {
 }
 void SuperSphere::setup(const string&name) {
     eye.setup(name);
-    setResolution(21);
+    setResolution(27);
     panDeg(180);
 }
 void TextTimer::setup() {
@@ -381,7 +381,7 @@ void ContoursBuilder::setup() {
         ofLogFatalError("ContoursBuilder::setup no device found");
         ofExit(1);
     }
-    video.setVerbose(true);
+    // only when degbugging video.setVerbose(true);
     video.setPixelFormat(OF_PIXELS_RGB);
     video.setDesiredFrameRate(15);
     if (!video.setup(cameraWidth, cameraHeight, false)) {
@@ -418,7 +418,7 @@ void ImageAnimator::setup() {
     if (!mainEyes.count()) {
         ofExit(100);
     }
-
+    
     rotatingEyes.setup(LOOP_BACK_AND_FORTH_ONCE, 3.0f, SPIRALS, 25.0f);
     cubes.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, CUBES, 25.0f);
     spheres.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, SPHERES, 25.0f);

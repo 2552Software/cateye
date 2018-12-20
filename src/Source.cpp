@@ -117,7 +117,6 @@ void ImageAnimator::windowResized(int w, int h) {
 
     mainEyes.resize(w,h);
     rotatingEyes.resize(w, h);
-
     clear(); // reset game to assure all sizes are correct
     
 }
