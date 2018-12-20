@@ -310,7 +310,7 @@ void GameItem::setup() {
     animater.reset(0.0f);
     animater.setCurve(EASE_IN_EASE_OUT);
     animater.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
-    float duration;
+    float duration=20.0f;
 
     if (level == EndGame) {
         duration = 60.0f; //this is the big prize, enjoy it
@@ -369,8 +369,8 @@ void ContoursBuilder::setup() {
     vector<ofVideoDevice> devices = video.listDevices();
     bool found = false;
     for (auto& device : devices) {
-        ofLogNotice("ContoursBuilder::setup") << device.deviceName << " " << device.id;
-        if (device.deviceName.find("facetime") == std::string::npos) {
+        ofLogVerbose("ContoursBuilder::setup") << device.deviceName << " " << device.id;
+        if (device.deviceName.find("facetime") == std::string::npos) { // if its not face time use it
             video.setDeviceID(device.id);
             ofLogNotice("ContoursBuilder::setup found ") << device.deviceName;
             found = true;
@@ -382,10 +382,13 @@ void ContoursBuilder::setup() {
         ofExit(1);
     }
     video.setVerbose(true);
-    video.setup(cameraWidth, cameraHeight);
+    video.setPixelFormat(OF_PIXELS_RGB);
+    video.setDesiredFrameRate(15);
+    video.setup(cameraWidth, cameraHeight, false);
     colorImg.allocate(cameraWidth, cameraHeight);
     grayImage.allocate(cameraWidth, cameraHeight);
     grayDiff.allocate(cameraWidth, cameraHeight);
+    ofLogNotice("ContoursBuilder::setup over ");
 }
 
 void ImageAnimator::setup() {
