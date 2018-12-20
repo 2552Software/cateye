@@ -413,15 +413,15 @@ void ImageAnimator::setup() {
 
     contours.setup();
 
-    ofDirectory allSounds(SOUNDS);
-    allSounds.allowExt("wav");
-    allSounds.allowExt("mp3");
-    allSounds.listDir();
-    for (size_t i = 0; i < allSounds.size(); i++) {
-        ofSoundPlayer sound;
-        sound.load(allSounds.getPath(i));
-        mySounds.push_back(sound);
-    }
+    //ofDirectory allSounds(SOUNDS);
+    //allSounds.allowExt("wav");
+   // allSounds.allowExt("mp3");
+   // allSounds.listDir();
+    //for (size_t i = 0; i < allSounds.size(); i++) {
+      //  ofSoundPlayer sound;
+       //bugbug not working on pi but replace with the cools stguf any sound.load(allSounds.getPath(i));
+        //mySounds.push_back(sound);
+   // }
 
     blinker.reset(0.0f);
     blinker.setCurve(EASE_IN_EASE_OUT);
@@ -432,4 +432,5 @@ void ImageAnimator::setup() {
     clear(); // go to a known state (call last like this as it may depend on othe settings)
     startPlaying();
 
+    ofLogError("ImageAnimator::setup") << "finshed";
 }
