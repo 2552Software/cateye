@@ -87,7 +87,8 @@ private:
 
 class Eyes {
 public:
-    void setup(AnimRepeat repeat, float seconds, const std::string& path, float rotateIn);
+    void setup(AnimRepeat repeat, float seconds, const std::string& path);
+    void rotate(ofVec3f r);
     void update();
     void draw();
     float resize(int w, int h);
@@ -101,7 +102,6 @@ private:
     ofxAnimatableFloat animator; // z direction
     ofxAnimatableFloat selector; // pick eye to draw
     std::vector<SuperSphere> eyes;
-    float rotate;
 };
 
 class GameItem {

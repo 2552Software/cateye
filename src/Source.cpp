@@ -27,7 +27,6 @@ float Eyes::resize(int w, int h) {
     float r = std::min(w, h)/2;
     for (SuperSphere&eye : eyes) {
         eye.setRadius(r);
-        eye.setPosition((w/2), (h/2), 0);
     }
     return r;
 }

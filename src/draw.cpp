@@ -1,28 +1,40 @@
 #include "ofApp.h"
 
+void Eyes::rotate(ofVec3f r) {
+    for (auto& eye : eyes) {
+        eye.currentRotation = r;
+        //eye.rotateDeg(-eye.currentRotation.y, 0.0f, 1.0f, 0.0f); // home back to 0 to make it easy
+        //eye.rotateDeg(r.y, 1.0f, 0.0f, 0.0f); // look up means a smaller x
+        //eye.rotateDeg(r.y - eye.currentRotation.y, 0.0f, 1.0f, 0.0f);
+        //eye.tiltDeg(r.x - eye.currentRotation.x);
+        //eye.panDeg(r.y - eye.currentRotation.y);
+        
+   //     eye.currentRotation = r;
+    }
+
+}
 void ImageAnimator::draw() {
+    //ofRotateDeg(180.0f, 0.0f, 1.0f, 0.0f); // rotate to front
     //rotate(currentRotation); // rotate screen, not object, so same rotation works every time
     //ofLogNotice() << "rotate to targert" << target;
-    ofVec3f current = mainEyes.getCurrentSphereRef().currentRotation;
-
-    if (current != currentRotation){
-        std::stringstream ss;
-        ss << currentRotation << " old " << current;
-        ofSetWindowTitle(ss.str());
-
-        // z ignored
-        mainEyes.getCurrentSphereRef().rotateDeg(-current.x, 1.0f, 0.0f, 0.0f);
-        mainEyes.getCurrentSphereRef().rotateDeg(-current.y, 0.0f, 1.0f, 0.0f);
-        mainEyes.getCurrentSphereRef().rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
-        mainEyes.getCurrentSphereRef().rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
-        mainEyes.getCurrentSphereRef().currentRotation = currentRotation;
-    }
+    mainEyes.rotate(currentRotation);
     mainEyes.draw();
 }
 void SuperSphere::draw() {
     eye.start();
     //ofLogNotice("SuperSphere::draw()") << getPosition();
-    ofSpherePrimitive::draw();
+    //glm::vec3 v = getPosition();
+    //eye.setPosition((w / 2) - r, (h / 2), 0);
+   // ofDrawSphere(ofGetWidth() / 2, ofGetHeight() / 2, getRadius());
+    ofSpherePrimitive sphere;
+    sphere.setRadius(getRadius());
+    sphere.setPosition((ofGetWidth() / 2), (ofGetHeight() / 2), 0);
+    sphere.panDeg(180);
+    sphere.rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
+    sphere.rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
+    sphere.setResolution(27);
+    sphere.draw();
+    //ofSpherePrimitive::draw();
     eye.stop();
 }
 void Eyes::draw() {
@@ -30,10 +42,7 @@ void Eyes::draw() {
         for (auto& eye : eyes) { // keep all eyes in sync to make it easier
             glm::vec3 pos = eye.getPosition();
             pos.z = getAnimator().val();
-            eye.setPosition(pos);
-            if (rotate) {
-                eye.rotateDeg(rotate, 0.0f, 0.0f, 1.0f); //bugbug animate and menu degree bugbug make a point rotate x,y,z?
-            }
+            eye.setPosition(pos);//bug does this break animiation?
         }
     }
     getCurrentSphereRef().draw();

@@ -338,8 +338,7 @@ void GameItem::setup() {
     animater.animateTo(1.0f);
 }
 
-void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path, float rotateIn) {
-    rotate = rotateIn;
+void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path) {
 
     getAnimator().reset(0.0f);
     getAnimator().setDuration(seconds);
@@ -388,7 +387,6 @@ void ContoursBuilder::setup() {
         ofLogFatalError("ContoursBuilder::setup video.setup failed");
         ofExit(1);
     }
-    ofLogNotice("ContoursBuilder::setup camera setup ");
     colorImg.allocate(cameraWidth, cameraHeight);
     grayImage.allocate(cameraWidth, cameraHeight);
     grayDiff.allocate(cameraWidth, cameraHeight);
@@ -415,16 +413,16 @@ void ImageAnimator::setup() {
     buildX();
     buildY();
 
-    mainEyes.setup(PLAY_ONCE, 1.0f, EYES, 0.0f);
+    mainEyes.setup(PLAY_ONCE, 1.0f, EYES);
     if (!mainEyes.count()) {
         ofExit(100);
     }
     
-    rotatingEyes.setup(LOOP_BACK_AND_FORTH_ONCE, 3.0f, SPIRALS, 25.0f);
-    cubes.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, CUBES, 25.0f);
-    spheres.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, SPHERES, 25.0f);
-    musicNotes.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, MUSICNOTES, 25.0f);
-    cylinders.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, CYLINDERS, 25.0f);
+    rotatingEyes.setup(LOOP_BACK_AND_FORTH_ONCE, 3.0f, SPIRALS);
+    cubes.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, CUBES);
+    spheres.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, SPHERES);
+    musicNotes.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, MUSICNOTES);
+    cylinders.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, CYLINDERS);
 
     contours.setup();
 
