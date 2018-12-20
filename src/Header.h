@@ -170,7 +170,7 @@ public:
     void windowResized(int w, int h);
     bool find(const ofRectangle& item) { return std::find(gameItems.begin(), gameItems.end(), item) != gameItems.end(); }
     void setCount(int count);
-    bool inGame() { return level > NoGame; }
+    bool inGame() { return gameLevel > NoGame; }
     std::string sillyString();
     float w, h;
     ContoursBuilder contours;
@@ -190,7 +190,7 @@ private:
     Eyes spheres;
     Eyes cylinders;
     Eyes musicNotes;
-    Levels level;
+    Levels gameLevel;
     void updateLevel();
     void getCountours(Music*music);
     struct TextEvent {

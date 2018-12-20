@@ -145,7 +145,7 @@ void ImageAnimator::startPlaying() {
    //bugbug sounds();
 }
 size_t ImageAnimator::winnerThreshold() { 
-    switch (level) {
+    switch (gameLevel) {
     case NoGame:
         return 0;
     case Basic:
@@ -178,7 +178,7 @@ void ImageAnimator::getCountours(Music*music) {
         }
 
         // see if we have a trigger and we are not at level -1 which means no game
-        if (level > NoGame) {
+        if (inGame()) {
             for (auto& blob : contours.contourFinder.blobs) {
                 if (blob.area > maxForTrigger && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
                     if (blob.area >= maxForTrigger) {
@@ -188,19 +188,19 @@ void ImageAnimator::getCountours(Music*music) {
                                 float cx = w - (item.second.width)*xFactor;
                                 ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);
                                 if (!find(rect2Use)) {
-                                    switch (level) {
+                                    switch (gameLevel) {
                                     case Basic: // only 1/3 items saved etc
                                         if ((item.second.c) % 3 == 0) {
-                                            gameItems.push_back(GameItem(rect2Use, spheres.getCurrentSphereRef().getMainEye(), level, item.second.c));
+                                            gameItems.push_back(GameItem(rect2Use, spheres.getCurrentSphereRef().getMainEye(), gameLevel, item.second.c));
                                         }
                                         break;
                                     case Medium:
                                         if ((item.second.c) % 2 == 0) {
-                                            gameItems.push_back(GameItem(rect2Use, cubes.getCurrentSphereRef().getMainEye(), level, item.second.c));
+                                            gameItems.push_back(GameItem(rect2Use, cubes.getCurrentSphereRef().getMainEye(), gameLevel, item.second.c));
                                         }
                                         break;
                                     case Difficult:
-                                        gameItems.push_back(GameItem(rect2Use, cylinders.getCurrentSphereRef().getMainEye(), level, item.second.c));
+                                        gameItems.push_back(GameItem(rect2Use, cylinders.getCurrentSphereRef().getMainEye(), gameLevel, item.second.c));
                                         break;
                                     case EndGame:
                                         if (item.second.c == 1) { // just a few notes, 1 is a magic note

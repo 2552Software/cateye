@@ -39,35 +39,35 @@ bool secondsPassed(int val) {
 void ImageAnimator::updateLevel() {
 
     float duration = ofGetElapsedTimeMillis() - gameStartTime;
-    switch (level) {
+    switch (gameLevel) {
     case NoGame:
         if (duration > 60) { // start game every 60 seconds
             gameStartTime = ofGetElapsedTimeMillis();
-            level = Basic; // go to next level
+            //bugbug fix next gameLevel = Basic; // go to next level
         }
         break;
     case Basic:
         if (duration > 60) { // stop game after 1 minute at a level
             gameStartTime = ofGetElapsedTimeMillis();
-            level = NoGame; // go to previous level
+            //bugbug fix next gameLevel = NoGame; // go to previous level
         }
         break;
     case Medium:
         if (duration > 60) { // stop game after 1 minute at a level
             gameStartTime = ofGetElapsedTimeMillis();
-            level = Basic; 
+            //bugbug fix next  gameLevel = Basic; 
         }
         break;
     case Difficult:
         if (duration > 60) { // stop game after 1 minute at a level
             gameStartTime = ofGetElapsedTimeMillis();
-            level = Medium;
+            //bugbug fix next  gameLevel = Medium;
         }
         break;
     case EndGame:
         if (duration > 60) { // start game every 60 seconds
             gameStartTime = ofGetElapsedTimeMillis();
-            level = NoGame; // go to next level
+            //bugbug fix next  gameLevel = NoGame; // go to next level
         }
         break;
     }
@@ -112,22 +112,22 @@ void ImageAnimator::update(Music*music) {
         credits();
     }
     if (!isAnimating()) {
-        if (level != NoGame &&  isWinner()) {  
+        if (gameLevel != NoGame &&  isWinner()) {  
             clear();
-            switch (level) {
+            switch (gameLevel) {
             case Basic:
-                level = Medium; // go to next level
+                gameLevel = Medium; // go to next level
                 break;
             case Medium:
-                level = Difficult; // go to next level
+                gameLevel = Difficult; // go to next level
                 break;
             case Difficult:
                 sendFireworks = true;
                 credits(true);
-                level = EndGame; // go to next level
+                gameLevel = EndGame; // go to next level
                 break;
             case EndGame:
-                level = NoGame; // go to next level
+                gameLevel = NoGame; // go to next level
                 break;
             }
         }

@@ -114,7 +114,7 @@ void ContoursBuilder::setup() {
 
 void ImageAnimator::setup() {
 
-    level = NoGame;
+    gameLevel = NoGame;
     gameStartTime = 0.0f; // zero time
     // convert to window size from camera sized
     xFactor = w / cameraWidth;
