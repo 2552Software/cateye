@@ -3,19 +3,10 @@
 void Eyes::rotate(ofVec3f r) {
     for (auto& eye : eyes) {
         eye.currentRotation = r;
-        //eye.rotateDeg(-eye.currentRotation.y, 0.0f, 1.0f, 0.0f); // home back to 0 to make it easy
-        //eye.rotateDeg(r.y, 1.0f, 0.0f, 0.0f); // look up means a smaller x
-        //eye.rotateDeg(r.y - eye.currentRotation.y, 0.0f, 1.0f, 0.0f);
-        //eye.tiltDeg(r.x - eye.currentRotation.x);
-        //eye.panDeg(r.y - eye.currentRotation.y);
-        
-   //     eye.currentRotation = r;
     }
 
 }
 void ImageAnimator::draw() {
-    //ofRotateDeg(180.0f, 0.0f, 1.0f, 0.0f); // rotate to front
-    //rotate(currentRotation); // rotate screen, not object, so same rotation works every time
     //ofLogNotice() << "rotate to targert" << target;
     mainEyes.rotate(currentRotation);
     mainEyes.draw();
@@ -24,6 +15,7 @@ void SuperSphere::draw() {
     eye.start();
     ofSpherePrimitive sphere;
     r = std::min(ofGetWidth(), ofGetHeight()) / 2;
+    ofLogNotice() << "Radius" << r << " W " << ofGetWidth() << " H " << ofGetHeight();
     sphere.setRadius(r);
     sphere.setPosition((ofGetWidth() / 2), (ofGetHeight() / 2), 0);
     sphere.panDeg(180);
