@@ -107,7 +107,7 @@ void Game::setTriggerCount(float count) {
     }
 }
 
-void Game::setCount(int count) {
+void Game::setSquareCount(int count) {
     if (count > 0) {
         squareCount = count;
     }

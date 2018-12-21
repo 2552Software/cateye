@@ -189,16 +189,10 @@ public:
     void sounds(int duration= 5); // default to full sound
     void startPlaying();
     size_t winnerHitCount(); // count of items being animiated
-    void clear();
     size_t winnerThreshold();
-    void setTriggerCount(float count);
-    void setShapeMinSize(float size) { shapeMinSize = size; };
     bool isWinner() { return winnerHitCount() >= winnerThreshold(); } // easy mode! bugbug menu
     bool isAnimating();
-    void credits(bool signon = false);
     void windowResized(int w, int h);
-    bool find(const ofRectangle& item) { return std::find(gameItems.begin(), gameItems.end(), item) != gameItems.end(); }
-    void setCount(int count);
     bool inGame() { return gameLevel > NoGame; }
     std::string sillyString();
     float w, h;
@@ -206,6 +200,11 @@ public:
     TextEngine text;
 
 private:
+    bool find(const ofRectangle& item) { return std::find(gameItems.begin(), gameItems.end(), item) != gameItems.end(); }
+    void credits(bool signon = false);    void setTriggerCount(float count=50.0f);
+    void setShapeMinSize(float size=100.0f) { shapeMinSize = size; };
+    void setSquareCount(int count=15);
+    void clear();
     void textDone(int, bool);
     void drawContours();
     void drawRotatingEyes();

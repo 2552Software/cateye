@@ -116,6 +116,9 @@ void TextEngine::setup() {
     font.load("DejaVuSans.ttf", 15, false, false, true);
 }
 void Game::setup() { 
+    setTriggerCount();
+    setShapeMinSize();
+    setSquareCount();
 
     gameLevel = NoGame;
     gameStartTime = 0.0f; // zero time

@@ -37,13 +37,13 @@ void ofApp::setup(){
 
     // setup(const std::string& collectionName = "", const std::string& filename = ofxPanelDefaultFilename, float x = 10, float y = 10);
 
-    gui.add(squareCount.setup("Squares", 15, 15, 100));
-    gui.add(maxForTrigger.setup("Triggers", 50.0f, 200.0f, 100.0f));
-    gui.add(maxForShape.setup("Shapes", 100.0f, 200.0f, 500.f));
+   // gui.add(squareCount.setup("Squares", 15, 15, 100));
+   // gui.add(maxForTrigger.setup("Triggers", 50.0f, 200.0f, 100.0f));
+   // gui.add(maxForShape.setup("Shapes", 100.0f, 200.0f, 500.f));
 
-    eyeAnimator.setCount(squareCount);
-    eyeAnimator.setShapeMinSize(maxForShape);
-    eyeAnimator.setTriggerCount(maxForTrigger);
+    //bugbug figure out a UI later eyeAnimator.setCount(squareCount);
+    //eyeAnimator.setShapeMinSize(maxForShape);
+    //eyeAnimator.setTriggerCount(maxForTrigger);
     eyeAnimator.setup();
 
     player = new AudioPlayer; //bugbug replace cat calls with this
