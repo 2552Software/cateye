@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <random>
+#include <functional>
 #include "ofMain.h"
 #include "ofxAnimatableFloat.h"
 #include "ofxAnimatableOfPoint.h"
@@ -38,7 +39,7 @@ public:
     void shapeSizeChanged(float & size);
     Light	light;
     Camera camera;
-    ImageAnimator eyeAnimator;
+    Game eyeAnimator;
     ofMesh m;
     void windowResized(int w, int h);
     void keyPressed(int key);

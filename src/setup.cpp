@@ -112,7 +112,10 @@ void ContoursBuilder::setup() {
     ofLogNotice("ContoursBuilder::setup over ");
 }
 
-void ImageAnimator::setup() {
+void TextEngine::setup() {
+    font.load("DejaVuSans.ttf", 15, false, false, true);
+}
+void Game::setup() { 
 
     gameLevel = NoGame;
     gameStartTime = 0.0f; // zero time
@@ -120,10 +123,11 @@ void ImageAnimator::setup() {
     xFactor = w / cameraWidth;
     yFactor = h / cameraHeight;
 
-    font.load("DejaVuSans.ttf", 15, false, false, true);
+    text.setup();
+    std::function<void(int, bool)> f = std::bind(&Game::textDone, this, std::placeholders::_1, std::placeholders::_2);
+    text.bind(f);
 
-    ofAddListener(rotatingEyes.getAnimator().animFinished, this, &ImageAnimator::rotatingEyesDone);
-    ofAddListener(textFinished, this, &ImageAnimator::creditsDone);
+    ofAddListener(rotatingEyes.getAnimator().animFinished, this, &Game::rotatingEyesDone);
 
     buildTable();
     buildX();

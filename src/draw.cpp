@@ -6,7 +6,7 @@ void Eyes::rotate(ofVec3f r) {
     }
 
 }
-void ImageAnimator::draw() {
+void Game::draw() {
     //ofLogNotice() << "rotate to targert" << target;
     if (!drawText()) { // draw text first and give it the full screen
         if (rotatingEyes.isAnimating()) {
@@ -48,9 +48,7 @@ void Eyes::draw() {
     }
     getCurrentSphereRef().draw();
 }
-void ImageAnimator::draw(const std::string& s, float x, float y) {
-    font.drawStringAsShapes(s, x, y);
-}
+
 
 void ContoursBuilder::draw(float w, float h, float z) {
     ofNoFill();
@@ -80,9 +78,9 @@ void ContoursBuilder::draw(float w, float h, float z) {
 
 
 // see if anything is going on
-bool ImageAnimator::isAnimating() {
+bool Game::isAnimating() {
     if (!rotatingEyes.isAnimating() && !mainEyes.isAnimating()) {
-        for (auto& credit : displayText) {
+        for (auto& credit : text.fullScreenText) {
             if (credit.isRunningOrWaitingToRun()) {
                 return true;
             }
@@ -94,41 +92,76 @@ bool ImageAnimator::isAnimating() {
     }
     return true;
 }
-void ImageAnimator::drawRotatingEyes() {
+void Game::drawRotatingEyes() {
     if (rotatingEyes.isAnimating()) {
         rotatingEyes.draw();
     }
 
 }
-bool ImageAnimator::drawText() {
-    bool found = false;
-    if (displayText.size() > 0) {
+
+void TextEngine::draw() {
+    float w = ofGetWidth();
+    if (fullScreenText.size() > 0) {
+        bool found = false;
+        float y = w / 3;
         ofPushMatrix();
-        ofTranslate(0.0f, 0.0f, -getRadius());
-        float y = (w) ? w : 1 / 3;
-        for (auto& text : displayText) {
+        ofTranslate(w / 2, ofGetHeight() / 2, getRadius());
+        for (auto& text : fullScreenText) {
             if (text.isRunningOrWaitingToRun()) {
                 std::string s;
                 if (text.getString(s)) {
                     found = true;
-                    draw(s, -font.stringWidth(s) / 2, y - font.getLineHeight()*text.line * 6);
+                    font.drawStringAsShapes(s, -font.stringWidth(s) / 2, y - font.getLineHeight()*text.line * 6);
                 }
             }
             else if (text.lasting.isAnimating()) {
                 found = true;
                 ofSetColor(text.lasting.getCurrentColor());
-                draw(text.text, -font.stringWidth(text.text) / 2, y - font.getLineHeight()*text.line * 6);
+                font.drawStringAsShapes(text.text, -font.stringWidth(text.text) / 2, y - font.getLineHeight()*text.line * 6);
             }
         }
         ofPopMatrix();
         if (!found) {
             // send envent that we are done
-            TextEvent args;
-            ofNotifyEvent(textFinished, args, this);
+            call(false);
         }
     }
-    return found;
+    if (inlineText.size() > 0) {
+        bool found = false;
+        float y = w / 3;
+        ofPushMatrix();
+        ofTranslate(w / 2, ofGetHeight() / 2, getRadius());
+        for (auto& text : inlineText) {
+            if (text.isRunningOrWaitingToRun()) {
+                std::string s;
+                if (text.getString(s)) {
+                    found = true;
+                    font.drawStringAsShapes(s, -font.stringWidth(s) / 2, y - font.getLineHeight()*text.line * 6);
+                }
+            }
+            else if (text.lasting.isAnimating()) {
+                found = true;
+                ofSetColor(text.lasting.getCurrentColor());
+                font.drawStringAsShapes(text.text, -font.stringWidth(text.text) / 2, y - font.getLineHeight()*text.line * 6);
+            }
+        }
+        ofPopMatrix();
+        if (!found) {
+            // send envent that we are done
+            call(true);
+        }
+    }
+
 }
+
+bool Game::drawText() {
+    if (text.isAnimating()) {
+        text.draw();
+        return true;
+    }
+    return false;
+}
+
 void GameItem::draw() {
     myeye.start();
     switch (level) {
@@ -148,7 +181,7 @@ void GameItem::draw() {
     myeye.stop();
 }
 
-void ImageAnimator::drawGame() {
+void Game::drawGame() {
     ofPushStyle();
     ofPushMatrix();
    //bugbug whjat is this? ofTranslate(0.0f, w / 20);
@@ -161,6 +194,6 @@ void ImageAnimator::drawGame() {
     ofPopStyle();
 }
 
-void ImageAnimator::drawContours() {
+void Game::drawContours() {
     contours.draw(w, h, getRadius());
 }

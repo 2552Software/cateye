@@ -146,12 +146,41 @@ public:
     LocationToInfoMap() { c = 0; }
     int c; // count
 };
- 
+
+class TextEngine {
+public:
+    TextEngine(int idIn = 0) { id = idIn; }
+    void draw();
+    void setup();
+    void update();
+
+    bool isAnimating() { return fullScreenText.size() > 0; }
+
+    void print(const std::string& s);
+
+    ofTrueTypeFont font;
+    std::vector<TextTimer> fullScreenText;
+    std::vector<TextTimer> inlineText;
+
+    void bind(std::function<void(int, bool)> fn) {
+        callback = std::bind(fn, std::placeholders::_1, std::placeholders::_2);
+    }
+
+private:
+    int id;
+    std::function<void(int, bool)> callback;
+    void call(bool bInline) {
+        if (callback) {
+            callback(id, bInline);
+        }
+    }
+};
+
 class Music;
-class ImageAnimator {
+class Game {
 public:
 
-    ImageAnimator();
+    Game();
 
     void setup();
     void update(Music*music);
@@ -174,10 +203,11 @@ public:
     std::string sillyString();
     float w, h;
     ContoursBuilder contours;
+    TextEngine text;
 
 private:
+    void textDone(int, bool);
     void drawContours();
-    ofTrueTypeFont font;
     void drawRotatingEyes();
     void drawGame();
     bool drawText();
@@ -193,14 +223,7 @@ private:
     Levels gameLevel;
     void updateLevel();
     void getCountours(Music*music);
-    struct TextEvent {
-        int i;
-    };
-    ofEvent<TextEvent> textFinished;
     void rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event);
-    void creditsDone(TextEvent & event);
-    void draw(const std::string& s, float x=0.0f, float y = 0.0f);
-    std::vector<TextTimer> displayText;
     void fireWorks();
     float shapeMinSize;
     void buildTable();

@@ -1,7 +1,7 @@
 #include "ofApp.h"
 
 // sound https://www.liutaiomottola.com/formulae/freqtab.htm
-void ImageAnimator::buildTable() {
+void Game::buildTable() {
     if (squareCount) {
         screenToAnimationMap.clear();
         float w = cameraWidth / squareCount; // menu bugbug
@@ -20,7 +20,7 @@ void ImageAnimator::buildTable() {
     }
 }
 
-void ImageAnimator::buildX() {
+void Game::buildX() {
     float percent = 0.0f;// location as a percent of screen size
     float r = 30.0f; // rotation
     float incPercent = 5.0f;
@@ -30,7 +30,7 @@ void ImageAnimator::buildX() {
     }
 }
 
-void ImageAnimator::buildY() {
+void Game::buildY() {
     float percent = 0.0f;// location as a percent of screen size
     float r = -20.0f; // rotation
     float incPercent = 5.0f;
@@ -96,7 +96,7 @@ bool TextTimer::getString(std::string& output) {
     return false;
 }
 
-std::string ImageAnimator::sillyString() {
+std::string Game::sillyString() {
     //bugbug add more stuff
     std::string s;
     switch ((int)ofRandom(0, 18)) {
@@ -157,21 +157,21 @@ std::string ImageAnimator::sillyString() {
     }
     return s;
 }
-void ImageAnimator::credits(bool signon) {
+void Game::credits(bool signon) {
     /** bugbug removed */
-    displayText.push_back(TextTimer("fast for testing", 1000.0f, 0.0f, 0.0f));
+    text.fullScreenText.push_back(TextTimer("fast for testing", 1000.0f, 0.0f, 0.0f));
     return;
 
-    displayText.clear();
+    text.fullScreenText.clear();
 
     if (signon || (int)ofRandom(0, 10) > 2) {
-        displayText.push_back(TextTimer("Tom And Mark", 1000.0f, 0.0f, 0.0f));
-        displayText.push_back(TextTimer("From Electronic Murals", 1000.0f, 1000.0f, 1.0f));
-        displayText.push_back(TextTimer("Thank Can Can Wonderland ...", 1000.0f, 2 * 1000.0f, 2.0f));
-        displayText.push_back(TextTimer("... For their support of the Arts!", 1000.0f, 3 * 1000.0f, 3.0f));
+        text.fullScreenText.push_back(TextTimer("Tom And Mark", 1000.0f, 0.0f, 0.0f));
+        text.fullScreenText.push_back(TextTimer("From Electronic Murals", 1000.0f, 1000.0f, 1.0f));
+        text.fullScreenText.push_back(TextTimer("Thank Can Can Wonderland ...", 1000.0f, 2 * 1000.0f, 2.0f));
+        text.fullScreenText.push_back(TextTimer("... For their support of the Arts!", 1000.0f, 3 * 1000.0f, 3.0f));
     }
     else {
-        displayText.push_back(TextTimer(sillyString(), 1000.0f, 0.0f, 0.0f));
+        text.fullScreenText.push_back(TextTimer(sillyString(), 1000.0f, 0.0f, 0.0f));
     }
 }
 

@@ -36,7 +36,7 @@ void GameItem::update() {
 bool secondsPassed(int val) {
     return ((int)ofGetElapsedTimef() % val) == 0;
 }
-void ImageAnimator::updateLevel() {
+void Game::updateLevel() {
 
     float duration = ofGetElapsedTimeMillis() - gameStartTime;
     switch (gameLevel) {
@@ -73,7 +73,15 @@ void ImageAnimator::updateLevel() {
     }
 
 }
-void ImageAnimator::update(Music*music) {
+void TextEngine::update() {
+    for (auto&a : fullScreenText) {
+        a.update();
+    }
+    for (auto&a : inlineText) {
+        a.update();
+    }
+}
+void Game::update(Music*music) {
 
     // blinker always moving but only drawn up request
     blinker.update(1.0f / ofGetTargetFrameRate());
@@ -97,9 +105,7 @@ void ImageAnimator::update(Music*music) {
         a.update();
     }
 
-    for (auto&a : displayText) {
-        a.update();
-    }
+    text.update();
 
     mainEyes.update();
     rotatingEyes.update();
@@ -108,7 +114,7 @@ void ImageAnimator::update(Music*music) {
     updateLevel();
 
     // control game state
-    if (secondsPassed((int)ofRandom(75, 60*3)) && displayText.size() == 0) { // say something now and then
+    if (secondsPassed((int)ofRandom(75, 60*3)) && isAnimating()) { // say something now and then bugbug use inline text instead
         credits();
     }
     if (!isAnimating()) {

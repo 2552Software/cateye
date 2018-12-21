@@ -1,13 +1,23 @@
 #include "ofApp.h"
 #include "sound.h"
 
+void TextEngine::print(const std::string& s) {
+    ofPushMatrix();
+    float stringw = font.stringWidth(s);
+    ofTranslate(ofGetWidth() / 2 - stringw / 2, ofGetHeight() / 2, getRadius());
+    font.drawStringAsShapes(s, 0, 0);
+    ofPopMatrix();
+
+}
+
 // let folks know we are in a game
-void ImageAnimator::setTitle() {
+void Game::setTitle() {
     if (inGame()) {
         std::stringstream ss;
         ss << winnerHitCount() << " of " << winnerThreshold();
         std::string s = "Game On! Find ";
         s += ss.str();
+        text.print(s);
         /* good example for later
         ofPushMatrix();
         ofTranslate(w / 2, h / 2);// , getRadius());
@@ -23,16 +33,17 @@ void ImageAnimator::setTitle() {
                 }
             }
         }
-        */
-
+        bugbug use the Text class
         ofPushMatrix();
         float stringw = font.stringWidth(s);
         ofTranslate(ofGetWidth() / 2- stringw/2, ofGetHeight() / 2, getRadius());
         font.drawStringAsShapes(s, 0, 0);
         ofPopMatrix();
+        */
+
    }
 }
-void ImageAnimator::blink() {
+void Game::blink() {
     // blink upon request
     ofSetColor(ofColor::black);
     ofPushStyle();
@@ -47,12 +58,12 @@ void Eyes::add(const std::string &name, const std::string &root) {
 }
 
 
-void  ImageAnimator::fireWorks() {
+void  Game::fireWorks() {
    //bugbug sounds(5);
    rotatingEyes.getAnimator().animateFromTo(-300, 300);//bugbug will need to adjsut for pi
 }
 
-void ImageAnimator::rotate(const ofVec3f& target) {
+void Game::rotate(const ofVec3f& target) {
     //std::stringstream ss;
    // ss << target;
     //ofSetWindowTitle(ss.str());
@@ -64,7 +75,7 @@ void ImageAnimator::rotate(const ofVec3f& target) {
     }
 }
 
-void ImageAnimator::sounds(int duration) {
+void Game::sounds(int duration) {
     auto rng = std::default_random_engine{};
     std::shuffle(std::begin(mySounds), std::end(mySounds), rng);
 
@@ -84,24 +95,24 @@ void ImageAnimator::sounds(int duration) {
 }
 
 // turn on/off came items
-void ImageAnimator::clear() {
+void Game::clear() {
     gameItems.clear();
     sendFireworks = false;
 }
 
 
-void ImageAnimator::setTriggerCount(float count) {
+void Game::setTriggerCount(float count) {
     if (count > 0) {
         maxForTrigger = count;
     }
 }
 
-void ImageAnimator::setCount(int count) {
+void Game::setCount(int count) {
     if (count > 0) {
         squareCount = count;
     }
 }
-ImageAnimator::ImageAnimator() {
+Game::Game() {
     maxForTrigger = 525.0f;
     shapeMinSize = 200.0f; // menus bugbug
     squareCount = 10;// menus bugbu
@@ -109,26 +120,28 @@ ImageAnimator::ImageAnimator() {
     h = ofGetHeight();
 }
 
-// count of items selected
-size_t ImageAnimator::winnerHitCount() {
-    return gameItems.size();
-}
-
-void ImageAnimator::creditsDone(TextEvent & event) {
-    if (sendFireworks) {
+void Game::textDone(int id, bool inLine) {
+    // check ID too make unique
+    if (!inLine && sendFireworks) {
         sendFireworks = false;
         fireWorks();
     }
+
 }
 
-void ImageAnimator::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event) {
+// count of items selected
+size_t Game::winnerHitCount() {
+    return gameItems.size();
+}
+
+void Game::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event) {
     // no move main eye back into focus
     currentRotation.set(0.0f, 0.0f); // look forward, move ahead its not too late
     mainEyes.getAnimator().animateFromTo(-rotatingEyes.getCurrentSphereRef().getRadius(), 0.0f);
     clear(); // reset and start again
 }
 
-void ImageAnimator::windowResized(int wIn, int hIn) {
+void Game::windowResized(int wIn, int hIn) {
     w = wIn;
     h = hIn;
     ofLogNotice("ofApp::setup") << "Window size " << w << " by " << h;
@@ -141,10 +154,10 @@ void ImageAnimator::windowResized(int wIn, int hIn) {
     
 }
 
-void ImageAnimator::startPlaying() {
+void Game::startPlaying() {
    //bugbug sounds();
 }
-size_t ImageAnimator::winnerThreshold() { 
+size_t Game::winnerThreshold() { 
     switch (gameLevel) {
     case NoGame:
         return 0;
@@ -160,7 +173,7 @@ size_t ImageAnimator::winnerThreshold() {
     return 0;
 }
 
-void ImageAnimator::getCountours(Music*music) {
+void Game::getCountours(Music*music) {
     float max = 0.0f;
     if (contours.contourFinder.blobs.size() > 0) {
         glm::vec3 target = currentRotation;
