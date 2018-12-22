@@ -42,22 +42,20 @@ void Game::buildY() {
 
 TextTimer::TextTimer(const std::string& text, float timeToRenderIn, float delay, float lineIn) {
     line = lineIn;
-    timeDelay = 0;
-    done = false;
+    doneDrawing = false;
     rawText = text;
-    timeSet = true;
     timeToRender = timeToRenderIn;
     timeDelay = delay;
     timeBegan = (int)ofGetSystemTimeMillis();
+    lingerTime = timeDelay+timeToRender+5000.0;// text remains for 1 second after animation
+}
+const bool TextTimer::isReadyToRemove(const TextTimer& item) {
+    int elapsedMilliSeconds = ((int)ofGetSystemTimeMillis() - item.timeBegan);
+    return item.lingerTime < elapsedMilliSeconds;
 }
 
-bool TextTimer::getString(std::string& output) {
-    output.clear();
-    if (partialText.size() > 0) {
-        output = partialText;
-        return true;
-    }
-    return false;
+std::string& TextTimer::getPartialString() {
+    return partialText;
 }
 
 std::string TextEngine::sillyString() {
@@ -123,8 +121,8 @@ std::string TextEngine::sillyString() {
 }
 void Game::credits(bool signon) {
     /** bugbug removed */
-    fancyText.addFullScreenText(TextTimer("fast for testing", 1000.0f, 0.0f, 0.0f));
-    return;
+   // fancyText.addFullScreenText(TextTimer("fast for testing", 1000.0f, 0.0f, 0.0f));
+    //return;
 
     if (signon || (int)ofRandom(0, 10) > 2) {
         fancyText.addFullScreenText(TextTimer("Tom And Mark", 1000.0f, 0.0f, 0.0f));
@@ -137,7 +135,7 @@ void Game::credits(bool signon) {
     }
 }
 
-void Eye::start() {
+void EyeTexture::start() {
     if (!isAllocated()) {
         ofLogError("Eye::start") << "not loaded ";
         return;
@@ -145,7 +143,7 @@ void Eye::start() {
     material.begin();
     bind();
 }
-void Eye::stop() {
+void EyeTexture::stop() {
     unbind();
     material.end();
 }

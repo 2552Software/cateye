@@ -1,34 +1,32 @@
 #include "ofApp.h"
 
 void TextTimer::update() {
-    color.update(1.0f / ofGetTargetFrameRate());
-    int elapsedMilliSeconds = ((int)ofGetSystemTimeMillis() - timeBegan);
+    int elapsedMilliSeconds = ofGetSystemTimeMillis() - timeBegan;
     if (timeDelay) {
-        if (elapsedMilliSeconds > timeDelay) {
-            timeBegan = (int)ofGetSystemTimeMillis(); // here we go
-            timeDelay = 0.0f; // needs to be rest if used again
-        }
-    }
-    if (!done && elapsedMilliSeconds && rawText.size() > 0 && timeToRender > 0.0f) {
-        float factor = ((float)(elapsedMilliSeconds) / (float)timeToRender);  // ratio of seconds that passed to our full range of time, say 20% or 0.2
-
-        int n = (int)(factor * rawText.length());
-        int max = min(n, (int)rawText.length());
-
-        if (!n) {
-            max = 1;
-        }
-        if (n >= (int)rawText.length()) {
-            done = true;
-            color.setColor(ofColor::white);
-            color.setDuration(1.0f);
-            color.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
-            color.setCurve(EASE_IN_EASE_OUT);
-            color.animateTo(ofColor::orangeRed);
+        if (timeDelay < elapsedMilliSeconds) {
+            timeBegan = ofGetSystemTimeMillis(); // here we go
+            elapsedMilliSeconds = ofGetSystemTimeMillis() - timeBegan; // time to start
+            timeDelay = 0.0; // delay is gone
         }
         else {
-            partialText = rawText.substr(0, min(n, max));
+            return;
         }
+    }
+
+    if (elapsedMilliSeconds > timeToRender || !rawText.size() || doneDrawing) {
+        doneDrawing = true;
+        partialText = rawText;
+        return;
+    }
+    float factor = elapsedMilliSeconds / timeToRender;  // ratio of seconds that passed to our full range of time, say 20% or 0.2
+
+    size_t n = (int)(factor * rawText.length());
+    if (n > rawText.length()) {
+        partialText = rawText;
+        doneDrawing = true;
+    }
+    else {
+        partialText = rawText.substr(0, n);
     }
 }
 void SuperSphere::update() {
@@ -147,10 +145,6 @@ void Game::update(Music*music) {
 
     updateLevel();
 
-    // control game state
-    if (secondsPassed((int)ofRandom(75, 60*3)) && isAnimating()) { // say something now and then bugbug use inline text instead
-        credits();
-    }
     if (!isAnimating()) {
         if (gameLevel != NoGame &&  isWinner()) {  
             clear();

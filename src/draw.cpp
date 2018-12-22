@@ -9,6 +9,7 @@ void Eyes::rotate(ofVec3f r) {
 void Game::draw() {
     //ofLogNotice() << "rotate to targert" << target;
     if (!drawText()) { // draw text first and give it the full screen
+        return;
         if (rotatingEyes.isAnimating()) {
             drawRotatingEyes();
         }
@@ -105,24 +106,15 @@ void TextEngine::drawShapes(const std::string& s) {
         }
     }
 }
+// draw until object is deleted
 bool TextEngine::animateString(TextTimer& text, int x, int y) {
-    bool found = false;
-    if (text.isRunningOrWaitingToRun()) {
-        std::string s;
-        if (text.getString(s)) { 
-            found = true;
-            //text.setColor();
-            ofRectangle rect = font.getStringBoundingBox(s, 0.0f, 0.0f);
-            font.drawStringAsShapes(s, x- rect.width / 2, y - rect.height*text.getLine() * 6);
-        }
+    std::string s = text.getPartialString();
+    if (s.size() > 0) {
+        ofRectangle rect = font.getStringBoundingBox(s, 0.0f, 0.0f);
+        font.drawStringAsShapes(s, x - rect.width / 2, y + rect.height*text.getLine()+ rect.height/3); // give a little room bettween
+        return true;
     }
-    else if (text.isAnimating()) { // get raw text if not running, the full string
-        found = true;
-        text.setColor();
-        ofRectangle rect = font.getStringBoundingBox(text.getRawText(), 0.0f, 0.0f); // full string
-        font.drawStringAsShapes(text.getRawText(), x-font.stringWidth(text.getRawText()) / 2, y - font.getLineHeight()*text.getLine() * 6);
-    }
-    return found;
+    return false;
 }
 void TextEngine::print(const std::string& s, float x, float y, float z) {
     ofPushMatrix();

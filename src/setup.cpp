@@ -7,7 +7,7 @@ void SuperSphere::setup(const string&name) {
 void TextTimer::setup() {
 }
 
-void Eye::setup(const string&texName) {
+void EyeTexture::setup(const string&texName) {
     if (ofLoadImage(*this, texName)) {
         ofLogNotice("Eye") << "loaded " << texName;
     }
@@ -16,7 +16,7 @@ void Eye::setup(const string&texName) {
     }
 }
 
-GameItem::GameItem(const ofRectangle& rect, Eye eye, Levels levelIn, int idIn) {
+GameItem::GameItem(const ofRectangle& rect, EyeTexture eye, Levels levelIn, int idIn) {
     id = idIn;
     rectangle = rect;
     level = levelIn;
@@ -169,6 +169,7 @@ void Game::setup() {
     blinker.animateTo(1.0f);
 
     clear(); // go to a known state (call last like this as it may depend on othe settings)
+    credits(true);
     startPlaying();
 
     ofLogNotice("ImageAnimator::setup") << "finshed";

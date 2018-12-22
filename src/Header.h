@@ -13,20 +13,17 @@ public:
     void setup();
     void update();
 
-    bool isAnimating() { return color.isAnimating(); }
-    bool getString(std::string& text);
-    bool isRunningOrWaitingToRun() {return !done || timeDelay; }
-    void setColor() { ofSetColor(color.getCurrentColor()); }
+    std::string& getPartialString();
+    static const bool isReadyToRemove(const TextTimer& item);
     float getLine() { return line; }
-    std::string& getRawText() { return rawText; }
-    static const bool isReadyToRemove(const TextTimer& item) { return item.done; }
+
 private:
+    std::string& getRawText() { return rawText; }
     std::string rawText; // raw text
     std::string partialText;
     float line; // user define value
-    ofxAnimatableOfColor color; // how long to draw after intial animation
-    int timeToRender, timeBegan, timeDelay;
-    bool  timeSet, done;
+    float timeToRender, timeBegan, timeDelay, lingerTime;
+    bool doneDrawing;
 };
 
 class Light : public ofLight {
@@ -53,10 +50,10 @@ private:
     ;
 };
 
-class Eye : public ofTexture {
+class EyeTexture : public ofTexture {
 public:
-    Eye() { }
-    Eye(const string&name) {  setup(name);  }
+    EyeTexture() { }
+    EyeTexture(const string&name) {  setup(name);  }
 
     void setup(const string&texName);
     void update() {   }
@@ -73,11 +70,12 @@ public:
     void setup(const string&name);
     void update();
     void draw();
-    Eye& getMainEye() { return eye; }
+    EyeTexture& getTexture() { return eye; }
     ofVec3f currentRotation;
     float getRadius() { return r; }
 private:
-    Eye eye;
+
+    EyeTexture eye;
     float r;
 };
 
@@ -105,7 +103,7 @@ public:
     SuperSphere&getCurrentSphereRef() {   return eyes[(int)selector.getCurrentValue()];  }
     size_t count() { return eyes.size(); }
     ofxAnimatableFloat& getAnimator() { return animator; }
-    Eye& getEyeRef() { return getCurrentSphereRef().getMainEye(); }
+    EyeTexture& getEyeRef() { return getCurrentSphereRef().getTexture(); }
 private:
     void add(const std::string &name, const std::string &root);
     ofxAnimatableFloat animator; // z direction
@@ -115,7 +113,7 @@ private:
 
 class GameItem {
 public:
-    GameItem(const ofRectangle& rect, Eye eye, Levels level, int id);
+    GameItem(const ofRectangle& rect, EyeTexture eye, Levels level, int id);
     bool operator==(const GameItem& rhs) const {
         return rectangle == rhs.rectangle;
     }
@@ -142,7 +140,7 @@ private:
     ofRectangle rectangle;
     ofSpherePrimitive sphere;
     ofCylinderPrimitive cylinder; // like a coin -- for music notes
-    Eye myeye;
+    EyeTexture myeye;
     ofxAnimatableFloat animater; 
 };
 
@@ -210,6 +208,7 @@ public:
     ContoursBuilder contours;
 
 private:
+    bool compute(LocationToInfoMap rect, Music*);
     TextEngine basicText;
     TextEngine fancyText;
     float getLevelDuration() { return ofGetElapsedTimef() - gameLevelTime; }

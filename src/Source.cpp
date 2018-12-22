@@ -156,6 +156,72 @@ size_t Game::winnerThreshold() {
     return 0;
 }
 
+bool Game::compute(LocationToInfoMap rect, Music*music) {
+    float cx = w - (rect.width)*xFactor;
+    ofRectangle rect2Use((cx - rect.x*xFactor), rect.y*yFactor, rect.width*xFactor, rect.height*yFactor);
+    if (!find(rect2Use)) {
+        switch (gameLevel) {
+        case Basic: // only 1/3 items saved etc
+            if ((rect.c % 3) == 0) {
+                SuperSphere sphere = spheres.getCurrentSphereRef();
+                //make this rotate around the center of the screen, with ofRadius as the Z
+                gameItems.push_back(GameItem(rect2Use, cubes.getCurrentSphereRef().getTexture(), gameLevel, rect.c));
+            }
+            break;
+        case Medium:
+            if ((rect.c % 2) == 0) {
+                gameItems.push_back(GameItem(rect2Use, cubes.getCurrentSphereRef().getTexture(), gameLevel, rect.c));
+            }
+            break;
+        case Difficult:
+            gameItems.push_back(GameItem(rect2Use, cylinders.getCurrentSphereRef().getTexture(), gameLevel, rect.c));
+            break;
+        case EndGame:
+            if (rect.c == 1) { // just a few notes, 1 is a magic note
+                gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getTexture(), EndGame, rect.c));
+                music->keyboard.keyPressed('a');
+            }
+            else if (rect.c == 5) { // just a few notes, 1 is a magic note
+                gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getTexture(), EndGame, rect.c));
+                music->keyboard.keyPressed('g');
+            }
+            else if (rect.c == 7) { // just a few notes, 1 is a magic note
+                gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getTexture(), EndGame, rect.c));
+                music->keyboard.keyPressed('t');
+            }
+            else if (rect.c == 9) { // just a few notes, 1 is a magic note
+                gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getTexture(), EndGame, rect.c));
+                music->keyboard.keyPressed('k');
+            }
+            break;
+        }
+    }
+    else {
+        if (rect.c == 1) {
+            // found, remove it for music
+            gameItems.remove_if(GameItem::isAkey);
+            music->keyboard.keyReleased('a');
+        }
+        else if (rect.c == 5) {
+            // found, remove it for music
+            gameItems.remove_if(GameItem::isGkey);
+            music->keyboard.keyReleased('g');
+        }
+        else if (rect.c == 7) {
+            // found, remove it for music
+            gameItems.remove_if(GameItem::isTkey);
+            music->keyboard.keyReleased('t');
+        }
+        else if (rect.c == 9) {
+            // found, remove it for music
+            gameItems.remove_if(GameItem::isKkey);
+            music->keyboard.keyReleased('k');
+        }
+        return true;
+    }
+    return false;
+}
+
 void Game::getCountours(Music*music) {
     float max = 0.0f;
     if (contours.contourFinder.blobs.size() > 0) {
@@ -181,65 +247,8 @@ void Game::getCountours(Music*music) {
                         // see if we can trigger with this one
                         for (auto& item : screenToAnimationMap) { // get all blocks within region
                             if (item.second.inside(blob.boundingRect)) { //
-                                float cx = w - (item.second.width)*xFactor;
-                                ofRectangle rect2Use((cx - item.second.x*xFactor), item.second.y*yFactor, item.second.width*xFactor, item.second.height*yFactor);
-                                if (!find(rect2Use)) {
-                                    switch (gameLevel) {
-                                    case Basic: // only 1/3 items saved etc
-                                        if ((item.second.c) % 3 == 0) {
-                                            gameItems.push_back(GameItem(rect2Use, spheres.getCurrentSphereRef().getMainEye(), gameLevel, item.second.c));
-                                        }
-                                        break;
-                                    case Medium:
-                                        if ((item.second.c) % 2 == 0) {
-                                            gameItems.push_back(GameItem(rect2Use, cubes.getCurrentSphereRef().getMainEye(), gameLevel, item.second.c));
-                                        }
-                                        break;
-                                    case Difficult:
-                                        gameItems.push_back(GameItem(rect2Use, cylinders.getCurrentSphereRef().getMainEye(), gameLevel, item.second.c));
-                                        break;
-                                    case EndGame:
-                                        if (item.second.c == 1) { // just a few notes, 1 is a magic note
-                                            gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getMainEye(), EndGame, item.second.c));
-                                            music->keyboard.keyPressed('a');
-                                        }
-                                        else if (item.second.c == 5) { // just a few notes, 1 is a magic note
-                                            gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getMainEye(), EndGame, item.second.c));
-                                            music->keyboard.keyPressed('g');
-                                        }
-                                        else if (item.second.c == 7) { // just a few notes, 1 is a magic note
-                                            gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getMainEye(), EndGame, item.second.c));
-                                            music->keyboard.keyPressed('t');
-                                        }
-                                        else if (item.second.c == 9) { // just a few notes, 1 is a magic note
-                                            gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getMainEye(), EndGame, item.second.c));
-                                            music->keyboard.keyPressed('k');
-                                        }
-                                        break;
-                                    }
+                                if (compute(item.second, music)) {
                                     break;
-                                }
-                                else {
-                                    if (item.second.c == 1) {
-                                        // found, remove it for music
-                                        gameItems.remove_if(GameItem::isAkey);
-                                        music->keyboard.keyReleased('a');
-                                    }
-                                    else if (item.second.c == 5) {
-                                        // found, remove it for music
-                                        gameItems.remove_if(GameItem::isGkey);
-                                        music->keyboard.keyReleased('g');
-                                    }
-                                    else if (item.second.c == 7) {
-                                        // found, remove it for music
-                                        gameItems.remove_if(GameItem::isTkey);
-                                        music->keyboard.keyReleased('t');
-                                    }
-                                    else if (item.second.c == 9) {
-                                        // found, remove it for music
-                                        gameItems.remove_if(GameItem::isKkey);
-                                        music->keyboard.keyReleased('k');
-                                    }
                                 }
                             }
                         }
