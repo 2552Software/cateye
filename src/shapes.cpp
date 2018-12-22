@@ -48,19 +48,19 @@ TextTimer::TextTimer(const std::string& textIn, float timeToRenderIn, float dela
     timeSet = true;
     timeToRender = timeToRenderIn;
     timeDelay = delay;
-    timeBegan = (int)ofGetElapsedTimeMillis();
+    timeBegan = (int)ofGetElapsedTimef();
     holdTextTime = 35.0f;
 }
 
 bool TextTimer::getString(std::string& output) {
     output.clear();
-    int elapsedSeconds = ((int)ofGetElapsedTimeMillis() - timeBegan); //  20 seconds passed for example timeDelay
+    int elapsedSeconds = ((int)ofGetElapsedTimef() - timeBegan); //  20 seconds passed for example timeDelay
     if (timeDelay) {
         if (elapsedSeconds < timeDelay) {
             return false;
         }
         else {
-            timeBegan = (int)ofGetElapsedTimeMillis(); // here we go
+            timeBegan = (int)ofGetElapsedTimef(); // here we go
             timeDelay = 0.0f; // needs to be rest if used again
             return false; // get it next time
         }
@@ -96,7 +96,7 @@ bool TextTimer::getString(std::string& output) {
     return false;
 }
 
-std::string Game::sillyString() {
+std::string TextEngine::sillyString() {
     //bugbug add more stuff
     std::string s;
     switch ((int)ofRandom(0, 18)) {
@@ -159,19 +159,17 @@ std::string Game::sillyString() {
 }
 void Game::credits(bool signon) {
     /** bugbug removed */
-    text.fullScreenText.push_back(TextTimer("fast for testing", 1000.0f, 0.0f, 0.0f));
+    text.addFullScreenText(TextTimer("fast for testing", 1000.0f, 0.0f, 0.0f));
     return;
 
-    text.fullScreenText.clear();
-
     if (signon || (int)ofRandom(0, 10) > 2) {
-        text.fullScreenText.push_back(TextTimer("Tom And Mark", 1000.0f, 0.0f, 0.0f));
-        text.fullScreenText.push_back(TextTimer("From Electronic Murals", 1000.0f, 1000.0f, 1.0f));
-        text.fullScreenText.push_back(TextTimer("Thank Can Can Wonderland ...", 1000.0f, 2 * 1000.0f, 2.0f));
-        text.fullScreenText.push_back(TextTimer("... For their support of the Arts!", 1000.0f, 3 * 1000.0f, 3.0f));
+        text.addFullScreenText(TextTimer("Tom And Mark", 1000.0f, 0.0f, 0.0f));
+        text.addFullScreenText(TextTimer("From Electronic Murals", 1000.0f, 1000.0f, 1.0f));
+        text.addFullScreenText(TextTimer("Thank Can Can Wonderland ...", 1000.0f, 2 * 1000.0f, 2.0f));
+        text.addFullScreenText(TextTimer("... For their support of the Arts!", 1000.0f, 3 * 1000.0f, 3.0f));
     }
     else {
-        text.fullScreenText.push_back(TextTimer(sillyString(), 1000.0f, 0.0f, 0.0f));
+        text.addFullScreenText(TextTimer(text.sillyString(), 1000.0f, 0.0f, 0.0f));
     }
 }
 

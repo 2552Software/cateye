@@ -17,30 +17,8 @@ void Game::setTitle() {
         ss << winnerHitCount() << " of " << winnerThreshold();
         std::string s = "Game On! Find ";
         s += ss.str();
-        text.print(s);
-        /* good example for later
-        ofPushMatrix();
-        ofTranslate(w / 2, h / 2);// , getRadius());
-        // get the string as paths
-        vector < ofPath > paths = font.getStringAsPoints(s);
-        for (int i = 0; i < paths.size(); i++) {
-            // for every character break it out to polylines
-            vector <ofPolyline> polylines = paths[i].getOutline();
-            // for every polyline, draw every fifth point
-            for (int j = 0; j < polylines.size(); j++) {
-                for (int k = 0; k < polylines[j].size(); k += 5) {         // draw every "fifth" point
-                    ofDrawCircle(polylines[j][k], 3);
-                }
-            }
-        }
-        bugbug use the Text class
-        ofPushMatrix();
-        float stringw = font.stringWidth(s);
-        ofTranslate(ofGetWidth() / 2- stringw/2, ofGetHeight() / 2, getRadius());
-        font.drawStringAsShapes(s, 0, 0);
-        ofPopMatrix();
-        */
-
+        text.addInlineText(TextTimer(s, 500.0f, 0.0f, 1.0f));
+        //text.print(s);
    }
 }
 void Game::blink() {

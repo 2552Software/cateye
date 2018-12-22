@@ -38,36 +38,36 @@ bool secondsPassed(int val) {
 }
 void Game::updateLevel() {
 
-    float duration = ofGetElapsedTimeMillis() - gameStartTime;
+    float duration = getLevelDuration();
     switch (gameLevel) {
     case NoGame:
-        if (duration > 60) { // start game every 60 seconds
-            gameStartTime = ofGetElapsedTimeMillis();
-            //bugbug fix next gameLevel = Basic; // go to next level
+        if (duration > 5.0f) { // start game every 60 seconds bugbug 5 sec to test
+            resetLevelTime();
+            gameLevel = Basic; // go to next level
         }
         break;
     case Basic:
-        if (duration > 60) { // stop game after 1 minute at a level
-            gameStartTime = ofGetElapsedTimeMillis();
-            //bugbug fix next gameLevel = NoGame; // go to previous level
+        if (duration > 60.0f) { // stop game after 1 minute at a level
+            resetLevelTime();
+            gameLevel = NoGame; // go to previous level
         }
         break;
     case Medium:
-        if (duration > 60) { // stop game after 1 minute at a level
-            gameStartTime = ofGetElapsedTimeMillis();
-            //bugbug fix next  gameLevel = Basic; 
+        if (duration > 60.0f) { // stop game after 1 minute at a level
+            resetLevelTime();
+            gameLevel = Basic; 
         }
         break;
     case Difficult:
-        if (duration > 60) { // stop game after 1 minute at a level
-            gameStartTime = ofGetElapsedTimeMillis();
-            //bugbug fix next  gameLevel = Medium;
+        if (duration > 60.0f) { // stop game after 1 minute at a level
+            resetLevelTime();
+            gameLevel = Medium;
         }
-        break;
+        break; 
     case EndGame:
-        if (duration > 60) { // start game every 60 seconds
-            gameStartTime = ofGetElapsedTimeMillis();
-            //bugbug fix next  gameLevel = NoGame; // go to next level
+        if (duration > 60.0f) { // start game every 60 seconds
+            resetLevelTime();
+            gameLevel = NoGame; // go to next level
         }
         break;
     }
@@ -80,6 +80,9 @@ void TextEngine::update() {
     for (auto&a : inlineText) {
         a.update();
     }
+    // remove all that are done
+    fullScreenText.remove_if(TextTimer::isReadyToRemove);
+    inlineText.remove_if(TextTimer::isReadyToRemove);
 }
 void Game::update(Music*music) {
 

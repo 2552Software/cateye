@@ -15,7 +15,7 @@ void Game::draw() {
         else {
             setTitle();
             mainEyes.rotate(currentRotation);
-            mainEyes.draw();
+          //  mainEyes.draw();
             if (!mainEyes.isAnimating()) {
                 drawContours();
                 blink();
@@ -79,15 +79,7 @@ void ContoursBuilder::draw(float w, float h, float z) {
 
 // see if anything is going on
 bool Game::isAnimating() {
-    if (!rotatingEyes.isAnimating() && !mainEyes.isAnimating()) {
-        for (auto& credit : text.fullScreenText) {
-            if (credit.isRunningOrWaitingToRun()) {
-                return true;
-            }
-            else if (credit.lasting.isAnimating()) {
-                return true;
-            }
-        }
+    if (!rotatingEyes.isAnimating() && !mainEyes.isAnimating() && !text.isFullScreenAnimating()) {
         return false;
     }
     return true;
@@ -99,25 +91,47 @@ void Game::drawRotatingEyes() {
 
 }
 
+void TextEngine::drawShapes(const std::string& s) {
+    // get the string as paths
+    vector < ofPath > paths = font.getStringAsPoints(s);
+    for (size_t i = 0; i < paths.size(); i++) {
+        // for every character break it out to polylines
+        vector <ofPolyline> polylines = paths[i].getOutline();
+        // for every polyline, draw every fifth point
+        for (size_t j = 0; j < polylines.size(); j++) {
+            for (int k = 0; k < polylines[j].size(); k += 5) {         // draw every "fifth" point
+                ofDrawCircle(polylines[j][k], 3);
+            }
+        }
+    }
+}
+bool TextEngine::animateString(TextTimer& text, int x, int y) {
+    bool found = false;
+    if (text.isRunningOrWaitingToRun()) {
+        std::string s;
+        if (text.getString(s)) {
+            found = true;
+            font.drawStringAsShapes(s, x-font.stringWidth(s) / 2, y - font.getLineHeight()*text.line * 6);
+        }
+    }
+    else if (text.lasting.isAnimating()) {
+        found = true;
+        ofSetColor(text.lasting.getCurrentColor());
+        font.drawStringAsShapes(text.text, x-font.stringWidth(text.text) / 2, y - font.getLineHeight()*text.line * 6);
+    }
+    return found;
+}
 void TextEngine::draw() {
-    float w = ofGetWidth();
+    bool found = false;
     if (fullScreenText.size() > 0) {
-        bool found = false;
+        float w = ofGetWidth();
         float y = w / 3;
         ofPushMatrix();
         ofTranslate(w / 2, ofGetHeight() / 2, getRadius());
         for (auto& text : fullScreenText) {
-            if (text.isRunningOrWaitingToRun()) {
-                std::string s;
-                if (text.getString(s)) {
-                    found = true;
-                    font.drawStringAsShapes(s, -font.stringWidth(s) / 2, y - font.getLineHeight()*text.line * 6);
-                }
-            }
-            else if (text.lasting.isAnimating()) {
+            animateString(text,0, y);
+            if (animateString(text, 0, y)) {
                 found = true;
-                ofSetColor(text.lasting.getCurrentColor());
-                font.drawStringAsShapes(text.text, -font.stringWidth(text.text) / 2, y - font.getLineHeight()*text.line * 6);
             }
         }
         ofPopMatrix();
@@ -127,22 +141,13 @@ void TextEngine::draw() {
         }
     }
     if (inlineText.size() > 0) {
-        bool found = false;
+        float w = ofGetWidth();
         float y = w / 3;
         ofPushMatrix();
         ofTranslate(w / 2, ofGetHeight() / 2, getRadius());
         for (auto& text : inlineText) {
-            if (text.isRunningOrWaitingToRun()) {
-                std::string s;
-                if (text.getString(s)) {
-                    found = true;
-                    font.drawStringAsShapes(s, -font.stringWidth(s) / 2, y - font.getLineHeight()*text.line * 6);
-                }
-            }
-            else if (text.lasting.isAnimating()) {
+            if (animateString(text, 0, y)) {
                 found = true;
-                ofSetColor(text.lasting.getCurrentColor());
-                font.drawStringAsShapes(text.text, -font.stringWidth(text.text) / 2, y - font.getLineHeight()*text.line * 6);
             }
         }
         ofPopMatrix();
@@ -154,12 +159,10 @@ void TextEngine::draw() {
 
 }
 
+// return true if full screen mode enabled
 bool Game::drawText() {
-    if (text.isAnimating()) {
-        text.draw();
-        return true;
-    }
-    return false;
+    text.draw();
+    return text.isFullScreenAnimating();
 }
 
 void GameItem::draw() {

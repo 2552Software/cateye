@@ -121,7 +121,8 @@ void Game::setup() {
     setSquareCount();
 
     gameLevel = NoGame;
-    gameStartTime = 0.0f; // zero time
+    resetLevelTime();
+
     // convert to window size from camera sized
     xFactor = w / cameraWidth;
     yFactor = h / cameraHeight;

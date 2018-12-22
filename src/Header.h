@@ -14,6 +14,7 @@ public:
     void update() { lasting.update(1.0f / ofGetTargetFrameRate()); }
     bool getString(std::string& text);
     bool isRunningOrWaitingToRun() {return !done || timeDelay; }
+    static const bool isReadyToRemove(const TextTimer& item) { return item.done; }
     ofxAnimatableOfColor lasting; // how long to draw after intial animation
     std::string text;
     float holdTextTime;
@@ -154,19 +155,25 @@ public:
     void setup();
     void update();
 
-    bool isAnimating() { return fullScreenText.size() > 0; }
+    void addFullScreenText(TextTimer txt) { fullScreenText.push_back(txt); }
+    void addInlineText(TextTimer txt) { inlineText.push_back(txt); }
 
+    void drawShapes(const std::string& s);
+
+    bool isFullScreenAnimating() { return fullScreenText.size() > 0; }
+    std::string sillyString();
     void print(const std::string& s);
 
     ofTrueTypeFont font;
-    std::vector<TextTimer> fullScreenText;
-    std::vector<TextTimer> inlineText;
 
     void bind(std::function<void(int, bool)> fn) {
         callback = std::bind(fn, std::placeholders::_1, std::placeholders::_2);
     }
 
 private:
+    std::list<TextTimer> fullScreenText;
+    std::list<TextTimer> inlineText;
+    bool animateString(TextTimer& text, int x, int y);
     int id;
     std::function<void(int, bool)> callback;
     void call(bool bInline) {
@@ -194,12 +201,14 @@ public:
     bool isAnimating();
     void windowResized(int w, int h);
     bool inGame() { return gameLevel > NoGame; }
-    std::string sillyString();
     float w, h;
     ContoursBuilder contours;
     TextEngine text;
 
 private:
+    float getLevelDuration() { return ofGetElapsedTimef() - gameLevelTime; }
+    void  resetLevelTime() { gameLevelTime = ofGetElapsedTimef(); }
+
     bool find(const ofRectangle& item) { return std::find(gameItems.begin(), gameItems.end(), item) != gameItems.end(); }
     void credits(bool signon = false);    void setTriggerCount(float count=50.0f);
     void setShapeMinSize(float size=100.0f) { shapeMinSize = size; };
@@ -214,7 +223,8 @@ private:
     void setTitle();
     Eyes mainEyes;
     Eyes rotatingEyes;
-    float gameStartTime; // in seconds
+    float gameLevelTime; // in seconds
+    float gameLastActivity; // in seconds
     Eyes cubes; // cache images
     Eyes spheres;
     Eyes cylinders;
