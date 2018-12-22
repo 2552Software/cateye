@@ -123,17 +123,17 @@ std::string TextEngine::sillyString() {
 }
 void Game::credits(bool signon) {
     /** bugbug removed */
-    text.addFullScreenText(TextTimer("fast for testing", 1000.0f, 0.0f, 0.0f));
+    fancyText.addFullScreenText(TextTimer("fast for testing", 1000.0f, 0.0f, 0.0f));
     return;
 
     if (signon || (int)ofRandom(0, 10) > 2) {
-        text.addFullScreenText(TextTimer("Tom And Mark", 1000.0f, 0.0f, 0.0f));
-        text.addFullScreenText(TextTimer("From Electronic Murals", 1000.0f, 1000.0f,  1.0f));
-        text.addFullScreenText(TextTimer("Thank Can Can Wonderland ...", 1000.0f, 2 * 1000.0f, 2.0f));
-        text.addFullScreenText(TextTimer("... For their support of the Arts!", 1000.0f, 3 * 1000.0f, 3.0f));
+        fancyText.addFullScreenText(TextTimer("Tom And Mark", 1000.0f, 0.0f, 0.0f));
+        fancyText.addFullScreenText(TextTimer("From Electronic Murals", 1000.0f, 1000.0f,  1.0f));
+        fancyText.addFullScreenText(TextTimer("Thank Can Can Wonderland ...", 1000.0f, 2 * 1000.0f, 2.0f));
+        fancyText.addFullScreenText(TextTimer("... For their support of the Arts!", 1000.0f, 3 * 1000.0f, 3.0f));
     }
     else {
-        text.addFullScreenText(TextTimer(text.sillyString(), 1000.0f, 0.0f,  0.0f));
+        fancyText.addFullScreenText(TextTimer(fancyText.sillyString(), 1000.0f, 0.0f,  0.0f));
     }
 }
 

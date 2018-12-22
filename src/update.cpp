@@ -138,7 +138,8 @@ void Game::update(Music*music) {
         a.update();
     }
 
-    text.update();
+    fancyText.update();
+    basicText.update();
 
     mainEyes.update();
     rotatingEyes.update();

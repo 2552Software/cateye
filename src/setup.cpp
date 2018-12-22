@@ -112,8 +112,8 @@ void ContoursBuilder::setup() {
     ofLogNotice("ContoursBuilder::setup over ");
 }
 
-void TextEngine::setup() {
-    font.load("DejaVuSans.ttf", 12, false, false, true);
+void TextEngine::setup(int fontsize) {
+    font.load("DejaVuSans.ttf", fontsize, false, false, true);
 }
 void Game::setup() { 
     setTriggerCount();
@@ -127,9 +127,11 @@ void Game::setup() {
     xFactor = w / cameraWidth;
     yFactor = h / cameraHeight;
 
-    text.setup();
+    basicText.setup(12);
+    fancyText.setup(15);
+
     std::function<void(int, bool)> f = std::bind(&Game::textDone, this, std::placeholders::_1, std::placeholders::_2);
-    text.bind(f);
+    fancyText.bind(f);
 
     ofAddListener(rotatingEyes.getAnimator().animFinished, this, &Game::rotatingEyesDone);
 

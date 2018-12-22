@@ -6,13 +6,15 @@ std::string Game::levelString() {
     case NoGame:
         return "No Game";
     case Basic:
-        return "Basic Game";
+        return "Basic";
     case Medium:
-        return "A little harder Game";
+        return "Kinda easy";
     case Difficult:
-        return "A bit difficult Game";
+        return "A bit difficult";
     case EndGame:
-        return "EndGame";
+        return "End Game";
+    default:
+        return "BAD Game";
     }
 
 }
@@ -20,8 +22,8 @@ std::string Game::levelString() {
 void Game::setTitle() {
     if (inGame()) {
         std::stringstream ss;
-        ss << "Game On! Level " << levelString() <<  " Find " << winnerHitCount() << " of " << winnerThreshold();
-        text.print(ss.str(), ofGetWidth() / 2, ofGetHeight() / 2, getRadius());
+        ss << "Game On! " << levelString() <<  " Find " << winnerHitCount() << " of " << winnerThreshold();
+        basicText.print(ss.str(), ofGetWidth() / 2, ofGetHeight() / 2, getRadius());
    }
 }
 void Game::blink() {

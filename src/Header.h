@@ -157,7 +157,7 @@ class TextEngine {
 public:
     TextEngine(int idIn = 0) { id = idIn; }
     void draw(float x, float y, float z);
-    void setup();
+    void setup(int fontsize);
     void update();
 
     void addFullScreenText(TextTimer txt) { fullScreenText.push_back(txt); }
@@ -208,9 +208,10 @@ public:
     bool inGame() { return gameLevel > NoGame; }
     float w, h;
     ContoursBuilder contours;
-    TextEngine text;
 
 private:
+    TextEngine basicText;
+    TextEngine fancyText;
     float getLevelDuration() { return ofGetElapsedTimef() - gameLevelTime; }
     void  resetLevelTime() { gameLevelTime = ofGetElapsedTimef(); }
     std::string levelString();

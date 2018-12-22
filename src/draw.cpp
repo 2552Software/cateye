@@ -79,7 +79,7 @@ void ContoursBuilder::draw(float w, float h, float z) {
 
 // see if anything is going on
 bool Game::isAnimating() {
-    if (!rotatingEyes.isAnimating() && !mainEyes.isAnimating() && !text.isFullScreenAnimating()) {
+    if (!rotatingEyes.isAnimating() && !mainEyes.isAnimating() && !fancyText.isFullScreenAnimating()) {
         return false;
     }
     return true;
@@ -166,8 +166,9 @@ void TextEngine::draw(float x, float y, float z) {
 
 // return true if full screen mode enabled
 bool Game::drawText() {
-    text.draw(w/2, w/3, getRadius());
-    return text.isFullScreenAnimating();
+    basicText.draw(w / 2, w / 2, getRadius());
+    fancyText.draw(w/2, w/3, getRadius());
+    return fancyText.isFullScreenAnimating();
 }
 
 void GameItem::draw() {
