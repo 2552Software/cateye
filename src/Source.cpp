@@ -1,15 +1,27 @@
 #include "ofApp.h"
 #include "sound.h"
 
+std::string Game::levelString() {
+    switch (gameLevel) {
+    case NoGame:
+        return "No Game";
+    case Basic:
+        return "Basic Game";
+    case Medium:
+        return "A little harder Game";
+    case Difficult:
+        return "A bit difficult Game";
+    case EndGame:
+        return "EndGame";
+    }
 
+}
 // let folks know we are in a game
 void Game::setTitle() {
     if (inGame()) {
         std::stringstream ss;
-        ss << winnerHitCount() << " of " << winnerThreshold();
-        std::string s = "Game On! Find ";
-        s += ss.str();
-        text.print(s, ofGetWidth() / 2, ofGetHeight() / 2, getRadius());
+        ss << "Game On! Level " << levelString() <<  " Find " << winnerHitCount() << " of " << winnerThreshold();
+        text.print(ss.str(), ofGetWidth() / 2, ofGetHeight() / 2, getRadius());
    }
 }
 void Game::blink() {

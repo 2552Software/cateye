@@ -69,34 +69,33 @@ bool secondsPassed(int val) {
 }
 void Game::updateLevel() {
 
-    float duration = getLevelDuration();
     switch (gameLevel) {
     case NoGame:
-        if (duration > 60.0f) { // start game every 60 seconds bugbug 5 sec to test
+        if (getLevelDuration() > 60.0f) { // start game every 60 seconds bugbug 5 sec to test
             resetLevelTime();
             gameLevel = Basic; // go to next level
         }
         break;
     case Basic:
-        if (duration > 60.0f) { // stop game after 1 minute at a level
+        if (getLevelDuration() > 60.0f) { // stop game after 1 minute at a level
             resetLevelTime();
             gameLevel = NoGame; // go to previous level
         }
         break;
     case Medium:
-        if (duration > 60.0f) { // stop game after 1 minute at a level
+        if (getLevelDuration() > 60.0f) { // stop game after 1 minute at a level
             resetLevelTime();
             gameLevel = Basic; 
         }
         break;
     case Difficult:
-        if (duration > 60.0f) { // stop game after 1 minute at a level
+        if (getLevelDuration() > 60.0f) { // stop game after 1 minute at a level
             resetLevelTime();
             gameLevel = Medium;
         }
         break; 
     case EndGame:
-        if (duration > 60.0f) { // start game every 60 seconds
+        if (getLevelDuration() > 60.0f) { // start game every 60 seconds
             resetLevelTime();
             gameLevel = NoGame; // go to next level
         }

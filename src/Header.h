@@ -213,7 +213,7 @@ public:
 private:
     float getLevelDuration() { return ofGetElapsedTimef() - gameLevelTime; }
     void  resetLevelTime() { gameLevelTime = ofGetElapsedTimef(); }
-
+    std::string levelString();
     bool find(const ofRectangle& item) { return std::find(gameItems.begin(), gameItems.end(), item) != gameItems.end(); }
     void credits(bool signon = false);    void setTriggerCount(float count=50.0f);
     void setShapeMinSize(float size=100.0f) { shapeMinSize = size; };
