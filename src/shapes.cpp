@@ -40,58 +40,22 @@ void Game::buildY() {
     }
 }
 
-TextTimer::TextTimer(const std::string& textIn, float timeToRenderIn, float delay, float lineIn) {
+TextTimer::TextTimer(const std::string& text, float timeToRenderIn, float delay, float lineIn) {
     line = lineIn;
     timeDelay = 0;
     done = false;
-    text = textIn;
+    rawText = text;
     timeSet = true;
     timeToRender = timeToRenderIn;
     timeDelay = delay;
-    timeBegan = (int)ofGetElapsedTimef();
-    holdTextTime = 35.0f;
+    timeBegan = (int)ofGetSystemTimeMillis();
 }
 
 bool TextTimer::getString(std::string& output) {
     output.clear();
-    int elapsedSeconds = ((int)ofGetElapsedTimef() - timeBegan); //  20 seconds passed for example timeDelay
-    if (timeDelay) {
-        if (elapsedSeconds < timeDelay) {
-            return false;
-        }
-        else {
-            timeBegan = (int)ofGetElapsedTimef(); // here we go
-            timeDelay = 0.0f; // needs to be rest if used again
-            return false; // get it next time
-        }
-    }
-    if (!elapsedSeconds) {
-        return false;
-    }
-    if (text.size() == 0 || timeToRender <= 0) {
-        return false;
-    }
-    if (!done) {
-        float factor = ((float)(elapsedSeconds) / (float)timeToRender);  // ratio of seconds that passed to our full range of time, say 20% or 0.2
-
-        int n = (int)(factor * text.length());
-        int max = min(n, (int)text.length());
-
-        if (!n) {
-            max = 1;
-        }
-        if (n >= (int)text.length()) {
-            done = true;
-            lasting.setColor(ofColor::white);
-            lasting.setDuration(1.0f);
-            lasting.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
-            lasting.setCurve(EASE_IN_EASE_OUT);
-            lasting.animateTo(ofColor::orangeRed);
-        }
-        output = text.substr(0, min(n, max));
-        if (output.size() > 0) {
-            return true;
-        }
+    if (partialText.size() > 0) {
+        output = partialText;
+        return true;
     }
     return false;
 }
@@ -164,12 +128,12 @@ void Game::credits(bool signon) {
 
     if (signon || (int)ofRandom(0, 10) > 2) {
         text.addFullScreenText(TextTimer("Tom And Mark", 1000.0f, 0.0f, 0.0f));
-        text.addFullScreenText(TextTimer("From Electronic Murals", 1000.0f, 1000.0f, 1.0f));
+        text.addFullScreenText(TextTimer("From Electronic Murals", 1000.0f, 1000.0f,  1.0f));
         text.addFullScreenText(TextTimer("Thank Can Can Wonderland ...", 1000.0f, 2 * 1000.0f, 2.0f));
         text.addFullScreenText(TextTimer("... For their support of the Arts!", 1000.0f, 3 * 1000.0f, 3.0f));
     }
     else {
-        text.addFullScreenText(TextTimer(text.sillyString(), 1000.0f, 0.0f, 0.0f));
+        text.addFullScreenText(TextTimer(text.sillyString(), 1000.0f, 0.0f,  0.0f));
     }
 }
 

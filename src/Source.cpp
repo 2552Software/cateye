@@ -1,14 +1,6 @@
 #include "ofApp.h"
 #include "sound.h"
 
-void TextEngine::print(const std::string& s) {
-    ofPushMatrix();
-    float stringw = font.stringWidth(s);
-    ofTranslate(ofGetWidth() / 2 - stringw / 2, ofGetHeight() / 2, getRadius());
-    font.drawStringAsShapes(s, 0, 0);
-    ofPopMatrix();
-
-}
 
 // let folks know we are in a game
 void Game::setTitle() {
@@ -17,8 +9,7 @@ void Game::setTitle() {
         ss << winnerHitCount() << " of " << winnerThreshold();
         std::string s = "Game On! Find ";
         s += ss.str();
-        text.addInlineText(TextTimer(s, 500.0f, 0.0f, 1.0f));
-        //text.print(s);
+        text.print(s, ofGetWidth() / 2, ofGetHeight() / 2, getRadius());
    }
 }
 void Game::blink() {

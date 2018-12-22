@@ -11,15 +11,20 @@ class TextTimer {
 public:
     TextTimer(const std::string& textIn, float timeToRenderIn, float delay, float lineIn);
     void setup();
-    void update() { lasting.update(1.0f / ofGetTargetFrameRate()); }
+    void update();
+
+    bool isAnimating() { return color.isAnimating(); }
     bool getString(std::string& text);
     bool isRunningOrWaitingToRun() {return !done || timeDelay; }
+    void setColor() { ofSetColor(color.getCurrentColor()); }
+    float getLine() { return line; }
+    std::string& getRawText() { return rawText; }
     static const bool isReadyToRemove(const TextTimer& item) { return item.done; }
-    ofxAnimatableOfColor lasting; // how long to draw after intial animation
-    std::string text;
-    float holdTextTime;
-    float line;
 private:
+    std::string rawText; // raw text
+    std::string partialText;
+    float line; // user define value
+    ofxAnimatableOfColor color; // how long to draw after intial animation
     int timeToRender, timeBegan, timeDelay;
     bool  timeSet, done;
 };
@@ -151,7 +156,7 @@ public:
 class TextEngine {
 public:
     TextEngine(int idIn = 0) { id = idIn; }
-    void draw();
+    void draw(float x, float y, float z);
     void setup();
     void update();
 
@@ -162,7 +167,7 @@ public:
 
     bool isFullScreenAnimating() { return fullScreenText.size() > 0; }
     std::string sillyString();
-    void print(const std::string& s);
+    void print(const std::string& s, float x, float y, float z);
 
     ofTrueTypeFont font;
 

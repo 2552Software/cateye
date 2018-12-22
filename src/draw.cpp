@@ -15,7 +15,7 @@ void Game::draw() {
         else {
             setTitle();
             mainEyes.rotate(currentRotation);
-          //  mainEyes.draw();
+            mainEyes.draw();
             if (!mainEyes.isAnimating()) {
                 drawContours();
                 blink();
@@ -99,7 +99,7 @@ void TextEngine::drawShapes(const std::string& s) {
         vector <ofPolyline> polylines = paths[i].getOutline();
         // for every polyline, draw every fifth point
         for (size_t j = 0; j < polylines.size(); j++) {
-            for (int k = 0; k < polylines[j].size(); k += 5) {         // draw every "fifth" point
+            for (size_t k = 0; k < polylines[j].size(); k += 5) {         // draw every "fifth" point
                 ofDrawCircle(polylines[j][k], 3);
             }
         }
@@ -109,28 +109,36 @@ bool TextEngine::animateString(TextTimer& text, int x, int y) {
     bool found = false;
     if (text.isRunningOrWaitingToRun()) {
         std::string s;
-        if (text.getString(s)) {
+        if (text.getString(s)) { 
             found = true;
-            font.drawStringAsShapes(s, x-font.stringWidth(s) / 2, y - font.getLineHeight()*text.line * 6);
+            //text.setColor();
+            ofRectangle rect = font.getStringBoundingBox(s, 0.0f, 0.0f);
+            font.drawStringAsShapes(s, x- rect.width / 2, y - rect.height*text.getLine() * 6);
         }
     }
-    else if (text.lasting.isAnimating()) {
+    else if (text.isAnimating()) { // get raw text if not running, the full string
         found = true;
-        ofSetColor(text.lasting.getCurrentColor());
-        font.drawStringAsShapes(text.text, x-font.stringWidth(text.text) / 2, y - font.getLineHeight()*text.line * 6);
+        text.setColor();
+        ofRectangle rect = font.getStringBoundingBox(text.getRawText(), 0.0f, 0.0f); // full string
+        font.drawStringAsShapes(text.getRawText(), x-font.stringWidth(text.getRawText()) / 2, y - font.getLineHeight()*text.getLine() * 6);
     }
     return found;
 }
-void TextEngine::draw() {
+void TextEngine::print(const std::string& s, float x, float y, float z) {
+    ofPushMatrix();
+    ofRectangle rect = font.getStringBoundingBox(s, 0.0f, 0.0f);
+    ofTranslate(x - rect.width / 2, y+rect.height/2, z);
+    font.drawStringAsShapes(s, 0, 0);
+    ofPopMatrix();
+
+}
+void TextEngine::draw(float x, float y, float z) {
     bool found = false;
     if (fullScreenText.size() > 0) {
-        float w = ofGetWidth();
-        float y = w / 3;
         ofPushMatrix();
-        ofTranslate(w / 2, ofGetHeight() / 2, getRadius());
+        ofTranslate(x, y, z);
         for (auto& text : fullScreenText) {
-            animateString(text,0, y);
-            if (animateString(text, 0, y)) {
+            if (animateString(text, 0.0f, 0.0f)) {
                 found = true;
             }
         }
@@ -141,12 +149,10 @@ void TextEngine::draw() {
         }
     }
     if (inlineText.size() > 0) {
-        float w = ofGetWidth();
-        float y = w / 3;
         ofPushMatrix();
-        ofTranslate(w / 2, ofGetHeight() / 2, getRadius());
-        for (auto& text : inlineText) {
-            if (animateString(text, 0, y)) {
+        ofTranslate(x, y, z); // ned to do the z here as no other api in fonts has a z
+        for (auto& text : inlineText) { 
+            if (animateString(text, 0.0f, 0.0f)) {
                 found = true;
             }
         }
@@ -156,12 +162,11 @@ void TextEngine::draw() {
             call(true);
         }
     }
-
 }
 
 // return true if full screen mode enabled
 bool Game::drawText() {
-    text.draw();
+    text.draw(w/2, w/3, getRadius());
     return text.isFullScreenAnimating();
 }
 

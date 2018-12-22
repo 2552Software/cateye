@@ -1,5 +1,36 @@
 #include "ofApp.h"
 
+void TextTimer::update() {
+    color.update(1.0f / ofGetTargetFrameRate());
+    int elapsedMilliSeconds = ((int)ofGetSystemTimeMillis() - timeBegan);
+    if (timeDelay) {
+        if (elapsedMilliSeconds > timeDelay) {
+            timeBegan = (int)ofGetSystemTimeMillis(); // here we go
+            timeDelay = 0.0f; // needs to be rest if used again
+        }
+    }
+    if (!done && elapsedMilliSeconds && rawText.size() > 0 && timeToRender > 0.0f) {
+        float factor = ((float)(elapsedMilliSeconds) / (float)timeToRender);  // ratio of seconds that passed to our full range of time, say 20% or 0.2
+
+        int n = (int)(factor * rawText.length());
+        int max = min(n, (int)rawText.length());
+
+        if (!n) {
+            max = 1;
+        }
+        if (n >= (int)rawText.length()) {
+            done = true;
+            color.setColor(ofColor::white);
+            color.setDuration(1.0f);
+            color.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
+            color.setCurve(EASE_IN_EASE_OUT);
+            color.animateTo(ofColor::orangeRed);
+        }
+        else {
+            partialText = rawText.substr(0, min(n, max));
+        }
+    }
+}
 void SuperSphere::update() {
 }
 
@@ -41,7 +72,7 @@ void Game::updateLevel() {
     float duration = getLevelDuration();
     switch (gameLevel) {
     case NoGame:
-        if (duration > 5.0f) { // start game every 60 seconds bugbug 5 sec to test
+        if (duration > 60.0f) { // start game every 60 seconds bugbug 5 sec to test
             resetLevelTime();
             gameLevel = Basic; // go to next level
         }
