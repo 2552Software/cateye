@@ -9,7 +9,6 @@ void Eyes::rotate(ofVec3f r) {
 void Game::draw() {
     //ofLogNotice() << "rotate to targert" << target;
     if (!drawText()) { // draw text first and give it the full screen
-        return;
         if (rotatingEyes.isAnimating()) {
             drawRotatingEyes();
         }
@@ -26,7 +25,15 @@ void Game::draw() {
     }
 }
 void SuperSphere::draw() {
-    eye.start();
+    if (getRadius() > 0) {
+        eye.start();
+        rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
+        rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
+        ofSpherePrimitive::draw();
+        setOrientation({ 0.f,0.f,0.f });
+        eye.stop();
+    }
+    /*
     ofSpherePrimitive sphere;
     r = std::min(ofGetWidth(), ofGetHeight()) / 2;
     // for heavy debug ofLogNotice() << "Radius" << r << " W " << ofGetWidth() << " H " << ofGetHeight();
@@ -37,7 +44,7 @@ void SuperSphere::draw() {
     sphere.rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
     sphere.setResolution(27);
     sphere.draw();
-    eye.stop();
+    */
 }
 void Eyes::draw() {
     if (isAnimating()) {

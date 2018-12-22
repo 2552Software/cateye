@@ -1,6 +1,5 @@
 #include "ofApp.h"
 
-// sound https://www.liutaiomottola.com/formulae/freqtab.htm
 void Game::buildTable() {
     if (squareCount) {
         screenToAnimationMap.clear();
@@ -135,7 +134,7 @@ void Game::credits(bool signon) {
     }
 }
 
-void EyeTexture::start() {
+void objectTexture::start() {
     if (!isAllocated()) {
         ofLogError("Eye::start") << "not loaded ";
         return;
@@ -143,7 +142,7 @@ void EyeTexture::start() {
     material.begin();
     bind();
 }
-void EyeTexture::stop() {
+void objectTexture::stop() {
     unbind();
     material.end();
 }

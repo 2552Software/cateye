@@ -3,8 +3,8 @@
 #include "ofApp.h"
 
 enum Levels { NoGame = -1, Basic = 0, Medium = 1, Difficult = 2, EndGame = 3 };
-inline float getRadius() {
-    return std::min(ofGetWidth(), ofGetHeight()) / 2;
+inline float getRadius(int w= ofGetWidth(), int h= ofGetHeight()) {
+    return std::min(w, h) / 2;
 }
 
 class TextTimer {
@@ -50,10 +50,10 @@ private:
     ;
 };
 
-class EyeTexture : public ofTexture {
+class objectTexture : public ofTexture {
 public:
-    EyeTexture() { }
-    EyeTexture(const string&name) {  setup(name);  }
+    objectTexture() { }
+    objectTexture(const string&name) {  setup(name);  }
 
     void setup(const string&texName);
     void update() {   }
@@ -64,19 +64,18 @@ private:
 };
 
 // always knows it rotation coordindates
-class SuperSphere {
+class SuperSphere : public ofSpherePrimitive {
 public:
-    SuperSphere(const string&name) { setup(name); }
-    void setup(const string&name);
+    SuperSphere() {}
+    SuperSphere(const string&name) { skin.setup(name); }
+    void setup(const string&name, float x, float y, int w, int h);
+    void setup(float x, float y, int w, int h);
     void update();
     void draw();
-    EyeTexture& getTexture() { return eye; }
+    objectTexture& getTexture() { return skin; }
     ofVec3f currentRotation;
-    float getRadius() { return r; }
 private:
-
-    EyeTexture eye;
-    float r;
+    objectTexture skin;
 };
 
 class ContoursBuilder {
@@ -103,7 +102,7 @@ public:
     SuperSphere&getCurrentSphereRef() {   return eyes[(int)selector.getCurrentValue()];  }
     size_t count() { return eyes.size(); }
     ofxAnimatableFloat& getAnimator() { return animator; }
-    EyeTexture& getEyeRef() { return getCurrentSphereRef().getTexture(); }
+    objectTexture& getEyeRef() { return getCurrentSphereRef().getTexture(); }
 private:
     void add(const std::string &name, const std::string &root);
     ofxAnimatableFloat animator; // z direction
@@ -113,7 +112,7 @@ private:
 
 class GameItem {
 public:
-    GameItem(const ofRectangle& rect, EyeTexture eye, Levels level, int id);
+    GameItem(const ofRectangle& rect, objectTexture eye, Levels level, int id);
     bool operator==(const GameItem& rhs) const {
         return rectangle == rhs.rectangle;
     }
@@ -138,9 +137,9 @@ public:
 private:
     ofBoxPrimitive box; // pick a shape 
     ofRectangle rectangle;
-    ofSpherePrimitive sphere;
+    SuperSphere sphere;
     ofCylinderPrimitive cylinder; // like a coin -- for music notes
-    EyeTexture myeye;
+    objectTexture myeye;
     ofxAnimatableFloat animater; 
 };
 

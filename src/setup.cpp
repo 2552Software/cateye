@@ -1,13 +1,19 @@
 #include "ofApp.h"
 
-void SuperSphere::setup(const string&name) {
-    eye.setup(name);
-    r = getRadius();
+void SuperSphere::setup(const string&name, float x, float y, int w, int h) {
+    skin.setup(name);
+    setup(x, y, w, h);
+}
+void SuperSphere::setup(float x, float y, int w, int h) {
+    panDeg(180);
+    setResolution(27);
+    setRadius(::getRadius(w, h));
+    setPosition(x, y, 0.0f);
 }
 void TextTimer::setup() {
 }
 
-void EyeTexture::setup(const string&texName) {
+void objectTexture::setup(const string&texName) {
     if (ofLoadImage(*this, texName)) {
         ofLogNotice("Eye") << "loaded " << texName;
     }
@@ -16,7 +22,7 @@ void EyeTexture::setup(const string&texName) {
     }
 }
 
-GameItem::GameItem(const ofRectangle& rect, EyeTexture eye, Levels levelIn, int idIn) {
+GameItem::GameItem(const ofRectangle& rect, objectTexture eye, Levels levelIn, int idIn) {
     id = idIn;
     rectangle = rect;
     level = levelIn;
@@ -48,9 +54,7 @@ void GameItem::setup() {
         duration = 20.0f;
     }
     else if (level == Basic) {
-        sphere.setRadius(min(rectangle.height, rectangle.width) / 2);
-        // use with squares etc sphere.set(rect.width, rect.height, 0.0f);
-        sphere.setPosition(rectangle.x, rectangle.y, 0.0f);
+        sphere.setup(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
         duration = 30.0f;
     }
     animater.setDuration(duration);
@@ -169,7 +173,7 @@ void Game::setup() {
     blinker.animateTo(1.0f);
 
     clear(); // go to a known state (call last like this as it may depend on othe settings)
-    credits(true);
+    //bugbug credits(true);
     startPlaying();
 
     ofLogNotice("ImageAnimator::setup") << "finshed";

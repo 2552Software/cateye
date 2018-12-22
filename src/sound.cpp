@@ -2,6 +2,8 @@
 
 #include "sound.h"
 
+// sound https://www.liutaiomottola.com/formulae/freqtab.htm
+
 void Music::update() {
 
 }

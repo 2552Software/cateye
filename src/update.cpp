@@ -46,8 +46,9 @@ void GameItem::update() {
     switch (level) {
     case NoGame:
         break;
-    case Basic:
-        sphere.rotateDeg(20.0f*animater.val(), 0.0f, 1.0f, 0.0f);
+    case Basic: {
+        sphere.rotateDeg(20.0f*animater.val(), glm::vec3(0.0f, 1.0f, 0.0f));
+    }
         break;
     case Medium: {
         glm::vec3 newPos = box.getPosition();
@@ -69,7 +70,7 @@ void Game::updateLevel() {
 
     switch (gameLevel) {
     case NoGame:
-        if (getLevelDuration() > 60.0f) { // start game every 60 seconds bugbug 5 sec to test
+        if (getLevelDuration() > 1.0f) { // start game every 60 seconds bugbug 5 sec to test
             resetLevelTime();
             gameLevel = Basic; // go to next level
         }
@@ -131,7 +132,6 @@ void Game::update(Music*music) {
             ++i;
         }
     }
-
     for (auto& a : gameItems) {
         a.update();
     }

@@ -123,7 +123,6 @@ void Game::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event) {
     mainEyes.getAnimator().animateFromTo(-rotatingEyes.getCurrentSphereRef().getRadius(), 0.0f);
     clear(); // reset and start again
 }
-
 void Game::windowResized(int wIn, int hIn) {
     w = wIn;
     h = hIn;
@@ -134,6 +133,7 @@ void Game::windowResized(int wIn, int hIn) {
     yFactor = h / cameraHeight;
 
     clear(); // reset game to assure all sizes are correct
+
     
 }
 
@@ -161,12 +161,9 @@ bool Game::compute(LocationToInfoMap rect, Music*music) {
     ofRectangle rect2Use((cx - rect.x*xFactor), rect.y*yFactor, rect.width*xFactor, rect.height*yFactor);
     if (!find(rect2Use)) {
         switch (gameLevel) {
-        case Basic: // only 1/3 items saved etc
-            if ((rect.c % 3) == 0) {
-                SuperSphere sphere = spheres.getCurrentSphereRef();
-                //make this rotate around the center of the screen, with ofRadius as the Z
-                gameItems.push_back(GameItem(rect2Use, cubes.getCurrentSphereRef().getTexture(), gameLevel, rect.c));
-            }
+        case Basic: 
+            //make this rotate around the center of the screen, with ofRadius as the Z
+            gameItems.push_back(GameItem(rect2Use, spheres.getCurrentSphereRef().getTexture(), gameLevel, rect.c));
             break;
         case Medium:
             if ((rect.c % 2) == 0) {
