@@ -18,8 +18,8 @@ void SuperSphere::setup(AnimRepeat repeat, float seconds, float x, float y, int 
 }
 
 void SuperCylinder::setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h) {
-    setHeight(h/25.0f);
-    setRadius(w/25);
+    setHeight(h);
+    setRadius(w);
     setPosition(x, y, 0.0f);
     Animate3d::setup(repeat, seconds);
 }
@@ -61,47 +61,20 @@ void GameItem::setupHelper(of3dPrimitive* primitive, ofNode *parent) {
 
 void CylinderGameItem::setup(ofNode *parent) {
     setupHelper(&cylinder, parent);
-    cylinder.setup(PLAY_ONCE, 30.0f, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    cylinder.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     cylinder.getAnimator().animateTo(1.0f);
 }
 
 void CubeGameItem::setup(ofNode *parent) {
     setupHelper(&cube, parent);
-    cube.setup(PLAY_ONCE, 30.0f, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    cube.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     cube.getAnimator().animateTo(1.0f);
 
 }
 void SphereGameItem::setup(ofNode *parent) {
     setupHelper(&sphere, parent);
-    sphere.setup(PLAY_ONCE, 30.0f, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    sphere.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     sphere.getAnimator().animateTo(1.0f);
-
-
-/*
-    float duration=20.0f;
-
-    if (level == EndGame) {
-        duration = 60.0f; //this is the big prize, enjoy it
-    }
-    else if (level == Difficult) {
-        cylinder.setRadius(min(rectangle.height, rectangle.width) / 2);
-        cylinder.setHeight(10); // thin
-        // use with squares etc sphere.set(rect.width, rect.height, 0.0f);
-        cylinder.setPosition(rectangle.x, rectangle.y, 0.0f);
-        duration = 60.0f; 
-    }
-    else if (level == Medium) {
-        box.setPosition(rectangle.x, rectangle.y + rectangle.height, -2 * rectangle.width);
-        box.setWidth(rectangle.width);
-        box.setHeight(rectangle.height);
-        duration = 20.0f;
-    }
-    else if (level == Basic) {
-       sphere.setParent(parent);
-       sphere.setup(PLAY_ONCE, 1.0f, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-       duration = 30.0f;
-    }
-*/
 }
 
 void Textures::setup(const std::string& path) {

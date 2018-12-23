@@ -132,7 +132,7 @@ private:
 class GameItem {
 public:
     GameItem(const ofRectangle& rect, objectTexture texture, int id, Levels level, float duration);
-    GameItem(Levels level= NoGame, float duration= 0.0f) { set(level, duration); } // gets levels only etc
+    GameItem(Levels level= NoGame, float duration= 1.0f) { set(level, duration); } // gets levels only etc
     virtual ~GameItem() { }
 
     bool operator==(const ofRectangle& rhs) const {
@@ -145,7 +145,6 @@ public:
     virtual void update() {};
     virtual void draw() {}
 
-    float getLevelDuration() { return ofGetElapsedTimef() - gameLevelTime; }
     void  resetLevelTime() { gameLevelTime = ofGetElapsedTimef(); }
     std::shared_ptr<GameItem> GameItem::getNext();
 
@@ -153,11 +152,13 @@ public:
 
     Levels getLevel() { return level; }
     float getDuration() { return duration; } // run game for 30 seconds
+    float timeLeft() { return duration - getLevelDuration();  }
     bool isRunning() const { return running; } 
     void stop() { running = false; }
     int id;
 
 protected:
+    float getLevelDuration() { return ofGetElapsedTimef() - gameLevelTime; }
     void set(Levels level, float duration);
     void setupHelper(of3dPrimitive* primitive, ofNode *parent);
     ofRectangle rectangle;
@@ -170,8 +171,8 @@ protected:
 
 class SphereGameItem : public GameItem {
 public:
-    SphereGameItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :GameItem(rect, texture, id, Basic, 30.0f) { setup(parent); }
-    SphereGameItem() :GameItem(Basic, 30.0f) {  } // gets levels only etc
+    SphereGameItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :GameItem(rect, texture, id, Basic, 20.0f) { setup(parent); }
+    SphereGameItem() :GameItem(Basic, 20.0f) {  } // gets levels only etc
     virtual  ~SphereGameItem() {  }
 
     void setup(ofNode *parent);
@@ -186,8 +187,8 @@ private:
 
 class CubeGameItem : public GameItem {
 public:
-    CubeGameItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :GameItem(rect, texture, id, Medium, 30.0f) { setup(parent); }
-    CubeGameItem() :GameItem(Medium, 30.0f) {  } // gets levels only etc
+    CubeGameItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :GameItem(rect, texture, id, Medium, 20.0f) { setup(parent); }
+    CubeGameItem() :GameItem(Medium, 20.0f) {  } // gets levels only etc
     virtual  ~CubeGameItem() {  }
 
     void setup(ofNode *parent);
@@ -203,8 +204,8 @@ private:
 
 class CylinderGameItem : public GameItem {
 public:
-    CylinderGameItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id, Levels level = Difficult, float duration = 30.0f) :GameItem(rect, texture, id, level, duration) { setup(parent); }
-    CylinderGameItem(Levels level = Difficult, float duration = 30.0f) :GameItem(level, duration) {  } // gets levels only etc
+    CylinderGameItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id, Levels level = Difficult, float duration = 20.0f) :GameItem(rect, texture, id, level, duration) { setup(parent); }
+    CylinderGameItem(Levels level = Difficult, float duration = 20.0f) :GameItem(level, duration) {  } // gets levels only etc
     virtual  ~CylinderGameItem() {  }
 
     void setup(ofNode *parent);
@@ -219,14 +220,15 @@ private:
 
 class MusicItem : public CylinderGameItem { //bugbug roate them?
 public:
-    MusicItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) : CylinderGameItem(rect, texture, parent, id, EndGame, 30.0f) { }
-    MusicItem() :CylinderGameItem(EndGame, 30.0f) {  } // gets levels only etc
+    MusicItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) : CylinderGameItem(rect, texture, parent, id, EndGame, 20.0f) { }
+    MusicItem() :CylinderGameItem(EndGame, 20.0f) {  } // gets levels only etc
     virtual ~MusicItem() {  }
 
     static bool isAkey(std::shared_ptr<GameItem>item) { return (item->id == 1); }
     static bool isGkey(std::shared_ptr<GameItem>item) { return (item->id == 5); }
     static bool isTkey(std::shared_ptr<GameItem>item) { return (item->id == 7); }
     static bool isKkey(std::shared_ptr<GameItem>item) { return (item->id == 9); }
+private:
 };
 
 // map location to interesting things

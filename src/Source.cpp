@@ -5,8 +5,9 @@
 void Game::setTitle() {
     if (inGame()) {
         std::stringstream ss;
-        ss << "Game On! " << current->getLevel() <<  " Find " << winnerHitCount() << " of " << winnerThreshold();
-        basicText.print(ss.str(), ofGetWidth() / 2, ofGetHeight() / 2, getRadiusGlobal());
+        ss << "Game On! level:" << current->getLevel() <<  " Find " << winnerHitCount() << ":" << winnerThreshold();
+        ss <<  " " << setprecision(2) << fixed << current->timeLeft();
+        basicText.print(ss.str(), 0.0f, 0.0f, getRadiusGlobal());
    }
 }
 void Game::blink() {
@@ -48,6 +49,7 @@ std::shared_ptr<GameItem> GameItem::getNext() {
         sp->resetLevelTime();
         return sp;
     }
+    return nullptr; // will blow up the app
 };
 
 void  Game::fireWorks() {

@@ -39,6 +39,8 @@ void CylinderGameItem::update() {
     if (!cylinder.isAnimating()) {
         stop();
     }
+    cylinder.rotateDeg(20.0f*cylinder.getAnimator().val(), 0.0f, 1.0f, 0.0f);
+
 }
 
 void CubeGameItem::update() {
@@ -46,6 +48,10 @@ void CubeGameItem::update() {
     if (!cube.isAnimating()) {
         stop();
     }
+    glm::vec3 newPos = cube.getPosition();
+    newPos.z += cube.getWidth()*cube.getAnimator().val() / 3;
+    cube.setPosition(newPos);
+
 }
 void SphereGameItem::update() {
     sphere.update();
@@ -55,27 +61,6 @@ void SphereGameItem::update() {
     sphere.rotateDeg(20.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f));
     sphere.rotateAroundDeg(15.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f), sphere.getParent()->getPosition());
     //sphere.orbitDeg(15.0f*sphere.getAnimator().val(), 0.0f, getRadiusGlobal(), *sphere.getParent());
-/*
-    switch (level) {
-    case NoGame:
-        break;
-    case Basic: {
-        sphere.rotateDeg(20.0f*animater.val(), glm::vec3(0.0f, 1.0f, 0.0f));
-    }
-        break;
-    case Medium: {
-        glm::vec3 newPos = box.getPosition();
-        newPos.z += box.getWidth()*animater.val() / 3;
-        box.setPosition(newPos);
-        }
-        break;
-    case Difficult:
-        cylinder.rotateDeg(20.0f*animater.val(), 0.0f, 1.0f, 0.0f);
-        break;
-    case EndGame:
-        break;
-    }
-*/
 }
 bool secondsPassed(int val) {
     return ((int)ofGetElapsedTimef() % val) == 0;
@@ -106,8 +91,7 @@ void Game::update(Music*music) {
         a->update();
     }
     gameItems.remove_if(GameItem::isReadyToRemove);
-
-    if (current->getLevelDuration() > current->getDuration()) { // start game every 60 seconds bugbug 5 sec to test
+    if (current->timeLeft() < 0.0f) { // start game every 60 seconds for example
         current = current->getNext();
     }
 
