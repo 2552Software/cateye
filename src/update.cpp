@@ -54,18 +54,18 @@ void CubeGameItem::update() {
 
 }
 void SphereGameItem::update() {
-    rotator.update(1.0f / ofGetTargetFrameRate());
     sphere.update();
     if (!sphere.isAnimating()) {
         stop();
     }
-    sphere.rotateDeg(20.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f));
+    //sphere.rotateDeg(20.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f));
     int w = ofGetWidth();
     int h = ofGetHeight();
     //sphere.rotateAroundDeg(15.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3());
-    ofNode node;
-    node.setPosition(w / 2, h / 2, getRadiusGlobal(w, h)/2);
-    sphere.orbitDeg(rotator.val(), 0.0f, getRadiusGlobal(w, h)/2, node);
+    ofNode node; 
+    node.setPosition(w / 2, h / 2, -r);
+    sphere.orbitDeg(rotator, ofRandom(180.0f), r, node);
+    rotator += inc;
 }
 bool secondsPassed(int val) {
     return ((int)ofGetElapsedTimef() % val) == 0;

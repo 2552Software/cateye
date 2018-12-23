@@ -51,36 +51,32 @@ GameItem::GameItem(const ofRectangle& rect, objectTexture textureIn, int idIn, L
     set(level, duration);
 }
 
-void GameItem::setupHelper(of3dPrimitive* primitive, ofNode *parent) {
-    if (parent) {
-        primitive->setParent(*parent);
-    }
+void GameItem::setupHelper(of3dPrimitive* primitive, SuperSphere &parent) {
+    primitive->setParent(parent);
     glm::vec3 v3 = primitive->getPosition();
     primitive->setPosition(v3.x, v3.y, getRadiusGlobal());
 }
 
-void CylinderGameItem::setup(ofNode *parent) {
+void CylinderGameItem::setup(SuperSphere &parent) {
     setupHelper(&cylinder, parent);
     cylinder.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     cylinder.getAnimator().animateTo(1.0f);
 }
 
-void CubeGameItem::setup(ofNode *parent) {
+void CubeGameItem::setup(SuperSphere &parent) {
     setupHelper(&cube, parent);
     cube.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     cube.getAnimator().animateTo(1.0f);
 
 }
-void SphereGameItem::setup(ofNode *parent) {
+void SphereGameItem::setup(SuperSphere &parent) {
     setupHelper(&sphere, parent);
-    sphere.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    sphere.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width*2, rectangle.height*2); // make bigger as they will be zomed backwards
     sphere.getAnimator().animateTo(1.0f);
-    sphere.lookAt(*parent);
-    rotator.reset(::getRadiusGlobal(rectangle.width, rectangle.height)*id);
-    rotator.setDuration(duration);
-    rotator.setRepeatType(LOOP);
-    rotator.setCurve(LINEAR);
-    rotator.animateTo(360.0f);
+    sphere.lookAt(parent);
+    r = parent.getRadius();
+    inc = rectangle.height/4 + id;
+    rotator = inc;
 }
 
 void Textures::setup(const std::string& path, float duration) {

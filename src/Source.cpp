@@ -183,19 +183,19 @@ size_t Game::winnerThreshold() {
 }
 
 void Game::pushSphere(const ofRectangle&rect, int id) {
-    std::shared_ptr<GameItem> sp{ std::make_shared <SphereGameItem>(rect, spheresSkins.getCurrentRef(), &mainEye,id) };
+    std::shared_ptr<GameItem> sp{ std::make_shared <SphereGameItem>(rect, spheresSkins.getCurrentRef(), mainEye,id) };
     gameItems.push_back(sp);
 }
 void Game::pushCube(const ofRectangle&rect, int id) {
-    std::shared_ptr<GameItem> sp{ std::make_shared <CubeGameItem>(rect, cubesSkins.getCurrentRef(), &mainEye,id) };
+    std::shared_ptr<GameItem> sp{ std::make_shared <CubeGameItem>(rect, cubesSkins.getCurrentRef(), mainEye,id) };
     gameItems.push_back(sp);
 }
 void Game::pushCylinder(const ofRectangle&rect, int id) {
-    std::shared_ptr<GameItem> sp{ std::make_shared <CylinderGameItem>(rect, cylindersSkins.getCurrentRef(), &mainEye,id) };
+    std::shared_ptr<GameItem> sp{ std::make_shared <CylinderGameItem>(rect, cylindersSkins.getCurrentRef(), mainEye,id) };
     gameItems.push_back(sp);
 }
 void Game::pushMusic(const ofRectangle&rect, int id) {
-    std::shared_ptr<GameItem> sp{ std::make_shared <MusicItem>(rect, musicNotesSkins.getCurrentRef(), &mainEye,id) };
+    std::shared_ptr<GameItem> sp{ std::make_shared <MusicItem>(rect, musicNotesSkins.getCurrentRef(), mainEye,id) };
     gameItems.push_back(sp);
 }
 

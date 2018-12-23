@@ -160,7 +160,7 @@ public:
 protected:
     float getLevelDuration() { return ofGetElapsedTimef() - gameLevelTime; }
     void set(Levels level, float duration);
-    void setupHelper(of3dPrimitive* primitive, ofNode *parent);
+    void setupHelper(of3dPrimitive* primitive, SuperSphere &);
     ofRectangle rectangle;
     objectTexture texture;
     bool running;
@@ -171,11 +171,11 @@ protected:
 
 class SphereGameItem : public GameItem {
 public:
-    SphereGameItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :GameItem(rect, texture, id, Basic, 60.0f) { setup(parent); }
+    SphereGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) :GameItem(rect, texture, id, Basic, 60.0f) { setup(parent); }
     SphereGameItem() :GameItem(Basic, 60.0f) {  } // gets levels only etc
     virtual  ~SphereGameItem() {  }
 
-    void setup(ofNode *parent);
+    void setup(SuperSphere &parent);
     void update();
     void draw();
 
@@ -183,16 +183,18 @@ public:
 
 private:
     SuperSphere sphere;
-    ofxAnimatableFloat rotator; 
+    float rotator; 
+    float inc;
+    float r;
 };
 
 class CubeGameItem : public GameItem {
 public:
-    CubeGameItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :GameItem(rect, texture, id, Medium, 20.0f) { setup(parent); }
+    CubeGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) :GameItem(rect, texture, id, Medium, 20.0f) { setup(parent); }
     CubeGameItem() :GameItem(Medium, 20.0f) {  } // gets levels only etc
     virtual  ~CubeGameItem() {  }
 
-    void setup(ofNode *parent);
+    void setup(SuperSphere &parent);
     void update();
     void draw();
 
@@ -205,11 +207,11 @@ private:
 
 class CylinderGameItem : public GameItem {
 public:
-    CylinderGameItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id, Levels level = Difficult, float duration = 20.0f) :GameItem(rect, texture, id, level, duration) { setup(parent); }
+    CylinderGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id, Levels level = Difficult, float duration = 20.0f) :GameItem(rect, texture, id, level, duration) { setup(parent); }
     CylinderGameItem(Levels level = Difficult, float duration = 20.0f) :GameItem(level, duration) {  } // gets levels only etc
     virtual  ~CylinderGameItem() {  }
 
-    void setup(ofNode *parent);
+    void setup(SuperSphere &parent);
     void update();
     void draw();
 
@@ -221,7 +223,7 @@ private:
 
 class MusicItem : public CylinderGameItem { //bugbug roate them?
 public:
-    MusicItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) : CylinderGameItem(rect, texture, parent, id, EndGame, 20.0f) { }
+    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) : CylinderGameItem(rect, texture, parent, id, EndGame, 20.0f) { }
     MusicItem() :CylinderGameItem(EndGame, 20.0f) {  } // gets levels only etc
     virtual ~MusicItem() {  }
 
