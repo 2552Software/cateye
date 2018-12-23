@@ -107,7 +107,7 @@ private:
 class GameItem {
 public:
     GameItem(const ofRectangle& rect, objectTexture texture, int id);
-    ~GameItem() { }
+    virtual ~GameItem() { }
     bool operator==(const ofRectangle& rhs) const {
         return rectangle == rhs;
     }
@@ -115,8 +115,8 @@ public:
         return id == rhs;
     }
     virtual void setup() {};
-    virtual void update()=0;
-    virtual void draw()=0;
+    virtual void update() {};
+    virtual void draw() {};
     static const bool isReadyToRemove(std::shared_ptr<GameItem> item) { return !item->isRunning(); }
     virtual Levels nextLevel() = 0;
     bool isRunning() const { return running; } 
@@ -134,7 +134,7 @@ protected:
 class SphereGameItem : public GameItem {
 public:
     SphereGameItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :GameItem(rect, texture, id) { setup(parent); }
-    ~SphereGameItem() {  }
+    virtual  ~SphereGameItem() {  }
 
     void setup(ofNode *parent);
     void update();
@@ -149,7 +149,7 @@ private:
 class MusicItem : public SphereGameItem {
 public:
     MusicItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :SphereGameItem(rect, texture, parent, id) { }
-    ~MusicItem() {  }
+    virtual ~MusicItem() {  }
 
     virtual Levels nextLevel() { return NoGame; }
 

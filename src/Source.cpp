@@ -167,15 +167,19 @@ bool Game::compute(LocationToInfoMap rect, Music*music) {
     if (!find(rect2Use)) {
         switch (gameLevel) {
         case Basic: 
+        {
+            std::shared_ptr<GameItem> sp{ std::make_shared <SphereGameItem>(rect2Use, spheresSkins.getCurrentRef(), &mainEye, rect.c) };
             //make this rotate around the center of the screen, with ofRadius as the Z
-            gameItems.push_back(std::make_shared<GameItem>(new SphereGameItem(rect2Use, spheresSkins.getCurrentRef(), &mainEye, rect.c)));
+            gameItems.push_back(sp);
+        }
             break;
         case Medium:
-            if ((rect.c % 2) == 0) {
-                gameItems.push_back(std::make_shared<MusicItem>(rect2Use, cubesSkins.getCurrentRef(), &mainEye, rect.c));
-            }
+        { // cube game
+            std::shared_ptr<GameItem> sp{ std::make_shared <SphereGameItem>(rect2Use, spheresSkins.getCurrentRef(), &mainEye, rect.c) };
+            gameItems.push_back(std::make_shared<MusicItem>(rect2Use, cubesSkins.getCurrentRef(), &mainEye, rect.c));
+        }
             break;
-        case Difficult:
+        case Difficult: // cylinder game
             gameItems.push_back(std::make_shared<MusicItem>(rect2Use, cylindersSkins.getCurrentRef(), &mainEye, rect.c));
             break;
         case EndGame:

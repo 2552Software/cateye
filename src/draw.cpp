@@ -1,19 +1,23 @@
 #include "ofApp.h"
 
 void Game::draw() {
-    ofPushMatrix();
-    ofTranslate(w / 2, h / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
     if (!drawText()) { // draw text first and give it the full screen
         if (rotatingEye.isAnimating()) {
             rotatingEyesSkins.getCurrentRef().start();
+            ofPushMatrix();
+            ofTranslate(w / 2, h / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
             rotatingEye.draw();
+            ofPopMatrix();
             rotatingEyesSkins.getCurrentRef().stop();
         }
         else {
+            ofPushMatrix();
+            ofTranslate(w / 2, h / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
             setTitle();
             mainEye.setRotation(currentRotation);
             mainEyesSkins.getCurrentRef().start();
             mainEye.draw();
+            mainEyesSkins.getCurrentRef().stop();
             ofPopMatrix();
             if (!mainEye.isAnimating()) {
                 drawContours();
@@ -22,7 +26,6 @@ void Game::draw() {
             drawGame(); // draw any game that may be running
         }
     }
-    mainEyesSkins.getCurrentRef().stop();
 }
 void SuperSphere::draw() {
     if (getRadius() > 0) {
@@ -149,8 +152,11 @@ void TextEngine::draw(float z) {
 
 // return true if full screen mode enabled
 bool Game::drawText() {
+    ofPushMatrix();
+    ofTranslate(w / 2, h / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
     basicText.draw(getRadiusGlobal());
     fancyText.draw(getRadiusGlobal());
+    ofPopMatrix();
     return fancyText.isFullScreenAnimating();
 }
 

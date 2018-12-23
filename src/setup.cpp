@@ -34,6 +34,8 @@ void SphereGameItem::setup(ofNode *parent) {
         sphere.setParent(*parent);
     }
     sphere.setup(PLAY_ONCE, 30.0f, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    sphere.getAnimator().animateTo(1.0f);
+
 /*
     float duration=20.0f;
 
