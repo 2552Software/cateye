@@ -23,7 +23,7 @@ void Game::setTitle() {
     if (inGame()) {
         std::stringstream ss;
         ss << "Game On! " << levelString() <<  " Find " << winnerHitCount() << " of " << winnerThreshold();
-        basicText.print(ss.str(), ofGetWidth() / 2, ofGetHeight() / 2, getRadius());
+        basicText.print(ss.str(), ofGetWidth() / 2, ofGetHeight() / 2, getRadiusGlobal());
    }
 }
 void Game::blink() {
@@ -31,19 +31,19 @@ void Game::blink() {
     ofSetColor(ofColor::black);
     ofPushStyle();
     ofFill();
-    ofDrawRectangle(0, 0, w, (h / 2)*blinker.val(), getRadius());
-    ofDrawRectangle(0, h, w, -(h / 2)*blinker.val(), getRadius());
+    ofDrawRectangle(0, 0, w, (h / 2)*blinker.val(), getRadiusGlobal());
+    ofDrawRectangle(0, h, w, -(h / 2)*blinker.val(), getRadiusGlobal());
     ofPopStyle();
 }
 
-void Eyes::add(const std::string &name, const std::string &root) {
-    eyes.push_back(SuperSphere(root));
+void Textures::add(const std::string &name, const std::string &root) {
+    skins.push_back(objectTexture(root));
 }
 
 
 void  Game::fireWorks() {
    //bugbug sounds(5);
-   rotatingEyes.getAnimator().animateFromTo(-300, 300);//bugbug will need to adjsut for pi
+   rotatingEye.getAnimator().animateFromTo(-300, 300);//bugbug will need to adjsut for pi
 }
 
 void Game::rotate(const ofVec3f& target) {
@@ -120,7 +120,7 @@ size_t Game::winnerHitCount() {
 void Game::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event) {
     // no move main eye back into focus
     currentRotation.set(0.0f, 0.0f); // look forward, move ahead its not too late
-    mainEyes.getAnimator().animateFromTo(-rotatingEyes.getCurrentSphereRef().getRadius(), 0.0f);
+    mainEye.getAnimator().animateFromTo(-rotatingEye.getRadius(), 0.0f);
     clear(); // reset and start again
 }
 void Game::windowResized(int wIn, int hIn) {
@@ -131,6 +131,9 @@ void Game::windowResized(int wIn, int hIn) {
     // convert to screen size
     xFactor = w / cameraWidth;
     yFactor = h / cameraHeight;
+
+    mainEye.setup(LOOP_BACK_AND_FORTH, 1.0f, 0.0f, 0.0f, w, h);
+    rotatingEye.setup(LOOP_BACK_AND_FORTH, 1.0f, 0.0f, 0.0f, w, h);
 
     clear(); // reset game to assure all sizes are correct
 
@@ -163,31 +166,31 @@ bool Game::compute(LocationToInfoMap rect, Music*music) {
         switch (gameLevel) {
         case Basic: 
             //make this rotate around the center of the screen, with ofRadius as the Z
-            gameItems.push_back(GameItem(rect2Use, spheres.getCurrentSphereRef().getTexture(), gameLevel, rect.c));
+            gameItems.push_back(GameItem(rect2Use, spheresSkins.getCurrentRef(), mainEye, gameLevel, rect.c));
             break;
         case Medium:
             if ((rect.c % 2) == 0) {
-                gameItems.push_back(GameItem(rect2Use, cubes.getCurrentSphereRef().getTexture(), gameLevel, rect.c));
+                gameItems.push_back(GameItem(rect2Use, cubesSkins.getCurrentRef(), mainEye, gameLevel, rect.c));
             }
             break;
         case Difficult:
-            gameItems.push_back(GameItem(rect2Use, cylinders.getCurrentSphereRef().getTexture(), gameLevel, rect.c));
+            gameItems.push_back(GameItem(rect2Use, cylindersSkins.getCurrentRef(), mainEye, gameLevel, rect.c));
             break;
         case EndGame:
             if (rect.c == 1) { // just a few notes, 1 is a magic note
-                gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getTexture(), EndGame, rect.c));
+                gameItems.push_back(GameItem(rect2Use, musicNotesSkins.getCurrentRef(), mainEye, EndGame, rect.c));
                 music->keyboard.keyPressed('a');
             }
             else if (rect.c == 5) { // just a few notes, 1 is a magic note
-                gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getTexture(), EndGame, rect.c));
+                gameItems.push_back(GameItem(rect2Use, musicNotesSkins.getCurrentRef(), mainEye, EndGame, rect.c));
                 music->keyboard.keyPressed('g');
             }
             else if (rect.c == 7) { // just a few notes, 1 is a magic note
-                gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getTexture(), EndGame, rect.c));
+                gameItems.push_back(GameItem(rect2Use, musicNotesSkins.getCurrentRef(), mainEye, EndGame, rect.c));
                 music->keyboard.keyPressed('t');
             }
             else if (rect.c == 9) { // just a few notes, 1 is a magic note
-                gameItems.push_back(GameItem(rect2Use, musicNotes.getCurrentSphereRef().getTexture(), EndGame, rect.c));
+                gameItems.push_back(GameItem(rect2Use, musicNotesSkins.getCurrentRef(), mainEye, EndGame, rect.c));
                 music->keyboard.keyPressed('k');
             }
             break;

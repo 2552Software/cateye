@@ -80,9 +80,6 @@ void ofApp::squareCountChanged(int &squareCount) {
 }
 void ofApp::windowResized(int w, int h) {
     eyeAnimator.windowResized(w, h);
-    //eyeAnimator.font.
-
-   // camera.setDistance(10.0f);// radius which is y max of screen
 }
 
 //--------------------------------------------------------------

@@ -30,13 +30,10 @@ void TextTimer::update() {
     }
 }
 void SuperSphere::update() {
+    animator.update(1.0f / ofGetTargetFrameRate());
 }
 
-void Eyes::update() {
-    for (SuperSphere&eye : eyes) {
-        eye.update();
-    }
-    getAnimator().update(1.0f / ofGetTargetFrameRate());
+void Textures::update() {
     selector.update(1.0f / ofGetTargetFrameRate());
 }
 
@@ -139,8 +136,8 @@ void Game::update(Music*music) {
     fancyText.update();
     basicText.update();
 
-    mainEyes.update();
-    rotatingEyes.update();
+    mainEye.update();
+    rotatingEye.update();
     contours.update();
 
     updateLevel();

@@ -1,37 +1,36 @@
 #include "ofApp.h"
 
-void Eyes::rotate(ofVec3f r) {
-    for (auto& eye : eyes) {
-        eye.currentRotation = r;
-    }
-
-}
 void Game::draw() {
-    //ofLogNotice() << "rotate to targert" << target;
+    ofPushMatrix();
+    ofTranslate(w / 2, h / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
     if (!drawText()) { // draw text first and give it the full screen
-        if (rotatingEyes.isAnimating()) {
-            drawRotatingEyes();
+        if (rotatingEye.isAnimating()) {
+            rotatingEyesSkins.getCurrentRef().start();
+            rotatingEye.draw();
+            rotatingEyesSkins.getCurrentRef().stop();
         }
         else {
             setTitle();
-            mainEyes.rotate(currentRotation);
-            mainEyes.draw();
-            if (!mainEyes.isAnimating()) {
+            mainEye.setRotation(currentRotation);
+            mainEyesSkins.getCurrentRef().start();
+            mainEye.draw();
+            ofPopMatrix();
+            if (!mainEye.isAnimating()) {
                 drawContours();
                 blink();
             }
             drawGame(); // draw any game that may be running
         }
     }
+    mainEyesSkins.getCurrentRef().stop();
 }
 void SuperSphere::draw() {
     if (getRadius() > 0) {
-        eye.start();
         rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
         rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
         ofSpherePrimitive::draw();
         setOrientation({ 0.f,0.f,0.f });
-        eye.stop();
+        panDeg(180); // like a FG kickers - laces out
     }
     /*
     ofSpherePrimitive sphere;
@@ -45,16 +44,6 @@ void SuperSphere::draw() {
     sphere.setResolution(27);
     sphere.draw();
     */
-}
-void Eyes::draw() {
-    if (isAnimating()) {
-        for (auto& eye : eyes) { // keep all eyes in sync to make it easier
-           // glm::vec3 pos = eye.getPosition();
-            //pos.z = getAnimator().val();
-            //bugbug do later eye.setPosition(pos);//bug does this break animiation?
-        }
-    }
-    getCurrentSphereRef().draw();
 }
 
 
@@ -87,17 +76,12 @@ void ContoursBuilder::draw(float w, float h, float z) {
 
 // see if anything is going on
 bool Game::isAnimating() {
-    if (!rotatingEyes.isAnimating() && !mainEyes.isAnimating() && !fancyText.isFullScreenAnimating()) {
+    if (!rotatingEye.isAnimating() && !mainEye.isAnimating() && !fancyText.isFullScreenAnimating()) {
         return false;
     }
     return true;
 }
-void Game::drawRotatingEyes() {
-    if (rotatingEyes.isAnimating()) {
-        rotatingEyes.draw();
-    }
 
-}
 
 void TextEngine::drawShapes(const std::string& s) {
     // get the string as paths
@@ -131,11 +115,11 @@ void TextEngine::print(const std::string& s, float x, float y, float z) {
     ofPopMatrix();
 
 }
-void TextEngine::draw(float x, float y, float z) {
+void TextEngine::draw(float z) {
     bool found = false;
     if (fullScreenText.size() > 0) {
         ofPushMatrix();
-        ofTranslate(x, y, z);
+        ofTranslate(0.0f, 0.0f, z);
         for (auto& text : fullScreenText) {
             if (animateString(text, 0.0f, 0.0f)) {
                 found = true;
@@ -149,7 +133,7 @@ void TextEngine::draw(float x, float y, float z) {
     }
     if (inlineText.size() > 0) {
         ofPushMatrix();
-        ofTranslate(x, y, z); // ned to do the z here as no other api in fonts has a z
+        ofTranslate(0.0f, 0.0f, z); // ned to do the z here as no other api in fonts has a z
         for (auto& text : inlineText) { 
             if (animateString(text, 0.0f, 0.0f)) {
                 found = true;
@@ -165,14 +149,14 @@ void TextEngine::draw(float x, float y, float z) {
 
 // return true if full screen mode enabled
 bool Game::drawText() {
-    basicText.draw(w / 2, w / 2, getRadius());
-    fancyText.draw(w/2, w/3, getRadius());
+    basicText.draw(w / 2, w / 2, getRadiusGlobal());
+    fancyText.draw(w/2, w/3, getRadiusGlobal());
     return fancyText.isFullScreenAnimating();
 }
 
 void GameItem::draw() {
-    myeye.start();
-    switch (level) {
+    texture.start();
+    switch (level) { //bugbug make base class etc
     case Basic:
         sphere.draw();
         break;
@@ -186,22 +170,15 @@ void GameItem::draw() {
         box.draw();
         break;
     }
-    myeye.stop();
+    texture.stop();
 }
 
 void Game::drawGame() {
-    ofPushStyle();
-    ofPushMatrix();
-   //bugbug whjat is this? ofTranslate(0.0f, w / 20);
-    ofEnableAlphaBlending();
     for (auto& item : gameItems) {
         item.draw();
     }
-    ofDisableAlphaBlending();
-    ofPopMatrix();
-    ofPopStyle();
 }
 
 void Game::drawContours() {
-    contours.draw(w, h, getRadius());
+    contours.draw(w, h, getRadiusGlobal());
 }

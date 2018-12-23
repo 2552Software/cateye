@@ -3,7 +3,7 @@
 #include "ofApp.h"
 
 enum Levels { NoGame = -1, Basic = 0, Medium = 1, Difficult = 2, EndGame = 3 };
-inline float getRadius(int w= ofGetWidth(), int h= ofGetHeight()) {
+inline float getRadiusGlobal(int w= ofGetWidth(), int h= ofGetHeight()) {
     return std::min(w, h) / 2;
 }
 
@@ -63,21 +63,6 @@ private:
     Material material;
 };
 
-// always knows it rotation coordindates
-class SuperSphere : public ofSpherePrimitive {
-public:
-    SuperSphere() {}
-    SuperSphere(const string&name) { skin.setup(name); }
-    void setup(const string&name, float x, float y, int w, int h);
-    void setup(float x, float y, int w, int h);
-    void update();
-    void draw();
-    objectTexture& getTexture() { return skin; }
-    ofVec3f currentRotation;
-private:
-    objectTexture skin;
-};
-
 class ContoursBuilder {
 public:
     void setup();
@@ -92,27 +77,36 @@ private:
     ofxCvGrayscaleImage grayImage, backgroundImage, grayDiff;
 };
 
-class Eyes {
+// always knows it rotation coordindates
+class SuperSphere : public ofSpherePrimitive {
 public:
-    void setup(AnimRepeat repeat, float seconds, const std::string& path);
-    void rotate(ofVec3f r);
+    void setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h);
     void update();
     void draw();
-    bool isAnimating() {  return getAnimator().isAnimating();   }
-    SuperSphere&getCurrentSphereRef() {   return eyes[(int)selector.getCurrentValue()];  }
-    size_t count() { return eyes.size(); }
-    ofxAnimatableFloat& getAnimator() { return animator; }
-    objectTexture& getEyeRef() { return getCurrentSphereRef().getTexture(); }
+    bool isAnimating() { return animator.isAnimating(); }
+    void setRotation(const ofVec3f& r) { currentRotation = r; }
+    ofxAnimatableFloat getAnimator() { return animator; }
+private:
+    ofVec3f currentRotation;
+    ofxAnimatableFloat animator;
+
+};
+
+class Textures {
+public:
+    void setup(const std::string& path);
+    void update();
+    objectTexture&getCurrentRef() {   return skins[(int)selector.getCurrentValue()];  }
+
 private:
     void add(const std::string &name, const std::string &root);
-    ofxAnimatableFloat animator; // z direction
     ofxAnimatableFloat selector; // pick eye to draw
-    std::vector<SuperSphere> eyes;
+    std::vector<objectTexture> skins;
 };
 
 class GameItem {
 public:
-    GameItem(const ofRectangle& rect, objectTexture eye, Levels level, int id);
+    GameItem(const ofRectangle& rect, objectTexture texture, ofNode&parent, Levels level, int id);
     bool operator==(const GameItem& rhs) const {
         return rectangle == rhs.rectangle;
     }
@@ -139,8 +133,9 @@ private:
     ofRectangle rectangle;
     SuperSphere sphere;
     ofCylinderPrimitive cylinder; // like a coin -- for music notes
-    objectTexture myeye;
+    objectTexture texture;
     ofxAnimatableFloat animater; 
+    ofNode parent;
 };
 
 // map location to interesting things
@@ -153,7 +148,7 @@ public:
 class TextEngine {
 public:
     TextEngine(int idIn = 0) { id = idIn; }
-    void draw(float x, float y, float z);
+    void draw(float z);
     void setup(int fontsize);
     void update();
 
@@ -220,19 +215,21 @@ private:
     void clear();
     void textDone(int, bool);
     void drawContours();
-    void drawRotatingEyes();
     void drawGame();
     bool drawText();
     void blink();
     void setTitle();
-    Eyes mainEyes;
-    Eyes rotatingEyes;
+    Textures mainEyesSkins;
+    SuperSphere mainEye;
+    Textures rotatingEyesSkins;
+    SuperSphere rotatingEye;
+
     float gameLevelTime; // in seconds
     float gameLastActivity; // in seconds
-    Eyes cubes; // cache images
-    Eyes spheres;
-    Eyes cylinders;
-    Eyes musicNotes;
+    Textures cubesSkins; // cache images
+    Textures spheresSkins;
+    Textures cylindersSkins;
+    Textures musicNotesSkins;
     Levels gameLevel;
     void updateLevel();
     void getCountours(Music*music);

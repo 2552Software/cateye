@@ -1,14 +1,14 @@
 #include "ofApp.h"
 
-void SuperSphere::setup(const string&name, float x, float y, int w, int h) {
-    skin.setup(name);
-    setup(x, y, w, h);
-}
-void SuperSphere::setup(float x, float y, int w, int h) {
-    panDeg(180);
+void SuperSphere::setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h) {
     setResolution(27);
-    setRadius(::getRadius(w, h));
+    setRadius(::getRadiusGlobal(w, h));
     setPosition(x, y, 0.0f);
+    animator.reset(0.0f);
+    animator.setDuration(seconds);
+    animator.setRepeatType(repeat);
+    animator.setCurve(LINEAR);
+
 }
 void TextTimer::setup() {
 }
@@ -22,11 +22,12 @@ void objectTexture::setup(const string&texName) {
     }
 }
 
-GameItem::GameItem(const ofRectangle& rect, objectTexture eye, Levels levelIn, int idIn) {
+GameItem::GameItem(const ofRectangle& rect, objectTexture textureIn, ofNode&parentIn, Levels levelIn, int idIn) {
     id = idIn;
     rectangle = rect;
     level = levelIn;
-    myeye = eye;
+    texture = textureIn;
+    parent = parentIn;
     setup();
 }
 
@@ -54,19 +55,15 @@ void GameItem::setup() {
         duration = 20.0f;
     }
     else if (level == Basic) {
-        sphere.setup(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-        duration = 30.0f;
+       sphere.setParent(parent);
+       sphere.setup(PLAY_ONCE, 1.0f, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+       duration = 30.0f;
     }
     animater.setDuration(duration);
     animater.animateTo(1.0f);
 }
 
-void Eyes::setup(AnimRepeat repeat, float seconds, const std::string& path) {
-
-    getAnimator().reset(0.0f);
-    getAnimator().setDuration(seconds);
-    getAnimator().setRepeatType(repeat);
-    getAnimator().setCurve(LINEAR);
+void Textures::setup(const std::string& path) {
 
     ofDirectory dir(path);
     dir.allowExt("png");
@@ -137,23 +134,19 @@ void Game::setup() {
     std::function<void(int, bool)> f = std::bind(&Game::textDone, this, std::placeholders::_1, std::placeholders::_2);
     fancyText.bind(f);
 
-    ofAddListener(rotatingEyes.getAnimator().animFinished, this, &Game::rotatingEyesDone);
+    ofAddListener(rotatingEye.getAnimator().animFinished, this, &Game::rotatingEyesDone);
 
     buildTable();
     buildX();
     buildY();
 
-    mainEyes.setup(PLAY_ONCE, 1.0f, EYES);
-    if (!mainEyes.count()) {
-        ofExit(100);
-    }
+    mainEyesSkins.setup(EYES);
+    rotatingEyesSkins.setup(SPIRALS);
+    cubesSkins.setup(CUBES);
+    spheresSkins.setup(SPHERES);
+    musicNotesSkins.setup(MUSICNOTES);
+    cylindersSkins.setup(CYLINDERS);
     
-    rotatingEyes.setup(LOOP_BACK_AND_FORTH_ONCE, 3.0f, SPIRALS);
-    cubes.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, CUBES);
-    spheres.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, SPHERES);
-    musicNotes.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, MUSICNOTES);
-    cylinders.setup(LOOP_BACK_AND_FORTH_ONCE, 1.0f, CYLINDERS);
-
     contours.setup();
 
     //ofDirectory allSounds(SOUNDS);
