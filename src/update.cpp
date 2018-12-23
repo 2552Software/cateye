@@ -54,13 +54,18 @@ void CubeGameItem::update() {
 
 }
 void SphereGameItem::update() {
+    rotator.update(1.0f / ofGetTargetFrameRate());
     sphere.update();
     if (!sphere.isAnimating()) {
         stop();
     }
     sphere.rotateDeg(20.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f));
-    sphere.rotateAroundDeg(15.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f), sphere.getParent()->getPosition());
-    //sphere.orbitDeg(15.0f*sphere.getAnimator().val(), 0.0f, getRadiusGlobal(), *sphere.getParent());
+    int w = ofGetWidth();
+    int h = ofGetHeight();
+    //sphere.rotateAroundDeg(15.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3());
+    ofNode node;
+    node.setPosition(w / 2, h / 2, getRadiusGlobal(w, h)/2);
+    sphere.orbitDeg(rotator.val(), 0.0f, getRadiusGlobal(w, h)/2, node);
 }
 bool secondsPassed(int val) {
     return ((int)ofGetElapsedTimef() % val) == 0;
@@ -97,10 +102,15 @@ void Game::update(Music*music) {
 
     fancyText.update();
     basicText.update();
-
     mainEye.update();
     rotatingEye.update();
     contours.update();
+    mainEyesSkins.update();
+    rotatingEyesSkins.update();
+    cubesSkins.update();
+    spheresSkins.update();
+    cylindersSkins.update();
+    musicNotesSkins.update();
 
     if (!isAnimating()) {
         if (current->getLevel() != NoGame &&  isWinner()) {  

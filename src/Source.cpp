@@ -3,8 +3,11 @@
 
 objectTexture&Textures::getCurrentRef() { 
     float f = selector.getCurrentValue();
-    ofLogNotice("eye val") << f << " " << (int)f;
-    return skins[(int)f];
+    //ofLogNotice("eye val") << f << " " << (int)f;
+    if (f < skins.size()) {
+        return skins[f];
+    }
+    return skins[0];
 }
 
 

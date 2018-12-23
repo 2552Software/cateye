@@ -171,8 +171,8 @@ protected:
 
 class SphereGameItem : public GameItem {
 public:
-    SphereGameItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :GameItem(rect, texture, id, Basic, 20.0f) { setup(parent); }
-    SphereGameItem() :GameItem(Basic, 20.0f) {  } // gets levels only etc
+    SphereGameItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :GameItem(rect, texture, id, Basic, 60.0f) { setup(parent); }
+    SphereGameItem() :GameItem(Basic, 60.0f) {  } // gets levels only etc
     virtual  ~SphereGameItem() {  }
 
     void setup(ofNode *parent);
@@ -183,6 +183,7 @@ public:
 
 private:
     SuperSphere sphere;
+    ofxAnimatableFloat rotator; 
 };
 
 class CubeGameItem : public GameItem {

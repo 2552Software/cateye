@@ -75,6 +75,12 @@ void SphereGameItem::setup(ofNode *parent) {
     setupHelper(&sphere, parent);
     sphere.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     sphere.getAnimator().animateTo(1.0f);
+    sphere.lookAt(*parent);
+    rotator.reset(::getRadiusGlobal(rectangle.width, rectangle.height)*id);
+    rotator.setDuration(duration);
+    rotator.setRepeatType(LOOP);
+    rotator.setCurve(LINEAR);
+    rotator.animateTo(360.0f);
 }
 
 void Textures::setup(const std::string& path, float duration) {
@@ -86,9 +92,9 @@ void Textures::setup(const std::string& path, float duration) {
     if (dir.listDir() > 0) {
         selector.reset(0.0f);
         selector.setDuration(duration); 
-        selector.setRepeatType(LOOP_BACK_AND_FORTH);
+        selector.setRepeatType(LOOP);
         selector.setCurve(LINEAR);
-        selector.animateTo(dir.size()-1);
+        selector.animateTo(dir.size());
         for (; i < dir.size(); i++) {
             add(dir.getName(i), dir.getPath(i));
         }
@@ -154,7 +160,7 @@ void Game::setup() {
     buildX();
     buildY();
 
-    mainEyesSkins.setup(EYES, 10.0f);
+    mainEyesSkins.setup(EYES, 30.0f);
     rotatingEyesSkins.setup(SPIRALS, 10.0f);
     cubesSkins.setup(CUBES, 10.0f);
     spheresSkins.setup(SPHERES, 20.0f);
