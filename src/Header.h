@@ -107,6 +107,7 @@ private:
 class GameItem {
 public:
     GameItem(const ofRectangle& rect, objectTexture texture, ofNode&parent, int id);
+    ~GameItem() { animater.pause(); }
     bool operator==(const ofRectangle& rhs) const {
         return rectangle == rhs;
     }
@@ -139,10 +140,10 @@ public:
     virtual Levels nextLevel() {   return NoGame;  }
 
     static bool isMusicNote(const GameItem& item) { return true; }
-    static bool isAkey(const GameItem& item) { return (item.id == 1); }
-    static bool isGkey(const GameItem& item) { return (item.id == 5); }
-    static bool isTkey(const GameItem& item) { return (item.id == 7); }
-    static bool isKkey(const GameItem& item) { return (item.id == 9); }
+    static bool isAkey(std::shared_ptr<GameItem>item) { return (item->id == 1); }
+    static bool isGkey(std::shared_ptr<GameItem>item) { return (item->id == 5); }
+    static bool isTkey(std::shared_ptr<GameItem>item) { return (item->id == 7); }
+    static bool isKkey(std::shared_ptr<GameItem>item) { return (item->id == 9); }
 
 private:
     SuperSphere sphere;
