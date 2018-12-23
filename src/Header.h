@@ -90,6 +90,7 @@ public:
     void setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h);
     void update();
     void draw();
+    void home();
     bool isAnimating() { return animator.isAnimating(); }
     void setRotation(const ofVec3f& r) { currentRotation = r; }
     ofxAnimatableFloat& getAnimator() { return animator; }
