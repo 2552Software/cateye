@@ -27,12 +27,17 @@ void Game::draw() {
         }
     }
 }
+void SuperCylinder::draw() {
+}
+
+void SuperCube::draw() {
+}
 void SuperSphere::draw() {
     if (getRadius() > 0) {
         rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
         rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
-        drawWireframe();
-        //ofSpherePrimitive::draw();
+        //drawWireframe();
+        ofSpherePrimitive::draw();
         setOrientation({ 0.f,0.f,0.f });
         panDeg(180); // like a FG kickers - laces out
     }
@@ -161,18 +166,24 @@ bool Game::drawText() {
     return fancyText.isFullScreenAnimating();
 }
 
+void CylinderGameItem::draw() {
+    texture.start();
+    cylinder.draw();
+    texture.stop();
+}
+
+
+void CubeGameItem::draw() {
+    texture.start();
+    cube.draw();
+    texture.stop();
+}
 void SphereGameItem::draw() {
     texture.start();
     sphere.draw();
     texture.stop();
     /*
     switch (level) { //bugbug make base class etc
-    case Basic:
-        sphere.draw();
-        break;
-    case Medium:
-        box.draw();
-        break;
     case Difficult:
         cylinder.draw();
         break;

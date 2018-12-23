@@ -4,7 +4,7 @@
 
 enum Levels { NoGame = -1, Basic = 0, Medium = 1, Difficult = 2, EndGame = 3 };
 inline float getRadiusGlobal(int w= ofGetWidth(), int h= ofGetHeight()) {
-    return std::min(w, h) / 2;
+    return (std::min(w, h) / 2) - (std::min(w, h) / 2)*0.20f;
 }
 
 class TextTimer {
@@ -89,8 +89,34 @@ public:
 private:
     ofVec3f currentRotation;
     ofxAnimatableFloat animator;
-
 };
+
+class SuperCube : public ofBoxPrimitive {
+public:
+    void setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h);
+    void update();
+    void draw();
+    bool isAnimating() { return animator.isAnimating(); }
+    void setRotation(const ofVec3f& r) { currentRotation = r; }
+    ofxAnimatableFloat& getAnimator() { return animator; }
+private:
+    ofVec3f currentRotation;
+    ofxAnimatableFloat animator;
+};
+
+class SuperCylinder: public ofCylinderPrimitive {
+public:
+    void setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h);
+    void update();
+    void draw();
+    bool isAnimating() { return animator.isAnimating(); }
+    void setRotation(const ofVec3f& r) { currentRotation = r; }
+    ofxAnimatableFloat& getAnimator() { return animator; }
+private:
+    ofVec3f currentRotation;
+    ofxAnimatableFloat animator;
+};
+
 
 class Textures {
 public:
@@ -124,9 +150,7 @@ public:
     int id;
 
 protected:
-   // ofBoxPrimitive box; // pick a shape 
     ofRectangle rectangle;
-    //ofCylinderPrimitive cylinder; // like a coin -- for music notes
     objectTexture texture;
     bool running;
 };
@@ -144,6 +168,36 @@ public:
 
 private:
     SuperSphere sphere;
+};
+
+class CubeGameItem : public GameItem {
+public:
+    CubeGameItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :GameItem(rect, texture, id) { setup(parent); }
+    virtual  ~CubeGameItem() {  }
+
+    void setup(ofNode *parent);
+    void update();
+    void draw();
+    virtual Levels nextLevel() { return Difficult; }
+    bool isAnimating() { return cube.isAnimating(); }
+
+private:
+    SuperCube cube; 
+};
+
+class CylinderGameItem : public GameItem {
+public:
+    CylinderGameItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :GameItem(rect, texture, id) { setup(parent); }
+    virtual  ~CylinderGameItem() {  }
+
+    void setup(ofNode *parent);
+    void update();
+    void draw();
+    virtual Levels nextLevel() { return EndGame; }
+    bool isAnimating() { return cube.isAnimating(); }
+
+private:
+    SuperCylinder cube;
 };
 
 class MusicItem : public SphereGameItem {
@@ -223,6 +277,9 @@ public:
     ContoursBuilder contours;
 
 private:
+    void pushSphere(const ofRectangle&rect, int id);
+    void pushCube(const ofRectangle&rect, int id);
+    void pushCylinder(const ofRectangle&rect, int id);
     bool compute(LocationToInfoMap rect, Music*);
     TextEngine basicText;
     TextEngine fancyText;

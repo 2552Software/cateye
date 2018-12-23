@@ -9,6 +9,37 @@ void SuperSphere::setup(AnimRepeat repeat, float seconds, float x, float y, int 
     animator.setRepeatType(repeat);
     animator.setCurve(LINEAR);
 }
+
+void SuperSphere::setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h) {
+    setResolution(27);
+    setRadius(::getRadiusGlobal(w, h));
+    setPosition(x, y, 0.0f);
+    animator.reset(0.0f);
+    animator.setDuration(seconds);
+    animator.setRepeatType(repeat);
+    animator.setCurve(LINEAR);
+}
+
+void SuperCylinder::setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h) {
+    setResolution(27);
+    setRadius(::getRadiusGlobal(w, h));
+    setPosition(x, y, 0.0f);
+    animator.reset(0.0f);
+    animator.setDuration(seconds);
+    animator.setRepeatType(repeat);
+    animator.setCurve(LINEAR);
+}
+
+void SuperCube::setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h) {
+    setResolution(27);
+    setRadius(::getRadiusGlobal(w, h));
+    setPosition(x, y, 0.0f);
+    animator.reset(0.0f);
+    animator.setDuration(seconds);
+    animator.setRepeatType(repeat);
+    animator.setCurve(LINEAR);
+}
+
 void TextTimer::setup() {
 }
 
@@ -28,6 +59,11 @@ GameItem::GameItem(const ofRectangle& rect, objectTexture textureIn, int idIn) {
     running = true;// start off running
 }
 
+void CylinderGameItem::setup(ofNode *parent) {
+}
+
+void CubeGameItem::setup(ofNode *parent) {
+}
 void SphereGameItem::setup(ofNode *parent) {
 
     if (parent) {

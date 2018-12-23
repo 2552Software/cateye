@@ -161,26 +161,36 @@ size_t Game::winnerThreshold() {
     return 0;
 }
 
+void Game::pushSphere(const ofRectangle&rect, int id) {
+    std::shared_ptr<GameItem> sp{ std::make_shared <SphereGameItem>(rect, spheresSkins.getCurrentRef(), &mainEye,id) };
+    gameItems.push_back(sp);
+}
+void Game::pushCube(const ofRectangle&rect, int id) {
+    std::shared_ptr<GameItem> sp{ std::make_shared <CubeGameItem>(rect, cubesSkins.getCurrentRef(), &mainEye,id) };
+    gameItems.push_back(sp);
+}
+void Game::pushCylinder(const ofRectangle&rect, int id) {
+    std::shared_ptr<GameItem> sp{ std::make_shared <CylinderGameItem>(rect, cylindersSkins.getCurrentRef(), &mainEye,id) };
+    gameItems.push_back(sp);
+}
+void Game::pushMusic(const ofRectangle&rect, int id) {
+    std::shared_ptr<GameItem> sp{ std::make_shared <MusicGameItem>(rect, cylindersSkins.getCurrentRef(), &mainEye,id) };
+    gameItems.push_back(sp);
+}
+
 bool Game::compute(LocationToInfoMap rect, Music*music) {
     float cx = w - (rect.width)*xFactor;
     ofRectangle rect2Use((cx - rect.x*xFactor), rect.y*yFactor, rect.width*xFactor, rect.height*yFactor);
     if (!find(rect2Use)) {
         switch (gameLevel) {
         case Basic: 
-        {
-            std::shared_ptr<GameItem> sp{ std::make_shared <SphereGameItem>(rect2Use, spheresSkins.getCurrentRef(), &mainEye, rect.c) };
-            //make this rotate around the center of the screen, with ofRadius as the Z
-            gameItems.push_back(sp);
-        }
+            pushSphere(rect2Use, rect.c);
             break;
         case Medium:
-        { // cube game
-            std::shared_ptr<GameItem> sp{ std::make_shared <SphereGameItem>(rect2Use, spheresSkins.getCurrentRef(), &mainEye, rect.c) };
-            gameItems.push_back(std::make_shared<MusicItem>(rect2Use, cubesSkins.getCurrentRef(), &mainEye, rect.c));
-        }
+            pushCube(rect2Use, rect.c);
             break;
         case Difficult: // cylinder game
-            gameItems.push_back(std::make_shared<MusicItem>(rect2Use, cylindersSkins.getCurrentRef(), &mainEye, rect.c));
+            pushCylinder(rect2Use, rect.c);
             break;
         case EndGame:
             if (rect.c == 1) { // just a few notes, 1 is a magic note

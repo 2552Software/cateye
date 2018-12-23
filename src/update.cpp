@@ -32,18 +32,31 @@ void TextTimer::update() {
 void SuperSphere::update() {
     animator.update(1.0f / ofGetTargetFrameRate());
 }
-
+void SuperCube::update() {
+    animator.update(1.0f / ofGetTargetFrameRate());
+}
 void Textures::update() {
     selector.update(1.0f / ofGetTargetFrameRate());
 }
+void SuperCylinder::update() {
+    animator.update(1.0f / ofGetTargetFrameRate());
+}
 
+void CylinderGameItem::update() {
+    cylinder.update();
+}
+
+void CubeGameItem::update() {
+    cube.update();
+}
 void SphereGameItem::update() {
     sphere.update();
     if (!sphere.isAnimating()) {
         stop();
     }
     sphere.rotateDeg(20.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f));
-    sphere.orbitDeg(15.0f, 0.0f, getRadiusGlobal(), *sphere.getParent());
+    sphere.rotateAroundDeg(15.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f), sphere.getParent()->getPosition());
+    //sphere.orbitDeg(15.0f*sphere.getAnimator().val(), 0.0f, getRadiusGlobal(), *sphere.getParent());
 /*
     switch (level) {
     case NoGame:
@@ -79,9 +92,9 @@ void Game::updateLevel() {
         }
         break;
     case Basic:
-        if (getLevelDuration() > 60.0f) { // stop game after 1 minute at a level
+        if (getLevelDuration() > 10.0f) { // stop game after 1 minute at a level
             resetLevelTime();
-            gameLevel = NoGame; // go to previous level
+            gameLevel = Medium; // go to next level
         }
         break;
     case Medium:
