@@ -5,7 +5,7 @@
 void Game::setTitle() {
     if (inGame()) {
         std::stringstream ss;
-        ss << "Game On! " << current->levelString() <<  " Find " << winnerHitCount() << " of " << winnerThreshold();
+        ss << "Game On! " << current->getLevel() <<  " Find " << winnerHitCount() << " of " << winnerThreshold();
         basicText.print(ss.str(), ofGetWidth() / 2, ofGetHeight() / 2, getRadiusGlobal());
    }
 }
@@ -23,32 +23,31 @@ void Textures::add(const std::string &name, const std::string &root) {
     skins.push_back(objectTexture(root));
 }
 std::shared_ptr<GameItem> GameItem::getNext() {
-    std::shared_ptr<GameItem> sp{ std::make_shared <SphereGameItem>() }; 
-    sp->resetLevelTime();
-    return sp;
-};
-
-std::shared_ptr<GameItem> SphereGameItem::getNext() {
-    std::shared_ptr<GameItem> sp{ std::make_shared <CubeGameItem>() }; 
-    sp->resetLevelTime();
-    return sp;
-};
-
-std::shared_ptr<GameItem> CubeGameItem::getNext() {
-    std::shared_ptr<GameItem> sp{ std::make_shared <CylinderGameItem>() }; 
-    sp->resetLevelTime();
-    return sp;
-};
-
-std::shared_ptr<GameItem> CylinderGameItem::getNext() {
-    std::shared_ptr<GameItem> sp{ std::make_shared <MusicItem>() }; 
-    sp->resetLevelTime();
-    return sp;
-};
-std::shared_ptr<GameItem> MusicItem::getNext() {
-    std::shared_ptr<GameItem> sp{ std::make_shared <GameItem>() };
-    sp->resetLevelTime();
-    return sp;
+    if (level == NoGame) {
+        std::shared_ptr<GameItem> sp{ std::make_shared <SphereGameItem>() };
+        sp->resetLevelTime();
+        return sp;
+    }
+    if (level == Basic) {
+        std::shared_ptr<GameItem> sp{ std::make_shared <CubeGameItem>() };
+        sp->resetLevelTime();
+        return sp;
+    }
+    if (level == Medium) {
+        std::shared_ptr<GameItem> sp{ std::make_shared <CylinderGameItem>() };
+        sp->resetLevelTime();
+        return sp;
+    }
+    if (level == Difficult) {
+        std::shared_ptr<GameItem> sp{ std::make_shared <MusicItem>() };
+        sp->resetLevelTime();
+        return sp;
+    }
+    if (level == EndGame) {
+        std::shared_ptr<GameItem> sp{ std::make_shared <GameItem>() };
+        sp->resetLevelTime();
+        return sp;
+    }
 };
 
 void  Game::fireWorks() {
@@ -156,7 +155,7 @@ void Game::startPlaying() {
    //bugbug sounds();
 }
 size_t Game::winnerThreshold() { 
-    switch (current->level()) {
+    switch (current->getLevel()) {
     case NoGame:
         return 0;
     case Basic:
@@ -192,7 +191,7 @@ bool Game::compute(LocationToInfoMap rect, Music*music) {
     float cx = w - (rect.width)*xFactor;
     ofRectangle rect2Use((cx - rect.x*xFactor), rect.y*yFactor, rect.width*xFactor, rect.height*yFactor);
     if (!find(rect2Use)) {
-        switch (current->level()) {
+        switch (current->getLevel()) {
         case Basic: 
             pushSphere(rect2Use, rect.c);
             break;

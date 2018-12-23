@@ -29,17 +29,9 @@ void TextTimer::update() {
         partialText = rawText.substr(0, n);
     }
 }
-void SuperSphere::update() {
-    animator.update(1.0f / ofGetTargetFrameRate());
-}
-void SuperCube::update() {
-    animator.update(1.0f / ofGetTargetFrameRate());
-}
+
 void Textures::update() {
     selector.update(1.0f / ofGetTargetFrameRate());
-}
-void SuperCylinder::update() {
-    animator.update(1.0f / ofGetTargetFrameRate());
 }
 
 void CylinderGameItem::update() {
@@ -115,7 +107,7 @@ void Game::update(Music*music) {
     }
     gameItems.remove_if(GameItem::isReadyToRemove);
 
-    if (current->getLevelDuration() > current->duration()) { // start game every 60 seconds bugbug 5 sec to test
+    if (current->getLevelDuration() > current->getDuration()) { // start game every 60 seconds bugbug 5 sec to test
         current = current->getNext();
     }
 
@@ -127,9 +119,9 @@ void Game::update(Music*music) {
     contours.update();
 
     if (!isAnimating()) {
-        if (current->level() != NoGame &&  isWinner()) {  
+        if (current->getLevel() != NoGame &&  isWinner()) {  
             clear();
-            switch (current->level()) {
+            switch (current->getLevel()) {
             case Difficult:
                 sendFireworks = true;
                 credits(true);

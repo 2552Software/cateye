@@ -1,23 +1,33 @@
 #include "ofApp.h"
 
+void Animate3d::setup(AnimRepeat repeat, float seconds){
+    animator.reset(0.0f);
+    animator.setDuration(seconds);
+    animator.setRepeatType(repeat);
+    animator.setCurve(LINEAR);
+}
+void GameItem::set(Levels levelIn, float durationIn) {
+    duration = durationIn;
+    level = levelIn;
+}
 void SuperSphere::setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h) {
     setResolution(27);
     setRadius(::getRadiusGlobal(w, h));
+    Animate3d::setup(repeat, seconds);
     setPosition(x, y, 0.0f);
-    setAnimatorHelper(animator, seconds, repeat);
 }
 
 void SuperCylinder::setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h) {
     setHeight(h/25.0f);
     setRadius(w/25);
     setPosition(x, y, 0.0f);
-    setAnimatorHelper(animator, seconds, repeat);
+    Animate3d::setup(repeat, seconds);
 }
 
 void SuperCube::setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h) {
     set(w, h, w);
     setPosition(x, y, 0.0f);
-    setAnimatorHelper(animator, seconds, repeat);
+    Animate3d::setup(repeat, seconds);
 }
 
 void TextTimer::setup() {
@@ -32,12 +42,13 @@ void objectTexture::setup(const string&texName) {
     }
 }
 
-GameItem::GameItem(const ofRectangle& rect, objectTexture textureIn, int idIn) {
+GameItem::GameItem(const ofRectangle& rect, objectTexture textureIn, int idIn, Levels level, float duration) {
     id = idIn;
     rectangle = rect;
     texture = textureIn;
     resetLevelTime();
     running = true;// start off running
+    set(level, duration);
 }
 
 void GameItem::setupHelper(of3dPrimitive* primitive, ofNode *parent) {

@@ -170,14 +170,11 @@ bool Game::drawText() {
     ofPopMatrix();
     return fancyText.isFullScreenAnimating();
 }
-
 void CylinderGameItem::draw() {
     texture.start();
     cylinder.draw();
     texture.stop();
 }
-
-
 void CubeGameItem::draw() {
     texture.start();
     cube.draw();
@@ -187,20 +184,10 @@ void SphereGameItem::draw() {
     texture.start();
     sphere.draw();
     texture.stop();
-    /*
-    switch (level) { //bugbug make base class etc
-    case Difficult:
-        cylinder.draw();
-        break;
-    case EndGame:
-        box.draw();
-        break;
-    }
-    */
 }
 
 void Game::drawGame() {
-    for (auto& item : gameItems) {
+    for (auto item : gameItems) {
         item->draw();
     }
 }
