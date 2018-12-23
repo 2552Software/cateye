@@ -154,7 +154,7 @@ bool Game::drawText() {
     return fancyText.isFullScreenAnimating();
 }
 
-void MusicItem::draw() {
+void SphereGameItem::draw() {
     texture.start();
     sphere.draw();
     texture.stop();

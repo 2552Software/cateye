@@ -85,7 +85,7 @@ public:
     void draw();
     bool isAnimating() { return animator.isAnimating(); }
     void setRotation(const ofVec3f& r) { currentRotation = r; }
-    ofxAnimatableFloat getAnimator() { return animator; }
+    ofxAnimatableFloat& getAnimator() { return animator; }
 private:
     ofVec3f currentRotation;
     ofxAnimatableFloat animator;
@@ -106,47 +106,57 @@ private:
 
 class GameItem {
 public:
-    GameItem(const ofRectangle& rect, objectTexture texture, ofNode&parent, int id);
-    ~GameItem() { animater.pause(); }
+    GameItem(const ofRectangle& rect, objectTexture texture, int id);
+    ~GameItem() { }
     bool operator==(const ofRectangle& rhs) const {
         return rectangle == rhs;
     }
     bool operator==(const int rhs) const {
         return id == rhs;
     }
-    virtual void setup()=0;
+    virtual void setup() {};
     virtual void update()=0;
     virtual void draw()=0;
+    static const bool isReadyToRemove(std::shared_ptr<GameItem> item) { return !item->isRunning(); }
     virtual Levels nextLevel() = 0;
-    bool isAnimating() { return animater.isAnimating(); }
+    bool isRunning() const { return running; } 
+    void stop() { running = false; }
     int id;
 
 protected:
-    ofBoxPrimitive box; // pick a shape 
+   // ofBoxPrimitive box; // pick a shape 
     ofRectangle rectangle;
-    SuperSphere sphere;
-    ofCylinderPrimitive cylinder; // like a coin -- for music notes
+    //ofCylinderPrimitive cylinder; // like a coin -- for music notes
     objectTexture texture;
-    ofxAnimatableFloat animater; 
-    ofNode parent;
+    bool running;
 };
 
-class MusicItem : public GameItem {
+class SphereGameItem : public GameItem {
 public:
-    MusicItem(const ofRectangle& rect, objectTexture texture, ofNode&parent, int id) :GameItem(rect, texture, parent, id) { setup(); }
-    void setup();
+    SphereGameItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :GameItem(rect, texture, id) { setup(parent); }
+    ~SphereGameItem() {  }
+
+    void setup(ofNode *parent);
     void update();
     void draw();
-    virtual Levels nextLevel() {   return NoGame;  }
+    virtual Levels nextLevel() { return Medium; }
+    bool isAnimating() { return sphere.isAnimating(); }
 
-    static bool isMusicNote(const GameItem& item) { return true; }
+private:
+    SuperSphere sphere;
+};
+
+class MusicItem : public SphereGameItem {
+public:
+    MusicItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :SphereGameItem(rect, texture, parent, id) { }
+    ~MusicItem() {  }
+
+    virtual Levels nextLevel() { return NoGame; }
+
     static bool isAkey(std::shared_ptr<GameItem>item) { return (item->id == 1); }
     static bool isGkey(std::shared_ptr<GameItem>item) { return (item->id == 5); }
     static bool isTkey(std::shared_ptr<GameItem>item) { return (item->id == 7); }
     static bool isKkey(std::shared_ptr<GameItem>item) { return (item->id == 9); }
-
-private:
-    SuperSphere sphere;
 };
 
 // map location to interesting things

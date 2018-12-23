@@ -37,9 +37,12 @@ void Textures::update() {
     selector.update(1.0f / ofGetTargetFrameRate());
 }
 
-void MusicItem::update() {
-    animater.update(1.0f / ofGetTargetFrameRate());
-    sphere.rotateDeg(20.0f*animater.val(), glm::vec3(0.0f, 1.0f, 0.0f));
+void SphereGameItem::update() {
+    sphere.update();
+    if (!sphere.isAnimating()) {
+        stop();
+    }
+    sphere.rotateDeg(20.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f));
 /*
     switch (level) {
     case NoGame:
@@ -122,18 +125,11 @@ void Game::update(Music*music) {
     }
 
     // if not animating time to go...
-    auto i = gameItems.begin();
-    while (i != gameItems.end())   {
-        if (!(*i)->isAnimating())    {
-            i = gameItems.erase(i); 
-        }
-        else {
-            ++i;
-        }
-    }
     for (auto& a : gameItems) {
         a->update();
     }
+    gameItems.remove_if(GameItem::isReadyToRemove);
+
 
     fancyText.update();
     basicText.update();

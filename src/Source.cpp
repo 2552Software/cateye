@@ -168,31 +168,31 @@ bool Game::compute(LocationToInfoMap rect, Music*music) {
         switch (gameLevel) {
         case Basic: 
             //make this rotate around the center of the screen, with ofRadius as the Z
-            gameItems.push_back(std::make_shared<MusicItem>(rect2Use, spheresSkins.getCurrentRef(), mainEye, rect.c));
+            gameItems.push_back(std::make_shared<GameItem>(new SphereGameItem(rect2Use, spheresSkins.getCurrentRef(), &mainEye, rect.c)));
             break;
         case Medium:
             if ((rect.c % 2) == 0) {
-                gameItems.push_back(std::make_shared<MusicItem>(rect2Use, cubesSkins.getCurrentRef(), mainEye, rect.c));
+                gameItems.push_back(std::make_shared<MusicItem>(rect2Use, cubesSkins.getCurrentRef(), &mainEye, rect.c));
             }
             break;
         case Difficult:
-            gameItems.push_back(std::make_shared<MusicItem>(rect2Use, cylindersSkins.getCurrentRef(), mainEye, rect.c));
+            gameItems.push_back(std::make_shared<MusicItem>(rect2Use, cylindersSkins.getCurrentRef(), &mainEye, rect.c));
             break;
         case EndGame:
             if (rect.c == 1) { // just a few notes, 1 is a magic note
-                gameItems.push_back(std::make_shared<MusicItem>(rect2Use, musicNotesSkins.getCurrentRef(), mainEye, rect.c));
+                gameItems.push_back(std::make_shared<MusicItem>(rect2Use, musicNotesSkins.getCurrentRef(), &mainEye, rect.c));
                 music->keyboard.keyPressed('a');
             }
             else if (rect.c == 5) { // just a few notes, 1 is a magic note
-                gameItems.push_back(std::make_shared<MusicItem>(rect2Use, musicNotesSkins.getCurrentRef(), mainEye, rect.c));
+                gameItems.push_back(std::make_shared<MusicItem>(rect2Use, musicNotesSkins.getCurrentRef(), &mainEye, rect.c));
                 music->keyboard.keyPressed('g');
             }
             else if (rect.c == 7) { // just a few notes, 1 is a magic note
-                gameItems.push_back(std::make_shared<MusicItem>(rect2Use, musicNotesSkins.getCurrentRef(), mainEye, rect.c));
+                gameItems.push_back(std::make_shared<MusicItem>(rect2Use, musicNotesSkins.getCurrentRef(), &mainEye, rect.c));
                 music->keyboard.keyPressed('t');
             }
             else if (rect.c == 9) { // just a few notes, 1 is a magic note
-                gameItems.push_back(std::make_shared<MusicItem>(rect2Use, musicNotesSkins.getCurrentRef(), mainEye, rect.c));
+                gameItems.push_back(std::make_shared<MusicItem>(rect2Use, musicNotesSkins.getCurrentRef(), &mainEye, rect.c));
                 music->keyboard.keyPressed('k');
             }
             break;
@@ -224,8 +224,8 @@ bool Game::compute(LocationToInfoMap rect, Music*music) {
     return false;
 }
 bool Game::find(const ofRectangle& rect) {
-    for (auto a : gameItems) {
-        if (*a == rect) {
+    for (auto item : gameItems) {
+        if (*item == rect) {
             return true;
         }
     }

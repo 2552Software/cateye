@@ -8,7 +8,6 @@ void SuperSphere::setup(AnimRepeat repeat, float seconds, float x, float y, int 
     animator.setDuration(seconds);
     animator.setRepeatType(repeat);
     animator.setCurve(LINEAR);
-
 }
 void TextTimer::setup() {
 }
@@ -22,23 +21,19 @@ void objectTexture::setup(const string&texName) {
     }
 }
 
-GameItem::GameItem(const ofRectangle& rect, objectTexture textureIn, ofNode&parentIn, int idIn) {
+GameItem::GameItem(const ofRectangle& rect, objectTexture textureIn, int idIn) {
     id = idIn;
     rectangle = rect;
     texture = textureIn;
-    parent = parentIn;
-    animater.reset(0.0f);
-    animater.setCurve(EASE_IN_EASE_OUT);
-    animater.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
-   
+    running = true;// start off running
 }
 
-void MusicItem::setup() {
+void SphereGameItem::setup(ofNode *parent) {
 
-    sphere.setParent(parent);
-    sphere.setup(PLAY_ONCE, 1.0f, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-    animater.setDuration(30.0f);
-    animater.animateTo(1.0f);
+    if (parent) {
+        sphere.setParent(*parent);
+    }
+    sphere.setup(PLAY_ONCE, 30.0f, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
 /*
     float duration=20.0f;
 
