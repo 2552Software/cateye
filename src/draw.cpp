@@ -4,7 +4,7 @@ void Game::draw() {
     if (!drawText()) { // draw text first and give it the full screen
         if (rotatingEye.isAnimating()) {
             rotatingEyesSkins.getCurrentRef().start();
-            ofPushMatrix();
+            ofPushMatrix(); 
             ofTranslate(w / 2, h / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
             rotatingEye.draw();
             ofPopMatrix();

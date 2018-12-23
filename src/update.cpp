@@ -39,7 +39,7 @@ void CylinderGameItem::update() {
     if (!cylinder.isAnimating()) {
         stop();
     }
-    cylinder.rotateDeg(20.0f*cylinder.getAnimator().val(), 0.0f, 1.0f, 0.0f);
+    cylinder.rotateDeg(20.0f*cylinder.getAnimator().val(), 1.0f, 0.0f, 0.0f);
 
 }
 

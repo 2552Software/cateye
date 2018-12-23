@@ -119,9 +119,9 @@ private:
 
 class Textures {
 public:
-    void setup(const std::string& path);
+    void setup(const std::string& path, float duration);
     void update();
-    objectTexture&getCurrentRef() {   return skins[(int)selector.getCurrentValue()];  }
+    objectTexture&getCurrentRef();
 
 private:
     void add(const std::string &name, const std::string &root);
@@ -146,7 +146,7 @@ public:
     virtual void draw() {}
 
     void  resetLevelTime() { gameLevelTime = ofGetElapsedTimef(); }
-    std::shared_ptr<GameItem> GameItem::getNext();
+    std::shared_ptr<GameItem> getNext();
 
     static const bool isReadyToRemove(std::shared_ptr<GameItem> item) { return !item->isRunning(); }
 

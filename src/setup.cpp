@@ -77,7 +77,7 @@ void SphereGameItem::setup(ofNode *parent) {
     sphere.getAnimator().animateTo(1.0f);
 }
 
-void Textures::setup(const std::string& path) {
+void Textures::setup(const std::string& path, float duration) {
 
     ofDirectory dir(path);
     dir.allowExt("png");
@@ -85,7 +85,7 @@ void Textures::setup(const std::string& path) {
     size_t i = 0;
     if (dir.listDir() > 0) {
         selector.reset(0.0f);
-        selector.setDuration(60.0f); // do not pick too often bugbug menu
+        selector.setDuration(duration); 
         selector.setRepeatType(LOOP_BACK_AND_FORTH);
         selector.setCurve(LINEAR);
         selector.animateTo(dir.size()-1);
@@ -154,12 +154,12 @@ void Game::setup() {
     buildX();
     buildY();
 
-    mainEyesSkins.setup(EYES);
-    rotatingEyesSkins.setup(SPIRALS);
-    cubesSkins.setup(CUBES);
-    spheresSkins.setup(SPHERES);
-    musicNotesSkins.setup(MUSICNOTES);
-    cylindersSkins.setup(CYLINDERS);
+    mainEyesSkins.setup(EYES, 10.0f);
+    rotatingEyesSkins.setup(SPIRALS, 10.0f);
+    cubesSkins.setup(CUBES, 10.0f);
+    spheresSkins.setup(SPHERES, 20.0f);
+    musicNotesSkins.setup(MUSICNOTES, 20.0f);
+    cylindersSkins.setup(CYLINDERS, 3.0f);
     
     contours.setup();
 

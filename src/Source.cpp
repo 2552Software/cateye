@@ -1,6 +1,13 @@
 #include "ofApp.h"
 #include "sound.h"
 
+objectTexture&Textures::getCurrentRef() { 
+    float f = selector.getCurrentValue();
+    ofLogNotice("eye val") << f << " " << (int)f;
+    return skins[(int)f];
+}
+
+
 // let folks know we are in a game
 void Game::setTitle() {
     if (inGame()) {
