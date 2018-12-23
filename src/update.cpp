@@ -88,42 +88,7 @@ void SphereGameItem::update() {
 bool secondsPassed(int val) {
     return ((int)ofGetElapsedTimef() % val) == 0;
 }
-void Game::updateLevel() {
 
-    switch (gameLevel) {
-    case NoGame:
-        if (getLevelDuration() > 1.0f) { // start game every 60 seconds bugbug 5 sec to test
-            resetLevelTime();
-            gameLevel = Basic; // go to next level
-        }
-        break;
-    case Basic:
-        if (getLevelDuration() > 10.0f) { // stop game after 1 minute at a level
-            resetLevelTime();
-            gameLevel = Medium; // go to next level
-        }
-        break;
-    case Medium:
-        if (getLevelDuration() > 60.0f) { // stop game after 1 minute at a level
-            resetLevelTime();
-            gameLevel = Basic; 
-        }
-        break;
-    case Difficult:
-        if (getLevelDuration() > 60.0f) { // stop game after 1 minute at a level
-            resetLevelTime();
-            gameLevel = Medium;
-        }
-        break; 
-    case EndGame:
-        if (getLevelDuration() > 60.0f) { // start game every 60 seconds
-            resetLevelTime();
-            gameLevel = NoGame; // go to next level
-        }
-        break;
-    }
-
-}
 void TextEngine::update() {
     for (auto&a : fullScreenText) {
         a.update();
@@ -150,6 +115,9 @@ void Game::update(Music*music) {
     }
     gameItems.remove_if(GameItem::isReadyToRemove);
 
+    if (current->getLevelDuration() > current->duration()) { // start game every 60 seconds bugbug 5 sec to test
+        current = current->getNext();
+    }
 
     fancyText.update();
     basicText.update();
@@ -158,27 +126,16 @@ void Game::update(Music*music) {
     rotatingEye.update();
     contours.update();
 
-    updateLevel();
-
     if (!isAnimating()) {
-        if (gameLevel != NoGame &&  isWinner()) {  
+        if (current->level() != NoGame &&  isWinner()) {  
             clear();
-            switch (gameLevel) {
-            case Basic:
-                gameLevel = Medium; // go to next level
-                break;
-            case Medium:
-                gameLevel = Difficult; // go to next level
-                break;
+            switch (current->level()) {
             case Difficult:
                 sendFireworks = true;
                 credits(true);
-                gameLevel = EndGame; // go to next level
-                break;
-            case EndGame:
-                gameLevel = NoGame; // go to next level
                 break;
             }
+            current = current->getNext();
         }
         else {
             getCountours(music);

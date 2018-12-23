@@ -36,6 +36,7 @@ GameItem::GameItem(const ofRectangle& rect, objectTexture textureIn, int idIn) {
     id = idIn;
     rectangle = rect;
     texture = textureIn;
+    resetLevelTime();
     running = true;// start off running
 }
 
@@ -46,6 +47,7 @@ void GameItem::setupHelper(of3dPrimitive* primitive, ofNode *parent) {
     glm::vec3 v3 = primitive->getPosition();
     primitive->setPosition(v3.x, v3.y, getRadiusGlobal());
 }
+
 void CylinderGameItem::setup(ofNode *parent) {
     setupHelper(&cylinder, parent);
     cylinder.setup(PLAY_ONCE, 30.0f, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
@@ -150,8 +152,7 @@ void Game::setup() {
     setShapeMinSize();
     setSquareCount();
 
-    gameLevel = NoGame;
-    resetLevelTime();
+    current = std::make_shared<GameItem>();
 
     // convert to window size from camera sized
     xFactor = w / cameraWidth;

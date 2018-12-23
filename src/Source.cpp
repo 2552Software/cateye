@@ -1,28 +1,11 @@
 #include "ofApp.h"
 #include "sound.h"
 
-std::string Game::levelString() {
-    switch (gameLevel) {
-    case NoGame:
-        return "No Game";
-    case Basic:
-        return "Basic";
-    case Medium:
-        return "Kinda easy";
-    case Difficult:
-        return "A bit difficult";
-    case EndGame:
-        return "End Game";
-    default:
-        return "BAD Game";
-    }
-
-}
 // let folks know we are in a game
 void Game::setTitle() {
     if (inGame()) {
         std::stringstream ss;
-        ss << "Game On! " << levelString() <<  " Find " << winnerHitCount() << " of " << winnerThreshold();
+        ss << "Game On! " << current->levelString() <<  " Find " << winnerHitCount() << " of " << winnerThreshold();
         basicText.print(ss.str(), ofGetWidth() / 2, ofGetHeight() / 2, getRadiusGlobal());
    }
 }
@@ -39,7 +22,34 @@ void Game::blink() {
 void Textures::add(const std::string &name, const std::string &root) {
     skins.push_back(objectTexture(root));
 }
+std::shared_ptr<GameItem> GameItem::getNext() {
+    std::shared_ptr<GameItem> sp{ std::make_shared <SphereGameItem>() }; 
+    sp->resetLevelTime();
+    return sp;
+};
 
+std::shared_ptr<GameItem> SphereGameItem::getNext() {
+    std::shared_ptr<GameItem> sp{ std::make_shared <CubeGameItem>() }; 
+    sp->resetLevelTime();
+    return sp;
+};
+
+std::shared_ptr<GameItem> CubeGameItem::getNext() {
+    std::shared_ptr<GameItem> sp{ std::make_shared <CylinderGameItem>() }; 
+    sp->resetLevelTime();
+    return sp;
+};
+
+std::shared_ptr<GameItem> CylinderGameItem::getNext() {
+    std::shared_ptr<GameItem> sp{ std::make_shared <MusicItem>() }; 
+    sp->resetLevelTime();
+    return sp;
+};
+std::shared_ptr<GameItem> MusicItem::getNext() {
+    std::shared_ptr<GameItem> sp{ std::make_shared <GameItem>() };
+    sp->resetLevelTime();
+    return sp;
+};
 
 void  Game::fireWorks() {
    //bugbug sounds(5);
@@ -146,7 +156,7 @@ void Game::startPlaying() {
    //bugbug sounds();
 }
 size_t Game::winnerThreshold() { 
-    switch (gameLevel) {
+    switch (current->level()) {
     case NoGame:
         return 0;
     case Basic:
@@ -182,7 +192,7 @@ bool Game::compute(LocationToInfoMap rect, Music*music) {
     float cx = w - (rect.width)*xFactor;
     ofRectangle rect2Use((cx - rect.x*xFactor), rect.y*yFactor, rect.width*xFactor, rect.height*yFactor);
     if (!find(rect2Use)) {
-        switch (gameLevel) {
+        switch (current->level()) {
         case Basic: 
             pushSphere(rect2Use, rect.c);
             break;

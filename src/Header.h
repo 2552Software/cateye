@@ -141,6 +141,7 @@ private:
 class GameItem {
 public:
     GameItem(const ofRectangle& rect, objectTexture texture, int id);
+    GameItem() {  } // gets levels only etc
     virtual ~GameItem() { }
     bool operator==(const ofRectangle& rhs) const {
         return rectangle == rhs;
@@ -151,8 +152,15 @@ public:
     virtual void setup() {};
     virtual void update() {};
     virtual void draw() {};
+
+    float getLevelDuration() { return ofGetElapsedTimef() - gameLevelTime; }
+    void  resetLevelTime() { gameLevelTime = ofGetElapsedTimef(); }
+
     static const bool isReadyToRemove(std::shared_ptr<GameItem> item) { return !item->isRunning(); }
-    virtual Levels nextLevel() = 0;
+    virtual Levels level() { return NoGame; }
+    virtual std::string levelString() { return "No Game"; }
+    virtual float duration() { return 30.0f; } // run game for 30 seconds
+    std::shared_ptr<GameItem> getNext();
     bool isRunning() const { return running; } 
     void stop() { running = false; }
     int id;
@@ -162,17 +170,23 @@ protected:
     ofRectangle rectangle;
     objectTexture texture;
     bool running;
+    float gameLevelTime;
 };
 
 class SphereGameItem : public GameItem {
 public:
     SphereGameItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :GameItem(rect, texture, id) { setup(parent); }
+    SphereGameItem() :GameItem() {  } // gets levels only etc
     virtual  ~SphereGameItem() {  }
 
     void setup(ofNode *parent);
     void update();
     void draw();
-    virtual Levels nextLevel() { return Medium; }
+    virtual Levels level() { return Basic; }
+    virtual std::string levelString() { return "basic"; }
+    virtual float duration() { return 60.0f; } // run game for 60.0f seconds
+    std::shared_ptr<GameItem> getNext();
+
     bool isAnimating() { return sphere.isAnimating(); }
 
 private:
@@ -182,27 +196,39 @@ private:
 class CubeGameItem : public GameItem {
 public:
     CubeGameItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :GameItem(rect, texture, id) { setup(parent); }
+    CubeGameItem() :GameItem() {  } // gets levels only etc
     virtual  ~CubeGameItem() {  }
 
     void setup(ofNode *parent);
     void update();
     void draw();
-    virtual Levels nextLevel() { return Difficult; }
+    virtual Levels level() { return Medium; }
+    virtual std::string levelString() { return "kinda easy"; }
+    virtual float duration() { return 45.0f; } 
+    std::shared_ptr<GameItem> getNext();
+
     bool isAnimating() { return cube.isAnimating(); }
 
 private:
     SuperCube cube; 
 };
 
+
 class CylinderGameItem : public GameItem {
 public:
     CylinderGameItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :GameItem(rect, texture, id) { setup(parent); }
+    CylinderGameItem() :GameItem() {  } // gets levels only etc
     virtual  ~CylinderGameItem() {  }
 
     void setup(ofNode *parent);
     void update();
     void draw();
-    virtual Levels nextLevel() { return EndGame; }
+
+    virtual Levels level() { return Difficult; }
+    virtual std::string levelString() { return "A bit difficult"; }
+    virtual float duration() { return 30.0f; }
+    std::shared_ptr<GameItem> getNext();
+
     bool isAnimating() { return cylinder.isAnimating(); }
 
 private:
@@ -212,9 +238,13 @@ private:
 class MusicItem : public CylinderGameItem { //bugbug roate them?
 public:
     MusicItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :CylinderGameItem(rect, texture, parent, id) { }
+    MusicItem() :CylinderGameItem() {  } // gets levels only etc
     virtual ~MusicItem() {  }
 
     virtual Levels nextLevel() { return NoGame; }
+    virtual std::string levelString() { return "The End Game"; }
+    virtual float duration() { return 120.0f; }
+    std::shared_ptr<GameItem> getNext();
 
     static bool isAkey(std::shared_ptr<GameItem>item) { return (item->id == 1); }
     static bool isGkey(std::shared_ptr<GameItem>item) { return (item->id == 5); }
@@ -281,11 +311,13 @@ public:
     bool isWinner() { return winnerHitCount() >= winnerThreshold(); } // easy mode! bugbug menu
     bool isAnimating();
     void windowResized(int w, int h);
-    bool inGame() { return gameLevel > NoGame; }
+    bool inGame() { return current->level() > NoGame; }
     float w, h;
     ContoursBuilder contours;
 
 private:
+    std::shared_ptr<GameItem> current;// allocation no validated
+
     void pushSphere(const ofRectangle&rect, int id);
     void pushCube(const ofRectangle&rect, int id);
     void pushCylinder(const ofRectangle&rect, int id);
@@ -293,9 +325,6 @@ private:
     bool compute(LocationToInfoMap rect, Music*);
     TextEngine basicText;
     TextEngine fancyText;
-    float getLevelDuration() { return ofGetElapsedTimef() - gameLevelTime; }
-    void  resetLevelTime() { gameLevelTime = ofGetElapsedTimef(); }
-    std::string levelString();
     bool find(const ofRectangle& item);
     void credits(bool signon = false);    void setTriggerCount(float count=50.0f);
     void setShapeMinSize(float size=100.0f) { shapeMinSize = size; };
@@ -311,15 +340,10 @@ private:
     SuperSphere mainEye;
     Textures rotatingEyesSkins;
     SuperSphere rotatingEye;
-
-    float gameLevelTime; // in seconds
-    float gameLastActivity; // in seconds
     Textures cubesSkins; // cache images
     Textures spheresSkins;
     Textures cylindersSkins;
     Textures musicNotesSkins;
-    Levels gameLevel;
-    void updateLevel();
     void getCountours(Music*music);
     void rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event);
     void fireWorks();
