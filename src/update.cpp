@@ -44,10 +44,16 @@ void SuperCylinder::update() {
 
 void CylinderGameItem::update() {
     cylinder.update();
+    if (!cylinder.isAnimating()) {
+        stop();
+    }
 }
 
 void CubeGameItem::update() {
     cube.update();
+    if (!cube.isAnimating()) {
+        stop();
+    }
 }
 void SphereGameItem::update() {
     sphere.update();

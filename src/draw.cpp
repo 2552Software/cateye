@@ -28,9 +28,11 @@ void Game::draw() {
     }
 }
 void SuperCylinder::draw() {
+    ofCylinderPrimitive::draw();
 }
 
 void SuperCube::draw() {
+    ofBoxPrimitive::draw();
 }
 void SuperSphere::draw() {
     if (getRadius() > 0) {

@@ -7,6 +7,13 @@ inline float getRadiusGlobal(int w= ofGetWidth(), int h= ofGetHeight()) {
     return (std::min(w, h) / 2) - (std::min(w, h) / 2)*0.20f;
 }
 
+inline void setAnimatorHelper(ofxAnimatableFloat& animator, float seconds, AnimRepeat repeat) {
+    animator.reset(0.0f);
+    animator.setDuration(seconds);
+    animator.setRepeatType(repeat);
+    animator.setCurve(LINEAR);
+}
+
 class TextTimer {
 public:
     TextTimer(const std::string& textIn, float timeToRenderIn, float delay, float lineIn);
@@ -150,6 +157,7 @@ public:
     int id;
 
 protected:
+    void setupHelper(of3dPrimitive* primitive, ofNode *parent);
     ofRectangle rectangle;
     objectTexture texture;
     bool running;
@@ -194,15 +202,15 @@ public:
     void update();
     void draw();
     virtual Levels nextLevel() { return EndGame; }
-    bool isAnimating() { return cube.isAnimating(); }
+    bool isAnimating() { return cylinder.isAnimating(); }
 
 private:
-    SuperCylinder cube;
+    SuperCylinder cylinder;
 };
 
-class MusicItem : public SphereGameItem {
+class MusicItem : public CylinderGameItem { //bugbug roate them?
 public:
-    MusicItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :SphereGameItem(rect, texture, parent, id) { }
+    MusicItem(const ofRectangle& rect, objectTexture texture, ofNode *parent, int id) :CylinderGameItem(rect, texture, parent, id) { }
     virtual ~MusicItem() {  }
 
     virtual Levels nextLevel() { return NoGame; }
@@ -280,6 +288,7 @@ private:
     void pushSphere(const ofRectangle&rect, int id);
     void pushCube(const ofRectangle&rect, int id);
     void pushCylinder(const ofRectangle&rect, int id);
+    void pushMusic(const ofRectangle&rect, int id);
     bool compute(LocationToInfoMap rect, Music*);
     TextEngine basicText;
     TextEngine fancyText;

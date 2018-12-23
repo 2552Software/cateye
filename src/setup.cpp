@@ -4,40 +4,20 @@ void SuperSphere::setup(AnimRepeat repeat, float seconds, float x, float y, int 
     setResolution(27);
     setRadius(::getRadiusGlobal(w, h));
     setPosition(x, y, 0.0f);
-    animator.reset(0.0f);
-    animator.setDuration(seconds);
-    animator.setRepeatType(repeat);
-    animator.setCurve(LINEAR);
-}
-
-void SuperSphere::setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h) {
-    setResolution(27);
-    setRadius(::getRadiusGlobal(w, h));
-    setPosition(x, y, 0.0f);
-    animator.reset(0.0f);
-    animator.setDuration(seconds);
-    animator.setRepeatType(repeat);
-    animator.setCurve(LINEAR);
+    setAnimatorHelper(animator, seconds, repeat);
 }
 
 void SuperCylinder::setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h) {
-    setResolution(27);
-    setRadius(::getRadiusGlobal(w, h));
+    setHeight(h/25.0f);
+    setRadius(w/25);
     setPosition(x, y, 0.0f);
-    animator.reset(0.0f);
-    animator.setDuration(seconds);
-    animator.setRepeatType(repeat);
-    animator.setCurve(LINEAR);
+    setAnimatorHelper(animator, seconds, repeat);
 }
 
 void SuperCube::setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h) {
-    setResolution(27);
-    setRadius(::getRadiusGlobal(w, h));
+    set(w, h, w);
     setPosition(x, y, 0.0f);
-    animator.reset(0.0f);
-    animator.setDuration(seconds);
-    animator.setRepeatType(repeat);
-    animator.setCurve(LINEAR);
+    setAnimatorHelper(animator, seconds, repeat);
 }
 
 void TextTimer::setup() {
@@ -59,20 +39,29 @@ GameItem::GameItem(const ofRectangle& rect, objectTexture textureIn, int idIn) {
     running = true;// start off running
 }
 
+void GameItem::setupHelper(of3dPrimitive* primitive, ofNode *parent) {
+    if (parent) {
+        primitive->setParent(*parent);
+    }
+    glm::vec3 v3 = primitive->getPosition();
+    primitive->setPosition(v3.x, v3.y, getRadiusGlobal());
+}
 void CylinderGameItem::setup(ofNode *parent) {
+    setupHelper(&cylinder, parent);
+    cylinder.setup(PLAY_ONCE, 30.0f, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    cylinder.getAnimator().animateTo(1.0f);
 }
 
 void CubeGameItem::setup(ofNode *parent) {
+    setupHelper(&cube, parent);
+    cube.setup(PLAY_ONCE, 30.0f, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    cube.getAnimator().animateTo(1.0f);
+
 }
 void SphereGameItem::setup(ofNode *parent) {
-
-    if (parent) {
-        sphere.setParent(*parent);
-    }
+    setupHelper(&sphere, parent);
     sphere.setup(PLAY_ONCE, 30.0f, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     sphere.getAnimator().animateTo(1.0f);
-    glm::vec3 v3 = sphere.getPosition();
-    sphere.setPosition(v3.x, v3.y, getRadiusGlobal());
 
 
 /*

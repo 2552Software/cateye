@@ -174,7 +174,7 @@ void Game::pushCylinder(const ofRectangle&rect, int id) {
     gameItems.push_back(sp);
 }
 void Game::pushMusic(const ofRectangle&rect, int id) {
-    std::shared_ptr<GameItem> sp{ std::make_shared <MusicGameItem>(rect, cylindersSkins.getCurrentRef(), &mainEye,id) };
+    std::shared_ptr<GameItem> sp{ std::make_shared <MusicItem>(rect, musicNotesSkins.getCurrentRef(), &mainEye,id) };
     gameItems.push_back(sp);
 }
 
@@ -192,23 +192,20 @@ bool Game::compute(LocationToInfoMap rect, Music*music) {
         case Difficult: // cylinder game
             pushCylinder(rect2Use, rect.c);
             break;
-        case EndGame:
+        case EndGame: //bugbug make 8 octaves
             if (rect.c == 1) { // just a few notes, 1 is a magic note
-                gameItems.push_back(std::make_shared<MusicItem>(rect2Use, musicNotesSkins.getCurrentRef(), &mainEye, rect.c));
                 music->keyboard.keyPressed('a');
             }
             else if (rect.c == 5) { // just a few notes, 1 is a magic note
-                gameItems.push_back(std::make_shared<MusicItem>(rect2Use, musicNotesSkins.getCurrentRef(), &mainEye, rect.c));
                 music->keyboard.keyPressed('g');
             }
             else if (rect.c == 7) { // just a few notes, 1 is a magic note
-                gameItems.push_back(std::make_shared<MusicItem>(rect2Use, musicNotesSkins.getCurrentRef(), &mainEye, rect.c));
                 music->keyboard.keyPressed('t');
             }
             else if (rect.c == 9) { // just a few notes, 1 is a magic note
-                gameItems.push_back(std::make_shared<MusicItem>(rect2Use, musicNotesSkins.getCurrentRef(), &mainEye, rect.c));
                 music->keyboard.keyPressed('k');
             }
+            pushMusic(rect2Use, rect.c);
             break;
         }
     }
