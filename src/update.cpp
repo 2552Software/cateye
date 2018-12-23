@@ -43,6 +43,7 @@ void SphereGameItem::update() {
         stop();
     }
     sphere.rotateDeg(20.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f));
+    sphere.orbitDeg(15.0f, 0.0f, getRadiusGlobal(), *sphere.getParent());
 /*
     switch (level) {
     case NoGame:

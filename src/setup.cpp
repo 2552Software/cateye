@@ -35,6 +35,9 @@ void SphereGameItem::setup(ofNode *parent) {
     }
     sphere.setup(PLAY_ONCE, 30.0f, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     sphere.getAnimator().animateTo(1.0f);
+    glm::vec3 v3 = sphere.getPosition();
+    sphere.setPosition(v3.x, v3.y, getRadiusGlobal());
+
 
 /*
     float duration=20.0f;

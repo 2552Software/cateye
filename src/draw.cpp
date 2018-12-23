@@ -31,7 +31,8 @@ void SuperSphere::draw() {
     if (getRadius() > 0) {
         rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
         rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
-        ofSpherePrimitive::draw();
+        drawWireframe();
+        //ofSpherePrimitive::draw();
         setOrientation({ 0.f,0.f,0.f });
         panDeg(180); // like a FG kickers - laces out
     }
