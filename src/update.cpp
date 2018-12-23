@@ -64,7 +64,7 @@ void SphereGameItem::update() {
     //sphere.rotateAroundDeg(15.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3());
     ofNode node; 
     node.setPosition(w / 2, h / 2, -r);
-    sphere.orbitDeg(rotator, ofRandom(180.0f), r, node);
+    sphere.orbitDeg(rotator, ofRandom(360.0f), r*2, node);
     rotator += inc;
 }
 bool secondsPassed(int val) {
