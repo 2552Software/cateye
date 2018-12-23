@@ -22,20 +22,24 @@ void objectTexture::setup(const string&texName) {
     }
 }
 
-GameItem::GameItem(const ofRectangle& rect, objectTexture textureIn, ofNode&parentIn, Levels levelIn, int idIn) {
+GameItem::GameItem(const ofRectangle& rect, objectTexture textureIn, ofNode&parentIn, int idIn) {
     id = idIn;
     rectangle = rect;
-    level = levelIn;
     texture = textureIn;
     parent = parentIn;
-    setup();
-}
-
-void GameItem::setup() {
-
     animater.reset(0.0f);
     animater.setCurve(EASE_IN_EASE_OUT);
     animater.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
+   
+}
+
+void MusicItem::setup() {
+
+    sphere.setParent(parent);
+    sphere.setup(PLAY_ONCE, 1.0f, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    animater.setDuration(30.0f);
+    animater.animateTo(1.0f);
+/*
     float duration=20.0f;
 
     if (level == EndGame) {
@@ -59,8 +63,7 @@ void GameItem::setup() {
        sphere.setup(PLAY_ONCE, 1.0f, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
        duration = 30.0f;
     }
-    animater.setDuration(duration);
-    animater.animateTo(1.0f);
+*/
 }
 
 void Textures::setup(const std::string& path) {
@@ -117,6 +120,7 @@ void TextEngine::setup(int fontsize) {
     font.load("DejaVuSans.ttf", fontsize, false, false, true);
 }
 void Game::setup() { 
+
     setTriggerCount();
     setShapeMinSize();
     setSquareCount();

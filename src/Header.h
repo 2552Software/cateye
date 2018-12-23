@@ -106,29 +106,21 @@ private:
 
 class GameItem {
 public:
-    GameItem(const ofRectangle& rect, objectTexture texture, ofNode&parent, Levels level, int id);
-    bool operator==(const GameItem& rhs) const {
-        return rectangle == rhs.rectangle;
-    }
+    GameItem(const ofRectangle& rect, objectTexture texture, ofNode&parent, int id);
     bool operator==(const ofRectangle& rhs) const {
         return rectangle == rhs;
     }
     bool operator==(const int rhs) const {
         return id == rhs;
     }
-    void setup();
-    void update();
-    void draw();
+    virtual void setup()=0;
+    virtual void update()=0;
+    virtual void draw()=0;
+    virtual Levels nextLevel() = 0;
     bool isAnimating() { return animater.isAnimating(); }
     int id;
-    Levels level;
-    static bool isMusicNote(const GameItem& item) { return (item.level == EndGame); }
-    static bool isAkey(const GameItem& item) { return (item.id == 1); }
-    static bool isGkey(const GameItem& item) { return (item.id == 5); }
-    static bool isTkey(const GameItem& item) { return (item.id == 7); }
-    static bool isKkey(const GameItem& item) { return (item.id == 9); }
 
-private:
+protected:
     ofBoxPrimitive box; // pick a shape 
     ofRectangle rectangle;
     SuperSphere sphere;
@@ -136,6 +128,24 @@ private:
     objectTexture texture;
     ofxAnimatableFloat animater; 
     ofNode parent;
+};
+
+class MusicItem : public GameItem {
+public:
+    MusicItem(const ofRectangle& rect, objectTexture texture, ofNode&parent, int id) :GameItem(rect, texture, parent, id) { setup(); }
+    void setup();
+    void update();
+    void draw();
+    virtual Levels nextLevel() {   return NoGame;  }
+
+    static bool isMusicNote(const GameItem& item) { return true; }
+    static bool isAkey(const GameItem& item) { return (item.id == 1); }
+    static bool isGkey(const GameItem& item) { return (item.id == 5); }
+    static bool isTkey(const GameItem& item) { return (item.id == 7); }
+    static bool isKkey(const GameItem& item) { return (item.id == 9); }
+
+private:
+    SuperSphere sphere;
 };
 
 // map location to interesting things
@@ -208,7 +218,7 @@ private:
     float getLevelDuration() { return ofGetElapsedTimef() - gameLevelTime; }
     void  resetLevelTime() { gameLevelTime = ofGetElapsedTimef(); }
     std::string levelString();
-    bool find(const ofRectangle& item) { return std::find(gameItems.begin(), gameItems.end(), item) != gameItems.end(); }
+    bool find(const ofRectangle& item);
     void credits(bool signon = false);    void setTriggerCount(float count=50.0f);
     void setShapeMinSize(float size=100.0f) { shapeMinSize = size; };
     void setSquareCount(int count=15);
@@ -253,6 +263,6 @@ private:
     // convert to screen size
     float xFactor;
     float yFactor;
-    std::list<GameItem> gameItems; // if you are in this list you have been found and not time out has occured bugbug add time out
+    std::list<std::shared_ptr<GameItem>> gameItems; // if you are in this list you have been found and not time out has occured bugbug add time out
     ofxAnimatableFloat blinker; // blink animation
 };

@@ -149,13 +149,16 @@ void TextEngine::draw(float z) {
 
 // return true if full screen mode enabled
 bool Game::drawText() {
-    basicText.draw(w / 2, w / 2, getRadiusGlobal());
-    fancyText.draw(w/2, w/3, getRadiusGlobal());
+    basicText.draw(getRadiusGlobal());
+    fancyText.draw(getRadiusGlobal());
     return fancyText.isFullScreenAnimating();
 }
 
-void GameItem::draw() {
+void MusicItem::draw() {
     texture.start();
+    sphere.draw();
+    texture.stop();
+    /*
     switch (level) { //bugbug make base class etc
     case Basic:
         sphere.draw();
@@ -170,12 +173,12 @@ void GameItem::draw() {
         box.draw();
         break;
     }
-    texture.stop();
+    */
 }
 
 void Game::drawGame() {
     for (auto& item : gameItems) {
-        item.draw();
+        item->draw();
     }
 }
 

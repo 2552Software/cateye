@@ -37,9 +37,10 @@ void Textures::update() {
     selector.update(1.0f / ofGetTargetFrameRate());
 }
 
-void GameItem::update() {
+void MusicItem::update() {
     animater.update(1.0f / ofGetTargetFrameRate());
-
+    sphere.rotateDeg(20.0f*animater.val(), glm::vec3(0.0f, 1.0f, 0.0f));
+/*
     switch (level) {
     case NoGame:
         break;
@@ -59,6 +60,7 @@ void GameItem::update() {
     case EndGame:
         break;
     }
+*/
 }
 bool secondsPassed(int val) {
     return ((int)ofGetElapsedTimef() % val) == 0;
@@ -120,9 +122,9 @@ void Game::update(Music*music) {
     }
 
     // if not animating time to go...
-    std::list<GameItem>::iterator i = gameItems.begin();
+    auto i = gameItems.begin();
     while (i != gameItems.end())   {
-        if (!(*i).isAnimating())    {
+        if (!(*i)->isAnimating())    {
             i = gameItems.erase(i); 
         }
         else {
@@ -130,7 +132,7 @@ void Game::update(Music*music) {
         }
     }
     for (auto& a : gameItems) {
-        a.update();
+        a->update();
     }
 
     fancyText.update();
