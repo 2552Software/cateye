@@ -184,6 +184,11 @@ void CylinderGameItem::draw() {
     cylinder.draw();
     texture.stop();
 }
+void MusicItem::draw() {
+    texture.start();
+    cylinder.draw();
+    texture.stop();
+}
 void CubeGameItem::draw() {
     texture.start();
     cube.draw();

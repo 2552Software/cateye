@@ -7,8 +7,12 @@ void Animate3d::setup(AnimRepeat repeat, float seconds){
     animator.setCurve(LINEAR);
 }
 void GameItem::set(Levels levelIn, float durationIn) {
+    id = -1; // no id by default
+    resetLevelTime();
+    running = true;// start off running
     duration = durationIn;
     level = levelIn;
+    r = 0;
 }
 void SuperSphere::setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h) {
     setResolution(27);
@@ -46,8 +50,6 @@ GameItem::GameItem(const ofRectangle& rect, objectTexture textureIn, int idIn, L
     id = idIn;
     rectangle = rect;
     texture = textureIn;
-    resetLevelTime();
-    running = true;// start off running
     set(level, duration);
 }
 
@@ -59,6 +61,12 @@ void GameItem::setupHelper(of3dPrimitive* primitive, SuperSphere &parent) {
 }
 
 void CylinderGameItem::setup(SuperSphere &parent) {
+    setupHelper(&cylinder, parent);
+    cylinder.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    cylinder.getAnimator().animateTo(1.0f);
+}
+
+void MusicItem::setup(SuperSphere &parent) {
     setupHelper(&cylinder, parent);
     cylinder.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     cylinder.getAnimator().animateTo(1.0f);

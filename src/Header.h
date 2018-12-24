@@ -206,8 +206,8 @@ private:
 const unsigned CylinderGameItemTime = 20.0f;
 class CylinderGameItem : public GameItem {
 public:
-    CylinderGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id, Levels level = Difficult, float duration = CylinderGameItemTime) :GameItem(rect, texture, id, level, duration) { setup(parent); }
-    CylinderGameItem(Levels level = Difficult, float duration = CylinderGameItemTime) :GameItem(level, duration) {  } // gets levels only etc
+    CylinderGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) :GameItem(rect, texture, id, Difficult, CylinderGameItemTime) { setup(parent); }
+    CylinderGameItem() :GameItem(Difficult, CylinderGameItemTime) {  } // gets levels only etc
     virtual  ~CylinderGameItem() {  }
 
     void setup(SuperSphere &parent);
@@ -220,13 +220,19 @@ private:
     SuperCylinder cylinder;
 };
 const unsigned MusicGameItemTime = 20.0f;
-class MusicItem : public CylinderGameItem { //bugbug roate them?
+class MusicItem : public GameItem { //bugbug roate them?
 public:
-    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) : CylinderGameItem(rect, texture, parent, id, EndGame, MusicGameItemTime) { }
-    MusicItem() :CylinderGameItem(EndGame, MusicGameItemTime) {  } // gets levels only etc
+
+    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) : GameItem(rect, texture, parent, id, EndGame, MusicGameItemTime) { setup(parent); }
+    MusicItem() :GameItem(EndGame, MusicGameItemTime) {  } // gets levels only etc
     virtual ~MusicItem() {  }
 
+    void setup(SuperSphere &parent);
+    void update();
+    void draw();
+
 private:
+    SuperCylinder cylinder;
 };
 
 // map location to interesting things
