@@ -52,6 +52,9 @@ void CylinderGameItem::update() {
 void MusicItem::update() {
     cylinder.update();
     if (!cylinder.isAnimating()) {
+        if (music && key) {
+            music->keyboard.keyReleased(key);
+        }
         stop();
     }
 }

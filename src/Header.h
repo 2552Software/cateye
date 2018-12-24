@@ -221,13 +221,15 @@ public:
 private:
     SuperCylinder cylinder;
 };
+
+class Music;
 const unsigned MusicGameItemTime = 20.0f;
-class MusicItem : public GameItem { //bugbug roate them?
+class MusicItem : public GameItem { 
 public:
 
     MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id, Music*musicIn, int keyIn) : GameItem(rect, texture, id, EndGame, MusicGameItemTime) { setup(parent); music = musicIn; key = keyIn;    }
     MusicItem() :GameItem(EndGame, MusicGameItemTime) { music = nullptr; key = 0; } // gets levels only etc
-    virtual ~MusicItem() {  }
+    virtual ~MusicItem();
 
     void setup(SuperSphere &parent);
     void update();
@@ -281,7 +283,6 @@ private:
     }
 };
 
-class Music;
 class Game {
 public:
 

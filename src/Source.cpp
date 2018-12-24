@@ -272,6 +272,8 @@ int Game::keysPress(int id) {
         return 'j';
     case 25:
         return 'k';
+    default:
+        return 'a';
     }
 
 }
@@ -290,7 +292,7 @@ bool Game::compute(LocationToInfoMap rect, Music*music) {
             pushCylinder(rect2Use, rect.c);
             break;
         case EndGame:
-            pushMusic(rect2Use, rect.c);
+            pushMusic(rect2Use, rect.c, music);
             break;
         }
     }

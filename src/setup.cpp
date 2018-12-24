@@ -68,9 +68,6 @@ void CylinderGameItem::setup(SuperSphere &parent) {
 }
 
 MusicItem::~MusicItem() {  
-    if (music && key) {
-        music->keyboard.keyReleased(key);
-    }
 }
 void MusicItem::setup(SuperSphere &parent) {
     setupHelper(&cylinder, parent);
