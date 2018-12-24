@@ -1,5 +1,5 @@
 #include "ofApp.h"
-
+#include "sound.h"
 void TextTimer::update() {
     int elapsedMilliSeconds = ofGetSystemTimeMillis() - timeBegan;
     if (timeDelay) {
