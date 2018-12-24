@@ -14,15 +14,14 @@ public:
     void update();
 
     std::string& getPartialString();
-    static const bool isReadyToRemove(const TextTimer& item);
     float getLine() { return line; }
+    float timeToRender, timeBegan, timeDelay, lingerTime;
 
 private:
     std::string& getRawText() { return rawText; }
     std::string rawText; // raw text
     std::string partialText;
     float line; // user define value
-    float timeToRender, timeBegan, timeDelay, lingerTime;
     bool doneDrawing;
 };
 
@@ -142,7 +141,7 @@ public:
         return id == rhs;
     }
     virtual void setup() {};
-    virtual void update();
+    virtual void update() {};
     virtual void draw() {}
 
     bool inGame() { return getLevel() != NoGame; }
@@ -150,8 +149,6 @@ public:
     void  resetLevelTime() { gameLevelTime = ofGetElapsedTimef(); }
     std::shared_ptr<GameItem> getNext();
     std::shared_ptr<GameItem> getPrevious();
-
-    static const bool isReadyToRemove(std::shared_ptr<GameItem> item) { return !item->isRunning(); }
 
     Levels getLevel() { return level; }
     float getDuration() { return duration; } // run game for 30 seconds
@@ -229,10 +226,6 @@ public:
     MusicItem() :CylinderGameItem(EndGame, MusicGameItemTime) {  } // gets levels only etc
     virtual ~MusicItem() {  }
 
-    static bool isAkey(std::shared_ptr<GameItem>item) { return (item->id == 1); }
-    static bool isGkey(std::shared_ptr<GameItem>item) { return (item->id == 5); }
-    static bool isTkey(std::shared_ptr<GameItem>item) { return (item->id == 7); }
-    static bool isKkey(std::shared_ptr<GameItem>item) { return (item->id == 9); }
 private:
 };
 
@@ -301,7 +294,10 @@ public:
 
 private:
     std::shared_ptr<GameItem> current;// allocation no validated
-
+    void keysPress(Music*music, int id);
+    void keysUp(Music*music, int id);
+    void removeGameItem(int id);
+    void keyUp(Music*music, char key, int id);
     void pushSphere(const ofRectangle&rect, int id);
     void pushCube(const ofRectangle&rect, int id);
     void pushCylinder(const ofRectangle&rect, int id);

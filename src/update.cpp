@@ -35,40 +35,33 @@ void Textures::update() {
 }
 
 void CylinderGameItem::update() {
-    GameItem::update();
     cylinder.update();
     if (!cylinder.isAnimating()) {
         stop();
     }
     cylinder.rotateDeg(20.0f*cylinder.getAnimator().val(), 0.0f, 0.0f, 1.0f);
     glm::vec3 newPos = cylinder.getPosition();
-    newPos.z = ofGetLastFrameTime() * 10; 
-    newPos.x = ofGetLastFrameTime() * 6; ;
+    newPos.z = r * cylinder.getAnimator().val();
+    newPos.x = r * cylinder.getAnimator().val();
     if (newPos.z > r * 3) {
-        newPos.x = ofGetLastFrameTime()*20;
+        newPos.x = r * cylinder.getAnimator().val();
         newPos.z = r;
     }
     cylinder.setPosition(newPos);
 }
 
 void CubeGameItem::update() {
-    GameItem::update();
     cube.update();
     if (!cube.isAnimating()) {
         stop();
     }
     glm::vec3 newPos = cube.getPosition();
-    newPos.z = ofGetLastFrameTime() * 10;;
-    newPos.x = ofGetLastFrameTime() * 20; 
-    if (newPos.z > r*3) {
-        newPos.x = ofGetLastFrameTime() * 20;
-        newPos.z = r;
-    }
+    newPos.z = r*cube.getAnimator().val();  //movement*10;
+    //newPos.x = movement;
     cube.setPosition(newPos);
 
 }
 void SphereGameItem::update() {
-    GameItem::update();
     sphere.update();
     if (!sphere.isAnimating()) {
         stop();
@@ -79,7 +72,7 @@ void SphereGameItem::update() {
     //sphere.rotateAroundDeg(15.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3());
     ofNode node; 
     node.setPosition(w / 2, h / 2, -r);
-    sphere.orbitDeg(ofGetLastFrameTime() * 20, ofRandom(360.0f), r*2, node);
+    sphere.orbitDeg(sphere.getAnimator().val(), ofRandom(360.0f), r*2, node);
 }
 bool secondsPassed(int val) {
     return ((int)ofGetElapsedTimef() % val) == 0;
@@ -93,11 +86,21 @@ void TextEngine::update() {
         a.update();
     }
     // remove all that are done
-    fullScreenText.remove_if(TextTimer::isReadyToRemove);
-    inlineText.remove_if(TextTimer::isReadyToRemove);
+    fullScreenText.erase(std::remove_if(fullScreenText.begin(),
+        fullScreenText.end(),
+        [](const TextTimer& item) {
+            int elapsedMilliSeconds = ((int)ofGetSystemTimeMillis() - item.timeBegan);
+            return item.lingerTime < elapsedMilliSeconds;
+        }),   fullScreenText.end());
+
+    inlineText.erase(std::remove_if(inlineText.begin(),
+        inlineText.end(),
+        [](const TextTimer& item) {
+        int elapsedMilliSeconds = ((int)ofGetSystemTimeMillis() - item.timeBegan);
+        return item.lingerTime < elapsedMilliSeconds;
+    }),    inlineText.end());
+
 }
-void GameItem::update() {
-};
 void Game::update(Music*music) {
 
     // blinker always moving but only drawn up request
@@ -111,7 +114,12 @@ void Game::update(Music*music) {
     for (auto& a : gameItems) {
         a->update();
     }
-    gameItems.remove_if(GameItem::isReadyToRemove);
+
+    gameItems.erase(std::remove_if(gameItems.begin(),
+        gameItems.end(),
+        [](std::shared_ptr<GameItem> item) {
+        return !item->isRunning();
+       }),   gameItems.end());
 
     fancyText.update();
     basicText.update();

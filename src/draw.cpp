@@ -29,7 +29,10 @@ void Game::draw() {
                 drawContours();
                 blink();
             }
+            ofPushMatrix();
+            ofTranslate(w / 2, h / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
             drawGame(); // draw any game that may be running
+            ofPopMatrix();
         }
     }
 }

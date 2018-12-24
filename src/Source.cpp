@@ -230,6 +230,106 @@ void Game::pushMusic(const ofRectangle&rect, int id) {
     gameItems.push_back(sp);
 }
 
+void Game::removeGameItem(int id) {
+    gameItems.erase(std::remove_if(gameItems.begin(),
+        gameItems.end(),
+        [id](std::shared_ptr<GameItem>item) {return item->id == id; }),
+        gameItems.end());
+}
+void Game::keyUp(Music*music, char key, int id) {
+    removeGameItem(id);
+    music->keyboard.keyReleased(key);
+}
+void Game::keysUp(Music*music, int id) {
+    switch (id) {
+    case 1:
+        keyUp(music, 'a', id);
+        break;
+    case 3:
+        keyUp(music, 'w', id);
+        break;
+    case 5:
+        keyUp(music, 's', id);
+        break;
+    case 7:
+        keyUp(music, 'e', id);
+        break;
+    case 9:
+        keyUp(music, 'd', id);
+        break;
+    case 11:
+        keyUp(music, 'f', id);
+        break;
+    case 13:
+        keyUp(music, 't', id);
+        break;
+    case 15:
+        keyUp(music, 'g', id);
+        break;
+    case 17:
+        keyUp(music, 'y', id);
+        break;
+    case 19:
+        keyUp(music, 'h', id);
+        break;
+    case 21:
+        keyUp(music, 'u', id);
+        break;
+    case 23:
+        keyUp(music, 'j', id);
+        break;
+    case 25:
+        keyUp(music, 'k', id);
+        break;
+    }
+
+}
+
+
+void Game::keysPress(Music*music, int id) {
+    switch (id) {
+    case 1:
+        music->keyboard.keyPressed('a');
+        break;
+    case 3:
+        music->keyboard.keyPressed('w');
+        break;
+    case 5:
+        music->keyboard.keyPressed('s');
+        break;
+    case 7:
+        music->keyboard.keyPressed('e');
+        break;
+    case 9:
+        music->keyboard.keyPressed('d');
+        break;
+    case 11:
+        music->keyboard.keyPressed('f');
+        break;
+    case 13:
+        music->keyboard.keyPressed('t');
+        break;
+    case 15:
+        music->keyboard.keyPressed('g');
+        break;
+    case 17:
+        music->keyboard.keyPressed('y');
+        break;
+    case 19:
+        music->keyboard.keyPressed('h');
+        break;
+    case 21:
+        music->keyboard.keyPressed('u');
+        break;
+    case 23:
+        music->keyboard.keyPressed('j');
+        break;
+    case 25:
+        music->keyboard.keyPressed('k');
+        break;
+    }
+
+}
 bool Game::compute(LocationToInfoMap rect, Music*music) {
     float cx = w - (rect.width)*xFactor;
     ofRectangle rect2Use((cx - rect.x*xFactor), rect.y*yFactor, rect.width*xFactor, rect.height*yFactor);
@@ -245,43 +345,13 @@ bool Game::compute(LocationToInfoMap rect, Music*music) {
             pushCylinder(rect2Use, rect.c);
             break;
         case EndGame: //bugbug make 8 octaves
-            if (rect.c == 1) { // just a few notes, 1 is a magic note
-                music->keyboard.keyPressed('a');
-            }
-            else if (rect.c == 5) { // just a few notes, 1 is a magic note
-                music->keyboard.keyPressed('g');
-            }
-            else if (rect.c == 7) { // just a few notes, 1 is a magic note
-                music->keyboard.keyPressed('t');
-            }
-            else if (rect.c == 9) { // just a few notes, 1 is a magic note
-                music->keyboard.keyPressed('k');
-            }
+            keysPress(music, rect.c);
             pushMusic(rect2Use, rect.c);
             break;
         }
     }
     else {
-        if (rect.c == 1) {
-            // found, remove it for music
-            gameItems.remove_if(MusicItem::isAkey);
-            music->keyboard.keyReleased('a');
-        }
-        else if (rect.c == 5) {
-            // found, remove it for music
-            gameItems.remove_if(MusicItem::isGkey);
-            music->keyboard.keyReleased('g');
-        }
-        else if (rect.c == 7) {
-            // found, remove it for music
-            gameItems.remove_if(MusicItem::isTkey);
-            music->keyboard.keyReleased('t');
-        }
-        else if (rect.c == 9) {
-            // found, remove it for music
-            gameItems.remove_if(MusicItem::isKkey);
-            music->keyboard.keyReleased('k');
-        }
+        keysUp(music, rect.c);
         return true;
     }
     return false;

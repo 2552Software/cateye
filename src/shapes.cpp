@@ -48,10 +48,6 @@ TextTimer::TextTimer(const std::string& text, float timeToRenderIn, float delay,
     timeBegan = (int)ofGetSystemTimeMillis();
     lingerTime = timeDelay+timeToRender+5000.0;// text remains for 1 second after animation
 }
-const bool TextTimer::isReadyToRemove(const TextTimer& item) {
-    int elapsedMilliSeconds = ((int)ofGetSystemTimeMillis() - item.timeBegan);
-    return item.lingerTime < elapsedMilliSeconds;
-}
 
 std::string& TextTimer::getPartialString() {
     return partialText;
