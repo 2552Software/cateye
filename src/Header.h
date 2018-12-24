@@ -227,11 +227,12 @@ const unsigned MusicGameItemTime = 20.0f;
 class MusicItem : public GameItem { 
 public:
 
-    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id, Music*musicIn, int keyIn) : GameItem(rect, texture, id, EndGame, MusicGameItemTime) { setup(parent); music = musicIn; key = keyIn;    }
+    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id, Music*music, int key) : GameItem(rect, texture, id, EndGame, MusicGameItemTime) {setup(parent, music, key);
+    }
     MusicItem() :GameItem(EndGame, MusicGameItemTime) { music = nullptr; key = 0; } // gets levels only etc
     virtual ~MusicItem();
 
-    void setup(SuperSphere &parent);
+    void setup(SuperSphere &parent, Music*musicIn, int keyIn);
     void update();
     void draw();
 

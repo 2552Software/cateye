@@ -69,10 +69,12 @@ void CylinderGameItem::setup(SuperSphere &parent) {
 
 MusicItem::~MusicItem() {  
 }
-void MusicItem::setup(SuperSphere &parent) {
+void MusicItem::setup(SuperSphere &parent, Music*musicIn, int keyIn) {
     setupHelper(&cylinder, parent);
     cylinder.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     cylinder.getAnimator().animateTo(1.0f);
+    music = musicIn;
+    key = keyIn;
     if (music && key) {
         music->keyboard.keyPressed(key);
     }
