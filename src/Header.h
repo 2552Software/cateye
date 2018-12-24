@@ -4,7 +4,8 @@
 
 enum Levels { NoGame = -1, Basic = 0, Medium = 1, Difficult = 2, EndGame = 3 };
 inline float getRadiusGlobal(int w= ofGetWidth(), int h= ofGetHeight()) {
-    return (std::min(w, h) / 2) - (std::min(w, h) / 2)*0.20f;
+    float r = 2.0f*(std::min(w, h) / 2)/3.0f;
+    return r;
 }
 
 class TextTimer {
@@ -147,6 +148,7 @@ public:
     bool inGame() { return getLevel() != NoGame; }
 
     void  resetLevelTime() { gameLevelTime = ofGetElapsedTimef(); }
+    void advance(std::shared_ptr<GameItem>&);
     std::shared_ptr<GameItem> getNext();
     std::shared_ptr<GameItem> getPrevious();
 
@@ -223,7 +225,7 @@ const unsigned MusicGameItemTime = 20.0f;
 class MusicItem : public GameItem { //bugbug roate them?
 public:
 
-    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) : GameItem(rect, texture, parent, id, EndGame, MusicGameItemTime) { setup(parent); }
+    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) : GameItem(rect, texture, id, EndGame, MusicGameItemTime) { setup(parent); }
     MusicItem() :GameItem(EndGame, MusicGameItemTime) {  } // gets levels only etc
     virtual ~MusicItem() {  }
 
@@ -291,10 +293,10 @@ public:
     void startPlaying();
     size_t winnerHitCount(); // count of items being animiated
     size_t winnerThreshold();
-    bool isWinner() { return winnerHitCount() >= winnerThreshold(); } // easy mode! bugbug menu
+    bool isWinner() { return winnerThreshold() > -1 && winnerHitCount() >= winnerThreshold(); } // easy mode! bugbug menu
     bool isAnimating();
     void windowResized(int w, int h);
-    bool inGame() { return current->getLevel() > NoGame; }
+    bool inGame() { return current->inGame(); }
     float w, h;
     ContoursBuilder contours;
 

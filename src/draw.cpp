@@ -16,13 +16,7 @@ void Game::draw() {
             setTitle();
             mainEye.setRotation(currentRotation);
             mainEyesSkins.getCurrentRef().start();
-            if (inGame()) {
-                ofTranslate(0.0f, 0.0f, -mainEye.getRadius()/2);// z will need to be moved via apis since OF is not consistant here
-                mainEye.draw();
-            }
-            else {
-                mainEye.draw();
-            }
+            mainEye.draw();
             mainEyesSkins.getCurrentRef().stop();
             ofPopMatrix();
             if (!mainEye.isAnimating()) {

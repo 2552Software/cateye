@@ -74,6 +74,8 @@ void CubeGameItem::update() {
     newPos.z = r*cube.getAnimator().val();  //movement*10;
     //newPos.x = movement;
     cube.setPosition(newPos);
+    cube.setWidth(cube.getWidth()*1.0f/cube.getAnimator().val());
+    cube.setHeight(cube.getHeight()*1.0f / cube.getAnimator().val());
 
 }
 void SphereGameItem::update() {
@@ -157,13 +159,10 @@ void Game::update(Music*music) {
                 credits(true);
                 break;
             }
-            current = current->getNext();
+            current->advance(current);
         }
         else {
-            if (current->timeLeft() < 0.0f) { // start game every 60 seconds for example
-                 //bugug for dev keep going forward current = current->getPrevious();
-                current = current->getNext();
-            }
+            current->advance(current);
             getCountours(music);
         }
     }

@@ -1,18 +1,18 @@
 #include "ofApp.h"
 
 void Animate3d::setup(AnimRepeat repeat, float seconds){
-    animator.reset(0.0f);
+    animator.reset(0.01f); // do no make 0, some divs will fault
     animator.setDuration(seconds);
     animator.setRepeatType(repeat);
     animator.setCurve(LINEAR);
 }
 void GameItem::set(Levels levelIn, float durationIn) {
     id = -1; // no id by default
-    resetLevelTime();
     running = true;// start off running
     duration = durationIn;
     level = levelIn;
     r = 0;
+    resetLevelTime();
 }
 void SuperSphere::setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h) {
     setResolution(27);

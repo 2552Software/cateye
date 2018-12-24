@@ -15,7 +15,12 @@ objectTexture&Textures::getCurrentRef() {
 void Game::setTitle() {
     if (inGame()) {
         std::stringstream ss;
-        ss << "Game On! level:" << current->getLevel() <<  " Find " << winnerHitCount() << ":" << winnerThreshold();
+        if (winnerThreshold() > 0) {
+            ss << "Game On! level:" << current->getLevel() << " Find " << winnerHitCount() << ":" << winnerThreshold();
+        }
+        else {
+            ss << "Enjoy the music!";
+        }
         ss <<  " " << setprecision(2) << fixed << current->timeLeft();
         basicText.print(ss.str(), 0.0f, 0.0f, getRadiusGlobal());
    }
@@ -63,31 +68,33 @@ std::shared_ptr<GameItem> GameItem::getPrevious() {
     return nullptr; // will blow up the app
 
 }
+void GameItem::advance(std::shared_ptr<GameItem>&current) {
 
+    if (current->timeLeft() < 0.0f) { // start game every 60 seconds for example
+     //bugug for dev keep going forward current = current->getPrevious();
+        current = current->getNext();
+    }
+
+}
 std::shared_ptr<GameItem> GameItem::getNext() {
     if (level == NoGame) {
         std::shared_ptr<GameItem> sp{ std::make_shared <SphereGameItem>() };
-        sp->resetLevelTime();
         return sp;
     }
     if (level == Basic) {
         std::shared_ptr<GameItem> sp{ std::make_shared <CubeGameItem>() };
-        sp->resetLevelTime();
         return sp;
     }
     if (level == Medium) {
         std::shared_ptr<GameItem> sp{ std::make_shared <CylinderGameItem>() };
-        sp->resetLevelTime();
         return sp;
     }
     if (level == Difficult) {
         std::shared_ptr<GameItem> sp{ std::make_shared <MusicItem>() };
-        sp->resetLevelTime();
         return sp;
     }
     if (level == EndGame) {
         std::shared_ptr<GameItem> sp{ std::make_shared <GameItem>() };
-        sp->resetLevelTime();
         return sp;
     }
     return nullptr; // will blow up the app
@@ -208,7 +215,7 @@ size_t Game::winnerThreshold() {
     case Difficult:
         return screenToAnimationMap.size();
     case EndGame:
-        return 1; // it just ages out
+        return -1; // it just ages out
     }
     return 0;
 }
