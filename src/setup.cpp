@@ -1,4 +1,5 @@
 #include "ofApp.h"
+#include "sound.h"
 
 void Animate3d::setup(AnimRepeat repeat, float seconds){
     animator.reset(0.01f); // do no make 0, some divs will fault
@@ -66,10 +67,18 @@ void CylinderGameItem::setup(SuperSphere &parent) {
     cylinder.getAnimator().animateTo(1.0f);
 }
 
+MusicItem::~MusicItem() {  
+    if (music && key) {
+        music->keyboard.keyReleased(key);
+    }
+}
 void MusicItem::setup(SuperSphere &parent) {
     setupHelper(&cylinder, parent);
     cylinder.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     cylinder.getAnimator().animateTo(1.0f);
+    if (music && key) {
+        music->keyboard.keyPressed(key);
+    }
 }
 
 void CubeGameItem::setup(SuperSphere &parent) {

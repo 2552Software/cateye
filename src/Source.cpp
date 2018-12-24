@@ -15,7 +15,7 @@ objectTexture&Textures::getCurrentRef() {
 void Game::setTitle() {
     if (inGame()) {
         std::stringstream ss;
-        if (winnerThreshold() > 0) {
+        if (winnerThreshold() != (size_t)-1) {
             ss << "Game On! level:" << current->getLevel() << " Find " << winnerHitCount() << ":" << winnerThreshold();
         }
         else {
@@ -232,8 +232,8 @@ void Game::pushCylinder(const ofRectangle&rect, int id) {
     std::shared_ptr<GameItem> sp{ std::make_shared <CylinderGameItem>(rect, cylindersSkins.getCurrentRef(), mainEye,id) };
     gameItems.push_back(sp);
 }
-void Game::pushMusic(const ofRectangle&rect, int id) {
-    std::shared_ptr<GameItem> sp{ std::make_shared <MusicItem>(rect, musicNotesSkins.getCurrentRef(), mainEye,id) };
+void Game::pushMusic(const ofRectangle&rect, int id, Music*music) {
+    std::shared_ptr<GameItem> sp{ std::make_shared <MusicItem>(rect, musicNotesSkins.getCurrentRef(), mainEye,id, music, keysPress(id)) };
     gameItems.push_back(sp);
 }
 
@@ -243,97 +243,35 @@ void Game::removeGameItem(int id) {
         [id](std::shared_ptr<GameItem>item) {return item->id == id; }),
         gameItems.end());
 }
-void Game::keyUp(Music*music, char key, int id) {
-    removeGameItem(id);
-    music->keyboard.keyReleased(key);
-}
-void Game::keysUp(Music*music, int id) {
+// translate location to key
+int Game::keysPress(int id) {
     switch (id) {
     case 1:
-        keyUp(music, 'a', id);
-        break;
+        return 'a';
     case 3:
-        keyUp(music, 'w', id);
-        break;
+        return 'w';
     case 5:
-        keyUp(music, 's', id);
-        break;
+        return 's';
     case 7:
-        keyUp(music, 'e', id);
-        break;
+        return 'e';
     case 9:
-        keyUp(music, 'd', id);
-        break;
+        return 'd';
     case 11:
-        keyUp(music, 'f', id);
-        break;
+        return 'f';
     case 13:
-        keyUp(music, 't', id);
-        break;
+        return 't';
     case 15:
-        keyUp(music, 'g', id);
-        break;
+        return 'g';
     case 17:
-        keyUp(music, 'y', id);
-        break;
+        return 'y';
     case 19:
-        keyUp(music, 'h', id);
-        break;
+        return 'h';
     case 21:
-        keyUp(music, 'u', id);
-        break;
+        return 'u';
     case 23:
-        keyUp(music, 'j', id);
-        break;
+        return 'j';
     case 25:
-        keyUp(music, 'k', id);
-        break;
-    }
-
-}
-
-
-void Game::keysPress(Music*music, int id) {
-    switch (id) {
-    case 1:
-        music->keyboard.keyPressed('a');
-        break;
-    case 3:
-        music->keyboard.keyPressed('w');
-        break;
-    case 5:
-        music->keyboard.keyPressed('s');
-        break;
-    case 7:
-        music->keyboard.keyPressed('e');
-        break;
-    case 9:
-        music->keyboard.keyPressed('d');
-        break;
-    case 11:
-        music->keyboard.keyPressed('f');
-        break;
-    case 13:
-        music->keyboard.keyPressed('t');
-        break;
-    case 15:
-        music->keyboard.keyPressed('g');
-        break;
-    case 17:
-        music->keyboard.keyPressed('y');
-        break;
-    case 19:
-        music->keyboard.keyPressed('h');
-        break;
-    case 21:
-        music->keyboard.keyPressed('u');
-        break;
-    case 23:
-        music->keyboard.keyPressed('j');
-        break;
-    case 25:
-        music->keyboard.keyPressed('k');
-        break;
+        return 'k';
     }
 
 }
@@ -348,20 +286,18 @@ bool Game::compute(LocationToInfoMap rect, Music*music) {
         case Medium:
             pushCube(rect2Use, rect.c);
             break;
-        case Difficult: // cylinder game
+        case Difficult: 
             pushCylinder(rect2Use, rect.c);
             break;
-        case EndGame: //bugbug make 8 octaves
-            keysPress(music, rect.c);
+        case EndGame:
             pushMusic(rect2Use, rect.c);
             break;
         }
     }
     else {
-        keysUp(music, rect.c);
-        return true;
+        //bugbug only in stop keysUp(music, rect.c);
     }
-    return false;
+    return true;
 }
 bool Game::find(const ofRectangle& rect) {
     for (auto item : gameItems) {

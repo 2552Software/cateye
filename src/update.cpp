@@ -54,15 +54,6 @@ void MusicItem::update() {
     if (!cylinder.isAnimating()) {
         stop();
     }
-    cylinder.rotateDeg(20.0f*cylinder.getAnimator().val(), 0.0f, 0.0f, 1.0f);
-    glm::vec3 newPos = cylinder.getPosition();
-    newPos.z = r * cylinder.getAnimator().val();
-    newPos.x = r * cylinder.getAnimator().val();
-    if (newPos.z > r * 3) {
-        newPos.x = r * cylinder.getAnimator().val();
-        newPos.z = r;
-    }
-    cylinder.setPosition(newPos);
 }
 
 void CubeGameItem::update() {
@@ -158,14 +149,15 @@ void Game::update(Music*music) {
                 sendFireworks = true;
                 credits(true);
                 break;
+            default:
+                break;
             }
-            current->advance(current);
         }
         else {
-            current->advance(current);
             getCountours(music);
         }
-    }
+        current->advance(current);
+      }
 }
 
 // return true if updated

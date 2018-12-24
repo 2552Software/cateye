@@ -225,8 +225,8 @@ const unsigned MusicGameItemTime = 20.0f;
 class MusicItem : public GameItem { //bugbug roate them?
 public:
 
-    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) : GameItem(rect, texture, id, EndGame, MusicGameItemTime) { setup(parent); }
-    MusicItem() :GameItem(EndGame, MusicGameItemTime) {  } // gets levels only etc
+    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id, Music*musicIn, int keyIn) : GameItem(rect, texture, id, EndGame, MusicGameItemTime) { setup(parent); music = musicIn; key = keyIn;    }
+    MusicItem() :GameItem(EndGame, MusicGameItemTime) { music = nullptr; key = 0; } // gets levels only etc
     virtual ~MusicItem() {  }
 
     void setup(SuperSphere &parent);
@@ -235,6 +235,8 @@ public:
 
 private:
     SuperCylinder cylinder;
+    int key;
+    Music*music;
 };
 
 // map location to interesting things
@@ -293,7 +295,7 @@ public:
     void startPlaying();
     size_t winnerHitCount(); // count of items being animiated
     size_t winnerThreshold();
-    bool isWinner() { return winnerThreshold() > -1 && winnerHitCount() >= winnerThreshold(); } // easy mode! bugbug menu
+    bool isWinner() { return winnerThreshold() != (size_t)-1 && winnerHitCount() >= winnerThreshold(); } // easy mode! bugbug menu
     bool isAnimating();
     void windowResized(int w, int h);
     bool inGame() { return current->inGame(); }
@@ -302,14 +304,12 @@ public:
 
 private:
     std::shared_ptr<GameItem> current;// allocation no validated
-    void keysPress(Music*music, int id);
-    void keysUp(Music*music, int id);
+    int keysPress(int id);
     void removeGameItem(int id);
-    void keyUp(Music*music, char key, int id);
     void pushSphere(const ofRectangle&rect, int id);
     void pushCube(const ofRectangle&rect, int id);
     void pushCylinder(const ofRectangle&rect, int id);
-    void pushMusic(const ofRectangle&rect, int id);
+    void pushMusic(const ofRectangle&rect, int id, Music*music);
     bool compute(LocationToInfoMap rect, Music*);
     TextEngine basicText;
     TextEngine fancyText;
