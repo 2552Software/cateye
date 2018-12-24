@@ -142,11 +142,14 @@ public:
         return id == rhs;
     }
     virtual void setup() {};
-    virtual void update() {};
+    virtual void update();
     virtual void draw() {}
+
+    bool inGame() { return getLevel() != NoGame; }
 
     void  resetLevelTime() { gameLevelTime = ofGetElapsedTimef(); }
     std::shared_ptr<GameItem> getNext();
+    std::shared_ptr<GameItem> getPrevious();
 
     static const bool isReadyToRemove(std::shared_ptr<GameItem> item) { return !item->isRunning(); }
 
@@ -167,31 +170,30 @@ protected:
     float gameLevelTime;
     float duration;
     Levels level;
+    float r;
 };
 
+const unsigned SphereGameItemTime = 1.0f;
 class SphereGameItem : public GameItem {
 public:
-    SphereGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) :GameItem(rect, texture, id, Basic, 60.0f) { setup(parent); }
-    SphereGameItem() :GameItem(Basic, 60.0f) {  } // gets levels only etc
+    SphereGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) :GameItem(rect, texture, id, Basic, SphereGameItemTime) { setup(parent); }
+    SphereGameItem() :GameItem(Basic, SphereGameItemTime) {  } // gets levels only etc
     virtual  ~SphereGameItem() {  }
 
     void setup(SuperSphere &parent);
     void update();
     void draw();
-
     bool isAnimating() { return sphere.isAnimating(); }
 
 private:
     SuperSphere sphere;
-    float rotator; 
-    float inc;
-    float r;
 };
 
+const unsigned CubeGameItemTime = 20.0f;
 class CubeGameItem : public GameItem {
 public:
-    CubeGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) :GameItem(rect, texture, id, Medium, 20.0f) { setup(parent); }
-    CubeGameItem() :GameItem(Medium, 20.0f) {  } // gets levels only etc
+    CubeGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) :GameItem(rect, texture, id, Medium, CubeGameItemTime) { setup(parent); }
+    CubeGameItem() :GameItem(Medium, CubeGameItemTime) {  } // gets levels only etc
     virtual  ~CubeGameItem() {  }
 
     void setup(SuperSphere &parent);
@@ -204,11 +206,11 @@ private:
     SuperCube cube; 
 };
 
-
+const unsigned CylinderGameItemTime = 20.0f;
 class CylinderGameItem : public GameItem {
 public:
-    CylinderGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id, Levels level = Difficult, float duration = 20.0f) :GameItem(rect, texture, id, level, duration) { setup(parent); }
-    CylinderGameItem(Levels level = Difficult, float duration = 20.0f) :GameItem(level, duration) {  } // gets levels only etc
+    CylinderGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id, Levels level = Difficult, float duration = CylinderGameItemTime) :GameItem(rect, texture, id, level, duration) { setup(parent); }
+    CylinderGameItem(Levels level = Difficult, float duration = CylinderGameItemTime) :GameItem(level, duration) {  } // gets levels only etc
     virtual  ~CylinderGameItem() {  }
 
     void setup(SuperSphere &parent);
@@ -220,11 +222,11 @@ public:
 private:
     SuperCylinder cylinder;
 };
-
+const unsigned MusicGameItemTime = 20.0f;
 class MusicItem : public CylinderGameItem { //bugbug roate them?
 public:
-    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) : CylinderGameItem(rect, texture, parent, id, EndGame, 20.0f) { }
-    MusicItem() :CylinderGameItem(EndGame, 20.0f) {  } // gets levels only etc
+    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) : CylinderGameItem(rect, texture, parent, id, EndGame, MusicGameItemTime) { }
+    MusicItem() :CylinderGameItem(EndGame, MusicGameItemTime) {  } // gets levels only etc
     virtual ~MusicItem() {  }
 
     static bool isAkey(std::shared_ptr<GameItem>item) { return (item->id == 1); }

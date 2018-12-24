@@ -33,6 +33,37 @@ void Game::blink() {
 void Textures::add(const std::string &name, const std::string &root) {
     skins.push_back(objectTexture(root));
 }
+
+std::shared_ptr<GameItem> GameItem::getPrevious() {
+    if (level == NoGame) {
+        std::shared_ptr<GameItem> sp{ std::make_shared <GameItem>() };
+        sp->resetLevelTime();
+        return sp;
+    }
+    if (level == Basic) {
+        std::shared_ptr<GameItem> sp{ std::make_shared <GameItem>() };
+        sp->resetLevelTime();
+        return sp;
+    }
+    if (level == Medium) {
+        std::shared_ptr<GameItem> sp{ std::make_shared <SphereGameItem>() };
+        sp->resetLevelTime();
+        return sp;
+    }
+    if (level == Difficult) {
+        std::shared_ptr<GameItem> sp{ std::make_shared <CubeGameItem>() };
+        sp->resetLevelTime();
+        return sp;
+    }
+    if (level == EndGame) {
+        std::shared_ptr<GameItem> sp{ std::make_shared <CylinderGameItem>() };
+        sp->resetLevelTime();
+        return sp;
+    }
+    return nullptr; // will blow up the app
+
+}
+
 std::shared_ptr<GameItem> GameItem::getNext() {
     if (level == NoGame) {
         std::shared_ptr<GameItem> sp{ std::make_shared <SphereGameItem>() };

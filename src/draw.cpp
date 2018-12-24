@@ -17,7 +17,7 @@ void Game::draw() {
             mainEye.setRotation(currentRotation);
             mainEyesSkins.getCurrentRef().start();
             if (inGame()) {
-                ofTranslate(0.0f, 0.0f, -mainEye.getRadius());// z will need to be moved via apis since OF is not consistant here
+                ofTranslate(0.0f, 0.0f, -mainEye.getRadius()/2);// z will need to be moved via apis since OF is not consistant here
                 mainEye.draw();
             }
             else {

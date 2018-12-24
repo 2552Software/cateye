@@ -35,25 +35,40 @@ void Textures::update() {
 }
 
 void CylinderGameItem::update() {
+    GameItem::update();
     cylinder.update();
     if (!cylinder.isAnimating()) {
         stop();
     }
-    cylinder.rotateDeg(20.0f*cylinder.getAnimator().val(), 1.0f, 0.0f, 0.0f);
-
+    cylinder.rotateDeg(20.0f*cylinder.getAnimator().val(), 0.0f, 0.0f, 1.0f);
+    glm::vec3 newPos = cylinder.getPosition();
+    newPos.z = ofGetLastFrameTime() * 10; 
+    newPos.x = ofGetLastFrameTime() * 6; ;
+    if (newPos.z > r * 3) {
+        newPos.x = ofGetLastFrameTime()*20;
+        newPos.z = r;
+    }
+    cylinder.setPosition(newPos);
 }
 
 void CubeGameItem::update() {
+    GameItem::update();
     cube.update();
     if (!cube.isAnimating()) {
         stop();
     }
     glm::vec3 newPos = cube.getPosition();
-    newPos.z += cube.getWidth()*cube.getAnimator().val() / 3;
+    newPos.z = ofGetLastFrameTime() * 10;;
+    newPos.x = ofGetLastFrameTime() * 20; 
+    if (newPos.z > r*3) {
+        newPos.x = ofGetLastFrameTime() * 20;
+        newPos.z = r;
+    }
     cube.setPosition(newPos);
 
 }
 void SphereGameItem::update() {
+    GameItem::update();
     sphere.update();
     if (!sphere.isAnimating()) {
         stop();
@@ -64,8 +79,7 @@ void SphereGameItem::update() {
     //sphere.rotateAroundDeg(15.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3());
     ofNode node; 
     node.setPosition(w / 2, h / 2, -r);
-    sphere.orbitDeg(rotator, ofRandom(360.0f), r*2, node);
-    rotator += inc;
+    sphere.orbitDeg(ofGetLastFrameTime() * 20, ofRandom(360.0f), r*2, node);
 }
 bool secondsPassed(int val) {
     return ((int)ofGetElapsedTimef() % val) == 0;
@@ -82,6 +96,8 @@ void TextEngine::update() {
     fullScreenText.remove_if(TextTimer::isReadyToRemove);
     inlineText.remove_if(TextTimer::isReadyToRemove);
 }
+void GameItem::update() {
+};
 void Game::update(Music*music) {
 
     // blinker always moving but only drawn up request
@@ -96,9 +112,6 @@ void Game::update(Music*music) {
         a->update();
     }
     gameItems.remove_if(GameItem::isReadyToRemove);
-    if (current->timeLeft() < 0.0f) { // start game every 60 seconds for example
-        current = current->getNext();
-    }
 
     fancyText.update();
     basicText.update();
@@ -112,8 +125,8 @@ void Game::update(Music*music) {
     cylindersSkins.update();
     musicNotesSkins.update();
 
-    if (!isAnimating()) {
-        if (current->getLevel() != NoGame &&  isWinner()) {  
+      if (!isAnimating()) {
+        if (current->inGame() && isWinner()) {  
             clear();
             switch (current->getLevel()) {
             case Difficult:
@@ -124,6 +137,10 @@ void Game::update(Music*music) {
             current = current->getNext();
         }
         else {
+            if (current->timeLeft() < 0.0f) { // start game every 60 seconds for example
+                 //bugug for dev keep going forward current = current->getPrevious();
+                current = current->getNext();
+            }
             getCountours(music);
         }
     }

@@ -18,7 +18,7 @@ void SuperSphere::setup(AnimRepeat repeat, float seconds, float x, float y, int 
 }
 
 void SuperCylinder::setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h) {
-    setHeight(h);
+    setHeight(h/2);
     setRadius(w);
     setPosition(x, y, 0.0f);
     Animate3d::setup(repeat, seconds);
@@ -54,7 +54,8 @@ GameItem::GameItem(const ofRectangle& rect, objectTexture textureIn, int idIn, L
 void GameItem::setupHelper(of3dPrimitive* primitive, SuperSphere &parent) {
     primitive->setParent(parent);
     glm::vec3 v3 = primitive->getPosition();
-    primitive->setPosition(v3.x, v3.y, getRadiusGlobal());
+    primitive->setPosition(v3.x, v3.y, 0.0f);
+    r = parent.getRadius();
 }
 
 void CylinderGameItem::setup(SuperSphere &parent) {
@@ -65,7 +66,11 @@ void CylinderGameItem::setup(SuperSphere &parent) {
 
 void CubeGameItem::setup(SuperSphere &parent) {
     setupHelper(&cube, parent);
-    cube.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    float x = rectangle.x;
+    if (id & 1) {
+        x = ofGetWidth()-rectangle.x; // flip half of them
+    }
+    cube.setup(PLAY_ONCE, duration, x, rectangle.y, rectangle.width *ofRandom(1, 3), rectangle.height*ofRandom(1,5)); // make bigger as we are zooming out
     cube.getAnimator().animateTo(1.0f);
 
 }
@@ -74,9 +79,6 @@ void SphereGameItem::setup(SuperSphere &parent) {
     sphere.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width*2, rectangle.height*2); // make bigger as they will be zomed backwards
     sphere.getAnimator().animateTo(1.0f);
     sphere.lookAt(parent);
-    r = parent.getRadius();
-    inc = rectangle.height/4 + id;
-    rotator = inc;
 }
 
 void Textures::setup(const std::string& path, float duration) {
