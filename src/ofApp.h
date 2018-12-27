@@ -10,6 +10,7 @@
 #include "ofxOpenCv.h"
 #include <ofxGui.h>
 
+
 const int cameraWidth = 640;// 320; // the motion image from the camera
 const int cameraHeight = 480;//240;
 #define EYES "eyes"
@@ -37,13 +38,24 @@ public:
     void squareCountChanged(int & squareCount);
     void triggerCountChanged(float & count);
     void shapeSizeChanged(float & size);
-    Light	light;
+    Music *music;
+    Light light;
     Camera camera;
     Game eyeAnimator;
     ofMesh m;
     void windowResized(int w, int h);
+
     void keyPressed(int key);
     void keyReleased(int key);
-
+    void mouseMoved(int x, int y);
+    void mouseDragged(int x, int y, int button);
+    void mousePressed(int x, int y, int button);
+    void mouseReleased(int x, int y, int button);
+    void mouseEntered(int x, int y);
+    void mouseExited(int x, int y);
+    void dragEvent(ofDragInfo dragInfo);
+    void gotMessage(ofMessage msg);
+    
 private:
+   
 };

@@ -12,82 +12,61 @@
 #pragma warning( pop )
 #endif
 
-class AudioPlayer : public pdsp::Patchable {
+// to create your own modules, you have to extend pdsp::Patchable
+
+class SlideSynth : public pdsp::Patchable {
 
 public:
-    AudioPlayer() { patch(); }
-    AudioPlayer(const AudioPlayer & other) { patch(); }
 
-    ofParameterGroup    ui;
+    SlideSynth() { patch(); } // default constructor
+    SlideSynth(const SlideSynth & other) { patch(); } // you need this to use std::vector with your class, otherwise will not compile
+    // remember that is a bad thing to copy construct in pdsp, 
+    //      always just resize the vector and let the default constructor do the work
+    //          resizing the vector will also disconnect everything, so do it just once before patching
 
-    void load(string path);
-    void play();
-    void pause();
-    void stop();
 
-    float playhead() const;
+    void patch() {
+
+        //create inputs/outputs to be used with the in("tag") and out("tag") methods
+        addModuleInput("pitch", osc.in_pitch()); // the first input added is the default input
+        addModuleInput("amp", y_ctrl);
+        addModuleOutput("signal", amp); // the first output added is the default output
+
+
+        // pdsp::PatchNode is a class that simply route its inputs to its output
+        y_ctrl.enableBoundaries(0.0f, 1.0f); // you can clip the input of pdsp::PatchNode
+        y_ctrl.set(0.0f); // and you can set its input default value
+
+        //patching
+        osc.out_saw() * 2.0f >> drive >> filter >> amp;
+        y_ctrl >> amp.in_mod();
+        y_ctrl * 60.0f >> filter.in_cutoff();
+        48.0f >> filter.in_cutoff();
+        0.3f >> filter.in_reso();
+    }
+
+    // those are optional
+    pdsp::Patchable & in_pitch() {
+        return in("pitch");
+    }
+
+    pdsp::Patchable & in_amp() {
+        return in("amp");
+    }
+
+    pdsp::Patchable & out_signal() {
+        return out("signal");
+    }
 
 private:
-    void patch();
 
-    void loadButtonCall(bool & value);
-    void sampleChangedCall(string & value);
-    void loadSample(string path);
+    pdsp::PatchNode     y_ctrl;
+    pdsp::PatchNode     pitch_ctrl;
+    pdsp::Amp           amp;
+    pdsp::VAOscillator  osc;
+    pdsp::Saturator1    drive; // distort the signal
+    pdsp::VAFilter      filter; // 24dB multimode filter
 
-    pdsp::Sampler       sampler0;
-    pdsp::Sampler       sampler1;
-    pdsp::ADSR          env;
-    pdsp::Amp           amp0;
-    pdsp::Amp           amp1;
-
-    pdsp::Amp           fader0;
-    pdsp::Amp           fader1;
-    pdsp::DBtoLin       dBtoLin;
-    pdsp::Parameter     faderControl;
-
-    pdsp::Parameter     pitchControl;
-    pdsp::Parameter     smoothControl;
-
-    pdsp::SampleBuffer  sample;
-    ofParameter<bool>   loadButton;
-    ofParameter<string> samplePath;
-    ofParameter<string> sampleName;
-
-    ofParameter<bool>   bPlay;
-    ofParameter<bool>   bPause;
-    ofParameter<bool>   bStop;
-
-    pdsp::TriggerControl    sampleTrig;
-    pdsp::TriggerControl    envGate;
-
-    static int number;
-
-    void onPlay(bool & value);
-    void onPause(bool & value);
-    void onStop(bool & value);
-
-    bool bSemaphore;
-};
-struct BassPattern : public pdsp::Sequence {
-
-    // helper routine to add notes to the score
-    // this routin also add a message for stopping the note
-    // so we have to be careful that notes durations don't overlap
-    void note(double step16, float gate, float pitch, float slew, double duration);
-
-    // this routine shuffles the pitches inside of the sequence vector
-    void shuffleSequence();
-
-    // this returns the pitches for the generative routine
-    // returns the pitches from the sequence the first, second and third bar
-    // on the fourth bar the second part of the returned pitches will be random values
-    // counter() returns the value of an internal counter that measure how many time the sequence restarted
-    float pfun(int index);
-    //inits the pattern and set the pitches to use
-    BassPattern();
-    const double gate_long = 0.95;  // a bit more than 1/16       
-    const double gate_short = 0.4; // almost 1/32th
-    std::vector<float> sequence;
 };
 
 class SineBleep : public pdsp::Patchable {
@@ -95,19 +74,41 @@ public:
     SineBleep() { patch(); }
     SineBleep(const SineBleep & other) { patch(); }
 
-    void patch();
+    void patch() {
+        //add inputs / outputs with these methods 
+        addModuleInput("trig", env.in_trig()); // arguments are tag and the Unit in/out to link to that tag
+        addModuleInput("pitch", osc.in_pitch());
+        addModuleOutput("signal", amp); // if in/out is not selected default in/out is used
+
+        //patching
+        env.set(0.0f, 50.0f, 1.0f, 350.0f) * 0.25f >> amp.in_mod();
+        env * 0.10f >> osc.in_fb() >> amp;
+    }
 private:
     pdsp::Amp amp;
     pdsp::FMOperator osc;
     pdsp::ADSR env;
+
 };
+
 
 class KickSynth : public pdsp::Patchable {
 public:
     KickSynth() { patch(); }
     KickSynth(const KickSynth & other) { patch(); }
 
-    void patch();
+    void patch() {
+        //set inputs/outputs
+        addModuleInput("trig", trigger_in);
+        addModuleOutput("signal", amp);
+
+        //patching
+        osc >> amp;
+        trigger_in >> ampEnv.set(0.0f, 50.0f, 100.0f) >> amp.in_mod();
+        trigger_in >> modEnv.set(0.0f, 0.0f, 50.0f) * 48.0f >> osc.in_pitch();
+        48.0f >> osc.in_pitch();
+        ampEnv.enableDBTriggering(-24.0f);
+    }
 private:
     pdsp::Amp           amp;
     pdsp::FMOperator    osc;
@@ -116,215 +117,6 @@ private:
     pdsp::PatchNode     trigger_in;
 };
 
-class BassSynth : public pdsp::Patchable {
-public:
-    BassSynth() { patch(); }
-    BassSynth(const BassSynth & other) { patch(); }
-
-    void patch();
-private:
-
-    pdsp::Amp           amp;
-    pdsp::VAOscillator  osc;
-    pdsp::VAFilter     filter;
-    pdsp::ADSR          ampEnv;
-    pdsp::ADSR          filterEnv;
-    pdsp::Saturator1    drive;
-    pdsp::PatchNode     trigger_in;
-};
-
-class Reese : public pdsp::Patchable {
-public:
-    Reese() { patch(); }
-    Reese(const Reese & other) { patch(); }
-
-    void patch();
-private:
-    pdsp::PatchNode     pitchNode;
-    pdsp::VAOscillator  osc1;
-    pdsp::VAOscillator  osc2;
-    pdsp::Saturator1    drive;
-    pdsp::VAFilter      filter;
-    pdsp::ADSR          env;
-    pdsp::Amp           amp;
-
-};
-
-class MultiSampler : public pdsp::Patchable{
-
-public:
-    MultiSampler() { patch(); }
-    MultiSampler(const MultiSampler & other) { patch(); }
-
-    ~MultiSampler() { // deallocate elements
-        for (size_t i = 0; i < samples.size(); ++i) delete samples[i];
-    }
-
-    void patch();
-
-    void add(string path, bool setHoldTime = false);
-
-    void gain(float dBvalue) {       sampler * dB(dBvalue) >> amp;    }
-
-    float meter_env() const {       return env.meter_output();    }
-
-    float meter_position() const {      return sampler.meter_position();    }
-
-    void setAHR(float attack, float hold, float release) {      env.set(attack, hold, release);    }
-
-private:
-    pdsp::PatchNode     triggers;
-    pdsp::Sampler       sampler;
-    pdsp::AHR           env;
-    pdsp::Amp           amp;
-
-    std::vector<pdsp::SampleBuffer*> samples;
-};
-
-class WaveSynth {
-
-public:
-    // class to rapresent each synth voice ------------
-    class Voice : public pdsp::Patchable {
-        friend class WaveSynth;
-
-    public:
-        Voice() {}
-        Voice(const Voice& other) {}
-
-        pdsp::Patchable& in_trig();
-        pdsp::Patchable& in_pitch();
-        pdsp::Patchable& in_table();
-        pdsp::Patchable& in_cutoff();
-
-        float meter_mod_env() const;
-        float meter_pitch() const;
-
-    private:
-        void setup(WaveSynth & m);
-
-        pdsp::PatchNode     voiceTrigger;
-
-        pdsp::TableOscillator   oscillator;
-        pdsp::VAFilter          filter;
-        pdsp::Amp               voiceAmp;
-
-
-        pdsp::ADSR          envelope;
-        pdsp::Amp           envToTable;
-        pdsp::Amp           envToFilter;
-
-        pdsp::Amp               driftAmt;
-        pdsp::LFOPhazor         phazorFree;
-        pdsp::TriggeredRandom   rnd;
-        pdsp::OnePole           randomSlew;
-    }; // end voice class -----------------------------
-
-
-    // synth public API --------------------------------------
-    ofParameterGroup & setup(int numVoice, float spread = 0.0f, std::string name = "wavesynth");
-
-    pdsp::Patchable& ch(size_t index);
-
-    vector<Voice>       voices;
-    ofParameterGroup    parameters;
-
-    ofParameterGroup & label(std::string name);
-
-    pdsp::WaveTable  wavetable;
-
-private: // --------------------------------------------------
-
-    pdsp::ParameterGain gain;
-
-    pdsp::Parameter     table_ctrl;
-
-    pdsp::Parameter     cutoff_ctrl;
-    pdsp::Parameter     reso_ctrl;
-    pdsp::Parameter     filter_mode_ctrl;
-
-    pdsp::Parameter     env_attack_ctrl;
-    pdsp::Parameter     env_decay_ctrl;
-    pdsp::Parameter     env_sustain_ctrl;
-    pdsp::Parameter     env_release_ctrl;
-    pdsp::Parameter     env_filter_ctrl;
-    pdsp::Parameter     env_table_ctrl;
-    pdsp::Parameter     drift;
-};
-
-// datatable based polysynth
-
-class PolySynth {
-
-public:
-    // class to rapresent each synth voice ------------
-    class Voice : public pdsp::Patchable {
-        friend class PolySynth;
-
-    public:
-        Voice() {}
-        Voice(const Voice& other) {}
-
-        float meter_mod_env() const;
-        float meter_pitch() const;
-
-    private:
-        void setup(PolySynth & m, int v);
-
-        pdsp::PatchNode     voiceTrigger;
-
-        pdsp::DataOscillator    oscillator;
-        pdsp::VAFilter          filter;
-        pdsp::Amp               amp;
-
-
-        pdsp::ADSR          envelope;
-    }; // end voice class -----------------------------
-
-
-    // synth public API --------------------------------------
-
-    void setup(int numVoice);
-
-    pdsp::DataTable  datatable;
-
-    pdsp::Patchable& ch(int index);
-
-    vector<Voice>       voices;
-    ofParameterGroup    ui;
-
-private: // --------------------------------------------------
-
-    pdsp::ParameterGain gain;
-
-    pdsp::Parameter     cutoff_ctrl;
-    pdsp::Parameter     reso_ctrl;
-    pdsp::Parameter     filter_mode_ctrl;
-
-    pdsp::Parameter     env_attack_ctrl;
-    pdsp::Parameter     env_decay_ctrl;
-    pdsp::Parameter     env_sustain_ctrl;
-    pdsp::Parameter     env_release_ctrl;
-    pdsp::ParameterAmp  env_filter_amt;
-
-    pdsp::Parameter     lfo_speed_ctrl;
-    pdsp::Parameter     lfo_wave_ctrl;
-
-    pdsp::LFO           lfo;
-    pdsp::Switch        lfo_switch;
-    pdsp::ParameterAmp  lfo_filter_amt;
-
-    pdsp::LowCut			leakDC;
-
-    // chorus ------------------------
-    pdsp::DimensionChorus   chorus;
-    ofParameterGroup    ui_chorus;
-    pdsp::Parameter     chorus_speed_ctrl;
-    pdsp::Parameter     chorus_depth_ctrl;
-
-    std::vector<float> partials_vector;
-
-};
 
 class Music {
 public:
@@ -337,31 +129,24 @@ public:
     pdsp::Engine            engine;
     pdsp::VAOscillator      osc;
     pdsp::LFO               lfo;
+    pdsp::Amp               amp;
+    pdsp::ADSR              env;
 
-    bool            oneShot;
-    BassPattern     bassPattern;
-    BassSynth       bass;
-    // pdsp modules
-    SineBleep       bleep;
-    SineBleep       lead;
-    KickSynth       kick;
+    pdsp::TriggerControl    gate_ctrl;
+    pdsp::ValueControl      amp_ctrl;
+    pdsp::ValueControl      pitch_ctrl;
+    SlideSynth              synth;
+    pdsp::LowCut            leakDC;
+    pdsp::ComputerKeyboard  keyboard; // simulate bugbug
+    SineBleep               lead;
+    KickSynth               kick;
+
     std::vector<pdsp::Sequence>  lead_seqs;
     std::vector<pdsp::Sequence>  kick_seqs;
-    std::vector<pdsp::Sequence> bleeps;
+
     int                     seq_mode;
     std::atomic<bool>       quantize;
     std::atomic<double>     quantime;
-    MultiSampler    drums;
-    Reese           reese;
-    PolySynth                   synth;
-    std::vector<int>     states;
-    pdsp::Scope drumScope;
-    pdsp::Scope reeseScope;
-    pdsp::ComputerKeyboard  keyboard; // simulate bugbug
-    ofParameter<float> smooth;
-    void smoothCall(float & value);
-    int mode;
-    WaveSynth    wavesynth;
 private:
 
 };

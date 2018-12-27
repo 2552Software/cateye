@@ -39,12 +39,12 @@ void CylinderGameItem::update() {
     if (!cylinder.isAnimating()) {
         stop();
     }
-    cylinder.rotateDeg(20.0f*cylinder.getAnimator().val(), 0.0f, 0.0f, 1.0f);
+    cylinder.rotateDeg(20.0f*cylinder.getUpAnimator().val(), 0.0f, 0.0f, 1.0f);
     glm::vec3 newPos = cylinder.getPosition();
-    newPos.z = r * cylinder.getAnimator().val();
-    newPos.x = r * cylinder.getAnimator().val();
+    newPos.z = r * cylinder.getUpAnimator().val();
+    newPos.x = r * cylinder.getUpAnimator().val();
     if (newPos.z > r * 3) {
-        newPos.x = r * cylinder.getAnimator().val();
+        newPos.x = r * cylinder.getUpAnimator().val();
         newPos.z = r;
     }
     cylinder.setPosition(newPos);
@@ -65,25 +65,26 @@ void CubeGameItem::update() {
         stop();
     }
     glm::vec3 newPos = cube.getPosition();
-    newPos.z = r*cube.getAnimator().val();  //movement*10;
+    newPos.z = r*cube.getUpAnimator().val();  //movement*10;
     //newPos.x = movement;
     cube.setPosition(newPos);
-    cube.setWidth(cube.getWidth()*1.0f/cube.getAnimator().val());
-    cube.setHeight(cube.getHeight()*1.0f / cube.getAnimator().val());
+    cube.setWidth(cube.getWidth()*1.0f/cube.getUpAnimator().val());
+    cube.setHeight(cube.getHeight()*1.0f / cube.getUpAnimator().val());
 
 }
-void SphereGameItem::update() {
+void EyeGameItem::update() {
     sphere.update();
     if (!sphere.isAnimating()) {
         stop();
     }
     //sphere.rotateDeg(20.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f));
-    int w = ofGetWidth();
-    int h = ofGetHeight();
+    //int w = ofGetWidth();//bugbug p;ut in setup
+    //int h = ofGetHeight();
     //sphere.rotateAroundDeg(15.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3());
     ofNode node; 
-    node.setPosition(w / 2, h / 2, -r);
-    sphere.orbitDeg(sphere.getAnimator().val(), ofRandom(360.0f), r*2, node);
+    node.setPosition(0, 0, -r);
+    sphere.orbitDeg(5*sphere.getUpAnimator().val(), ofRandom(360.0f), r*2, node);
+    sphere.setRadius(sphere.getRadius()*sphere.getDownAnimator().val());
 }
 bool secondsPassed(int val) {
     return ((int)ofGetElapsedTimef() % val) == 0;

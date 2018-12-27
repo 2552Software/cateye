@@ -1,11 +1,23 @@
 #include "ofApp.h"
 #include "sound.h"
 
-void Animate3d::setup(AnimRepeat repeat, float seconds){
-    animator.reset(0.01f); // do no make 0, some divs will fault
-    animator.setDuration(seconds);
-    animator.setRepeatType(repeat);
-    animator.setCurve(LINEAR);
+void Animate3d::setup(AnimRepeat repeat, float seconds, bool start){
+    animatorUp.reset(0.01f); // do no make 0, some divs will fault
+    animatorUp.setDuration(seconds);
+    animatorUp.setRepeatType(repeat);
+    animatorUp.setCurve(LINEAR);
+    if(start){
+        animatorUp.animateTo(1.0f);
+    }
+
+    animatorDown.reset(1.0f); 
+    animatorDown.setDuration(seconds);
+    animatorDown.setRepeatType(repeat);
+    animatorDown.setCurve(LINEAR);
+    if (start) {
+        animatorDown.animateTo(0.0f);
+    }
+    
 }
 void GameItem::set(Levels levelIn, float durationIn) {
     id = -1; // no id by default
@@ -15,10 +27,10 @@ void GameItem::set(Levels levelIn, float durationIn) {
     r = 0;
     resetLevelTime();
 }
-void SuperSphere::setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h) {
+void SuperSphere::setup(AnimRepeat repeat, float seconds, bool start, float x, float y, int w, int h) {
     setResolution(27);
     setRadius(::getRadiusGlobal(w, h));
-    Animate3d::setup(repeat, seconds);
+    Animate3d::setup(repeat, seconds, start);
     setPosition(x, y, 0.0f);
 }
 
@@ -64,7 +76,6 @@ void GameItem::setupHelper(of3dPrimitive* primitive, SuperSphere &parent) {
 void CylinderGameItem::setup(SuperSphere &parent) {
     setupHelper(&cylinder, parent);
     cylinder.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-    cylinder.getAnimator().animateTo(1.0f);
 }
 
 MusicItem::~MusicItem() {  
@@ -72,7 +83,6 @@ MusicItem::~MusicItem() {
 void MusicItem::setup(SuperSphere &parent, Music*musicIn, int keyIn) {
     setupHelper(&cylinder, parent);
     cylinder.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-    cylinder.getAnimator().animateTo(1.0f);
     music = musicIn;
     key = keyIn;
     if (music && key) {
@@ -83,13 +93,12 @@ void MusicItem::setup(SuperSphere &parent, Music*musicIn, int keyIn) {
 void CubeGameItem::setup(SuperSphere &parent) {
     setupHelper(&cube, parent);
     cube.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height); // make bigger as we are zooming out
-    cube.getAnimator().animateTo(1.0f);
 
 }
-void SphereGameItem::setup(SuperSphere &parent) {
+void EyeGameItem::setup(SuperSphere &parent) {
     setupHelper(&sphere, parent);
-    sphere.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height); // make bigger as they will be zomed backwards
-    sphere.getAnimator().animateTo(1.0f);
+    sphere.setup(PLAY_ONCE, duration, true, rectangle.x, rectangle.y, rectangle.width, rectangle.height); // make bigger as they will be zomed backwards
+    sphere.setRadius(sphere.getRadius()*2.0f);
     sphere.lookAt(parent);
 }
 
@@ -164,7 +173,7 @@ void Game::setup() {
     std::function<void(int, bool)> f = std::bind(&Game::textDone, this, std::placeholders::_1, std::placeholders::_2);
     fancyText.bind(f);
 
-    ofAddListener(rotatingEye.getAnimator().animFinished, this, &Game::rotatingEyesDone);
+    ofAddListener(rotatingEye.getUpAnimator().animFinished, this, &Game::rotatingEyesDone);
 
     buildTable();
     buildX();

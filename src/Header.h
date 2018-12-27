@@ -79,18 +79,22 @@ private:
 
 class Animate3d {
 public:
-    void setup(AnimRepeat repeat, float seconds);
-    void update() { animator.update(1.0f / ofGetTargetFrameRate()); };
-    bool isAnimating() { return animator.isAnimating(); }
-    ofxAnimatableFloat& getAnimator() { return animator; }
+    void setup(AnimRepeat repeat, float seconds, bool start=true);
+    void update() { animatorUp.update(1.0f / ofGetTargetFrameRate()); animatorDown.update(1.0f / ofGetTargetFrameRate());};
+    bool isAnimating() { return animatorUp.isAnimating() || animatorDown.isAnimating(); }
+    ofxAnimatableFloat& getUpAnimator() { return animatorUp; }
+    ofxAnimatableFloat& getDownAnimator() { return animatorDown; }
+
 private:
-    ofxAnimatableFloat animator;
+    ofxAnimatableFloat animatorUp;
+    ofxAnimatableFloat animatorDown;
+
 };
 
 // always knows it rotation coordindates
 class SuperSphere : public ofSpherePrimitive, public Animate3d {
 public:
-    void setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h);
+    void setup(AnimRepeat repeat, float seconds, bool start, float x, float y, int w, int h);
     void draw();
     void home();
     void setRotation(const ofVec3f& r) { currentRotation = r; }
@@ -172,12 +176,12 @@ protected:
     float r;
 };
 
-const unsigned SphereGameItemTime = 1.0f;
-class SphereGameItem : public GameItem {
+const unsigned SphereGameItemTime = 21.0f;
+class EyeGameItem : public GameItem {
 public:
-    SphereGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) :GameItem(rect, texture, id, Basic, SphereGameItemTime) { setup(parent); }
-    SphereGameItem() :GameItem(Basic, SphereGameItemTime) {  } // gets levels only etc
-    virtual  ~SphereGameItem() {  }
+    EyeGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) :GameItem(rect, texture, id, Basic, SphereGameItemTime) { setup(parent); }
+    EyeGameItem() :GameItem(Basic, SphereGameItemTime) {  } // gets levels only etc
+    virtual  ~EyeGameItem() {  }
 
     void setup(SuperSphere &parent);
     void update();
@@ -188,7 +192,7 @@ private:
     SuperSphere sphere;
 };
 
-const unsigned CubeGameItemTime = 20.0f;
+const unsigned CubeGameItemTime = 1.0f;
 class CubeGameItem : public GameItem {
 public:
     CubeGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) :GameItem(rect, texture, id, Medium, CubeGameItemTime) { setup(parent); }
@@ -205,7 +209,7 @@ private:
     SuperCube cube; 
 };
 
-const unsigned CylinderGameItemTime = 20.0f;
+const unsigned CylinderGameItemTime = 10.0f;
 class CylinderGameItem : public GameItem {
 public:
     CylinderGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) :GameItem(rect, texture, id, Difficult, CylinderGameItemTime) { setup(parent); }

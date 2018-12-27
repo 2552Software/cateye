@@ -51,7 +51,7 @@ std::shared_ptr<GameItem> GameItem::getPrevious() {
         return sp;
     }
     if (level == Medium) {
-        std::shared_ptr<GameItem> sp{ std::make_shared <SphereGameItem>() };
+        std::shared_ptr<GameItem> sp{ std::make_shared <EyeGameItem>() };
         sp->resetLevelTime();
         return sp;
     }
@@ -78,7 +78,7 @@ void GameItem::advance(std::shared_ptr<GameItem>&current) {
 }
 std::shared_ptr<GameItem> GameItem::getNext() {
     if (level == NoGame) {
-        std::shared_ptr<GameItem> sp{ std::make_shared <SphereGameItem>() };
+        std::shared_ptr<GameItem> sp{ std::make_shared <EyeGameItem>() };
         return sp;
     }
     if (level == Basic) {
@@ -102,7 +102,7 @@ std::shared_ptr<GameItem> GameItem::getNext() {
 
 void  Game::fireWorks() {
    //bugbug sounds(5);
-   rotatingEye.getAnimator().animateFromTo(-300, 300);//bugbug will need to adjsut for pi
+   rotatingEye.getUpAnimator().animateFromTo(-300, 300);//bugbug will need to adjsut for pi
 }
 
 void Game::rotate(const ofVec3f& target) {
@@ -181,7 +181,7 @@ size_t Game::winnerHitCount() {
 void Game::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event) {
     // no move main eye back into focus
     currentRotation.set(0.0f, 0.0f); // look forward, move ahead its not too late
-    mainEye.getAnimator().animateFromTo(-rotatingEye.getRadius(), 0.0f);
+    mainEye.getUpAnimator().animateFromTo(-rotatingEye.getRadius(), 0.0f);
     clear(); // reset and start again
 }
 void Game::windowResized(int wIn, int hIn) {
@@ -193,8 +193,8 @@ void Game::windowResized(int wIn, int hIn) {
     xFactor = w / cameraWidth;
     yFactor = h / cameraHeight;
 
-    mainEye.setup(LOOP_BACK_AND_FORTH, 1.0f, 0.0f, 0.0f, w, h);
-    rotatingEye.setup(LOOP_BACK_AND_FORTH, 1.0f, 0.0f, 0.0f, w, h);
+    mainEye.setup(LOOP_BACK_AND_FORTH, 1.0f, false, 0.0f, 0.0f, w, h);
+    rotatingEye.setup(LOOP_BACK_AND_FORTH, 1.0f, false, 0.0f, 0.0f, w, h);
 
     clear(); // reset game to assure all sizes are correct
 
@@ -221,7 +221,7 @@ size_t Game::winnerThreshold() {
 }
 
 void Game::pushSphere(const ofRectangle&rect, int id) {
-    std::shared_ptr<GameItem> sp{ std::make_shared <SphereGameItem>(rect, spheresSkins.getCurrentRef(), mainEye,id) };
+    std::shared_ptr<GameItem> sp{ std::make_shared <EyeGameItem>(rect, spheresSkins.getCurrentRef(), mainEye,id) };
     gameItems.push_back(sp);
 }
 void Game::pushCube(const ofRectangle&rect, int id) {
@@ -245,32 +245,33 @@ void Game::removeGameItem(int id) {
 }
 // translate location to key
 int Game::keysPress(int id) {
-    switch (id) {
+    int xlat = ofMap(id, 0, gameItems.size(), 1, 13);
+    switch (xlat) {
     case 1:
         return 'a';
-    case 3:
+    case 2:
         return 'w';
-    case 5:
+    case 3:
         return 's';
-    case 7:
+    case 4:
         return 'e';
-    case 9:
+    case 5:
         return 'd';
-    case 11:
+    case 6:
         return 'f';
-    case 13:
+    case 7:
         return 't';
-    case 15:
+    case 8:
         return 'g';
-    case 17:
+    case 9:
         return 'y';
-    case 19:
+    case 10:
         return 'h';
-    case 21:
+    case 11:
         return 'u';
-    case 23:
+    case 12:
         return 'j';
-    case 25:
+    case 13:
         return 'k';
     default:
         return 'a';

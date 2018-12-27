@@ -1,10 +1,6 @@
 #include "ofApp.h"
 #include "sound.h"
 
-Music* music=nullptr; // never deleted since its need for the life of the app, nor allocation checked -- let it crash if we cannot get his
-AudioPlayer *player = nullptr;
-
-
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetLogLevel(OF_LOG_VERBOSE);
@@ -27,7 +23,7 @@ void ofApp::setup(){
   
     // camera.lookAt(eyeAnimator.sphere);
     light.setup();
-    music = new Music;
+    music = new Music();
     music->setup(cameraWidth, cameraHeight); // tie to app
 
     // Works like shit on 4k a does most of OF.
@@ -46,10 +42,10 @@ void ofApp::setup(){
     //eyeAnimator.setTriggerCount(maxForTrigger);
     eyeAnimator.setup();
 
-    player = new AudioPlayer; //bugbug replace cat calls with this
-    player->load("wargames.wav");
-    player->out("0") >> music->engine.audio_out(0);
-    player->play();
+    //player = new AudioPlayer; //bugbug replace cat calls with this
+    //player->load("wargames.wav");
+    //player->out("0") >> music->engine.audio_out(0);
+    //player->play();
 
 
     //bugbug eyeAnimator.credits(true); // setup credits, shown at boot bugbug spin eyes at boot too -- and restore text
@@ -86,9 +82,10 @@ void ofApp::windowResized(int w, int h) {
 void ofApp::update() {
     eyeAnimator.update(music);
     light.update();
-    music->update();
-    music->setPixels(eyeAnimator.contours.contourFinder);
-
+    if (music) {
+        music->update();
+        music->setPixels(eyeAnimator.contours.contourFinder);
+    }
 }
 
 //--------------------------------------------------------------
@@ -115,22 +112,23 @@ void ofApp::draw() {
     }
 }
 void ofApp::keyReleased(int key) {
-    // sends key messages to ofxPDSPComputerKeyboard
-    music->keyboard.keyReleased(key);
 }
 void ofApp::keyPressed(int key) {
-    music->keyboard.keyPressed(key);
-    return;//bugbug
     if (key == 'm') {
         gui.saveToFile("settings.xml");
         hideMenu = !hideMenu;
     }
     else if (key == 's') {
-         gui.saveToFile("settings.xml");
+        gui.saveToFile("settings.xml");
         hideMenu = !hideMenu;
     }
     else if (key == 'l') {
         gui.loadFromFile("settings.xml");
+    }
+
+
+    if (!music) {
+        return;
     }
 
     // we can launch our sequences with the launch method, with optional quantization
@@ -178,24 +176,6 @@ void ofApp::keyPressed(int key) {
     case 'r':
         music->engine.sequencer.sections[1].launch(3, music->quantize, music->quantime);
         break;
-    case 't':
-        music->engine.sequencer.sections[1].launch(-1, music->quantize, music->quantime);
-        break;
-    case 'a':
-        music->seq_mode = music->seq_mode ? 0 : 1;
-        switch (music->seq_mode) {
-        case 0:
-            for (int i = 0; i < 4; ++i) {
-                music->engine.sequencer.sections[1].oneshot(i);
-            }
-            break;
-        case 1:
-            for (int i = 0; i < 4; ++i) {
-                music->engine.sequencer.sections[1].loop(i);
-            }
-            break;
-        }
-        break;
     case ' ': // pause / play
         if (music->engine.sequencer.isPlaying()) {
             music->engine.sequencer.pause();
@@ -209,26 +189,69 @@ void ofApp::keyPressed(int key) {
         break;
     }
 
-    switch (key) {
-    case '5': // select one shot / loop pattern behavior
-        if (music->oneShot) {
-            music->engine.sequencer.sections[0].setChange(0, pdsp::Behavior::Next);
-            music->engine.sequencer.sections[0].setChange(1, pdsp::Behavior::Next);
-            music->engine.sequencer.sections[0].setChange(2, pdsp::Behavior::Next);
-            music->engine.sequencer.sections[0].setChange(3, pdsp::Behavior::Next);
-            music->oneShot = false;
-        }
-        else {
-            music->engine.sequencer.sections[0].setChange(0, pdsp::Behavior::Nothing);
-            music->engine.sequencer.sections[0].setChange(1, pdsp::Behavior::Nothing);
-            music->engine.sequencer.sections[0].setChange(2, pdsp::Behavior::Nothing);
-            music->engine.sequencer.sections[0].setChange(3, pdsp::Behavior::Nothing);
-            music->oneShot = true;
-        }
-        break;
+
+ 
+
+   
+}
+//--------------------------------------------------------------
+void ofApp::gotMessage(ofMessage msg) {
+
+}
+
+//--------------------------------------------------------------
+void ofApp::dragEvent(ofDragInfo dragInfo) {
+
+}
+// --------------------------------------------------------------
+void ofApp::mouseMoved(int x, int y) {
+    if (music) {
+        float pitch = ofMap(x, 0, ofGetWidth(), 36.0f, 72.0f);
+        music->pitch_ctrl.set(pitch);
+        float amp = ofMap(y, 0, ofGetHeight(), 1.0f, 0.0f);
+        music->amp_ctrl.set(amp);
     }
 }
 
+//--------------------------------------------------------------
+void ofApp::mouseEntered(int x, int y) {
 
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseExited(int x, int y) {
+
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseDragged(int x, int y, int button) {
+    if (music) {
+        float pitch = ofMap(x, 0, ofGetWidth(), 36.0f, 72.0f);
+        music->pitch_ctrl.set(pitch);
+        float amp = ofMap(y, 0, ofGetHeight(), 1.0f, 0.0f);
+        music->amp_ctrl.set(amp);
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::mousePressed(int x, int y, int button) {
+    if (music) {
+        float pitch = ofMap(x, 0, ofGetWidth(), 36.0f, 72.0f);
+        music->pitch_ctrl.set(pitch);
+
+        // y value controls the trigger intensity
+        float trig = ofMap(y, 0, ofGetHeight(), 1.0f, 0.000001f);
+        music->gate_ctrl.trigger(trig); // we send a trigger to the envelope
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseReleased(int x, int y, int button) {
+    if (music) {
+        music->gate_ctrl.off(); // we send an "off" trigger to the envelope
+    }
+    // this is the same as writing
+    // gate_ctrl.trigger( 0.0f ); 
+}
 
 

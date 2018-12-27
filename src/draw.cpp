@@ -188,7 +188,7 @@ void CubeGameItem::draw() {
     cube.draw();
     texture.stop();
 }
-void SphereGameItem::draw() {
+void EyeGameItem::draw() {
     texture.start();
     sphere.draw();
     texture.stop();
