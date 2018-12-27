@@ -209,11 +209,11 @@ size_t Game::winnerThreshold() {
     case NoGame:
         return 0;
     case Basic:
-        return screenToAnimationMap.size() / 3;
+        return aimationMap.size() / 3;
     case Medium:
-        return screenToAnimationMap.size() / 2;
+        return aimationMap.size() / 2;
     case Difficult:
-        return screenToAnimationMap.size();
+        return aimationMap.size();
     case EndGame:
         return -1; // it just ages out
     }
@@ -232,8 +232,8 @@ void Game::pushCylinder(const ofRectangle&rect, int id) {
     std::shared_ptr<GameItem> sp{ std::make_shared <CylinderGameItem>(rect, cylindersSkins.getCurrentRef(), mainEye,id) };
     gameItems.push_back(sp);
 }
-void Game::pushMusic(const ofRectangle&rect, int id, Music*music) {
-    std::shared_ptr<GameItem> sp{ std::make_shared <MusicItem>(rect, musicNotesSkins.getCurrentRef(), mainEye,id, music, keysPress(id)) };
+void Game::pushMusic(const ofRectangle&rect, int id, Music*music, float pitch, float amp) {
+    std::shared_ptr<GameItem> sp{ std::make_shared <MusicItem>(rect, musicNotesSkins.getCurrentRef(), mainEye,id, music, pitch, amp) };
     gameItems.push_back(sp);
 }
 
@@ -293,7 +293,7 @@ bool Game::compute(LocationToInfoMap rect, Music*music) {
             pushCylinder(rect2Use, rect.c);
             break;
         case EndGame:
-            pushMusic(rect2Use, rect.c, music);
+            pushMusic(rect2Use, rect.c, music, rect.pitch, rect.amp);
             break;
         }
     }
@@ -334,7 +334,7 @@ void Game::getCountours(Music*music) {
                 if (blob.area > maxForTrigger && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
                     if (blob.area >= maxForTrigger) {
                         // see if we can trigger with this one
-                        for (auto& item : screenToAnimationMap) { // get all blocks within region
+                        for (auto& item : aimationMap) { // get all blocks within region
                             if (item.second.inside(blob.boundingRect)) { //
                                 if (compute(item.second, music)) {
                                     break;

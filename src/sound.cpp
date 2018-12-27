@@ -7,31 +7,12 @@
 void Music::update() {
 
 }
-void Music::setPixels(ofxCvContourFinder&contours, int max) {
+void Music::set(float pitch, float amp) {
 
-    float x=0.0f, y=0.0f;
-
-    // find largest
-    for (auto& blob : contours.blobs) {
-        if (blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
-            if (blob.boundingRect.x > x){
-                x = blob.boundingRect.x;
-            }
-            if (blob.boundingRect.y > y) {
-                y = blob.boundingRect.y;
-            }
-        }
-    }
-
-    if (x) {
-        float pitch = ofMap(x, 0, ofGetWidth(), 36.0f, 72.0f);
-        pitch_ctrl.set(pitch);
-    }
-    if (y) {
-        float amp = ofMap(y, 0, ofGetHeight(), 1.0f, 0.0f);
+//        amp = ofMap(xFactor*x, 0, ofGetHeight(), 1.0f, 0.0f);
         amp_ctrl.set(amp);
-    }
-
+//        pitch = ofMap(yFactor*y, ofGetWidth(), 0, 72.0f, 36.0f);
+        pitch_ctrl.set(pitch);
 }
 
 void Music::setup(int len, int maxPartials) {
@@ -40,7 +21,6 @@ void Music::setup(int len, int maxPartials) {
     amp_ctrl >> synth.in_amp(); // patching with custom in_tag()
     synth * dB(-12.0f) >> engine.audio_out(0);
     synth * dB(-12.0f) >> engine.audio_out(1);
-
 
     pitch_ctrl.set(60.0f);
     pitch_ctrl.enableSmoothing(50.0f); // 50ms smoothing

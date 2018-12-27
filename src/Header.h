@@ -236,12 +236,13 @@ public:
     MusicItem() :GameItem(EndGame, MusicGameItemTime) { music = nullptr; key = 0; } // gets levels only etc
     virtual ~MusicItem();
 
-    void setup(SuperSphere &parent, Music*musicIn, int keyIn);
+    void setup(SuperSphere &parent, Music*musicIn, float pitch, amp);
     void update();
     void draw();
 
 private:
     SuperCylinder cylinder;
+    float pitch, amp;
     int key;
     Music*music;
 };
@@ -249,8 +250,11 @@ private:
 // map location to interesting things
 class LocationToInfoMap : public ofRectangle {
 public:
-    LocationToInfoMap() { c = 0; }
+    LocationToInfoMap() {
+        c = 0; pitch = amp = 0.0f;
+    }
     int c; // count
+    float pitch, amp;
 };
 
 class TextEngine {
@@ -316,7 +320,7 @@ private:
     void pushSphere(const ofRectangle&rect, int id);
     void pushCube(const ofRectangle&rect, int id);
     void pushCylinder(const ofRectangle&rect, int id);
-    void pushMusic(const ofRectangle&rect, int id, Music*music);
+    void pushMusic(const ofRectangle&rect, int id, Music*music, float pitch, float amp);
     bool compute(LocationToInfoMap rect, Music*);
     TextEngine basicText;
     TextEngine fancyText;
@@ -355,7 +359,7 @@ private:
     typedef std::pair<float, float> Key;
     std::map<Key, float> mapCameraInX; // range to rotation
     std::map<Key, float> mapCameraInY;
-    std::map<std::pair<int, int>, LocationToInfoMap> screenToAnimationMap; // map indexes, nullptr means no object found yet
+    std::map<std::pair<int, int>, LocationToInfoMap> aimationMap; // map indexes, nullptr means no object found yet
     // convert to screen size
     float xFactor;
     float yFactor;

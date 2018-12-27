@@ -123,7 +123,7 @@ public:
     void setup(int len, int maxPartials);
     void update();
     
-    void setPixels(ofxCvContourFinder&contours, int max);
+    void set(float pitch, float amp);
 
     // pdsp modules
     pdsp::Engine            engine;

@@ -2,17 +2,20 @@
 
 void Game::buildTable() {
     if (squareCount) {
-        screenToAnimationMap.clear();
+        aimationMap.clear();
         float w = cameraWidth / squareCount; // menu bugbug
         float h = cameraHeight / squareCount;
         LocationToInfoMap map;
         map.width = w;
         map.height = h;
+        float music[][2] = { {0,0}, {1,2}, {2,4}, {3,6},{4,8} }; //bugbug generate pitch and amp
         for (float x = w; x < cameraWidth-w; x += w) { // keep off the edges -- camera cannot always pick those up
             map.x = x;
             for (float y = h; y < cameraHeight-h; y += h) {
                 map.y = y;
-                screenToAnimationMap.insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
+                map.pitch = music[0][0];
+                map.amp = music[0][1];
+                aimationMap.insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
                 map.c++;
             }
         }
