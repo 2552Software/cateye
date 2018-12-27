@@ -307,6 +307,7 @@ public:
     bool inGame() { return current->inGame(); }
     float w, h;
     ContoursBuilder contours;
+    float maxForTrigger;
 
 private:
     std::shared_ptr<GameItem> current;// allocation no validated
@@ -346,7 +347,6 @@ private:
     int squareCount;
     void buildX();
     void buildY();
-    float maxForTrigger;
     void rotate(const ofVec3f& target);
     std::vector<ofSoundPlayer> mySounds;
     bool sendFireworks;

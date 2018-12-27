@@ -7,40 +7,31 @@
 void Music::update() {
 
 }
-void Music::setPixels(ofxCvContourFinder&contours) {
-    return;
-    if (contours.blobs.size() > 0) {
-        size_t c = contours.blobs.size();
-        switch (1) {
-        case 0: // converting pixels to waveform samples
-            //synth.datatable.begin();
-            // first blob is the biggest, take that blob and use every 3rd point, if that is too much data?
-            for (size_t n = 0; n < cameraWidth; ++n) {
-                float sample = 0.0f;
-                if (n < c) {
-                    sample = contours.blobs[n].boundingRect.x + contours.blobs[n].boundingRect.width +
-                        contours.blobs[n].boundingRect.height + contours.blobs[n].boundingRect.y;
-                }
-               // synth.datatable.data(n, ofMap(sample, 0, cameraWidth + cameraHeight, -0.5f, 0.5f));
-            }
-          //  synth.datatable.end(false);
-            break; // remember, raw waveform could have DC offsets, we have filtered them in the synth using an hpf
+void Music::setPixels(ofxCvContourFinder&contours, int max) {
 
-        case 1: // converting pixels to partials for additive synthesis
-            //synth.datatable.begin();
-            for (size_t n = 0; n < cameraWidth; ++n) {
-                float partial = 0.0f;
-                if (n < c) {
-                    partial = contours.blobs[n].boundingRect.x + contours.blobs[n].boundingRect.width +
-                        contours.blobs[n].boundingRect.height + contours.blobs[n].boundingRect.y;
-                }
-                partial = ofMap(partial, 0, cameraWidth*cameraHeight, 0.0f, 1.5f);
-               // synth.datatable.data(n, partial);
+    float x=0.0f, y=0.0f;
+
+    // find largest
+    for (auto& blob : contours.blobs) {
+        if (blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
+            if (blob.boundingRect.x > x){
+                x = blob.boundingRect.x;
             }
-           // synth.datatable.end(true);
-            break;
+            if (blob.boundingRect.y > y) {
+                y = blob.boundingRect.y;
+            }
         }
     }
+
+    if (x) {
+        float pitch = ofMap(x, 0, ofGetWidth(), 36.0f, 72.0f);
+        pitch_ctrl.set(pitch);
+    }
+    if (y) {
+        float amp = ofMap(y, 0, ofGetHeight(), 1.0f, 0.0f);
+        amp_ctrl.set(amp);
+    }
+
 }
 
 void Music::setup(int len, int maxPartials) {

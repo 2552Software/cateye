@@ -84,7 +84,7 @@ void ofApp::update() {
     light.update();
     if (music) {
         music->update();
-        music->setPixels(eyeAnimator.contours.contourFinder);
+        music->setPixels(eyeAnimator.contours.contourFinder, eyeAnimator.maxForTrigger);
     }
 }
 
