@@ -7,12 +7,10 @@
 void Music::update() {
 
 }
-void Music::set(float pitch, float amp) {
-
-//        amp = ofMap(xFactor*x, 0, ofGetHeight(), 1.0f, 0.0f);
-        amp_ctrl.set(amp);
-//        pitch = ofMap(yFactor*y, ofGetWidth(), 0, 72.0f, 36.0f);
-        pitch_ctrl.set(pitch);
+void Music::set(float pitch, float trigger, float amp) {
+    amp_ctrl.set(amp);
+    pitch_ctrl.set(pitch);
+    gate_ctrl.trigger(trigger);
 }
 
 void Music::setup(int len, int maxPartials) {

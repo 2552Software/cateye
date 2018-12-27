@@ -232,8 +232,8 @@ void Game::pushCylinder(const ofRectangle&rect, int id) {
     std::shared_ptr<GameItem> sp{ std::make_shared <CylinderGameItem>(rect, cylindersSkins.getCurrentRef(), mainEye,id) };
     gameItems.push_back(sp);
 }
-void Game::pushMusic(const ofRectangle&rect, int id, Music*music, float pitch, float amp) {
-    std::shared_ptr<GameItem> sp{ std::make_shared <MusicItem>(rect, musicNotesSkins.getCurrentRef(), mainEye,id, music, pitch, amp) };
+void Game::pushMusic(const ofRectangle&rect, int id, Music*music, float pitch, float trigger, float amp) {
+    std::shared_ptr<GameItem> sp{ std::make_shared <MusicItem>(rect, musicNotesSkins.getCurrentRef(), mainEye,id, music, pitch, trigger, amp) };
     gameItems.push_back(sp);
 }
 
@@ -293,7 +293,7 @@ bool Game::compute(LocationToInfoMap rect, Music*music) {
             pushCylinder(rect2Use, rect.c);
             break;
         case EndGame:
-            pushMusic(rect2Use, rect.c, music, rect.pitch, rect.amp);
+            pushMusic(rect2Use, rect.c, music, rect.pitch, rect.trig, rect.amp);
             break;
         }
     }

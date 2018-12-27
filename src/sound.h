@@ -123,7 +123,7 @@ public:
     void setup(int len, int maxPartials);
     void update();
     
-    void set(float pitch, float amp);
+    void set(float pitch, float trigger, float amp);
 
     // pdsp modules
     pdsp::Engine            engine;

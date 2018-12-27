@@ -13,8 +13,9 @@ void Game::buildTable() {
             map.x = x;
             for (float y = h; y < cameraHeight-h; y += h) {
                 map.y = y;
-                map.pitch = music[0][0];
-                map.amp = music[0][1];
+                map.pitch = ofMap(x, 0, cameraHeight, 36.0f, 72.0f);
+                map.trig = ofMap(y, 0, cameraWidth, 1.0f, 0.000001f);
+                map.amp = ofMap(y, 0, cameraWidth, 1.0f, 0.000001f);
                 aimationMap.insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
                 map.c++;
             }

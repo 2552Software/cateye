@@ -231,19 +231,18 @@ const unsigned MusicGameItemTime = 20.0f;
 class MusicItem : public GameItem { 
 public:
 
-    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id, Music*music, int key) : GameItem(rect, texture, id, EndGame, MusicGameItemTime) {setup(parent, music, key);
+    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id, Music*music, float pitch, float trigger, float amp) : GameItem(rect, texture, id, EndGame, MusicGameItemTime) {setup(parent, music, pitch, trigger, amp);
     }
-    MusicItem() :GameItem(EndGame, MusicGameItemTime) { music = nullptr; key = 0; } // gets levels only etc
+    MusicItem() :GameItem(EndGame, MusicGameItemTime) { music = nullptr; } // gets levels only etc
     virtual ~MusicItem();
 
-    void setup(SuperSphere &parent, Music*musicIn, float pitch, amp);
+    void setup(SuperSphere &parent, Music*musicIn, float pitch, float trigger, float amp);
     void update();
     void draw();
 
 private:
     SuperCylinder cylinder;
-    float pitch, amp;
-    int key;
+    float pitch, amp, trig;
     Music*music;
 };
 
@@ -251,10 +250,11 @@ private:
 class LocationToInfoMap : public ofRectangle {
 public:
     LocationToInfoMap() {
-        c = 0; pitch = amp = 0.0f;
+        c = 0; 
+        pitch = trig = amp = 0.0f;
     }
     int c; // count
-    float pitch, amp;
+    float pitch, amp, trig;
 };
 
 class TextEngine {
@@ -320,7 +320,7 @@ private:
     void pushSphere(const ofRectangle&rect, int id);
     void pushCube(const ofRectangle&rect, int id);
     void pushCylinder(const ofRectangle&rect, int id);
-    void pushMusic(const ofRectangle&rect, int id, Music*music, float pitch, float amp);
+    void pushMusic(const ofRectangle&rect, int id, Music*music, float pitch, float trigger, float amp);
     bool compute(LocationToInfoMap rect, Music*);
     TextEngine basicText;
     TextEngine fancyText;
