@@ -278,27 +278,34 @@ int Game::keysPress(int id) {
     }
 
 }
-bool Game::compute(LocationToInfoMap rect, Music*music) {
-    float cx = w - (rect.width)*xFactor;
-    ofRectangle rect2Use((cx - rect.x*xFactor), rect.y*yFactor, rect.width*xFactor, rect.height*yFactor);
-    if (!find(rect2Use)) {
-        switch (current->getLevel()) {
-        case Basic: 
-            pushSphere(rect2Use, rect.c);
-            break;
-        case Medium:
-            pushCube(rect2Use, rect.c);
-            break;
-        case Difficult: 
-            pushCylinder(rect2Use, rect.c);
-            break;
-        case EndGame:
-            pushMusic(rect2Use, rect.c, music, rect.pitch, rect.trig, rect.amp);
-            break;
+bool Game::compute(LocationToActionMap* map, Music*music) {
+    if (map) {
+        float cx = w - (map->width)*xFactor;
+        ofRectangle rect2Use((cx - map->x*xFactor), map->y*yFactor, map->width*xFactor, map->height*yFactor);
+        if (!find(rect2Use)) {
+            switch (current->getLevel()) {
+            case Basic:
+                pushSphere(rect2Use, map->c);
+                break;
+            case Medium:
+                pushCube(rect2Use, map->c);
+                break;
+            case Difficult:
+                pushCylinder(rect2Use, map->c);
+                break;
+            case EndGame:
+                if (music) {
+                    LocationToMusicMap* musicMap = dynamic_cast<LocationToMusicMap*>(map);
+                    if (musicMap) {
+                        pushMusic(rect2Use, musicMap->c, music, musicMap->pitch, musicMap->trig, musicMap->amp);
+                    }
+                }
+                break;
+            }
         }
-    }
-    else {
-        //bugbug only in stop keysUp(music, rect.c);
+        else {
+            //bugbug only in stop keysUp(music, rect.c);
+        }
     }
     return true;
 }
@@ -336,7 +343,14 @@ void Game::getCountours(Music*music) {
                         // see if we can trigger with this one
                         for (auto& item : aimationMap) { // get all blocks within region
                             if (item.second.inside(blob.boundingRect)) { //
-                                if (compute(item.second, music)) {
+                                if (compute(&item.second, nullptr)) {
+                                    break;
+                                }
+                            }
+                        }
+                        for (auto& item : musicMap) { // get all blocks within region
+                            if (item.second.inside(blob.boundingRect)) { //
+                                if (compute(&item.second, music)) {
                                     break;
                                 }
                             }

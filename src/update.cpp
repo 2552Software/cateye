@@ -54,6 +54,9 @@ void MusicItem::update() {
     if (!cylinder.isAnimating()) {
         stop();
     }
+    if (music) {
+        music->set(pitch, trig, amp);
+    }
 }
 
 void CubeGameItem::update() {

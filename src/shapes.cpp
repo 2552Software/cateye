@@ -5,19 +5,30 @@ void Game::buildTable() {
         aimationMap.clear();
         float w = cameraWidth / squareCount; // menu bugbug
         float h = cameraHeight / squareCount;
-        LocationToInfoMap map;
+        LocationToActionMap map;
         map.width = w;
         map.height = h;
-        float music[][2] = { {0,0}, {1,2}, {2,4}, {3,6},{4,8} }; //bugbug generate pitch and amp
         for (float x = w; x < cameraWidth-w; x += w) { // keep off the edges -- camera cannot always pick those up
             map.x = x;
             for (float y = h; y < cameraHeight-h; y += h) {
                 map.y = y;
-                map.pitch = ofMap(x, 0, cameraHeight, 36.0f, 72.0f);
-                map.trig = ofMap(y, 0, cameraWidth, 1.0f, 0.000001f);
-                map.amp = ofMap(y, 0, cameraWidth, 1.0f, 0.000001f);
                 aimationMap.insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
                 map.c++;
+            }
+        }
+        LocationToMusicMap musicmap;
+        musicmap.width = cameraWidth / 8; // always 8x8
+        musicmap.height = cameraHeight / 8;
+        float music[][2] = { {0,0}, {1,2}, {2,4}, {3,6},{4,8} }; //bugbug generate pitch and amp
+        for (float x = musicmap.width; x < cameraWidth - musicmap.width; x += musicmap.width) { // keep off the edges -- camera cannot always pick those up
+            musicmap.x = x;
+            for (float y = musicmap.height; y < cameraHeight - musicmap.height; y += musicmap.height) {
+                musicmap.y = y;
+                musicmap.pitch = ofMap(x, 0, cameraHeight, 36.0f, 172.0f);
+                musicmap.trig = ofMap(y, 0, cameraWidth, 1.0f, 0.000001f);
+                musicmap.amp = ofMap(y, 0, cameraWidth, 1.0f, 0.000001f);
+                musicMap.insert(std::make_pair(std::make_pair(x, y), musicmap)); // build a default table
+                musicmap.c++;
             }
         }
     }

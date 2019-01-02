@@ -176,7 +176,7 @@ protected:
     float r;
 };
 
-const unsigned SphereGameItemTime = 21.0f;
+const unsigned SphereGameItemTime = 1.0f;
 class EyeGameItem : public GameItem {
 public:
     EyeGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) :GameItem(rect, texture, id, Basic, SphereGameItemTime) { setup(parent); }
@@ -227,7 +227,7 @@ private:
 };
 
 class Music;
-const unsigned MusicGameItemTime = 20.0f;
+const unsigned MusicGameItemTime = 120.0f;
 class MusicItem : public GameItem { 
 public:
 
@@ -247,13 +247,19 @@ private:
 };
 
 // map location to interesting things
-class LocationToInfoMap : public ofRectangle {
+class LocationToActionMap : public ofRectangle {
 public:
-    LocationToInfoMap() {
+    LocationToActionMap() {
         c = 0; 
-        pitch = trig = amp = 0.0f;
     }
     int c; // count
+};
+class LocationToMusicMap : public LocationToActionMap {
+public:
+    LocationToMusicMap() : LocationToActionMap(){
+        pitch = trig = amp = 0.0f;
+    }
+    void draw();
     float pitch, amp, trig;
 };
 
@@ -321,7 +327,7 @@ private:
     void pushCube(const ofRectangle&rect, int id);
     void pushCylinder(const ofRectangle&rect, int id);
     void pushMusic(const ofRectangle&rect, int id, Music*music, float pitch, float trigger, float amp);
-    bool compute(LocationToInfoMap rect, Music*);
+    bool compute(LocationToActionMap* rect, Music*);
     TextEngine basicText;
     TextEngine fancyText;
     bool find(const ofRectangle& item);
@@ -359,7 +365,8 @@ private:
     typedef std::pair<float, float> Key;
     std::map<Key, float> mapCameraInX; // range to rotation
     std::map<Key, float> mapCameraInY;
-    std::map<std::pair<int, int>, LocationToInfoMap> aimationMap; // map indexes, nullptr means no object found yet
+    std::map<std::pair<int, int>, LocationToActionMap> aimationMap; // map indexes, nullptr means no object found yet
+    std::map<std::pair<int, int>, LocationToMusicMap> musicMap;
     // convert to screen size
     float xFactor;
     float yFactor;

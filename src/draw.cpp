@@ -194,9 +194,18 @@ void EyeGameItem::draw() {
     texture.stop();
 }
 
+void LocationToMusicMap::draw() {
+    ofRect(x, y, width, height);
+}
+
 void Game::drawGame() {
     for (auto item : gameItems) {
         item->draw();
+    }
+    if (current->getLevel() == EndGame) {
+        for (auto& item : musicMap) {
+            item.second.draw();
+        }
     }
 }
 
