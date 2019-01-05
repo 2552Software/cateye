@@ -80,10 +80,9 @@ void CylinderGameItem::setup(SuperSphere &parent) {
 
 MusicItem::~MusicItem() {  
 }
-void MusicItem::setup(SuperSphere &parent, Music*musicIn, float pitchIn, float trigger, float ampIn) {
+void MusicItem::setup(SuperSphere &parent, float pitchIn, float trigger, float ampIn) {
     setupHelper(&cylinder, parent);
     cylinder.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-    music = musicIn;
     pitch = pitchIn;
     trig = trigger;
     amp = ampIn;

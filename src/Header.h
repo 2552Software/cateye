@@ -231,19 +231,18 @@ const unsigned MusicGameItemTime = 120.0f;
 class MusicItem : public GameItem { 
 public:
 
-    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id, Music*music, float pitch, float trigger, float amp) : GameItem(rect, texture, id, EndGame, MusicGameItemTime) {setup(parent, music, pitch, trigger, amp);
+    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id, float pitch, float trigger, float amp) : GameItem(rect, texture, id, EndGame, MusicGameItemTime) {setup(parent, pitch, trigger, amp);
     }
-    MusicItem() :GameItem(EndGame, MusicGameItemTime) { music = nullptr; } // gets levels only etc
+    MusicItem() :GameItem(EndGame, MusicGameItemTime) { } // gets levels only etc
     virtual ~MusicItem();
 
-    void setup(SuperSphere &parent, Music*musicIn, float pitch, float trigger, float amp);
-    void update();
+    void setup(SuperSphere &parent, float pitch, float trigger, float amp);
+    void update(Music*music);
     void draw();
 
 private:
     SuperCylinder cylinder;
     float pitch, amp, trig;
-    Music*music;
 };
 
 // map location to interesting things
@@ -252,6 +251,7 @@ public:
     LocationToActionMap() {
         c = 0; 
     }
+    void draw();
     int c; // count
 };
 class LocationToMusicMap : public LocationToActionMap {
@@ -259,7 +259,6 @@ public:
     LocationToMusicMap() : LocationToActionMap(){
         pitch = trig = amp = 0.0f;
     }
-    void draw();
     float pitch, amp, trig;
 };
 
@@ -298,6 +297,7 @@ private:
     }
 };
 
+class Engine;
 class Game {
 public:
 
@@ -326,8 +326,8 @@ private:
     void pushSphere(const ofRectangle&rect, int id);
     void pushCube(const ofRectangle&rect, int id);
     void pushCylinder(const ofRectangle&rect, int id);
-    void pushMusic(const ofRectangle&rect, int id, Music*music, float pitch, float trigger, float amp);
-    bool compute(LocationToActionMap* rect, Music*);
+    void pushMusic(const ofRectangle&rect, LocationToMusicMap*);
+    bool compute(LocationToActionMap* rect);
     TextEngine basicText;
     TextEngine fancyText;
     bool find(const ofRectangle& item);

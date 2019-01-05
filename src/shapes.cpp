@@ -24,7 +24,7 @@ void Game::buildTable() {
             musicmap.x = x;
             for (float y = musicmap.height; y < cameraHeight - musicmap.height; y += musicmap.height) {
                 musicmap.y = y;
-                musicmap.pitch = ofMap(x, 0, cameraHeight, 36.0f, 172.0f);
+                musicmap.pitch = ofMap(x, 0, cameraHeight, 36.0f, 171.0f);
                 musicmap.trig = ofMap(y, 0, cameraWidth, 1.0f, 0.000001f);
                 musicmap.amp = ofMap(y, 0, cameraWidth, 1.0f, 0.000001f);
                 musicMap.insert(std::make_pair(std::make_pair(x, y), musicmap)); // build a default table

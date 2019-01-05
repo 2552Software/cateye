@@ -194,8 +194,11 @@ void EyeGameItem::draw() {
     texture.stop();
 }
 
-void LocationToMusicMap::draw() {
-    ofRect(x, y, width, height);
+void LocationToActionMap::draw() {
+    ofFill();
+    ofSetLineWidth(5);
+    ofSetColor(ofColor::white);
+    ofDrawRectangle(x, y, width, height);
 }
 
 void Game::drawGame() {

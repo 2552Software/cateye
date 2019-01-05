@@ -55,7 +55,7 @@ public:
     void mouseExited(int x, int y);
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
-    
+
 private:
    
 };

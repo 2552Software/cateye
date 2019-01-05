@@ -49,7 +49,7 @@ void CylinderGameItem::update() {
     }
     cylinder.setPosition(newPos);
 }
-void MusicItem::update() {
+void MusicItem::update(Music*music) {
     cylinder.update();
     if (!cylinder.isAnimating()) {
         stop();

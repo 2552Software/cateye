@@ -23,8 +23,6 @@ void ofApp::setup(){
   
     // camera.lookAt(eyeAnimator.sphere);
     light.setup();
-    music = new Music();
-    music->setup(cameraWidth, cameraHeight); // tie to app
 
     // Works like shit on 4k a does most of OF.
     gui.setup();
@@ -41,6 +39,8 @@ void ofApp::setup(){
     //eyeAnimator.setShapeMinSize(maxForShape);
     //eyeAnimator.setTriggerCount(maxForTrigger);
     eyeAnimator.setup();
+    music = new Music();
+    music->setup(cameraWidth, cameraHeight); // tie to app
 
     //player = new AudioPlayer; //bugbug replace cat calls with this
     //player->load("wargames.wav");

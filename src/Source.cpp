@@ -232,9 +232,11 @@ void Game::pushCylinder(const ofRectangle&rect, int id) {
     std::shared_ptr<GameItem> sp{ std::make_shared <CylinderGameItem>(rect, cylindersSkins.getCurrentRef(), mainEye,id) };
     gameItems.push_back(sp);
 }
-void Game::pushMusic(const ofRectangle&rect, int id, Music*music, float pitch, float trigger, float amp) {
-    std::shared_ptr<GameItem> sp{ std::make_shared <MusicItem>(rect, musicNotesSkins.getCurrentRef(), mainEye,id, music, pitch, trigger, amp) };
-    gameItems.push_back(sp);
+void Game::pushMusic(const ofRectangle&rect, LocationToMusicMap*map) {
+    if (map) {
+        std::shared_ptr<GameItem> sp{ std::make_shared <MusicItem>(rect, musicNotesSkins.getCurrentRef(), mainEye,map->c, map->pitch, map->trig, map->amp) };
+        gameItems.push_back(sp);
+    }
 }
 
 void Game::removeGameItem(int id) {
@@ -278,7 +280,7 @@ int Game::keysPress(int id) {
     }
 
 }
-bool Game::compute(LocationToActionMap* map, Music*music) {
+bool Game::compute(LocationToActionMap* map) {
     if (map) {
         float cx = w - (map->width)*xFactor;
         ofRectangle rect2Use((cx - map->x*xFactor), map->y*yFactor, map->width*xFactor, map->height*yFactor);
@@ -294,12 +296,7 @@ bool Game::compute(LocationToActionMap* map, Music*music) {
                 pushCylinder(rect2Use, map->c);
                 break;
             case EndGame:
-                if (music) {
-                    LocationToMusicMap* musicMap = dynamic_cast<LocationToMusicMap*>(map);
-                    if (musicMap) {
-                        pushMusic(rect2Use, musicMap->c, music, musicMap->pitch, musicMap->trig, musicMap->amp);
-                    }
-                }
+                pushMusic(rect2Use, dynamic_cast<LocationToMusicMap*>(map));
                 break;
             }
         }
@@ -343,14 +340,14 @@ void Game::getCountours(Music*music) {
                         // see if we can trigger with this one
                         for (auto& item : aimationMap) { // get all blocks within region
                             if (item.second.inside(blob.boundingRect)) { //
-                                if (compute(&item.second, nullptr)) {
+                                if (compute(&item.second)) {
                                     break;
                                 }
                             }
                         }
                         for (auto& item : musicMap) { // get all blocks within region
                             if (item.second.inside(blob.boundingRect)) { //
-                                if (compute(&item.second, music)) {
+                                if (compute(&item.second)) {
                                     break;
                                 }
                             }
