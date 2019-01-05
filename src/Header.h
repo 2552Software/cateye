@@ -328,6 +328,7 @@ private:
     void pushCylinder(const ofRectangle&rect, int id);
     void pushMusic(const ofRectangle&rect, LocationToMusicMap*);
     bool compute(LocationToActionMap* rect);
+    bool compute(LocationToMusicMap* rect);
     TextEngine basicText;
     TextEngine fancyText;
     bool find(const ofRectangle& item);
@@ -371,5 +372,6 @@ private:
     float xFactor;
     float yFactor;
     std::list<std::shared_ptr<GameItem>> gameItems; // if you are in this list you have been found and not time out has occured bugbug add time out
+    std::list<std::shared_ptr<MusicItem>> musicItems;
     ofxAnimatableFloat blinker; // blink animation
 };

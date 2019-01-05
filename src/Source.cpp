@@ -280,6 +280,31 @@ int Game::keysPress(int id) {
     }
 
 }
+
+bool Game::compute(LocationToMusicMap* map) {
+    if (map) {
+        float cx = w - (map->width)*xFactor;
+        ofRectangle rect2Use((cx - map->x*xFactor), map->y*yFactor, map->width*xFactor, map->height*yFactor);
+        if (!find(rect2Use)) {
+            switch (current->getLevel()) {
+            case Basic:
+                break;
+            case Medium:
+                break;
+            case Difficult:
+                break;
+            case EndGame:
+                pushMusic(rect2Use, map);
+                break;
+            }
+        }
+        else {
+            //bugbug only in stop keysUp(music, rect.c);
+        }
+    }
+    return true;
+
+}
 bool Game::compute(LocationToActionMap* map) {
     if (map) {
         float cx = w - (map->width)*xFactor;
@@ -296,12 +321,8 @@ bool Game::compute(LocationToActionMap* map) {
                 pushCylinder(rect2Use, map->c);
                 break;
             case EndGame:
-                pushMusic(rect2Use, dynamic_cast<LocationToMusicMap*>(map));
                 break;
             }
-        }
-        else {
-            //bugbug only in stop keysUp(music, rect.c);
         }
     }
     return true;

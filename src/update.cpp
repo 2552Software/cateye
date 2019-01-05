@@ -126,6 +126,15 @@ void Game::update(Music*music) {
     for (auto& a : gameItems) {
         a->update();
     }
+    for (auto& a : musicItems) {
+        a->update(music);
+    }
+
+    musicItems.erase(std::remove_if(musicItems.begin(),
+        musicItems.end(),
+        [](std::shared_ptr<MusicItem> item) {
+        return !item->isRunning();
+    }), musicItems.end());
 
     gameItems.erase(std::remove_if(gameItems.begin(),
         gameItems.end(),
@@ -133,7 +142,7 @@ void Game::update(Music*music) {
         return !item->isRunning();
        }),   gameItems.end());
 
-    fancyText.update();
+    fancyText.update(); //bugbug put a GET LOUND in here
     basicText.update();
     mainEye.update();
     rotatingEye.update();
@@ -145,7 +154,7 @@ void Game::update(Music*music) {
     cylindersSkins.update();
     musicNotesSkins.update();
 
-      if (!isAnimating()) {
+    if (!isAnimating()) {
         if (current->inGame() && isWinner()) {  
             clear();
             switch (current->getLevel()) {
@@ -161,7 +170,7 @@ void Game::update(Music*music) {
             getCountours(music);
         }
         current->advance(current);
-      }
+    }
 }
 
 // return true if updated
