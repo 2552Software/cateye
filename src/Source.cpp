@@ -141,6 +141,9 @@ void Game::clear() {
     if (gameItems.size() > 0) {
         gameItems.clear();
     }
+    if (musicItems.size() > 0) {
+        musicItems.clear();
+    }
     sendFireworks = false;
 }
 
@@ -234,8 +237,8 @@ void Game::pushCylinder(const ofRectangle&rect, int id) {
 }
 void Game::pushMusic(const ofRectangle&rect, LocationToMusicMap*map) {
     if (map) {
-        std::shared_ptr<GameItem> sp{ std::make_shared <MusicItem>(rect, musicNotesSkins.getCurrentRef(), mainEye,map->c, map->pitch, map->trig, map->amp) };
-        gameItems.push_back(sp);
+        std::shared_ptr<MusicItem> sp{ std::make_shared <MusicItem>(rect, musicNotesSkins.getCurrentRef(), mainEye,map->c, map->item) };
+        musicItems.push_back(sp);
     }
 }
 

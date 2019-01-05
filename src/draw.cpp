@@ -205,10 +205,8 @@ void Game::drawGame() {
     for (auto item : gameItems) {
         item->draw();
     }
-    if (current->getLevel() == EndGame) {
-        for (auto& item : musicMap) {
-            item.second.draw();
-        }
+    for (auto item : musicItems) {
+        item->draw();
     }
 }
 

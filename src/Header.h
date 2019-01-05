@@ -231,18 +231,17 @@ const unsigned MusicGameItemTime = 120.0f;
 class MusicItem : public GameItem { 
 public:
 
-    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id, float pitch, float trigger, float amp) : GameItem(rect, texture, id, EndGame, MusicGameItemTime) {setup(parent, pitch, trigger, amp);
-    }
-    MusicItem() :GameItem(EndGame, MusicGameItemTime) { } // gets levels only etc
+    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id, MusicItem&item) : GameItem(rect, texture, id, EndGame, MusicGameItemTime) {setup(parent, item.pitch, item.trig, item.amp);    }
+    MusicItem() :GameItem(EndGame, MusicGameItemTime) { pitch = amp = trig = 0.0f; } // gets levels only etc
     virtual ~MusicItem();
 
     void setup(SuperSphere &parent, float pitch, float trigger, float amp);
     void update(Music*music);
     void draw();
+    float pitch, amp, trig;
 
 private:
     SuperCylinder cylinder;
-    float pitch, amp, trig;
 };
 
 // map location to interesting things
@@ -252,14 +251,11 @@ public:
         c = 0; 
     }
     void draw();
-    int c; // count
+    int c; // countid
 };
 class LocationToMusicMap : public LocationToActionMap {
 public:
-    LocationToMusicMap() : LocationToActionMap(){
-        pitch = trig = amp = 0.0f;
-    }
-    float pitch, amp, trig;
+    MusicItem item;
 };
 
 class TextEngine {
