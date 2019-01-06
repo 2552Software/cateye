@@ -83,6 +83,10 @@ MusicItem::~MusicItem() {
 void MusicItem::setup(SuperSphere &parent, float pitchIn, float trigger, float ampIn) {
     setupHelper(&cylinder, parent);
     cylinder.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    cylinder.setHeight(rectangle.height);
+    cylinder.setRadius(rectangle.width);
+    cylinder.setPosition(rectangle.x, rectangle.y, 0.0f);
+    cylinder.Animate3d::setup(PLAY_ONCE, duration);
     pitch = pitchIn;
     trig = trigger;
     amp = ampIn;

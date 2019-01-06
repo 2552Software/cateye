@@ -55,7 +55,7 @@ void MusicItem::update(Music*music) {
         stop();
     }
     if (music) {
-        music->set(pitch, trig, amp);
+       // need to do much more - like patch for each item phase II music->set(pitch, trig, amp);
     }
 }
 

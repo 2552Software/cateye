@@ -90,7 +90,7 @@ std::shared_ptr<GameItem> GameItem::getNext() {
         return sp;
     }
     if (level == Difficult) {
-        std::shared_ptr<GameItem> sp{ std::make_shared <MusicItem>() };
+        std::shared_ptr<GameItem> sp{ std::make_shared <GameItem>() };//  bugbug put music here when ready
         return sp;
     }
     if (level == EndGame) {
@@ -248,41 +248,6 @@ void Game::removeGameItem(int id) {
         [id](std::shared_ptr<GameItem>item) {return item->id == id; }),
         gameItems.end());
 }
-// translate location to key
-int Game::keysPress(int id) {
-    int xlat = ofMap(id, 0, gameItems.size(), 1, 13);
-    switch (xlat) {
-    case 1:
-        return 'a';
-    case 2:
-        return 'w';
-    case 3:
-        return 's';
-    case 4:
-        return 'e';
-    case 5:
-        return 'd';
-    case 6:
-        return 'f';
-    case 7:
-        return 't';
-    case 8:
-        return 'g';
-    case 9:
-        return 'y';
-    case 10:
-        return 'h';
-    case 11:
-        return 'u';
-    case 12:
-        return 'j';
-    case 13:
-        return 'k';
-    default:
-        return 'a';
-    }
-
-}
 
 bool Game::compute(LocationToMusicMap* map) {
     if (map) {
@@ -297,7 +262,7 @@ bool Game::compute(LocationToMusicMap* map) {
             case Difficult:
                 break;
             case EndGame:
-                pushMusic(rect2Use, map);
+                // not using music option pushMusic(rect2Use, map);
                 break;
             }
         }

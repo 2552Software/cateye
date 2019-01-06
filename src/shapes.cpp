@@ -16,6 +16,7 @@ void Game::buildTable() {
                 map.c++;
             }
         }
+        /* not using music map
         LocationToMusicMap musicmap;
         musicmap.width = cameraWidth / 8; // always 8x8
         musicmap.height = cameraHeight / 8;
@@ -31,6 +32,7 @@ void Game::buildTable() {
                 musicmap.c++;
             }
         }
+        */
     }
 }
 

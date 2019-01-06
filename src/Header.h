@@ -317,7 +317,6 @@ public:
 
 private:
     std::shared_ptr<GameItem> current;// allocation no validated
-    int keysPress(int id);
     void removeGameItem(int id);
     void pushSphere(const ofRectangle&rect, int id);
     void pushCube(const ofRectangle&rect, int id);
