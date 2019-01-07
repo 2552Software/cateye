@@ -152,7 +152,7 @@ public:
     bool inGame() { return getLevel() != NoGame; }
 
     void  resetLevelTime() { gameLevelTime = ofGetElapsedTimef(); }
-    void advance(std::shared_ptr<GameItem>&);
+    bool advance(std::shared_ptr<GameItem>&);
     std::shared_ptr<GameItem> getNext();
     std::shared_ptr<GameItem> getPrevious();
 
@@ -162,28 +162,29 @@ public:
     bool isRunning() const { return running; } 
     void stop() { running = false; }
     int id;
-
+    float pitch, amp, trigger;
+    int sequencer;
 protected:
     float getLevelDuration() { return ofGetElapsedTimef() - gameLevelTime; }
     void set(Levels level, float duration);
-    void setupHelper(of3dPrimitive* primitive, SuperSphere &);
+    void setupHelper(of3dPrimitive* primitive, SuperSphere *);
     ofRectangle rectangle;
     objectTexture texture;
     bool running;
     float gameLevelTime;
     float duration;
     Levels level;
-    float r;
+    SuperSphere *parent;
 };
 
-const unsigned SphereGameItemTime = 1.0f;
+const unsigned SphereGameItemTime = 10.0f;
 class EyeGameItem : public GameItem {
 public:
-    EyeGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) :GameItem(rect, texture, id, Basic, SphereGameItemTime) { setup(parent); }
-    EyeGameItem() :GameItem(Basic, SphereGameItemTime) {  } // gets levels only etc
+    EyeGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere *parent, int id) :GameItem(rect, texture, id, Basic, SphereGameItemTime) { setup(parent); }
+    EyeGameItem() :GameItem(Basic, SphereGameItemTime) { setup(nullptr); } // gets levels only etc
     virtual  ~EyeGameItem() {  }
 
-    void setup(SuperSphere &parent);
+    void setup(SuperSphere *parent);
     void update();
     void draw();
     bool isAnimating() { return sphere.isAnimating(); }
@@ -195,11 +196,11 @@ private:
 const unsigned CubeGameItemTime = 1.0f;
 class CubeGameItem : public GameItem {
 public:
-    CubeGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) :GameItem(rect, texture, id, Medium, CubeGameItemTime) { setup(parent); }
-    CubeGameItem() :GameItem(Medium, CubeGameItemTime) {  } // gets levels only etc
+    CubeGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere *parent, int id) :GameItem(rect, texture, id, Medium, CubeGameItemTime) { setup(parent); }
+    CubeGameItem() :GameItem(Medium, CubeGameItemTime) { setup(nullptr); } // gets levels only etc
     virtual  ~CubeGameItem() {  }
 
-    void setup(SuperSphere &parent);
+    void setup(SuperSphere *parent);
     void update();
     void draw();
 
@@ -212,11 +213,11 @@ private:
 const unsigned CylinderGameItemTime = 10.0f;
 class CylinderGameItem : public GameItem {
 public:
-    CylinderGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id) :GameItem(rect, texture, id, Difficult, CylinderGameItemTime) { setup(parent); }
-    CylinderGameItem() :GameItem(Difficult, CylinderGameItemTime) {  } // gets levels only etc
+    CylinderGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere *parent, int id) :GameItem(rect, texture, id, Difficult, CylinderGameItemTime) { setup(parent); }
+    CylinderGameItem() :GameItem(Difficult, CylinderGameItemTime) { setup(nullptr); } // gets levels only etc
     virtual  ~CylinderGameItem() {  }
 
-    void setup(SuperSphere &parent);
+    void setup(SuperSphere *parent);
     void update();
     void draw();
 
@@ -231,11 +232,11 @@ const unsigned MusicGameItemTime = 120.0f;
 class MusicItem : public GameItem { 
 public:
 
-    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere &parent, int id, MusicItem&item) : GameItem(rect, texture, id, EndGame, MusicGameItemTime) {setup(parent, item.pitch, item.trig, item.amp);    }
+    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere *parent, int id, MusicItem&item) : GameItem(rect, texture, id, EndGame, MusicGameItemTime) {setup(parent, item.pitch, item.trig, item.amp);    }
     MusicItem() :GameItem(EndGame, MusicGameItemTime) { pitch = amp = trig = 0.0f; } // gets levels only etc
     virtual ~MusicItem();
 
-    void setup(SuperSphere &parent, float pitch, float trigger, float amp);
+    void setup(SuperSphere *parent, float pitch, float trigger, float amp);
     void update(Music*music);
     void draw();
     float pitch, amp, trig;

@@ -68,13 +68,14 @@ std::shared_ptr<GameItem> GameItem::getPrevious() {
     return nullptr; // will blow up the app
 
 }
-void GameItem::advance(std::shared_ptr<GameItem>&current) {
+bool GameItem::advance(std::shared_ptr<GameItem>&current) {
 
     if (current->timeLeft() < 0.0f) { // start game every 60 seconds for example
      //bugug for dev keep going forward current = current->getPrevious();
         current = current->getNext();
+        return true;
     }
-
+    return false;
 }
 std::shared_ptr<GameItem> GameItem::getNext() {
     if (level == NoGame) {
@@ -224,22 +225,22 @@ size_t Game::winnerThreshold() {
 }
 
 void Game::pushSphere(const ofRectangle&rect, int id) {
-    std::shared_ptr<GameItem> sp{ std::make_shared <EyeGameItem>(rect, spheresSkins.getCurrentRef(), mainEye,id) };
+    std::shared_ptr<GameItem> sp{ std::make_shared <EyeGameItem>(rect, spheresSkins.getCurrentRef(), &mainEye,id) };
     gameItems.push_back(sp);
 }
 void Game::pushCube(const ofRectangle&rect, int id) {
-    std::shared_ptr<GameItem> sp{ std::make_shared <CubeGameItem>(rect, cubesSkins.getCurrentRef(), mainEye,id) };
+    std::shared_ptr<GameItem> sp{ std::make_shared <CubeGameItem>(rect, cubesSkins.getCurrentRef(), &mainEye,id) };
     gameItems.push_back(sp);
 }
 void Game::pushCylinder(const ofRectangle&rect, int id) {
-    std::shared_ptr<GameItem> sp{ std::make_shared <CylinderGameItem>(rect, cylindersSkins.getCurrentRef(), mainEye,id) };
+    std::shared_ptr<GameItem> sp{ std::make_shared <CylinderGameItem>(rect, cylindersSkins.getCurrentRef(), &mainEye,id) };
     gameItems.push_back(sp);
 }
 void Game::pushMusic(const ofRectangle&rect, LocationToMusicMap*map) {
-    if (map) {
-        std::shared_ptr<MusicItem> sp{ std::make_shared <MusicItem>(rect, musicNotesSkins.getCurrentRef(), mainEye,map->c, map->item) };
+   if (map) {
+        std::shared_ptr<MusicItem> sp{ std::make_shared <MusicItem>(rect, musicNotesSkins.getCurrentRef(), &mainEye,map->c, map->item) };
         musicItems.push_back(sp);
-    }
+   }
 }
 
 void Game::removeGameItem(int id) {

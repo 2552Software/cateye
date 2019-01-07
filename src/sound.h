@@ -14,6 +14,7 @@
 
 // to create your own modules, you have to extend pdsp::Patchable
 
+
 class SlideSynth : public pdsp::Patchable {
 
 public:

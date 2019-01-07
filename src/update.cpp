@@ -41,11 +41,11 @@ void CylinderGameItem::update() {
     }
     cylinder.rotateDeg(20.0f*cylinder.getUpAnimator().val(), 0.0f, 0.0f, 1.0f);
     glm::vec3 newPos = cylinder.getPosition();
-    newPos.z = r * cylinder.getUpAnimator().val();
-    newPos.x = r * cylinder.getUpAnimator().val();
-    if (newPos.z > r * 3) {
-        newPos.x = r * cylinder.getUpAnimator().val();
-        newPos.z = r;
+    newPos.z = rectangle.width/2 * cylinder.getUpAnimator().val();
+    newPos.x = rectangle.width / 2 * cylinder.getUpAnimator().val();
+    if (newPos.z > rectangle.width / 2 * 3) {
+        newPos.x = rectangle.width / 2 * cylinder.getUpAnimator().val();
+        newPos.z = rectangle.width / 2;
     }
     cylinder.setPosition(newPos);
 }
@@ -65,7 +65,7 @@ void CubeGameItem::update() {
         stop();
     }
     glm::vec3 newPos = cube.getPosition();
-    newPos.z = r*cube.getUpAnimator().val();  //movement*10;
+    newPos.z = rectangle.width / 2 *cube.getUpAnimator().val();  //movement*10;
     //newPos.x = movement;
     cube.setPosition(newPos);
     cube.setWidth(cube.getWidth()*1.0f/cube.getUpAnimator().val());
@@ -82,8 +82,8 @@ void EyeGameItem::update() {
     //int h = ofGetHeight();
     //sphere.rotateAroundDeg(15.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3());
     ofNode node; 
-    node.setPosition(0, 0, -r);
-    sphere.orbitDeg(5*sphere.getUpAnimator().val(), ofRandom(360.0f), r*2, node);
+    node.setPosition(0, 0, -rectangle.width / 2);
+    sphere.orbitDeg(5*sphere.getUpAnimator().val(), ofRandom(360.0f), rectangle.width / 2 *2, node);
     sphere.setRadius(sphere.getRadius()*sphere.getDownAnimator().val());
 }
 bool secondsPassed(int val) {
@@ -169,7 +169,18 @@ void Game::update(Music*music) {
         else {
             getCountours(music);
         }
-        current->advance(current);
+        if (current->advance(current)) {
+            if (music) {
+                // y value controls the trigger intensity
+               // float trig = ofMap(y, 0, ofGetHeight(), 1.0f, 0.000001f);
+                //music->gate_ctrl.off();
+                music->pitch_ctrl.set(current->pitch);
+                music->amp_ctrl.set(current->amp);
+                music->engine.sequencer.sections[1].launch(current->sequencer, music->quantize, music->quantime);
+                // play everytime an item is selected
+                //bugbug figure this out music->gate_ctrl.trigger(current->trigger); // we send a trigger to the envelope
+            }
+        }
     }
 }
 
