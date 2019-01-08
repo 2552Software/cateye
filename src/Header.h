@@ -136,7 +136,7 @@ class Sound {
 public:
     Sound() { setup(); }
 
-    void setup(float pitchIn = 36.0f, float ampIn = 1.0f, float triggerIn = 1.0f, float tempoIn = 108.f, int sequencerIn = 0);
+    void setup(float pitchIn = 0.0f, float ampIn = 0.0f, float triggerIn = 0.0f, float tempoIn = 108.f, int sequencerIn = 0);
 
     float pitch, amp, trigger, tempo;
     int sequencer;
@@ -303,8 +303,8 @@ public:
     Game();
 
     void setup();
-    void update(Music*music);
-    void draw();
+    void update();
+    void draw(Music*music);
     //http://www.findsounds.com/ISAPI/search.dll?keywords=cat
     void sounds(int duration= 5); // default to full sound
     void startPlaying();
@@ -346,7 +346,7 @@ private:
     Textures spheresSkins;
     Textures cylindersSkins;
     Textures musicNotesSkins;
-    void getCountours(Music*music);
+    void getCountours();
     void rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event);
     void fireWorks();
     float shapeMinSize;

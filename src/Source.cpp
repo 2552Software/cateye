@@ -229,7 +229,7 @@ bool Game::find(const ofRectangle& rect) {
     return false;
 }
 
-void Game::getCountours(Music*music) {
+void Game::getCountours() {
     float max = 0.0f;
     if (contours.contourFinder.blobs.size() > 0) {
         glm::vec3 target = currentRotation;

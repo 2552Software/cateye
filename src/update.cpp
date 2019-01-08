@@ -1,5 +1,5 @@
 #include "ofApp.h"
-#include "sound.h"
+
 void TextTimer::update() {
     int elapsedMilliSeconds = ofGetSystemTimeMillis() - timeBegan;
     if (timeDelay) {
@@ -104,7 +104,7 @@ void TextEngine::update() {
     }),    inlineText.end());
 
 }
-void Game::update(Music*music) {
+void Game::update() {
 
     // blinker always moving but only drawn up request
     blinker.update(1.0f / ofGetTargetFrameRate());
@@ -112,16 +112,9 @@ void Game::update(Music*music) {
         blinker.reset(0.0f);
         blinker.animateToAfterDelay(1.0f, ofRandom(10.0f, 30.0f)); // blink every few seconds bugbug menu
     }
-
-    // if not animating time to go...
     for (auto a : gameItems) {
         a->update();
-        if (a->getSound().sendSound() && music) {
-            music->set(a->getSound());
-            a->getSound().setSound(false);
-        }
     }
-
     gameItems.erase(std::remove_if(gameItems.begin(),
         gameItems.end(),
         [](std::shared_ptr<GameItem> item) {
@@ -153,19 +146,10 @@ void Game::update(Music*music) {
             }
         }
         else {
-            getCountours(music);
+            getCountours();
         }
 
-        if (current->advance(current)) {
-            if (music) {
-                // y value controls the trigger intensity
-               // float trig = ofMap(y, 0, ofGetHeight(), 1.0f, 0.000001f);
-                //music->gate_ctrl.off();
-                music->set(current->getSound());
-                // play everytime an item is selected
-                //bugbug figure this out music->gate_ctrl.trigger(current->trigger); // we send a trigger to the envelope
-            }
-        }
+        current->advance(current);
     }
 }
 

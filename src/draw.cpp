@@ -1,6 +1,25 @@
 #include "ofApp.h"
+#include "sound.h"
 
-void Game::draw() {
+void Game::draw(Music*music) {
+    if (music) {
+        for (auto a : gameItems) {
+            if (a->getSound().sendSound()) {
+                music->set(a->getSound());
+                a->getSound().setSound(false);
+            }
+        }
+        if (current->sound.sendSound()) {
+            // y value controls the trigger intensity
+           // float trig = ofMap(y, 0, ofGetHeight(), 1.0f, 0.000001f);
+            //music->gate_ctrl.off();
+            music->set(current->getSound());
+            current->sound.setSound(false);
+            // play everytime an item is selected
+            //bugbug figure this out music->gate_ctrl.trigger(current->trigger); // we send a trigger to the envelope
+        }
+    }
+
     if (!drawText()) { // draw text first and give it the full screen
         if (rotatingEye.isAnimating()) {
             rotatingEyesSkins.getCurrentRef().start();
@@ -49,18 +68,6 @@ void SuperSphere::draw() {
         home();
         panDeg(180); // like a FG kickers - laces out
     }
-    /*
-    ofSpherePrimitive sphere;
-    r = std::min(ofGetWidth(), ofGetHeight()) / 2;
-    // for heavy debug ofLogNotice() << "Radius" << r << " W " << ofGetWidth() << " H " << ofGetHeight();
-    sphere.setRadius(r);
-    sphere.setPosition((ofGetWidth() / 2), (ofGetHeight() / 2), 0);
-    sphere.panDeg(180);
-    sphere.rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
-    sphere.rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
-    sphere.setResolution(27);
-    sphere.draw();
-    */
 }
 
 

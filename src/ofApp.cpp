@@ -80,7 +80,7 @@ void ofApp::windowResized(int w, int h) {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-    eyeAnimator.update(music);
+    eyeAnimator.update();
     light.update();
     if (music) {
         music->update();
@@ -98,7 +98,7 @@ void ofApp::draw() {
         light.enable();
         //camera.begin();
     // show spirl eye first, if its not running try to text if al else fails show the main eye
-        eyeAnimator.draw();
+        eyeAnimator.draw(music);
         ofPopMatrix();
         ofPopStyle();
        // camera.end();
