@@ -7,10 +7,22 @@
 void Music::update() {
 
 }
-void Music::set(float pitch, float trigger, float amp) {
-    amp_ctrl.set(amp);
-    pitch_ctrl.set(pitch);
-    gate_ctrl.trigger(trigger);
+void Music::set(const Sound&sound) {
+    if (sound.amp) {
+        amp_ctrl.set(sound.amp);
+    }
+    if (sound.pitch) {
+        pitch_ctrl.set(sound.pitch);
+    }
+    if (sound.trigger) {
+        gate_ctrl.trigger(sound.trigger);
+    }
+    if (sound.tempo) {
+        engine.sequencer.setTempo(sound.tempo);
+    }
+    if (sound.sequencer > -1) {
+        engine.sequencer.sections[0].launch(sound.sequencer, quantize, quantime);
+    }
 }
 
 void Music::setup(int len, int maxPartials) {

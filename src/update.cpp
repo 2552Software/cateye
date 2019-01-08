@@ -49,15 +49,6 @@ void CylinderGameItem::update() {
     }
     cylinder.setPosition(newPos);
 }
-void MusicItem::update(Music*music) {
-    cylinder.update();
-    if (!cylinder.isAnimating()) {
-        stop();
-    }
-    if (music) {
-       // need to do much more - like patch for each item phase II music->set(pitch, trig, amp);
-    }
-}
 
 void CubeGameItem::update() {
     cube.update();
@@ -123,18 +114,13 @@ void Game::update(Music*music) {
     }
 
     // if not animating time to go...
-    for (auto& a : gameItems) {
+    for (auto a : gameItems) {
         a->update();
+        if (a->getSound().sendSound() && music) {
+            music->set(a->getSound());
+            a->getSound().setSound(false);
+        }
     }
-    for (auto& a : musicItems) {
-        a->update(music);
-    }
-
-    musicItems.erase(std::remove_if(musicItems.begin(),
-        musicItems.end(),
-        [](std::shared_ptr<MusicItem> item) {
-        return !item->isRunning();
-    }), musicItems.end());
 
     gameItems.erase(std::remove_if(gameItems.begin(),
         gameItems.end(),
@@ -158,7 +144,7 @@ void Game::update(Music*music) {
         if (current->inGame() && isWinner()) {  
             clear();
             switch (current->getLevel()) {
-            case Difficult:
+            case GameLevel::Difficult:
                 sendFireworks = true;
                 credits(true);
                 break;
@@ -169,14 +155,13 @@ void Game::update(Music*music) {
         else {
             getCountours(music);
         }
+
         if (current->advance(current)) {
             if (music) {
                 // y value controls the trigger intensity
                // float trig = ofMap(y, 0, ofGetHeight(), 1.0f, 0.000001f);
                 //music->gate_ctrl.off();
-                music->pitch_ctrl.set(current->pitch);
-                music->amp_ctrl.set(current->amp);
-                music->engine.sequencer.sections[1].launch(current->sequencer, music->quantize, music->quantime);
+                music->set(current->getSound());
                 // play everytime an item is selected
                 //bugbug figure this out music->gate_ctrl.trigger(current->trigger); // we send a trigger to the envelope
             }

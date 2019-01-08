@@ -39,36 +39,7 @@ void Textures::add(const std::string &name, const std::string &root) {
     skins.push_back(objectTexture(root));
 }
 
-std::shared_ptr<GameItem> GameItem::getPrevious() {
-    if (level == NoGame) {
-        std::shared_ptr<GameItem> sp{ std::make_shared <GameItem>() };
-        sp->resetLevelTime();
-        return sp;
-    }
-    if (level == Basic) {
-        std::shared_ptr<GameItem> sp{ std::make_shared <GameItem>() };
-        sp->resetLevelTime();
-        return sp;
-    }
-    if (level == Medium) {
-        std::shared_ptr<GameItem> sp{ std::make_shared <EyeGameItem>() };
-        sp->resetLevelTime();
-        return sp;
-    }
-    if (level == Difficult) {
-        std::shared_ptr<GameItem> sp{ std::make_shared <CubeGameItem>() };
-        sp->resetLevelTime();
-        return sp;
-    }
-    if (level == EndGame) {
-        std::shared_ptr<GameItem> sp{ std::make_shared <CylinderGameItem>() };
-        sp->resetLevelTime();
-        return sp;
-    }
-    return nullptr; // will blow up the app
-
-}
-bool GameItem::advance(std::shared_ptr<GameItem>&current) {
+bool GameLevel::advance(std::shared_ptr<GameLevel>&current) {
 
     if (current->timeLeft() < 0.0f) { // start game every 60 seconds for example
      //bugug for dev keep going forward current = current->getPrevious();
@@ -77,28 +48,18 @@ bool GameItem::advance(std::shared_ptr<GameItem>&current) {
     }
     return false;
 }
-std::shared_ptr<GameItem> GameItem::getNext() {
-    if (level == NoGame) {
-        std::shared_ptr<GameItem> sp{ std::make_shared <EyeGameItem>() };
-        return sp;
+std::shared_ptr<GameLevel> GameLevel::getNext() {
+    switch (level) {
+    case NoGame:
+        return std::make_shared <GameLevel>(Basic, BasicDuration); // go to basic
+    case Basic:
+        return std::make_shared <GameLevel>(Medium, MediumDuration);
+    case Medium:
+        return std::make_shared <GameLevel>(Difficult, DifficultDuration);
+    case Difficult:
+        return std::make_shared <GameLevel>(NoGame, NoDuration);
     }
-    if (level == Basic) {
-        std::shared_ptr<GameItem> sp{ std::make_shared <CubeGameItem>() };
-        return sp;
-    }
-    if (level == Medium) {
-        std::shared_ptr<GameItem> sp{ std::make_shared <CylinderGameItem>() };
-        return sp;
-    }
-    if (level == Difficult) {
-        std::shared_ptr<GameItem> sp{ std::make_shared <GameItem>() };//  bugbug put music here when ready
-        return sp;
-    }
-    if (level == EndGame) {
-        std::shared_ptr<GameItem> sp{ std::make_shared <GameItem>() };
-        return sp;
-    }
-    return nullptr; // will blow up the app
+    return nullptr; // will blow up the app but should never occur
 };
 
 void  Game::fireWorks() {
@@ -141,9 +102,6 @@ void Game::sounds(int duration) {
 void Game::clear() {
     if (gameItems.size() > 0) {
         gameItems.clear();
-    }
-    if (musicItems.size() > 0) {
-        musicItems.clear();
     }
     sendFireworks = false;
 }
@@ -210,16 +168,14 @@ void Game::startPlaying() {
 }
 size_t Game::winnerThreshold() { 
     switch (current->getLevel()) {
-    case NoGame:
+    case GameLevel::NoGame:
         return 0;
-    case Basic:
+    case GameLevel::Basic:
         return aimationMap.size() / 3;
-    case Medium:
+    case GameLevel::Medium:
         return aimationMap.size() / 2;
-    case Difficult:
+    case GameLevel::Difficult:
         return aimationMap.size();
-    case EndGame:
-        return -1; // it just ages out
     }
     return 0;
 }
@@ -236,60 +192,28 @@ void Game::pushCylinder(const ofRectangle&rect, int id) {
     std::shared_ptr<GameItem> sp{ std::make_shared <CylinderGameItem>(rect, cylindersSkins.getCurrentRef(), &mainEye,id) };
     gameItems.push_back(sp);
 }
-void Game::pushMusic(const ofRectangle&rect, LocationToMusicMap*map) {
-   if (map) {
-        std::shared_ptr<MusicItem> sp{ std::make_shared <MusicItem>(rect, musicNotesSkins.getCurrentRef(), &mainEye,map->c, map->item) };
-        musicItems.push_back(sp);
-   }
-}
 
 void Game::removeGameItem(int id) {
     gameItems.erase(std::remove_if(gameItems.begin(),
         gameItems.end(),
-        [id](std::shared_ptr<GameItem>item) {return item->id == id; }),
+        [id](std::shared_ptr<GameItem>item) {return item->getID() == id; }),
         gameItems.end());
 }
 
-bool Game::compute(LocationToMusicMap* map) {
-    if (map) {
-        float cx = w - (map->width)*xFactor;
-        ofRectangle rect2Use((cx - map->x*xFactor), map->y*yFactor, map->width*xFactor, map->height*yFactor);
-        if (!find(rect2Use)) {
-            switch (current->getLevel()) {
-            case Basic:
-                break;
-            case Medium:
-                break;
-            case Difficult:
-                break;
-            case EndGame:
-                // not using music option pushMusic(rect2Use, map);
-                break;
-            }
-        }
-        else {
-            //bugbug only in stop keysUp(music, rect.c);
-        }
-    }
-    return true;
-
-}
 bool Game::compute(LocationToActionMap* map) {
     if (map) {
         float cx = w - (map->width)*xFactor;
         ofRectangle rect2Use((cx - map->x*xFactor), map->y*yFactor, map->width*xFactor, map->height*yFactor);
         if (!find(rect2Use)) {
             switch (current->getLevel()) {
-            case Basic:
+            case GameLevel::Basic:
                 pushSphere(rect2Use, map->c);
                 break;
-            case Medium:
+            case GameLevel::Medium:
                 pushCube(rect2Use, map->c);
                 break;
-            case Difficult:
+            case GameLevel::Difficult:
                 pushCylinder(rect2Use, map->c);
-                break;
-            case EndGame:
                 break;
             }
         }
@@ -329,13 +253,6 @@ void Game::getCountours(Music*music) {
                     if (blob.area >= maxForTrigger) {
                         // see if we can trigger with this one
                         for (auto& item : aimationMap) { // get all blocks within region
-                            if (item.second.inside(blob.boundingRect)) { //
-                                if (compute(&item.second)) {
-                                    break;
-                                }
-                            }
-                        }
-                        for (auto& item : musicMap) { // get all blocks within region
                             if (item.second.inside(blob.boundingRect)) { //
                                 if (compute(&item.second)) {
                                     break;

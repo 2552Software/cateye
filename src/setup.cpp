@@ -19,17 +19,18 @@ void Animate3d::setup(AnimRepeat repeat, float seconds, bool start){
     }
     
 }
-void GameItem::set(Levels levelIn, float durationIn) {
+void GameItem::setup() {
     parent = nullptr;
     id = -1; // no id by default
+    sound.setup();
     running = true;// start off running
+}
+void GameLevel::setup(Levels levelIn, Durations durationIn) {
+    sound.setup();
     duration = durationIn;
     level = levelIn;
     resetLevelTime();
-    pitch = 36.0f;
-    amp = 0.0001f; 
-    trigger = 1.0f;
-    sequencer = 0;
+    sound.setup();
 }
 void SuperSphere::setup(AnimRepeat repeat, float seconds, bool start, float x, float y, int w, int h) {
     setResolution(27);
@@ -63,11 +64,10 @@ void objectTexture::setup(const string&texName) {
     }
 }
 
-GameItem::GameItem(const ofRectangle& rect, objectTexture textureIn, int idIn, Levels level, float duration) {
+GameItem::GameItem(const ofRectangle& rect, objectTexture textureIn, int idIn) {
     id = idIn;
     rectangle = rect;
     texture = textureIn;
-    set(level, duration);
 }
 
 void GameItem::setupHelper(of3dPrimitive* primitive, SuperSphere* parentIn) {
@@ -80,49 +80,33 @@ void GameItem::setupHelper(of3dPrimitive* primitive, SuperSphere* parentIn) {
     }
 }
 
-void CylinderGameItem::setup(SuperSphere *parent) {
+void CylinderGameItem::setup(SuperSphere *parent, float duration) {
     setupHelper(&cylinder, parent);
     cylinder.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-    trigger = 0.125f;
-    pitch = 52.0f;
-    amp = 0.1f;
-    sequencer = 1;
+    getSound().setup(52.0f, 0.1f, 0.125f, 100.0f, 1);
 }
 
-MusicItem::~MusicItem() {  
-}
-void MusicItem::setup(SuperSphere* parent, float pitchIn, float trigger, float ampIn) {
-    setupHelper(&cylinder, parent);
-    cylinder.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-    cylinder.setHeight(rectangle.height);
-    cylinder.setRadius(rectangle.width);
-    cylinder.setPosition(rectangle.x, rectangle.y, 0.0f);
-    cylinder.Animate3d::setup(PLAY_ONCE, duration);
-    pitch = pitchIn;
-    trig = trigger;
-    amp = ampIn;
-}
-
-void CubeGameItem::setup(SuperSphere *parent) {
+void CubeGameItem::setup(SuperSphere *parent, float duration) {
     setupHelper(&cube, parent);
     cube.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height); // make bigger as we are zooming out
-    trigger = 0.25f;
-    pitch = 72.0f;
-    amp = 1.00f;
-    sequencer = 2;
-
+    getSound().setup(72.0f, 1.0f, 0.25f, 118.0f, 2);
 }
-void EyeGameItem::setup(SuperSphere *parent) {
+void EyeGameItem::setup(SuperSphere *parent, float duration) {
     setupHelper(&sphere, parent);
     sphere.setup(PLAY_ONCE, duration, true, rectangle.x, rectangle.y, rectangle.width, rectangle.height); // make bigger as they will be zomed backwards
     sphere.setRadius(sphere.getRadius()*2.0f);
     if (parent) {
         sphere.lookAt(*parent);
     }
-    trigger = 0.5f;
-    pitch = 42.0f;
-    amp = 0.001f;
-    sequencer = 3;
+    getSound().setup(42.0f, 0.5f, 0.5f, 128.0f, 3);
+}
+void Sound::setup(float pitchIn, float ampIn, float triggerIn, float tempoIn, int sequencerIn) {
+    pitch = pitchIn;
+    amp = ampIn;
+    trigger = triggerIn;
+    tempo = tempoIn;
+    sequencer = sequencerIn;
+    setSound(true);
 }
 
 void Textures::setup(const std::string& path, float duration) {
@@ -184,7 +168,7 @@ void Game::setup() {
     setShapeMinSize();
     setSquareCount();
 
-    current = std::make_shared<GameItem>();
+    current = std::make_shared<GameLevel>(GameLevel::NoGame, GameLevel::NoDuration);
 
     // convert to window size from camera sized
     xFactor = w / cameraWidth;

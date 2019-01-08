@@ -124,7 +124,7 @@ public:
     void setup(int len, int maxPartials);
     void update();
     
-    void set(float pitch, float trigger, float amp);
+    void set(const Sound&sound);
 
     // pdsp modules
     pdsp::Engine            engine;

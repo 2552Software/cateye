@@ -178,11 +178,6 @@ void CylinderGameItem::draw() {
     cylinder.draw();
     texture.stop();
 }
-void MusicItem::draw() {
-    texture.start();
-    cylinder.draw();
-    texture.stop();
-}
 void CubeGameItem::draw() {
     texture.start();
     cube.draw();
@@ -203,9 +198,6 @@ void LocationToActionMap::draw() {
 
 void Game::drawGame() {
     for (auto item : gameItems) {
-        item->draw();
-    }
-    for (auto item : musicItems) {
         item->draw();
     }
 }

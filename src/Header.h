@@ -2,7 +2,6 @@
 
 #include "ofApp.h"
 
-enum Levels { NoGame = -1, Basic = 0, Medium = 1, Difficult = 2, EndGame = 3 };
 inline float getRadiusGlobal(int w= ofGetWidth(), int h= ofGetHeight()) {
     float r = 2.0f*(std::min(w, h) / 2)/3.0f;
     return r;
@@ -133,10 +132,25 @@ private:
     std::vector<objectTexture> skins;
 };
 
+class Sound {
+public:
+    Sound() { setup(); }
+
+    void setup(float pitchIn = 36.0f, float ampIn = 1.0f, float triggerIn = 1.0f, float tempoIn = 108.f, int sequencerIn = 0);
+
+    float pitch, amp, trigger, tempo;
+    int sequencer;
+    bool sendSound() { return soundSet; }
+    void setSound(bool b) { soundSet = b; }
+
+private:
+    bool soundSet; // sent initial sound
+
+};
+
 class GameItem {
 public:
-    GameItem(const ofRectangle& rect, objectTexture texture, int id, Levels level, float duration);
-    GameItem(Levels level= NoGame, float duration= 1.0f) { set(level, duration); } // gets levels only etc
+    GameItem(const ofRectangle& rect, objectTexture texture, int id);
     virtual ~GameItem() { }
 
     bool operator==(const ofRectangle& rhs) const {
@@ -145,46 +159,57 @@ public:
     bool operator==(const int rhs) const {
         return id == rhs;
     }
-    virtual void setup() {};
+    void setup();
     virtual void update() {};
     virtual void draw() {}
 
-    bool inGame() { return getLevel() != NoGame; }
-
-    void  resetLevelTime() { gameLevelTime = ofGetElapsedTimef(); }
-    bool advance(std::shared_ptr<GameItem>&);
-    std::shared_ptr<GameItem> getNext();
-    std::shared_ptr<GameItem> getPrevious();
-
-    Levels getLevel() { return level; }
-    float getDuration() { return duration; } // run game for 30 seconds
-    float timeLeft() { return duration - getLevelDuration();  }
     bool isRunning() const { return running; } 
     void stop() { running = false; }
-    int id;
-    float pitch, amp, trigger;
-    int sequencer;
+    int getID() { return id; }
+    Sound&getSound() { return sound; }
+
 protected:
-    float getLevelDuration() { return ofGetElapsedTimef() - gameLevelTime; }
-    void set(Levels level, float duration);
+    int id;
+    Sound sound;
     void setupHelper(of3dPrimitive* primitive, SuperSphere *);
     ofRectangle rectangle;
     objectTexture texture;
     bool running;
+    SuperSphere *parent;
+};
+
+class GameLevel {
+public:
+    enum Levels { NoGame = -1, Basic = 0, Medium = 1, Difficult = 2 };
+    enum Durations { NoDuration = 0 , BasicDuration = 10, MediumDuration = 10, DifficultDuration = 10 };
+
+    GameLevel(Levels level, Durations duration) { setup(level, duration); }
+
+    bool inGame() { return getLevel() != NoGame; }
+    bool advance(std::shared_ptr<GameLevel>&);
+    std::shared_ptr<GameLevel> getNext();
+
+    void  resetLevelTime() { gameLevelTime = ofGetElapsedTimef(); }
+    Sound&getSound() { return sound; }
+
+    Levels getLevel() { return level; }
+    float getDuration() { return duration; } // run game for 30 seconds
+    float timeLeft() { return duration - getLevelDuration(); }
+    float getLevelDuration() { return ofGetElapsedTimef() - gameLevelTime; }
+    void setup(Levels level, Durations duration);
     float gameLevelTime;
     float duration;
     Levels level;
-    SuperSphere *parent;
+    Sound sound;
 };
 
 const unsigned SphereGameItemTime = 10.0f;
 class EyeGameItem : public GameItem {
 public:
-    EyeGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere *parent, int id) :GameItem(rect, texture, id, Basic, SphereGameItemTime) { setup(parent); }
-    EyeGameItem() :GameItem(Basic, SphereGameItemTime) { setup(nullptr); } // gets levels only etc
+    EyeGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere *parent, int id) :GameItem(rect, texture, id) { setup(parent, SphereGameItemTime); }
     virtual  ~EyeGameItem() {  }
 
-    void setup(SuperSphere *parent);
+    void setup(SuperSphere *parent, float duration);
     void update();
     void draw();
     bool isAnimating() { return sphere.isAnimating(); }
@@ -196,11 +221,10 @@ private:
 const unsigned CubeGameItemTime = 1.0f;
 class CubeGameItem : public GameItem {
 public:
-    CubeGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere *parent, int id) :GameItem(rect, texture, id, Medium, CubeGameItemTime) { setup(parent); }
-    CubeGameItem() :GameItem(Medium, CubeGameItemTime) { setup(nullptr); } // gets levels only etc
+    CubeGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere *parent, int id) :GameItem(rect, texture, id) { setup(parent, CubeGameItemTime); }
     virtual  ~CubeGameItem() {  }
 
-    void setup(SuperSphere *parent);
+    void setup(SuperSphere *parent, float duration);
     void update();
     void draw();
 
@@ -213,33 +237,14 @@ private:
 const unsigned CylinderGameItemTime = 10.0f;
 class CylinderGameItem : public GameItem {
 public:
-    CylinderGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere *parent, int id) :GameItem(rect, texture, id, Difficult, CylinderGameItemTime) { setup(parent); }
-    CylinderGameItem() :GameItem(Difficult, CylinderGameItemTime) { setup(nullptr); } // gets levels only etc
+    CylinderGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere *parent, int id) :GameItem(rect, texture, id) { setup(parent, CylinderGameItemTime); }
     virtual  ~CylinderGameItem() {  }
 
-    void setup(SuperSphere *parent);
+    void setup(SuperSphere *parent, float duration);
     void update();
     void draw();
 
     bool isAnimating() { return cylinder.isAnimating(); }
-
-private:
-    SuperCylinder cylinder;
-};
-
-class Music;
-const unsigned MusicGameItemTime = 120.0f;
-class MusicItem : public GameItem { 
-public:
-
-    MusicItem(const ofRectangle& rect, objectTexture texture, SuperSphere *parent, int id, MusicItem&item) : GameItem(rect, texture, id, EndGame, MusicGameItemTime) {setup(parent, item.pitch, item.trig, item.amp);    }
-    MusicItem() :GameItem(EndGame, MusicGameItemTime) { pitch = amp = trig = 0.0f; } // gets levels only etc
-    virtual ~MusicItem();
-
-    void setup(SuperSphere *parent, float pitch, float trigger, float amp);
-    void update(Music*music);
-    void draw();
-    float pitch, amp, trig;
 
 private:
     SuperCylinder cylinder;
@@ -253,10 +258,6 @@ public:
     }
     void draw();
     int c; // countid
-};
-class LocationToMusicMap : public LocationToActionMap {
-public:
-    MusicItem item;
 };
 
 class TextEngine {
@@ -294,7 +295,8 @@ private:
     }
 };
 
-class Engine;
+
+class Music;
 class Game {
 public:
 
@@ -317,14 +319,12 @@ public:
     float maxForTrigger;
 
 private:
-    std::shared_ptr<GameItem> current;// allocation no validated
+    std::shared_ptr<GameLevel> current;// allocation not validated
     void removeGameItem(int id);
     void pushSphere(const ofRectangle&rect, int id);
     void pushCube(const ofRectangle&rect, int id);
     void pushCylinder(const ofRectangle&rect, int id);
-    void pushMusic(const ofRectangle&rect, LocationToMusicMap*);
     bool compute(LocationToActionMap* rect);
-    bool compute(LocationToMusicMap* rect);
     TextEngine basicText;
     TextEngine fancyText;
     bool find(const ofRectangle& item);
@@ -363,11 +363,9 @@ private:
     std::map<Key, float> mapCameraInX; // range to rotation
     std::map<Key, float> mapCameraInY;
     std::map<std::pair<int, int>, LocationToActionMap> aimationMap; // map indexes, nullptr means no object found yet
-    std::map<std::pair<int, int>, LocationToMusicMap> musicMap;
     // convert to screen size
     float xFactor;
     float yFactor;
     std::list<std::shared_ptr<GameItem>> gameItems; // if you are in this list you have been found and not time out has occured bugbug add time out
-    std::list<std::shared_ptr<MusicItem>> musicItems;
     ofxAnimatableFloat blinker; // blink animation
 };
