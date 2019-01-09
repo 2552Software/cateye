@@ -15,12 +15,12 @@ void Game::setTitle() {
     if (inGame()) {
         std::stringstream ss;
         if (winnerThreshold() != (size_t)-1) {
-            ss << "Game On! level:" << current->getLevel() << " Find " << winnerHitCount() << ":" << winnerThreshold();
+            ss << "Game On! level:" << current.getLevel() << " Find " << winnerHitCount() << ":" << winnerThreshold();
         }
         else {
             ss << "Enjoy the music!";
         }
-        ss <<  " " << setprecision(2) << fixed << current->timeLeft();
+        ss <<  " " << setprecision(2) << fixed << current.timeLeft();
         basicText.print(ss.str(), 0.0f, 0.0f, getRadiusGlobal());
    }
 }
@@ -38,27 +38,32 @@ void Textures::add(const std::string &name, const std::string &root) {
     skins.push_back(objectTexture(root));
 }
 
-bool GameLevel::advance(std::shared_ptr<GameLevel>&current) {
+void GameLevel::advance() {
 
-    if (current->timeLeft() < 0.0f) { // start game every 60 seconds for example
+    if (current.timeLeft() < 0.0f) { // start game every 60 seconds for example
      //bugug for dev keep going forward current = current->getPrevious();
-        current = current->getNext();
-        return true;
+        current.getNext();
     }
-    return false;
 }
-std::shared_ptr<GameLevel> GameLevel::getNext() {
+void GameLevel::getNext() {
     switch (level) {
     case NoGame:
-        return std::make_shared <GameLevel>(Basic, BasicDuration); // go to basic
+        level = Basic;
+        duration = BasicDuration;
+        break;
     case Basic:
-        return std::make_shared <GameLevel>(Medium, MediumDuration);
+        level = Medium;
+        duration = MediumDuration;
+        break;
     case Medium:
-        return std::make_shared <GameLevel>(Difficult, DifficultDuration);
+        level = Difficult;
+        duration = DifficultDuration;
+        break;
     case Difficult:
-        return std::make_shared <GameLevel>(NoGame, NoDuration);
+        level = NoGame;
+        duration = NoDuration;
+        break;
     }
-    return nullptr; // will blow up the app but should never occur
 };
 
 void  Game::fireWorks() {

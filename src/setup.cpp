@@ -117,8 +117,6 @@ void Game::setup() {
     setShapeMinSize();
     setSquareCount();
 
-    current = std::make_shared<GameLevel>(GameLevel::NoGame, GameLevel::NoDuration);
-
     // convert to window size from camera sized
     xFactor = w / cameraWidth;
     yFactor = h / cameraHeight;

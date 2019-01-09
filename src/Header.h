@@ -216,12 +216,11 @@ class GameLevel {
 public:
     enum Levels { NoGame = -1, Basic = 0, Medium = 1, Difficult = 2 };
     enum Durations { NoDuration = 0, BasicDuration = 60, MediumDuration = 60, DifficultDuration = 60 };
-
-    GameLevel(Levels level, Durations duration) { setup(level, duration); }
+    
+    GameLevel(Levels level=NoGame, Durations duration=NoDuration) { setup(level, duration); }
 
     bool inGame() { return getLevel() != NoGame; }
-    bool advance(std::shared_ptr<GameLevel>&);
-    std::shared_ptr<GameLevel> getNext();
+    void advance();
 
     void  resetLevelTime() { gameLevelTime = ofGetElapsedTimef(); }
     Sound&getSound() { return sound; }
@@ -235,6 +234,9 @@ public:
     float duration;
     Levels level;
     Sound sound;
+private:
+    void getNext();
+
 };
 
 
@@ -304,13 +306,13 @@ public:
     bool isWinner() { return winnerThreshold() != (size_t)-1 && winnerHitCount() >= winnerThreshold(); } // easy mode! bugbug menu
     bool isAnimating();
     void windowResized(int w, int h);
-    bool inGame() { return current->inGame(); }
+    bool inGame() { return current.inGame(); }
     float w, h;
     ContoursBuilder contours;
     float maxForTrigger;
 
 private:
-    std::shared_ptr<GameLevel> current;// allocation not validated
+    GameLevel current;// allocation not validated
     void removeGameItem(int id);
     bool addGameItem(LocationToActionMap* rect);
     TextEngine basicText;
