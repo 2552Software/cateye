@@ -20,12 +20,14 @@ void Animate3d::setup(AnimRepeat repeat, float seconds){
 }
 
 void SuperSphere::setup() {
-    setRectangle(rectangle);
     if (GameObject::parent) {
         setParent(*GameObject::parent);
         lookAt(*GameObject::parent);  // do we want ths?
     }
     setResolution(27);
+    setPosition(rectangle.x, rectangle.y, 0.0f);
+    setRadius(::getRadiusGlobal(rectangle.width, rectangle.height));
+
 }
 void GameLevel::setup(Levels levelIn, Durations durationIn) {
     sound.setup();

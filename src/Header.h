@@ -177,12 +177,6 @@ public:
     void home() {
         setOrientation({ 0.f,0.f,0.f });
     }
-    virtual void setRectangle(const ofRectangle& rectangleIn) {
-        rectangle = rectangleIn;
-        setPosition(rectangle.x, rectangle.y, 0.0f);
-        setRadius(::getRadiusGlobal(rectangle.width, rectangle.height));
-    }
-
 };
 
 class SuperCube : public GameObject, public ofBoxPrimitive {
@@ -265,11 +259,11 @@ public:
 
 class CylinderGameItem : public SuperCylinder {
 public:
-    CylinderGameItem(const ofRectangle& rect, objectTexture texture, int id, float seconds, of3dPrimitive *parent) :SuperCylinder(rect, texture, id, seconds, parent) { setup(CylinderGameItemTime); }
+    CylinderGameItem(const ofRectangle& rect, objectTexture texture, int id, float seconds, of3dPrimitive *parent) :SuperCylinder(rect, texture, id, seconds, parent) { setup(); }
     virtual  ~CylinderGameItem() {  }
     void draw();
 
-    void setup(float duration) {
+    void setup() {
         if (GameObject::parent) {
             glm::vec3 v3 = getPosition();
             v3.z = GameObject::parent->getZ();

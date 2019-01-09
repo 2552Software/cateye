@@ -17,6 +17,7 @@ void EyeGameItem::draw() { // here just for debug
     if (getRadius() > 0) {
         rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
         rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
+        glm::vec2 pos = getPosition();
         //drawWireframe();
         ofFill();
         ofDrawRectangle(rectangle);
@@ -88,17 +89,14 @@ void Game::draw(Music*music) {
             setTitle();
             mainEye.setRotation(currentRotation);
             mainEyesSkins.getCurrentRef().start();
-            mainEye.draw();
+            //mainEye.draw();
             mainEyesSkins.getCurrentRef().stop();
             ofPopMatrix();
             if (!mainEye.isAnimating()) {
                 drawContours();
                 blink();
             }
-            ofPushMatrix();
-            ofTranslate(w / 2, h / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
             drawGame(); // draw any game that may be running
-            ofPopMatrix();
         }
     }
 }
@@ -220,6 +218,8 @@ void LocationToActionMap::draw() {
 }
 
 void Game::drawGame() {
+    ofPushMatrix();
+   // ofTranslate(w / 2, h / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
     for (auto item : gameEyes) {
         item->draw();
     }
@@ -229,6 +229,7 @@ void Game::drawGame() {
     for (auto item : gameDiscs) {
         item->draw();
     }
+    ofPopMatrix();
 }
 
 void Game::drawContours() {

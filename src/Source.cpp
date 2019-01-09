@@ -156,7 +156,9 @@ void Game::windowResized(int wIn, int hIn) {
     
     ofRectangle rect(0.0f, 0.0f, w, h);
     mainEye.setRectangle(rect);
+    mainEye.setup();
     rotatingEye.setRectangle(rect);
+    rotatingEye.setup();
 
     clear(); // reset game to assure all sizes are correct
    
