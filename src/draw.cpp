@@ -28,37 +28,12 @@ void EyeGameItem::draw() { // here just for debug
     }
 }
 
-void CylinderGameItem::draw() {
-    texture.start();
-    ofCylinderPrimitive::draw();
-    texture.stop();
-}
-
-
-void CubeGameItem::draw() { 
-    texture.start();
-    ofBoxPrimitive::draw();
-    texture.stop();
-}
-
 void Game::draw(Music*music) {
     if (music) {
         for (auto a : gameEyes) {
             if (a->getSound().sendSound()) {
                 music->set(a->getSound());
-                a->getSound().setSound(false);
-            }
-        }
-        for (auto a : gameCubes) {
-            if (a->getSound().sendSound()) {
-                music->set(a->getSound());
-                a->getSound().setSound(false);
-            }
-        }
-        for (auto a : gameDiscs) {
-            if (a->getSound().sendSound()) {
-                music->set(a->getSound());
-                a->getSound().setSound(false);
+                a->getSound().setSound(false); //bugbug will need to set sounds based on some id or such
             }
         }
 
@@ -223,21 +198,20 @@ void Game::drawGame() {
     ofSetColor(ofColor::hotPink);
     ofSetLineWidth(6);// ofRandom(1, 5));
     ofNoFill();
-    for (auto& grid : aimationMap) {
-        ofDrawRectangle(ofRectangle(grid.second.x*xFactor, grid.second.y*yFactor, grid.second.width*xFactor, grid.second.height*yFactor));
+
+    for (auto& a : aimationMaps) {
+        for (auto& grid : a) {
+            if (current->level == grid.second.level)  {
+                ofDrawRectangle(ofRectangle(grid.second.x*xFactor, grid.second.y*yFactor, grid.second.width*xFactor, grid.second.height*yFactor));
+            }
+        }
     }
 
-   // ofTranslate(w / 2, h / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
-    for (auto item : gameEyes) {
-        item->setRotation(currentRotation);
-        item->draw();
+    for (auto a : gameEyes) {
+        a->setRotation(currentRotation);
+        a->draw();
     }
-    for (auto item : gameCubes) {
-        item->draw();
-    }
-    for (auto item : gameDiscs) {
-        item->draw();
-    }
+
     ofPopMatrix();
 }
 

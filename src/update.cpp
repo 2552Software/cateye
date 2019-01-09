@@ -77,7 +77,7 @@ void Game::update() {
         gameEyes.end(),
         [](std::shared_ptr<EyeGameItem> item) {
         return !item->isRunning();
-       }), gameEyes.end());
+    }), gameEyes.end());
 
     fancyText.update(); //bugbug put a GET LOUND in here
     basicText.update();

@@ -157,9 +157,9 @@ public:
     void stop() { running = false; }
     int getID() { return id; }
     Sound&getSound() { return sound; }
+    ofRectangle rectangle;
 
 protected:
-    ofRectangle rectangle;
     int id;
     Sound sound;
     objectTexture texture;
@@ -176,23 +176,6 @@ public:
     void setup();
     void home() {
         setOrientation({ 0.f,0.f,0.f });
-    }
-};
-
-class SuperCube : public GameObject, public ofBoxPrimitive {
-public:
-    SuperCube(const ofRectangle& rectangle, objectTexture texture, int id, float seconds, of3dPrimitive *parent) :GameObject(rectangle, texture, id, PLAY_ONCE, seconds, parent) { setup(); }
-    void setup() {
-    }
-};
-
-class SuperCylinder: public GameObject, public ofCylinderPrimitive {
-public:
-    SuperCylinder(const ofRectangle& rectangle, objectTexture texture, int id, float seconds, of3dPrimitive *parent) :GameObject(rectangle, texture, id, PLAY_ONCE, seconds, parent) { setup(); }
-
-    void setup() {
-        setHeight(rectangle.height / 2);
-        setRadius(rectangle.width);
     }
 };
 
@@ -229,65 +212,6 @@ public:
     }
 };
 
-class CubeGameItem : public SuperCube {
-public:
-    CubeGameItem(const ofRectangle& rectangle, objectTexture texture, int id, float seconds, of3dPrimitive *parent) :SuperCube(rectangle, texture, id, seconds, parent) { setup(); }
-    virtual  ~CubeGameItem() {  }
-    void draw();
-    void setup() {
-        if (GameObject::parent) {
-            glm::vec3 v3 = getPosition();
-            v3.z = GameObject::parent->getZ();
-            setPosition(v3);
-        }
-        getSound().setup(52.0f, 0.1f, 0.125f, 100.0f, 1);
-    }
-    void update() {
-        Animate3d::update();
-        if (!isAnimating()) {
-            stop();
-        }
-        glm::vec3 newPos = getPosition();
-        newPos.z = rectangle.width / 2 * getUpAnimator().val();  //movement*10;
-        //newPos.x = movement;
-        setPosition(newPos);
-        setWidth(getWidth()*1.0f / getUpAnimator().val());
-        setHeight(getHeight()*1.0f / getUpAnimator().val());
-
-    }
-};
-
-class CylinderGameItem : public SuperCylinder {
-public:
-    CylinderGameItem(const ofRectangle& rect, objectTexture texture, int id, float seconds, of3dPrimitive *parent) :SuperCylinder(rect, texture, id, seconds, parent) { setup(); }
-    virtual  ~CylinderGameItem() {  }
-    void draw();
-
-    void setup() {
-        if (GameObject::parent) {
-            glm::vec3 v3 = getPosition();
-            v3.z = GameObject::parent->getZ();
-            setPosition(v3);
-        }
-        getSound().setup(42.0f, 0.1f, 0.125f, 120.0f, 2);
-    }
-    void update() {
-        Animate3d::update();
-        if (!isAnimating()) {
-            stop();
-        }
-        rotateDeg(20.0f*getUpAnimator().val(), 0.0f, 0.0f, 1.0f);
-        glm::vec3 newPos = getPosition();
-        newPos.z = rectangle.width / 2 * getUpAnimator().val();
-        newPos.x = rectangle.width / 2 * getUpAnimator().val();
-        if (newPos.z > rectangle.width / 2 * 3) {
-            newPos.x = rectangle.width / 2 * getUpAnimator().val();
-            newPos.z = rectangle.width / 2;
-        }
-        setPosition(newPos);
-    }
-};
-
 class GameLevel {
 public:
     enum Levels { NoGame = -1, Basic = 0, Medium = 1, Difficult = 2 };
@@ -320,9 +244,11 @@ class LocationToActionMap : public ofRectangle {
 public:
     LocationToActionMap() {
         c = 0; 
+        level = GameLevel::NoGame;
     }
     void draw();
     int c; // countid
+    GameLevel::Levels level;
 };
 
 class TextEngine {
@@ -424,12 +350,10 @@ private:
     typedef std::pair<float, float> Key;
     std::map<Key, float> mapCameraInX; // range to rotation
     std::map<Key, float> mapCameraInY;
-    std::map<std::pair<int, int>, LocationToActionMap> aimationMap; // map indexes, nullptr means no object found yet
+    std::vector<std::map<std::pair<int, int>, LocationToActionMap>> aimationMaps; // map indexes, nullptr means no object found yet
     // convert to screen size
     float xFactor;
     float yFactor;
     std::list<std::shared_ptr<EyeGameItem>> gameEyes; // if you are in this list you have been found and not time out has occured bugbug add time out
-    std::list<std::shared_ptr<CubeGameItem>> gameCubes;
-    std::list<std::shared_ptr<CylinderGameItem>> gameDiscs;
     ofxAnimatableFloat blinker; // blink animation
 };

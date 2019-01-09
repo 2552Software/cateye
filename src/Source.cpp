@@ -100,8 +100,6 @@ void Game::sounds(int duration) {
 // turn on/off came items
 void Game::clear() {
     gameEyes.clear();
-    gameCubes.clear();
-    gameDiscs.clear();
     sendFireworks = false;
 }
 
@@ -136,7 +134,7 @@ void Game::textDone(int id, bool inLine) {
 
 // count of items selected
 size_t Game::winnerHitCount() {
-    return gameEyes.size()+ gameCubes.size()+ gameDiscs.size();
+    return gameEyes.size();
 }
 
 void Game::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event) {
@@ -171,33 +169,21 @@ size_t Game::winnerThreshold() {
     switch (current->getLevel()) {
     case GameLevel::NoGame:
         return 0;
-    case GameLevel::Basic:
-        return aimationMap.size();
+    case GameLevel::Basic://bugbug drop enum just use numbers 
+        return aimationMaps[0].size();
     case GameLevel::Medium:
-        return aimationMap.size();
+        return aimationMaps[1].size();
     case GameLevel::Difficult:
-        return aimationMap.size();
+        return aimationMaps[2].size();
     }
     return 0;
 }
 
 void Game::removeGameItem(int id) {
-    
-    gameEyes.erase(std::remove_if(gameEyes.begin(), 
+    gameEyes.erase(std::remove_if(gameEyes.begin(),
         gameEyes.end(),
         [id](std::shared_ptr<EyeGameItem>item) {return item->getID() == id; }),
         gameEyes.end());
-
-    gameCubes.erase(std::remove_if(gameCubes.begin(),
-        gameCubes.end(),
-        [id](std::shared_ptr<CubeGameItem>item) {return item->getID() == id; }),
-        gameCubes.end());
-
-    gameDiscs.erase(std::remove_if(gameDiscs.begin(),
-        gameDiscs.end(),
-        [id](std::shared_ptr<CylinderGameItem>item) {return item->getID() == id; }),
-        gameDiscs.end());
-
 }
 
 bool Game::addGameItem(LocationToActionMap* map) {
@@ -210,10 +196,10 @@ bool Game::addGameItem(LocationToActionMap* map) {
                 gameEyes.push_back(std::make_shared <EyeGameItem>(rect2Use, spheresSkins.getCurrentRef(), map->c, 60.0f, &mainEye));
                 break;
             case GameLevel::Medium:
-                gameCubes.push_back(std::make_shared <CubeGameItem>(rect2Use, spheresSkins.getCurrentRef(), map->c, 60.0f, &mainEye));
+                gameEyes.push_back(std::make_shared <EyeGameItem>(rect2Use, spheresSkins.getCurrentRef(), map->c, 60.0f, &mainEye));
                 break;
             case GameLevel::Difficult:
-                gameDiscs.push_back(std::make_shared <CylinderGameItem>(rect2Use, spheresSkins.getCurrentRef(), map->c, 60.0f, &mainEye));
+                gameEyes.push_back(std::make_shared <EyeGameItem>(rect2Use, spheresSkins.getCurrentRef(), map->c, 60.0f, &mainEye));
                 break;
             }
         }
@@ -252,9 +238,13 @@ void Game::getCountours() {
                 if (blob.area > maxForTrigger && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
                     if (blob.area >= maxForTrigger) {
                         // see if we can trigger with this one
-                        for (auto& item : aimationMap) { // get all blocks within region
-                            if (item.second.inside(blob.boundingRect)) { //
-                                addGameItem(&item.second);
+                        for (auto& a : aimationMaps) {
+                            for (auto& item : a) { // get all blocks within region
+                                if (current->level == item.second.level) {
+                                    if (item.second.inside(blob.boundingRect)) { //
+                                        addGameItem(&item.second);
+                                    }
+                                }
                             }
                         }
                     }

@@ -2,17 +2,45 @@
 
 void Game::buildTable() {
     if (squareCount) {
-        aimationMap.clear();
-        float w = cameraWidth / squareCount; // menu bugbug
-        float h = cameraHeight / squareCount;
+        aimationMaps.clear();
+        aimationMaps.resize(3);
+        float w = cameraWidth / 4; // menu bugbug
+        float h = cameraHeight / 4;
         LocationToActionMap map;
+        map.level = GameLevel::Basic;
         map.width = w;
         map.height = h;
         for (float x = w; x < cameraWidth-w; x += w) { // keep off the edges -- camera cannot always pick those up
             map.x = x;
             for (float y = h; y < cameraHeight-h; y += h) {
                 map.y = y;
-                aimationMap.insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
+                aimationMaps[0].insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
+                map.c++;
+            }
+        }
+        map.level = GameLevel::Medium;
+        w = cameraWidth / 8; // menu bugbug
+        h = cameraHeight / 8;
+        map.width = w;
+        map.height = h;
+        for (float x = w; x < cameraWidth - w; x += w) { // keep off the edges -- camera cannot always pick those up
+            map.x = x;
+            for (float y = h; y < cameraHeight - h; y += h) {
+                map.y = y;
+                aimationMaps[1].insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
+                map.c++;
+            }
+        }
+        map.level = GameLevel::Difficult;
+        w = cameraWidth / 12; // menu bugbug
+        h = cameraHeight / 12;
+        map.width = w;
+        map.height = h;
+        for (float x = w; x < cameraWidth - w; x += w) { // keep off the edges -- camera cannot always pick those up
+            map.x = x;
+            for (float y = h; y < cameraHeight - h; y += h) {
+                map.y = y;
+                aimationMaps[2].insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
                 map.c++;
             }
         }
