@@ -99,9 +99,9 @@ void Game::sounds(int duration) {
 
 // turn on/off came items
 void Game::clear() {
-    if (gameEyes.size() > 0) {
-        gameEyes.clear();
-    }
+    gameEyes.clear();
+    gameCubes.clear();
+    gameDiscs.clear();
     sendFireworks = false;
 }
 
@@ -136,7 +136,7 @@ void Game::textDone(int id, bool inLine) {
 
 // count of items selected
 size_t Game::winnerHitCount() {
-    return gameEyes.size();
+    return gameEyes.size()+ gameCubes.size()+ gameDiscs.size();
 }
 
 void Game::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event) {
@@ -179,19 +179,23 @@ size_t Game::winnerThreshold() {
     return 0;
 }
 
-void Game::pushSphere(const ofRectangle&rect, int id) {
-    gameEyes.push_back(std::make_shared <EyeGameItem>(rect, spheresSkins.getCurrentRef(), id, &mainEye));
-}
-void Game::pushCube(const ofRectangle&rect, int id) {
-}
-void Game::pushCylinder(const ofRectangle&rect, int id) {
-}
-
 void Game::removeGameItem(int id) {
+    
     gameEyes.erase(std::remove_if(gameEyes.begin(), 
         gameEyes.end(),
         [id](std::shared_ptr<EyeGameItem>item) {return item->getID() == id; }),
         gameEyes.end());
+
+    gameCubes.erase(std::remove_if(gameCubes.begin(),
+        gameCubes.end(),
+        [id](std::shared_ptr<CubeGameItem>item) {return item->getID() == id; }),
+        gameCubes.end());
+
+    gameDiscs.erase(std::remove_if(gameDiscs.begin(),
+        gameDiscs.end(),
+        [id](std::shared_ptr<CylinderGameItem>item) {return item->getID() == id; }),
+        gameDiscs.end());
+
 }
 
 bool Game::addGameItem(LocationToActionMap* map) {
@@ -201,13 +205,13 @@ bool Game::addGameItem(LocationToActionMap* map) {
         if (!find(rect2Use)) {
             switch (current->getLevel()) {
             case GameLevel::Basic:
-                pushSphere(rect2Use, map->c);
+                gameEyes.push_back(std::make_shared <EyeGameItem>(rect2Use, spheresSkins.getCurrentRef(), map->c, &mainEye));
                 break;
             case GameLevel::Medium:
-                pushCube(rect2Use, map->c);
+                gameCubes.push_back(std::make_shared <CubeGameItem>(rect2Use, spheresSkins.getCurrentRef(), map->c, &mainEye));
                 break;
             case GameLevel::Difficult:
-                pushCylinder(rect2Use, map->c);
+                gameDiscs.push_back(std::make_shared <CylinderGameItem>(rect2Use, spheresSkins.getCurrentRef(), map->c, &mainEye));
                 break;
             }
         }

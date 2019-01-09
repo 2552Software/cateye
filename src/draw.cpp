@@ -9,6 +9,19 @@ void Game::draw(Music*music) {
                 a->getSound().setSound(false);
             }
         }
+        for (auto a : gameCubes) {
+            if (a->getSound().sendSound()) {
+                music->set(a->getSound());
+                a->getSound().setSound(false);
+            }
+        }
+        for (auto a : gameDiscs) {
+            if (a->getSound().sendSound()) {
+                music->set(a->getSound());
+                a->getSound().setSound(false);
+            }
+        }
+
         if (current->getSound().sendSound()) {
             // y value controls the trigger intensity
            // float trig = ofMap(y, 0, ofGetHeight(), 1.0f, 0.000001f);
@@ -168,6 +181,12 @@ void LocationToActionMap::draw() {
 
 void Game::drawGame() {
     for (auto item : gameEyes) {
+        item->draw();
+    }
+    for (auto item : gameCubes) {
+        item->draw();
+    }
+    for (auto item : gameDiscs) {
         item->draw();
     }
 }

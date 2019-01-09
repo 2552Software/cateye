@@ -415,9 +415,6 @@ public:
 private:
     std::shared_ptr<GameLevel> current;// allocation not validated
     void removeGameItem(int id);
-    void pushSphere(const ofRectangle&rect, int id);
-    void pushCube(const ofRectangle&rect, int id);
-    void pushCylinder(const ofRectangle&rect, int id);
     bool addGameItem(LocationToActionMap* rect);
     TextEngine basicText;
     TextEngine fancyText;
@@ -461,5 +458,7 @@ private:
     float xFactor;
     float yFactor;
     std::list<std::shared_ptr<EyeGameItem>> gameEyes; // if you are in this list you have been found and not time out has occured bugbug add time out
+    std::list<std::shared_ptr<CubeGameItem>> gameCubes;
+    std::list<std::shared_ptr<CylinderGameItem>> gameDiscs;
     ofxAnimatableFloat blinker; // blink animation
 };
