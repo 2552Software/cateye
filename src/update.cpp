@@ -34,49 +34,7 @@ void Textures::update() {
     selector.update(1.0f / ofGetTargetFrameRate());
 }
 
-void CylinderGameItem::update() {
-    cylinder.update();
-    if (!cylinder.isAnimating()) {
-        stop();
-    }
-    cylinder.rotateDeg(20.0f*cylinder.getUpAnimator().val(), 0.0f, 0.0f, 1.0f);
-    glm::vec3 newPos = cylinder.getPosition();
-    newPos.z = rectangle.width/2 * cylinder.getUpAnimator().val();
-    newPos.x = rectangle.width / 2 * cylinder.getUpAnimator().val();
-    if (newPos.z > rectangle.width / 2 * 3) {
-        newPos.x = rectangle.width / 2 * cylinder.getUpAnimator().val();
-        newPos.z = rectangle.width / 2;
-    }
-    cylinder.setPosition(newPos);
-}
 
-void CubeGameItem::update() {
-    cube.update();
-    if (!cube.isAnimating()) {
-        stop();
-    }
-    glm::vec3 newPos = cube.getPosition();
-    newPos.z = rectangle.width / 2 *cube.getUpAnimator().val();  //movement*10;
-    //newPos.x = movement;
-    cube.setPosition(newPos);
-    cube.setWidth(cube.getWidth()*1.0f/cube.getUpAnimator().val());
-    cube.setHeight(cube.getHeight()*1.0f / cube.getUpAnimator().val());
-
-}
-void EyeGameItem::update() {
-    sphere.update();
-    if (!sphere.isAnimating()) {
-        stop();
-    }
-    //sphere.rotateDeg(20.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f));
-    //int w = ofGetWidth();//bugbug p;ut in setup
-    //int h = ofGetHeight();
-    //sphere.rotateAroundDeg(15.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3());
-    ofNode node; 
-    node.setPosition(0, 0, -rectangle.width / 2);
-    sphere.orbitDeg(5*sphere.getUpAnimator().val(), ofRandom(360.0f), rectangle.width / 2 *2, node);
-    sphere.setRadius(sphere.getRadius()*sphere.getDownAnimator().val());
-}
 bool secondsPassed(int val) {
     return ((int)ofGetElapsedTimef() % val) == 0;
 }
@@ -112,14 +70,14 @@ void Game::update() {
         blinker.reset(0.0f);
         blinker.animateToAfterDelay(1.0f, ofRandom(10.0f, 30.0f)); // blink every few seconds bugbug menu
     }
-    for (auto a : gameItems) {
+    for (auto a : gameEyes) {
         a->update();
     }
-    gameItems.erase(std::remove_if(gameItems.begin(),
-        gameItems.end(),
-        [](std::shared_ptr<GameItem> item) {
+    gameEyes.erase(std::remove_if(gameEyes.begin(),
+        gameEyes.end(),
+        [](std::shared_ptr<EyeGameItem> item) {
         return !item->isRunning();
-       }),   gameItems.end());
+       }), gameEyes.end());
 
     fancyText.update(); //bugbug put a GET LOUND in here
     basicText.update();

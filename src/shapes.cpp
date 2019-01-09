@@ -16,23 +16,6 @@ void Game::buildTable() {
                 map.c++;
             }
         }
-        /* not using music map
-        LocationToMusicMap musicmap;
-        musicmap.width = cameraWidth / 8; // always 8x8
-        musicmap.height = cameraHeight / 8;
-        float music[][2] = { {0,0}, {1,2}, {2,4}, {3,6},{4,8} }; //bugbug generate pitch and amp
-        for (float x = musicmap.width; x < cameraWidth - musicmap.width; x += musicmap.width) { // keep off the edges -- camera cannot always pick those up
-            musicmap.x = x;
-            for (float y = musicmap.height; y < cameraHeight - musicmap.height; y += musicmap.height) {
-                musicmap.y = y;
-                musicmap.item.pitch = ofMap(x, 0, cameraHeight, 36.0f, 171.0f);
-                musicmap.item.trig = ofMap(y, 0, cameraWidth, 1.0f, 0.000001f);
-                musicmap.item.amp = ofMap(y, 0, cameraWidth, 1.0f, 0.000001f);
-                musicMap.insert(std::make_pair(std::make_pair(x, y), musicmap)); // build a default table
-                musicmap.c++;
-            }
-        }
-        */
     }
 }
 

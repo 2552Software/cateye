@@ -3,18 +3,18 @@
 
 void Game::draw(Music*music) {
     if (music) {
-        for (auto a : gameItems) {
+        for (auto a : gameEyes) {
             if (a->getSound().sendSound()) {
                 music->set(a->getSound());
                 a->getSound().setSound(false);
             }
         }
-        if (current->sound.sendSound()) {
+        if (current->getSound().sendSound()) {
             // y value controls the trigger intensity
            // float trig = ofMap(y, 0, ofGetHeight(), 1.0f, 0.000001f);
             //music->gate_ctrl.off();
             music->set(current->getSound());
-            current->sound.setSound(false);
+            current->getSound().setSound(false);
             // play everytime an item is selected
             //bugbug figure this out music->gate_ctrl.trigger(current->trigger); // we send a trigger to the envelope
         }
@@ -49,27 +49,6 @@ void Game::draw(Music*music) {
         }
     }
 }
-void SuperCylinder::draw() {
-    ofCylinderPrimitive::draw();
-}
-
-void SuperCube::draw() {
-    ofBoxPrimitive::draw();
-}
-void SuperSphere::home() {
-    setOrientation({ 0.f,0.f,0.f });
-}
-void SuperSphere::draw() {
-    if (getRadius() > 0) {
-        rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
-        rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
-        //drawWireframe();
-        ofSpherePrimitive::draw();
-        home();
-        panDeg(180); // like a FG kickers - laces out
-    }
-}
-
 
 void ContoursBuilder::draw(float w, float h, float z) {
     ofNoFill();
@@ -180,22 +159,6 @@ bool Game::drawText() {
     ofPopMatrix();
     return fancyText.isFullScreenAnimating();
 }
-void CylinderGameItem::draw() {
-    texture.start();
-    cylinder.draw();
-    texture.stop();
-}
-void CubeGameItem::draw() {
-    texture.start();
-    cube.draw();
-    texture.stop();
-}
-void EyeGameItem::draw() {
-    texture.start();
-    sphere.draw();
-    texture.stop();
-}
-
 void LocationToActionMap::draw() {
     ofFill();
     ofSetLineWidth(5);
@@ -204,7 +167,7 @@ void LocationToActionMap::draw() {
 }
 
 void Game::drawGame() {
-    for (auto item : gameItems) {
+    for (auto item : gameEyes) {
         item->draw();
     }
 }

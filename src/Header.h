@@ -74,51 +74,7 @@ private:
     ofVideoGrabber video;
     ofxCvColorImage colorImg;
     ofxCvGrayscaleImage grayImage, backgroundImage, grayDiff;
-};
-
-class Animate3d {
-public:
-    void setup(AnimRepeat repeat, float seconds, bool start=true);
-    void update() { animatorUp.update(1.0f / ofGetTargetFrameRate()); animatorDown.update(1.0f / ofGetTargetFrameRate());};
-    bool isAnimating() { return animatorUp.isAnimating() || animatorDown.isAnimating(); }
-    ofxAnimatableFloat& getUpAnimator() { return animatorUp; }
-    ofxAnimatableFloat& getDownAnimator() { return animatorDown; }
-
-private:
-    ofxAnimatableFloat animatorUp;
-    ofxAnimatableFloat animatorDown;
-
-};
-
-// always knows it rotation coordindates
-class SuperSphere : public ofSpherePrimitive, public Animate3d {
-public:
-    void setup(AnimRepeat repeat, float seconds, bool start, float x, float y, int w, int h);
-    void draw();
-    void home();
-    void setRotation(const ofVec3f& r) { currentRotation = r; }
-private:
-    ofVec3f currentRotation;
-};
-
-class SuperCube : public ofBoxPrimitive, public Animate3d {
-public:
-    void setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h);
-    void draw();
-    void setRotation(const ofVec3f& r) { currentRotation = r; }
-private:
-    ofVec3f currentRotation;
-};
-
-class SuperCylinder: public ofCylinderPrimitive, public Animate3d {
-public:
-    void setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h);
-    void draw();
-    void setRotation(const ofVec3f& r) { currentRotation = r; }
-private:
-    ofVec3f currentRotation;
-};
-
+}; 
 
 class Textures {
 public:
@@ -148,40 +104,223 @@ private:
 
 };
 
-class GameItem {
+class Animate3d {
 public:
-    GameItem(const ofRectangle& rect, objectTexture texture, int id);
-    virtual ~GameItem() { }
+    void setup(AnimRepeat repeat, float seconds);
+    void update() { animatorUp.update(1.0f / ofGetTargetFrameRate()); animatorDown.update(1.0f / ofGetTargetFrameRate());};
+    bool isAnimating() { return animatorUp.isAnimating() || animatorDown.isAnimating(); }
+    ofxAnimatableFloat& getUpAnimator() { return animatorUp; }
+    ofxAnimatableFloat& getDownAnimator() { return animatorDown; }
+    void setRotation(const ofVec3f& r) { currentRotation = r; }
+protected:
+    ofxAnimatableFloat animatorUp;
+    ofxAnimatableFloat animatorDown;
+    ofVec3f currentRotation;
 
-    bool operator==(const ofRectangle& rhs) const {
-        return rectangle == rhs;
+};
+
+template <class T>
+class GameObject : public T, public Animate3d {
+public:
+    GameObject(const ofRectangle& rectangleIn, objectTexture textureIn, int idIn, of3dPrimitive *parentIn) {
+        rectangle = rectangleIn;
+        setPosition(rectangle.x, rectangle.y, 0.0f);
+        texture = textureIn;
+        parent = parentIn;
+        if (parent) {
+            obj.setParent(*parent);
+        }
+        id = idIn;
     }
+    GameObject() {
+        parent = nullptr;
+        id = -1;
+    }
+
+    virtual ~GameObject() { }
+
+    virtual void setup(float seconds) {
+        if (parent) {
+            obj.lookAt(*parent);  // do we want ths?
+        }
+        Animate3d::setup(PLAY_ONCE, seconds);
+        sound.setup();
+        running = true;// start off running
+    }
+    void setup(const ofRectangle& rectangleIn, AnimRepeat repeat) {
+        rectangle = rectangleIn;
+        Animate3d::setup(repeat, 0);
+        sound.setup();
+        running = true;// start off running
+    }
+
+    virtual void draw() {
+        ofDrawRectangle(rectangle);
+        texture.start();
+        obj.draw();
+        texture.stop();
+    }
+
     bool operator==(const int rhs) const {
         return id == rhs;
     }
-    void setup();
-    virtual void update() {};
-    virtual void draw() {}
+    bool operator==(const ofRectangle& rhs) const {
+        return rectangle == rhs;
+    }
 
-    bool isRunning() const { return running; } 
+    bool isRunning() const { return running; }
     void stop() { running = false; }
     int getID() { return id; }
     Sound&getSound() { return sound; }
 
 protected:
+    ofRectangle rectangle;
     int id;
     Sound sound;
-    void setupHelper(of3dPrimitive* primitive, SuperSphere *);
-    ofRectangle rectangle;
     objectTexture texture;
     bool running;
-    SuperSphere *parent;
+    of3dPrimitive *parent;
+    T obj;
+};
+
+class SuperSphere : public GameObject<ofSpherePrimitive> {
+public:
+    SuperSphere(const ofRectangle& rectangle, objectTexture texture, int id, of3dPrimitive *parent) :GameObject(rectangle, texture, id, parent) { setup(); }
+    SuperSphere() :GameObject() {}
+
+    void setup() {
+        setResolution(27);
+        setRadius(::getRadiusGlobal(rectangle.width, rectangle.height));
+    }
+    void setup(const ofRectangle& rectangle, AnimRepeat repeat) {
+        GameObject::setup(rectangle, repeat);
+        setup();
+    }
+
+    void home() {
+        setOrientation({ 0.f,0.f,0.f });
+    }
+
+    void draw() {
+        if (getRadius() > 0) {
+            rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
+            rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
+            //drawWireframe();
+            ofSpherePrimitive::draw();
+            home();
+            panDeg(180); // like a FG kickers - laces out
+        }
+    }
+};
+
+class SuperCube : public GameObject<ofBoxPrimitive> {
+public:
+    SuperCube(const ofRectangle& rectangle, objectTexture texture, int id, of3dPrimitive *parent) :GameObject(rectangle, texture, id, parent) {}
+
+};
+
+class SuperCylinder: public GameObject<ofCylinderPrimitive> {
+public:
+    SuperCylinder(const ofRectangle& rectangle, objectTexture texture, int id, of3dPrimitive *parent) :GameObject(rectangle, texture, id, parent) {}
+
+    void setup(float seconds) {
+        setHeight(rectangle.height / 2);
+        setRadius(rectangle.width);
+    }
+};
+
+const unsigned SphereGameItemTime = 10.0f;
+class EyeGameItem : public SuperSphere {
+public:
+    EyeGameItem(const ofRectangle& rect, objectTexture texture, int id, of3dPrimitive *parent) :SuperSphere(rect, texture, id, parent) { setup(SphereGameItemTime); }
+    virtual  ~EyeGameItem() {  }
+
+    void setup(float duration) {
+        GameObject::setup(duration);
+        obj.setRadius(obj.getRadius()*2.0f);// why grow it again?
+        getSound().setup(42.0f, 0.5f, 0.5f, 128.0f, 3);
+    }
+    void update() {
+        Animate3d::update();
+        if (!isAnimating()) {
+            stop();
+        }
+        //sphere.rotateDeg(20.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f));
+        //int w = ofGetWidth();//bugbug p;ut in setup
+        //int h = ofGetHeight();
+        //sphere.rotateAroundDeg(15.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3());
+        ofNode node;
+        node.setPosition(0, 0, -rectangle.width / 2);
+        obj.orbitDeg(5 * getUpAnimator().val(), ofRandom(360.0f), rectangle.width / 2 * 2, node);
+        obj.setRadius(obj.getRadius()*getDownAnimator().val());
+    }
+};
+
+const unsigned CubeGameItemTime = 1.0f;
+class CubeGameItem : public SuperCube {
+public:
+    CubeGameItem(const ofRectangle& rect, objectTexture texture, int id, of3dPrimitive *parent) :SuperCube(rect, texture, id, parent) { setup(CubeGameItemTime); }
+    virtual  ~CubeGameItem() {  }
+    void setup(float duration) {
+        GameObject::setup(duration);
+        if (parent) {
+            glm::vec3 v3 = obj.getPosition();
+            v3.z = parent->getZ();
+            obj.setPosition(v3);
+        }
+        getSound().setup(52.0f, 0.1f, 0.125f, 100.0f, 1);
+    }
+    void update() {
+        Animate3d::update();
+        if (!isAnimating()) {
+            stop();
+        }
+        glm::vec3 newPos = obj.getPosition();
+        newPos.z = rectangle.width / 2 * getUpAnimator().val();  //movement*10;
+        //newPos.x = movement;
+        obj.setPosition(newPos);
+        obj.setWidth(obj.getWidth()*1.0f / getUpAnimator().val());
+        obj.setHeight(obj.getHeight()*1.0f / getUpAnimator().val());
+
+    }
+};
+
+const unsigned CylinderGameItemTime = 10.0f;
+class CylinderGameItem : public SuperCylinder {
+public:
+    CylinderGameItem(const ofRectangle& rect, objectTexture texture, int id, of3dPrimitive *parent) :SuperCylinder(rect, texture, id, parent) { setup(CylinderGameItemTime); }
+    virtual  ~CylinderGameItem() {  }
+
+    void setup(float duration) {
+        GameObject::setup(duration);
+        if (parent) {
+            glm::vec3 v3 = obj.getPosition();
+            v3.z = parent->getZ();
+            obj.setPosition(v3);
+        }
+        getSound().setup(42.0f, 0.1f, 0.125f, 120.0f, 2);
+    }
+    void update() {
+        Animate3d::update();
+        if (!isAnimating()) {
+            stop();
+        }
+        obj.rotateDeg(20.0f*getUpAnimator().val(), 0.0f, 0.0f, 1.0f);
+        glm::vec3 newPos = obj.getPosition();
+        newPos.z = rectangle.width / 2 * getUpAnimator().val();
+        newPos.x = rectangle.width / 2 * getUpAnimator().val();
+        if (newPos.z > rectangle.width / 2 * 3) {
+            newPos.x = rectangle.width / 2 * getUpAnimator().val();
+            newPos.z = rectangle.width / 2;
+        }
+        obj.setPosition(newPos);
+    }
 };
 
 class GameLevel {
 public:
     enum Levels { NoGame = -1, Basic = 0, Medium = 1, Difficult = 2 };
-    enum Durations { NoDuration = 0 , BasicDuration = 10, MediumDuration = 10, DifficultDuration = 10 };
+    enum Durations { NoDuration = 0, BasicDuration = 10, MediumDuration = 10, DifficultDuration = 10 };
 
     GameLevel(Levels level, Durations duration) { setup(level, duration); }
 
@@ -203,52 +342,7 @@ public:
     Sound sound;
 };
 
-const unsigned SphereGameItemTime = 10.0f;
-class EyeGameItem : public GameItem {
-public:
-    EyeGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere *parent, int id) :GameItem(rect, texture, id) { setup(parent, SphereGameItemTime); }
-    virtual  ~EyeGameItem() {  }
 
-    void setup(SuperSphere *parent, float duration);
-    void update();
-    void draw();
-    bool isAnimating() { return sphere.isAnimating(); }
-
-private:
-    SuperSphere sphere;
-};
-
-const unsigned CubeGameItemTime = 1.0f;
-class CubeGameItem : public GameItem {
-public:
-    CubeGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere *parent, int id) :GameItem(rect, texture, id) { setup(parent, CubeGameItemTime); }
-    virtual  ~CubeGameItem() {  }
-
-    void setup(SuperSphere *parent, float duration);
-    void update();
-    void draw();
-
-    bool isAnimating() { return cube.isAnimating(); }
-
-private:
-    SuperCube cube; 
-};
-
-const unsigned CylinderGameItemTime = 10.0f;
-class CylinderGameItem : public GameItem {
-public:
-    CylinderGameItem(const ofRectangle& rect, objectTexture texture, SuperSphere *parent, int id) :GameItem(rect, texture, id) { setup(parent, CylinderGameItemTime); }
-    virtual  ~CylinderGameItem() {  }
-
-    void setup(SuperSphere *parent, float duration);
-    void update();
-    void draw();
-
-    bool isAnimating() { return cylinder.isAnimating(); }
-
-private:
-    SuperCylinder cylinder;
-};
 
 // map location to interesting things
 class LocationToActionMap : public ofRectangle {
@@ -324,7 +418,7 @@ private:
     void pushSphere(const ofRectangle&rect, int id);
     void pushCube(const ofRectangle&rect, int id);
     void pushCylinder(const ofRectangle&rect, int id);
-    bool compute(LocationToActionMap* rect);
+    bool addGameItem(LocationToActionMap* rect);
     TextEngine basicText;
     TextEngine fancyText;
     bool find(const ofRectangle& item);
@@ -366,6 +460,6 @@ private:
     // convert to screen size
     float xFactor;
     float yFactor;
-    std::list<std::shared_ptr<GameItem>> gameItems; // if you are in this list you have been found and not time out has occured bugbug add time out
+    std::list<std::shared_ptr<EyeGameItem>> gameEyes; // if you are in this list you have been found and not time out has occured bugbug add time out
     ofxAnimatableFloat blinker; // blink animation
 };

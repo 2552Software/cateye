@@ -1,12 +1,12 @@
 #include "ofApp.h"
 #include "sound.h"
 
-void Animate3d::setup(AnimRepeat repeat, float seconds, bool start){
+void Animate3d::setup(AnimRepeat repeat, float seconds){
     animatorUp.reset(0.0001f); // do no make 0, some divs will fault
     animatorUp.setDuration(seconds);
     animatorUp.setRepeatType(repeat);
     animatorUp.setCurve(LINEAR);
-    if(start){
+    if (seconds) {
         animatorUp.animateTo(1.0f);
     }
 
@@ -14,16 +14,9 @@ void Animate3d::setup(AnimRepeat repeat, float seconds, bool start){
     animatorDown.setDuration(seconds);
     animatorDown.setRepeatType(repeat);
     animatorDown.setCurve(LINEAR);
-    if (start) {
-        animatorDown.animateTo(0.0f);
+    if (seconds) {
+        animatorDown.animateTo(0.0001f);
     }
-    
-}
-void GameItem::setup() {
-    parent = nullptr;
-    id = -1; // no id by default
-    sound.setup();
-    running = true;// start off running
 }
 void GameLevel::setup(Levels levelIn, Durations durationIn) {
     sound.setup();
@@ -31,25 +24,6 @@ void GameLevel::setup(Levels levelIn, Durations durationIn) {
     level = levelIn;
     resetLevelTime();
     sound.setup();
-}
-void SuperSphere::setup(AnimRepeat repeat, float seconds, bool start, float x, float y, int w, int h) {
-    setResolution(27);
-    setRadius(::getRadiusGlobal(w, h));
-    Animate3d::setup(repeat, seconds, start);
-    setPosition(x, y, 0.0f);
-}
-
-void SuperCylinder::setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h) {
-    setHeight(h/2);
-    setRadius(w);
-    setPosition(x, y, 0.0f);
-    Animate3d::setup(repeat, seconds);
-}
-
-void SuperCube::setup(AnimRepeat repeat, float seconds, float x, float y, int w, int h) {
-    set(w, h, w);
-    setPosition(x, y, 0.0f);
-    Animate3d::setup(repeat, seconds);
 }
 
 void TextTimer::setup() {
@@ -64,42 +38,6 @@ void objectTexture::setup(const string&texName) {
     }
 }
 
-GameItem::GameItem(const ofRectangle& rect, objectTexture textureIn, int idIn) {
-    id = idIn;
-    rectangle = rect;
-    texture = textureIn;
-}
-
-void GameItem::setupHelper(of3dPrimitive* primitive, SuperSphere* parentIn) {
-    parent = parentIn; // ok if null
-    if (parent) {
-        primitive->setParent(*parent);
-        glm::vec3 v3 = primitive->getPosition();
-        v3.z = parent->getRadius();
-        primitive->setPosition(v3);
-    }
-}
-
-void CylinderGameItem::setup(SuperSphere *parent, float duration) {
-    setupHelper(&cylinder, parent);
-    cylinder.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-    getSound().setup(52.0f, 0.1f, 0.125f, 100.0f, 1);
-}
-
-void CubeGameItem::setup(SuperSphere *parent, float duration) {
-    setupHelper(&cube, parent);
-    cube.setup(PLAY_ONCE, duration, rectangle.x, rectangle.y, rectangle.width, rectangle.height); // make bigger as we are zooming out
-    getSound().setup(72.0f, 1.0f, 0.25f, 118.0f, 2);
-}
-void EyeGameItem::setup(SuperSphere *parent, float duration) {
-    setupHelper(&sphere, parent);
-    sphere.setup(PLAY_ONCE, duration, true, rectangle.x, rectangle.y, rectangle.width, rectangle.height); // make bigger as they will be zomed backwards
-    sphere.setRadius(sphere.getRadius()*2.0f);
-    if (parent) {
-        sphere.lookAt(*parent);
-    }
-    getSound().setup(42.0f, 0.5f, 0.5f, 128.0f, 3);
-}
 void Sound::setup(float pitchIn, float ampIn, float triggerIn, float tempoIn, int sequencerIn) {
     pitch = pitchIn;
     amp = ampIn;

@@ -10,7 +10,6 @@ objectTexture&Textures::getCurrentRef() {
     return skins[0];
 }
 
-
 // let folks know we are in a game
 void Game::setTitle() {
     if (inGame()) {
@@ -100,8 +99,8 @@ void Game::sounds(int duration) {
 
 // turn on/off came items
 void Game::clear() {
-    if (gameItems.size() > 0) {
-        gameItems.clear();
+    if (gameEyes.size() > 0) {
+        gameEyes.clear();
     }
     sendFireworks = false;
 }
@@ -137,7 +136,7 @@ void Game::textDone(int id, bool inLine) {
 
 // count of items selected
 size_t Game::winnerHitCount() {
-    return gameItems.size();
+    return gameEyes.size();
 }
 
 void Game::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event) {
@@ -154,13 +153,13 @@ void Game::windowResized(int wIn, int hIn) {
     // convert to screen size
     xFactor = w / cameraWidth;
     yFactor = h / cameraHeight;
-
-    mainEye.setup(LOOP_BACK_AND_FORTH, 1.0f, false, 0.0f, 0.0f, w, h);
-    rotatingEye.setup(LOOP_BACK_AND_FORTH, 1.0f, false, 0.0f, 0.0f, w, h);
+    
+    ofRectangle rect(0.0f, 0.0f, w, h);
+    mainEye.setup(rect, LOOP_BACK_AND_FORTH);
+    rotatingEye.setup(rect, LOOP_BACK_AND_FORTH);
 
     clear(); // reset game to assure all sizes are correct
-
-    
+   
 }
 
 void Game::startPlaying() {
@@ -181,26 +180,21 @@ size_t Game::winnerThreshold() {
 }
 
 void Game::pushSphere(const ofRectangle&rect, int id) {
-    std::shared_ptr<GameItem> sp{ std::make_shared <EyeGameItem>(rect, spheresSkins.getCurrentRef(), &mainEye,id) };
-    gameItems.push_back(sp);
+    gameEyes.push_back(std::make_shared <EyeGameItem>(rect, spheresSkins.getCurrentRef(), id, &mainEye));
 }
 void Game::pushCube(const ofRectangle&rect, int id) {
-    std::shared_ptr<GameItem> sp{ std::make_shared <CubeGameItem>(rect, cubesSkins.getCurrentRef(), &mainEye,id) };
-    gameItems.push_back(sp);
 }
 void Game::pushCylinder(const ofRectangle&rect, int id) {
-    std::shared_ptr<GameItem> sp{ std::make_shared <CylinderGameItem>(rect, cylindersSkins.getCurrentRef(), &mainEye,id) };
-    gameItems.push_back(sp);
 }
 
 void Game::removeGameItem(int id) {
-    gameItems.erase(std::remove_if(gameItems.begin(),
-        gameItems.end(),
-        [id](std::shared_ptr<GameItem>item) {return item->getID() == id; }),
-        gameItems.end());
+    gameEyes.erase(std::remove_if(gameEyes.begin(), 
+        gameEyes.end(),
+        [id](std::shared_ptr<EyeGameItem>item) {return item->getID() == id; }),
+        gameEyes.end());
 }
 
-bool Game::compute(LocationToActionMap* map) {
+bool Game::addGameItem(LocationToActionMap* map) {
     if (map) {
         float cx = w - (map->width)*xFactor;
         ofRectangle rect2Use((cx - map->x*xFactor), map->y*yFactor, map->width*xFactor, map->height*yFactor);
@@ -221,7 +215,7 @@ bool Game::compute(LocationToActionMap* map) {
     return true;
 }
 bool Game::find(const ofRectangle& rect) {
-    for (auto item : gameItems) {
+    for (auto item : gameEyes) {
         if (*item == rect) {
             return true;
         }
@@ -254,9 +248,7 @@ void Game::getCountours() {
                         // see if we can trigger with this one
                         for (auto& item : aimationMap) { // get all blocks within region
                             if (item.second.inside(blob.boundingRect)) { //
-                                if (compute(&item.second)) {
-                                    break;
-                                }
+                                addGameItem(&item.second);
                             }
                         }
                     }
