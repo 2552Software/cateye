@@ -172,9 +172,9 @@ size_t Game::winnerThreshold() {
     case GameLevel::NoGame:
         return 0;
     case GameLevel::Basic:
-        return aimationMap.size() / 3;
+        return aimationMap.size();
     case GameLevel::Medium:
-        return aimationMap.size() / 2;
+        return aimationMap.size();
     case GameLevel::Difficult:
         return aimationMap.size();
     }

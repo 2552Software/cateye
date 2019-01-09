@@ -17,10 +17,9 @@ void EyeGameItem::draw() { // here just for debug
     if (getRadius() > 0) {
         rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
         rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
+        setRotation(currentRotation);
         glm::vec2 pos = getPosition();
         //drawWireframe();
-        ofFill();
-        ofDrawRectangle(rectangle);
         texture.start();
         ofSpherePrimitive::draw();
         texture.stop();
@@ -85,12 +84,14 @@ void Game::draw(Music*music) {
         }
         else {
             ofPushMatrix();
-            ofTranslate(w / 2, h / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
+            ofTranslate(w / 2, h / 2);// z will need to be moved via apis since OF is not consistant here
             setTitle();
-            mainEye.setRotation(currentRotation);
-            mainEyesSkins.getCurrentRef().start();
-            //mainEye.draw();
-            mainEyesSkins.getCurrentRef().stop();
+            if (!inGame()) {
+                mainEye.setRotation(currentRotation);
+                mainEyesSkins.getCurrentRef().start();
+                mainEye.draw();
+                mainEyesSkins.getCurrentRef().stop();
+            }
             ofPopMatrix();
             if (!mainEye.isAnimating()) {
                 drawContours();
@@ -219,8 +220,16 @@ void LocationToActionMap::draw() {
 
 void Game::drawGame() {
     ofPushMatrix();
+    ofSetColor(ofColor::hotPink);
+    ofSetLineWidth(6);// ofRandom(1, 5));
+    ofNoFill();
+    for (auto& grid : aimationMap) {
+        ofDrawRectangle(ofRectangle(grid.second.x*xFactor, grid.second.y*yFactor, grid.second.width*xFactor, grid.second.height*yFactor));
+    }
+
    // ofTranslate(w / 2, h / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
     for (auto item : gameEyes) {
+        item->setRotation(currentRotation);
         item->draw();
     }
     for (auto item : gameCubes) {
