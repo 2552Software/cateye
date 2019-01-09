@@ -106,6 +106,10 @@ private:
 
 class Animate3d {
 public:
+    Animate3d(AnimRepeat repeat, float seconds) {
+        setup(repeat, seconds);
+    }
+    Animate3d() {}
     void setup(AnimRepeat repeat, float seconds);
     void update() { animatorUp.update(1.0f / ofGetTargetFrameRate()); animatorDown.update(1.0f / ofGetTargetFrameRate());};
     bool isAnimating() { return animatorUp.isAnimating() || animatorDown.isAnimating(); }
@@ -116,51 +120,32 @@ protected:
     ofxAnimatableFloat animatorUp;
     ofxAnimatableFloat animatorDown;
     ofVec3f currentRotation;
-
 };
 
-template <class T>
-class GameObject : public T, public Animate3d {
+class GameObject : public Animate3d {
 public:
-    GameObject(const ofRectangle& rectangleIn, objectTexture textureIn, int idIn, of3dPrimitive *parentIn) {
-        rectangle = rectangleIn;
-        setPosition(rectangle.x, rectangle.y, 0.0f);
+    GameObject(const ofRectangle& rectangleIn, objectTexture textureIn, int idIn, AnimRepeat repeat, float seconds, of3dPrimitive *parentIn) :Animate3d(repeat, seconds){
+        setRectangle(rectangleIn);
+        setup(seconds, repeat);
         texture = textureIn;
         parent = parentIn;
-        if (parent) {
-            obj.setParent(*parent);
-        }
         id = idIn;
     }
-    GameObject() {
+    GameObject():Animate3d(){
         parent = nullptr;
         id = -1;
+        running = false;
     }
 
     virtual ~GameObject() { }
 
-    virtual void setup(float seconds) {
-        if (parent) {
-            obj.lookAt(*parent);  // do we want ths?
-        }
-        Animate3d::setup(PLAY_ONCE, seconds);
-        sound.setup();
+    void setup(float seconds, AnimRepeat repeat= PLAY_ONCE) {
+        Animate3d::setup(repeat, seconds);
         running = true;// start off running
     }
-    void setup(const ofRectangle& rectangleIn, AnimRepeat repeat) {
+    virtual void setRectangle(const ofRectangle& rectangleIn) {
         rectangle = rectangleIn;
-        Animate3d::setup(repeat, 0);
-        sound.setup();
-        running = true;// start off running
     }
-
-    virtual void draw() {
-        ofDrawRectangle(rectangle);
-        texture.start();
-        obj.draw();
-        texture.stop();
-    }
-
     bool operator==(const int rhs) const {
         return id == rhs;
     }
@@ -180,66 +165,58 @@ protected:
     objectTexture texture;
     bool running;
     of3dPrimitive *parent;
-    T obj;
 };
 
-class SuperSphere : public GameObject<ofSpherePrimitive> {
+class SuperSphere : public GameObject, public ofSpherePrimitive {
 public:
-    SuperSphere(const ofRectangle& rectangle, objectTexture texture, int id, of3dPrimitive *parent) :GameObject(rectangle, texture, id, parent) { setup(); }
-    SuperSphere() :GameObject() {}
+    SuperSphere(const ofRectangle& rectangle, objectTexture texture, int id, float seconds, of3dPrimitive *parent) :GameObject(rectangle, texture, id, PLAY_ONCE, seconds, parent) { setup(); }
+    SuperSphere() :GameObject() { setup(); }
 
-    void setup() {
-        setResolution(27);
-        setRadius(::getRadiusGlobal(rectangle.width, rectangle.height));
-    }
-    void setup(const ofRectangle& rectangle, AnimRepeat repeat) {
-        GameObject::setup(rectangle, repeat);
-        setup();
-    }
-
+    void draw();
+    void setup();
     void home() {
         setOrientation({ 0.f,0.f,0.f });
     }
+    virtual void setRectangle(const ofRectangle& rectangleIn) {
+        rectangle = rectangleIn;
+        setPosition(rectangle.x, rectangle.y, 0.0f);
+        setRadius(::getRadiusGlobal(rectangle.width, rectangle.height));
+    }
 
-    void draw() {
-        if (getRadius() > 0) {
-            rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
-            rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
-            //drawWireframe();
-            ofSpherePrimitive::draw();
-            home();
-            panDeg(180); // like a FG kickers - laces out
-        }
+};
+
+class SuperCube : public GameObject, public ofBoxPrimitive {
+public:
+    SuperCube(const ofRectangle& rectangle, objectTexture texture, int id, float seconds, of3dPrimitive *parent) :GameObject(rectangle, texture, id, PLAY_ONCE, seconds, parent) { setup(); }
+    void setup() {
     }
 };
 
-class SuperCube : public GameObject<ofBoxPrimitive> {
+class SuperCylinder: public GameObject, public ofCylinderPrimitive {
 public:
-    SuperCube(const ofRectangle& rectangle, objectTexture texture, int id, of3dPrimitive *parent) :GameObject(rectangle, texture, id, parent) {}
+    SuperCylinder(const ofRectangle& rectangle, objectTexture texture, int id, float seconds, of3dPrimitive *parent) :GameObject(rectangle, texture, id, PLAY_ONCE, seconds, parent) { setup(); }
 
-};
-
-class SuperCylinder: public GameObject<ofCylinderPrimitive> {
-public:
-    SuperCylinder(const ofRectangle& rectangle, objectTexture texture, int id, of3dPrimitive *parent) :GameObject(rectangle, texture, id, parent) {}
-
-    void setup(float seconds) {
+    void setup() {
         setHeight(rectangle.height / 2);
         setRadius(rectangle.width);
     }
 };
 
-const unsigned SphereGameItemTime = 10.0f;
+class MainEye : public SuperSphere { // uses external texture
+public:
+    MainEye() :SuperSphere() { Animate3d::setup(LOOP_BACK_AND_FORTH, 0.0f); running = true; }
+};
+
 class EyeGameItem : public SuperSphere {
 public:
-    EyeGameItem(const ofRectangle& rect, objectTexture texture, int id, of3dPrimitive *parent) :SuperSphere(rect, texture, id, parent) { setup(SphereGameItemTime); }
+    EyeGameItem(const ofRectangle& rectangle, objectTexture texture, int id, float seconds, of3dPrimitive *parent) :SuperSphere(rectangle, texture, id, seconds, parent) { setup(); }
+
     virtual  ~EyeGameItem() {  }
 
     void draw();
 
-    void setup(float duration) {
-        GameObject::setup(duration);
-        obj.setRadius(obj.getRadius()*2.0f);// why grow it again?
+    void setup() {
+        setRadius(getRadius()*2.0f);// why grow it again?
         getSound().setup(42.0f, 0.5f, 0.5f, 128.0f, 3);
     }
     void update() {
@@ -251,25 +228,23 @@ public:
         //int w = ofGetWidth();//bugbug p;ut in setup
         //int h = ofGetHeight();
         //sphere.rotateAroundDeg(15.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3());
-        ofNode node;
-        node.setPosition(0, 0, -rectangle.width / 2);
-        obj.orbitDeg(5 * getUpAnimator().val(), ofRandom(360.0f), rectangle.width / 2 * 2, node);
-        obj.setRadius(obj.getRadius()*getDownAnimator().val());
+        //ofNode node;
+        //node.setPosition(0, 0, -rectangle.width / 2);
+        //orbitDeg(5 * getUpAnimator().val(), ofRandom(360.0f), rectangle.width / 2 * 2, node);
+        //setRadius(getRadius()*getDownAnimator().val());
     }
 };
 
-const unsigned CubeGameItemTime = 1.0f;
 class CubeGameItem : public SuperCube {
 public:
-    CubeGameItem(const ofRectangle& rect, objectTexture texture, int id, of3dPrimitive *parent) :SuperCube(rect, texture, id, parent) { setup(CubeGameItemTime); }
+    CubeGameItem(const ofRectangle& rectangle, objectTexture texture, int id, float seconds, of3dPrimitive *parent) :SuperCube(rectangle, texture, id, seconds, parent) { setup(); }
     virtual  ~CubeGameItem() {  }
     void draw();
-    void setup(float duration) {
-        GameObject::setup(duration);
-        if (parent) {
-            glm::vec3 v3 = obj.getPosition();
-            v3.z = parent->getZ();
-            obj.setPosition(v3);
+    void setup() {
+        if (GameObject::parent) {
+            glm::vec3 v3 = getPosition();
+            v3.z = GameObject::parent->getZ();
+            setPosition(v3);
         }
         getSound().setup(52.0f, 0.1f, 0.125f, 100.0f, 1);
     }
@@ -278,29 +253,27 @@ public:
         if (!isAnimating()) {
             stop();
         }
-        glm::vec3 newPos = obj.getPosition();
+        glm::vec3 newPos = getPosition();
         newPos.z = rectangle.width / 2 * getUpAnimator().val();  //movement*10;
         //newPos.x = movement;
-        obj.setPosition(newPos);
-        obj.setWidth(obj.getWidth()*1.0f / getUpAnimator().val());
-        obj.setHeight(obj.getHeight()*1.0f / getUpAnimator().val());
+        setPosition(newPos);
+        setWidth(getWidth()*1.0f / getUpAnimator().val());
+        setHeight(getHeight()*1.0f / getUpAnimator().val());
 
     }
 };
 
-const unsigned CylinderGameItemTime = 10.0f;
 class CylinderGameItem : public SuperCylinder {
 public:
-    CylinderGameItem(const ofRectangle& rect, objectTexture texture, int id, of3dPrimitive *parent) :SuperCylinder(rect, texture, id, parent) { setup(CylinderGameItemTime); }
+    CylinderGameItem(const ofRectangle& rect, objectTexture texture, int id, float seconds, of3dPrimitive *parent) :SuperCylinder(rect, texture, id, seconds, parent) { setup(CylinderGameItemTime); }
     virtual  ~CylinderGameItem() {  }
     void draw();
 
     void setup(float duration) {
-        GameObject::setup(duration);
-        if (parent) {
-            glm::vec3 v3 = obj.getPosition();
-            v3.z = parent->getZ();
-            obj.setPosition(v3);
+        if (GameObject::parent) {
+            glm::vec3 v3 = getPosition();
+            v3.z = GameObject::parent->getZ();
+            setPosition(v3);
         }
         getSound().setup(42.0f, 0.1f, 0.125f, 120.0f, 2);
     }
@@ -309,22 +282,22 @@ public:
         if (!isAnimating()) {
             stop();
         }
-        obj.rotateDeg(20.0f*getUpAnimator().val(), 0.0f, 0.0f, 1.0f);
-        glm::vec3 newPos = obj.getPosition();
+        rotateDeg(20.0f*getUpAnimator().val(), 0.0f, 0.0f, 1.0f);
+        glm::vec3 newPos = getPosition();
         newPos.z = rectangle.width / 2 * getUpAnimator().val();
         newPos.x = rectangle.width / 2 * getUpAnimator().val();
         if (newPos.z > rectangle.width / 2 * 3) {
             newPos.x = rectangle.width / 2 * getUpAnimator().val();
             newPos.z = rectangle.width / 2;
         }
-        obj.setPosition(newPos);
+        setPosition(newPos);
     }
 };
 
 class GameLevel {
 public:
     enum Levels { NoGame = -1, Basic = 0, Medium = 1, Difficult = 2 };
-    enum Durations { NoDuration = 0, BasicDuration = 10, MediumDuration = 10, DifficultDuration = 10 };
+    enum Durations { NoDuration = 0, BasicDuration = 60, MediumDuration = 60, DifficultDuration = 60 };
 
     GameLevel(Levels level, Durations duration) { setup(level, duration); }
 
@@ -434,9 +407,9 @@ private:
     void blink();
     void setTitle();
     Textures mainEyesSkins;
-    SuperSphere mainEye;
+    MainEye mainEye;
     Textures rotatingEyesSkins;
-    SuperSphere rotatingEye;
+    MainEye rotatingEye;
     Textures cubesSkins; // cache images
     Textures spheresSkins;
     Textures cylindersSkins;

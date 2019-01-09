@@ -1,6 +1,18 @@
 #include "ofApp.h"
 #include "sound.h"
 
+
+void SuperSphere::draw() {
+    if (getRadius() > 0) {
+        rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
+        rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
+        //drawWireframe();
+        ofSpherePrimitive::draw();
+        home();
+        panDeg(180); // like a FG kickers - laces out
+    }
+}
+
 void EyeGameItem::draw() { // here just for debug
     if (getRadius() > 0) {
         rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
@@ -84,7 +96,7 @@ void Game::draw(Music*music) {
                 blink();
             }
             ofPushMatrix();
-            //ofTranslate(w / 2, h / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
+            ofTranslate(w / 2, h / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
             drawGame(); // draw any game that may be running
             ofPopMatrix();
         }

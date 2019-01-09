@@ -155,8 +155,8 @@ void Game::windowResized(int wIn, int hIn) {
     yFactor = h / cameraHeight;
     
     ofRectangle rect(0.0f, 0.0f, w, h);
-    mainEye.setup(rect, LOOP_BACK_AND_FORTH);
-    rotatingEye.setup(rect, LOOP_BACK_AND_FORTH);
+    mainEye.setRectangle(rect);
+    rotatingEye.setRectangle(rect);
 
     clear(); // reset game to assure all sizes are correct
    
@@ -205,13 +205,13 @@ bool Game::addGameItem(LocationToActionMap* map) {
         if (!find(rect2Use)) {
             switch (current->getLevel()) {
             case GameLevel::Basic:
-                gameEyes.push_back(std::make_shared <EyeGameItem>(rect2Use, spheresSkins.getCurrentRef(), map->c, &mainEye));
+                gameEyes.push_back(std::make_shared <EyeGameItem>(rect2Use, spheresSkins.getCurrentRef(), map->c, 60.0f, &mainEye));
                 break;
             case GameLevel::Medium:
-                gameCubes.push_back(std::make_shared <CubeGameItem>(rect2Use, spheresSkins.getCurrentRef(), map->c, &mainEye));
+                gameCubes.push_back(std::make_shared <CubeGameItem>(rect2Use, spheresSkins.getCurrentRef(), map->c, 60.0f, &mainEye));
                 break;
             case GameLevel::Difficult:
-                gameDiscs.push_back(std::make_shared <CylinderGameItem>(rect2Use, spheresSkins.getCurrentRef(), map->c, &mainEye));
+                gameDiscs.push_back(std::make_shared <CylinderGameItem>(rect2Use, spheresSkins.getCurrentRef(), map->c, 60.0f, &mainEye));
                 break;
             }
         }

@@ -18,6 +18,15 @@ void Animate3d::setup(AnimRepeat repeat, float seconds){
         animatorDown.animateTo(0.0001f);
     }
 }
+
+void SuperSphere::setup() {
+    setRectangle(rectangle);
+    if (GameObject::parent) {
+        setParent(*GameObject::parent);
+        lookAt(*GameObject::parent);  // do we want ths?
+    }
+    setResolution(27);
+}
 void GameLevel::setup(Levels levelIn, Durations durationIn) {
     sound.setup();
     duration = durationIn;
