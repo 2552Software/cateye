@@ -235,6 +235,8 @@ public:
     EyeGameItem(const ofRectangle& rect, objectTexture texture, int id, of3dPrimitive *parent) :SuperSphere(rect, texture, id, parent) { setup(SphereGameItemTime); }
     virtual  ~EyeGameItem() {  }
 
+    void draw();
+
     void setup(float duration) {
         GameObject::setup(duration);
         obj.setRadius(obj.getRadius()*2.0f);// why grow it again?
@@ -261,6 +263,7 @@ class CubeGameItem : public SuperCube {
 public:
     CubeGameItem(const ofRectangle& rect, objectTexture texture, int id, of3dPrimitive *parent) :SuperCube(rect, texture, id, parent) { setup(CubeGameItemTime); }
     virtual  ~CubeGameItem() {  }
+    void draw();
     void setup(float duration) {
         GameObject::setup(duration);
         if (parent) {
@@ -290,6 +293,7 @@ class CylinderGameItem : public SuperCylinder {
 public:
     CylinderGameItem(const ofRectangle& rect, objectTexture texture, int id, of3dPrimitive *parent) :SuperCylinder(rect, texture, id, parent) { setup(CylinderGameItemTime); }
     virtual  ~CylinderGameItem() {  }
+    void draw();
 
     void setup(float duration) {
         GameObject::setup(duration);
