@@ -59,7 +59,7 @@ void Game::draw(Music*music) {
         }
         else {
             ofPushMatrix();
-            ofTranslate(w / 2, h / 2);// z will need to be moved via apis since OF is not consistant here
+            //ofTranslate(w / 2, h / 2);// z will need to be moved via apis since OF is not consistant here
             setTitle();
             if (!inGame()) {
                 mainEye.setRotation(currentRotation);

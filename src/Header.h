@@ -228,7 +228,7 @@ public:
 #define MAXLEVELS 4
     enum Levels { NoGame = 0, Basic = 1, Medium = 2, Difficult = 3 };
     
-    GameLevel() : durations{0.0f, 60.0f, 60.0f, 60.0f }
+    GameLevel() : durations{10.0f, 60.0f, 60.0f, 60.0f }
     { setup(NoGame);  }
 
     bool inGame() { return getLevel() != NoGame; }

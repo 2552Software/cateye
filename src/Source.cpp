@@ -56,8 +56,6 @@ void GameLevel::next() {
     }
 }
 void GameLevel::advance() {
-    ofLogNotice("GameLevel::advance") << timeLeft() << " : " << getLevelDuration();
-
     if (timeLeft() < 0.0f) { // start game every 60 seconds for example
         next();
     }

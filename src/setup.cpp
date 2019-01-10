@@ -25,7 +25,7 @@ void SuperSphere::setup() {
         lookAt(*GameObject::parent);  // do we want ths?
     }
     setResolution(27);
-    setPosition(rectangle.x, rectangle.y, 0.0f);
+    setPosition(rectangle.x/2.0f, rectangle.y / 2.0f, 0.0f);
     setRadius(::getRadiusGlobal(rectangle.width, rectangle.height));
 
 }
