@@ -92,9 +92,9 @@ void Game::update() {
     musicNotesSkins.update();
 
     if (!isAnimating()) {
-        if (current->inGame() && isWinner()) {  
+        if (current.inGame() && isWinner()) {  
             clear();
-            switch (current->getLevel()) {
+            switch (current.getLevel()) {
             case GameLevel::Difficult:
                 sendFireworks = true;
                 credits(true);
@@ -107,7 +107,7 @@ void Game::update() {
             getCountours();
         }
 
-        current->advance(current);
+        current.advance();
     }
 }
 

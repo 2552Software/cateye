@@ -37,12 +37,12 @@ void Game::draw(Music*music) {
             }
         }
 
-        if (current->getSound().sendSound()) {
+        if (current.getSound().sendSound()) {
             // y value controls the trigger intensity
            // float trig = ofMap(y, 0, ofGetHeight(), 1.0f, 0.000001f);
             //music->gate_ctrl.off();
-            music->set(current->getSound());
-            current->getSound().setSound(false);
+            music->set(current.getSound());
+            current.getSound().setSound(false);
             // play everytime an item is selected
             //bugbug figure this out music->gate_ctrl.trigger(current->trigger); // we send a trigger to the envelope
         }
@@ -201,7 +201,7 @@ void Game::drawGame() {
 
     for (auto& a : aimationMaps) {
         for (auto& grid : a) {
-            if (current->level == grid.second.level)  {
+            if (current.getLevel() == grid.second.getLevel())  {
                 ofDrawRectangle(ofRectangle(grid.second.x*xFactor, grid.second.y*yFactor, grid.second.width*xFactor, grid.second.height*yFactor));
             }
         }

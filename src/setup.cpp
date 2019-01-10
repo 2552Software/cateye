@@ -29,12 +29,11 @@ void SuperSphere::setup() {
     setRadius(::getRadiusGlobal(rectangle.width, rectangle.height));
 
 }
-void GameLevel::setup(Levels levelIn, Durations durationIn) {
-    sound.setup();
-    duration = durationIn;
+
+void GameLevel::setup(Levels levelIn) {
     level = levelIn;
+    sound.setup(level);
     resetLevelTime();
-    sound.setup();
 }
 
 void TextTimer::setup() {
@@ -49,12 +48,13 @@ void objectTexture::setup(const string&texName) {
     }
 }
 
-void Sound::setup(float pitchIn, float ampIn, float triggerIn, float tempoIn, int sequencerIn) {
-    pitch = pitchIn;
-    amp = ampIn;
-    trigger = triggerIn;
-    tempo = tempoIn;
-    sequencer = sequencerIn;
+void Sound::setup(int sequencerIn) {
+    if (sequencerIn < MaxSound) {
+        sequencer = sequencerIn;
+    }
+    else {
+        sequencer = 0;
+    }
     setSound(true);
 }
 

@@ -89,19 +89,31 @@ private:
 };
 
 class Sound {
+    #define MaxSound 4
 public:
-    Sound() { setup(); }
+    Sound(int sequencer = 0)
+        : pitches{ 36.0f, 40.0f, 50.0f, 72.0f },
+        amps{0.25f, 0.25f, 0.5f, 1.0f},
+        triggers{ 1.0f, 1.0f, 1.0f, 1.0f },
+        tempos{ 90.0f, 100.0f, 108.0f, 115.0f }
+    { setup(sequencer); }
 
-    void setup(float pitchIn = 0.0f, float ampIn = 0.0f, float triggerIn = 0.0f, float tempoIn = 108.f, int sequencerIn = 0);
-
-    float pitch, amp, trigger, tempo;
-    int sequencer;
+    void setup(int sequencer = 0);
     bool sendSound() { return soundSet; }
     void setSound(bool b) { soundSet = b; }
+    int getSequence() const { return sequencer; }
+    float getAmp() const { return amps[getSequence()]; }
+    float getPitch()const { return pitches[getSequence()]; }
+    float getTrigger() const { return triggers[getSequence()]; }
+    float getTempo() const { return tempos[getSequence()]; }
 
 private:
+    int sequencer;
+    float pitches[MaxSound];
+    float amps[MaxSound];
+    float triggers[MaxSound];
+    float tempos[MaxSound];
     bool soundSet; // sent initial sound
-
 };
 
 class Animate3d {
@@ -194,7 +206,6 @@ public:
 
     void setup() {
         setRadius(getRadius()*2.0f);// why grow it again?
-        getSound().setup(42.0f, 0.5f, 0.5f, 128.0f, 3);
     }
     void update() {
         Animate3d::update();
@@ -214,10 +225,11 @@ public:
 
 class GameLevel {
 public:
-    enum Levels { NoGame = -1, Basic = 0, Medium = 1, Difficult = 2 };
-    enum Durations { NoDuration = 0, BasicDuration = 60, MediumDuration = 60, DifficultDuration = 60 };
+#define MAXLEVELS 4
+    enum Levels { NoGame = 0, Basic = 1, Medium = 2, Difficult = 3 };
     
-    GameLevel(Levels level=NoGame, Durations duration=NoDuration) { setup(level, duration); }
+    GameLevel() : durations{0.0f, 60.0f, 60.0f, 60.0f }
+    { level = NoGame;  }
 
     bool inGame() { return getLevel() != NoGame; }
     void advance();
@@ -229,14 +241,14 @@ public:
     float getDuration() { return duration; } // run game for 30 seconds
     float timeLeft() { return duration - getLevelDuration(); }
     float getLevelDuration() { return ofGetElapsedTimef() - gameLevelTime; }
-    void setup(Levels level, Durations duration);
+    void setup(Levels level);
     float gameLevelTime;
     float duration;
-    Levels level;
     Sound sound;
-private:
-    void getNext();
 
+private:
+    Levels level;
+    float durations[MAXLEVELS];
 };
 
 
@@ -250,6 +262,9 @@ public:
     }
     void draw();
     int c; // countid
+    GameLevel::Levels getLevel() { return  level; }
+    void set(GameLevel::Levels levelIn) { level = levelIn; }
+private:
     GameLevel::Levels level;
 };
 

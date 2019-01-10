@@ -40,31 +40,24 @@ void Textures::add(const std::string &name, const std::string &root) {
 
 void GameLevel::advance() {
 
-    if (current.timeLeft() < 0.0f) { // start game every 60 seconds for example
+    if (timeLeft() < 0.0f) { // start game every 60 seconds for example
      //bugug for dev keep going forward current = current->getPrevious();
-        current.getNext();
+        switch (level) {
+        case NoGame:
+            setup(Basic);
+            break;
+        case Basic:
+            setup(Medium);
+            break;
+        case Medium:
+            setup(Difficult);
+            break;
+        case Difficult:
+            setup(NoGame);
+            break;
+        }
     }
 }
-void GameLevel::getNext() {
-    switch (level) {
-    case NoGame:
-        level = Basic;
-        duration = BasicDuration;
-        break;
-    case Basic:
-        level = Medium;
-        duration = MediumDuration;
-        break;
-    case Medium:
-        level = Difficult;
-        duration = DifficultDuration;
-        break;
-    case Difficult:
-        level = NoGame;
-        duration = NoDuration;
-        break;
-    }
-};
 
 void  Game::fireWorks() {
    //bugbug sounds(5);
@@ -171,7 +164,7 @@ void Game::startPlaying() {
    //bugbug sounds();
 }
 size_t Game::winnerThreshold() { 
-    switch (current->getLevel()) {
+    switch (current.getLevel()) {
     case GameLevel::NoGame:
         return 0;
     case GameLevel::Basic://bugbug drop enum just use numbers 
@@ -196,7 +189,7 @@ bool Game::addGameItem(LocationToActionMap* map) {
         float cx = w - (map->width)*xFactor;
         ofRectangle rect2Use((cx - map->x*xFactor), map->y*yFactor, map->width*xFactor, map->height*yFactor);
         if (!find(rect2Use)) {
-            switch (current->getLevel()) {
+            switch (current.getLevel()) {
             case GameLevel::Basic:
                 gameEyes.push_back(std::make_shared <EyeGameItem>(rect2Use, spheresSkins.getCurrentRef(), map->c, 60.0f, &mainEye));
                 break;
@@ -245,7 +238,7 @@ void Game::getCountours() {
                         // see if we can trigger with this one
                         for (auto& a : aimationMaps) {
                             for (auto& item : a) { // get all blocks within region
-                                if (current->level == item.second.level) {
+                                if (current.getLevel() == item.second.getLevel()) {
                                     if (item.second.inside(blob.boundingRect)) { //
                                         addGameItem(&item.second);
                                     }

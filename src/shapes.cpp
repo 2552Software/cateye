@@ -7,7 +7,7 @@ void Game::buildTable() {
         float w = cameraWidth / 4; // menu bugbug
         float h = cameraHeight / 4;
         LocationToActionMap map;
-        map.level = GameLevel::Basic;
+        map.set(GameLevel::Basic);
         map.width = w;
         map.height = h;
         for (float x = w; x < cameraWidth-w; x += w) { // keep off the edges -- camera cannot always pick those up
@@ -18,7 +18,7 @@ void Game::buildTable() {
                 map.c++;
             }
         }
-        map.level = GameLevel::Medium;
+        map.set(GameLevel::Medium);
         w = cameraWidth / 8; // menu bugbug
         h = cameraHeight / 8;
         map.width = w;
@@ -31,7 +31,7 @@ void Game::buildTable() {
                 map.c++;
             }
         }
-        map.level = GameLevel::Difficult;
+        map.set(GameLevel::Difficult);
         w = cameraWidth / 12; // menu bugbug
         h = cameraHeight / 12;
         map.width = w;
