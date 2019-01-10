@@ -136,8 +136,8 @@ protected:
 
 class GameObject : public Animate3d {
 public:
-    GameObject(const ofRectangle& rectangleIn, objectTexture textureIn, int idIn, AnimRepeat repeat, float seconds, of3dPrimitive *parentIn) :Animate3d(repeat, seconds){
-        setRectangle(rectangleIn);
+    GameObject(const ofRectangle& rectangle, objectTexture textureIn, int idIn, AnimRepeat repeat, float seconds, of3dPrimitive *parentIn) :Animate3d(repeat, seconds){
+        setRectangle(rectangle);
         setup(seconds, repeat);
         texture = textureIn;
         parent = parentIn;
@@ -229,7 +229,7 @@ public:
     enum Levels { NoGame = 0, Basic = 1, Medium = 2, Difficult = 3 };
     
     GameLevel() : durations{0.0f, 60.0f, 60.0f, 60.0f }
-    { level = NoGame;  }
+    { setup(NoGame);  }
 
     bool inGame() { return getLevel() != NoGame; }
     void advance();
@@ -238,15 +238,13 @@ public:
     Sound&getSound() { return sound; }
 
     Levels getLevel() { return level; }
-    float getDuration() { return duration; } // run game for 30 seconds
-    float timeLeft() { return duration - getLevelDuration(); }
+    float timeLeft() { return durations[level] - getLevelDuration(); }
     float getLevelDuration() { return ofGetElapsedTimef() - gameLevelTime; }
     void setup(Levels level);
-    float gameLevelTime;
-    float duration;
-    Sound sound;
-
+    void next();
 private:
+    float gameLevelTime;
+    Sound sound;
     Levels level;
     float durations[MAXLEVELS];
 };

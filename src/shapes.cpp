@@ -10,7 +10,7 @@ void Game::buildTable() {
         map.set(GameLevel::Basic);
         map.width = w;
         map.height = h;
-        for (float x = w; x < cameraWidth-w; x += w) { // keep off the edges -- camera cannot always pick those up
+        for (float x = 0; x < cameraWidth; x += w) { // keep off the edges -- camera cannot always pick those up
             map.x = x;
             for (float y = h; y < cameraHeight-h; y += h) {
                 map.y = y;
@@ -23,7 +23,7 @@ void Game::buildTable() {
         h = cameraHeight / 8;
         map.width = w;
         map.height = h;
-        for (float x = w; x < cameraWidth - w; x += w) { // keep off the edges -- camera cannot always pick those up
+        for (float x = 0; x < cameraWidth; x += w) { // keep off the edges -- camera cannot always pick those up
             map.x = x;
             for (float y = h; y < cameraHeight - h; y += h) {
                 map.y = y;
@@ -36,7 +36,7 @@ void Game::buildTable() {
         h = cameraHeight / 12;
         map.width = w;
         map.height = h;
-        for (float x = w; x < cameraWidth - w; x += w) { // keep off the edges -- camera cannot always pick those up
+        for (float x = 0; x < cameraWidth; x += w) { // keep off the edges -- camera cannot always pick those up
             map.x = x;
             for (float y = h; y < cameraHeight - h; y += h) {
                 map.y = y;

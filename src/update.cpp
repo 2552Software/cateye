@@ -102,6 +102,7 @@ void Game::update() {
             default:
                 break;
             }
+            current.next();
         }
         else {
             getCountours();

@@ -38,24 +38,28 @@ void Textures::add(const std::string &name, const std::string &root) {
     skins.push_back(objectTexture(root));
 }
 
+void GameLevel::next() {
+    //bugug for dev keep going forward current = current->getPrevious();
+    switch (level) {
+    case NoGame:
+        setup(Basic);
+        break;
+    case Basic:
+        setup(Medium);
+        break;
+    case Medium:
+        setup(Difficult);
+        break;
+    case Difficult:
+        setup(NoGame);
+        break;
+    }
+}
 void GameLevel::advance() {
+    ofLogNotice("GameLevel::advance") << timeLeft() << " : " << getLevelDuration();
 
     if (timeLeft() < 0.0f) { // start game every 60 seconds for example
-     //bugug for dev keep going forward current = current->getPrevious();
-        switch (level) {
-        case NoGame:
-            setup(Basic);
-            break;
-        case Basic:
-            setup(Medium);
-            break;
-        case Medium:
-            setup(Difficult);
-            break;
-        case Difficult:
-            setup(NoGame);
-            break;
-        }
+        next();
     }
 }
 
@@ -186,8 +190,8 @@ void Game::removeGameItem(int id) {
 
 bool Game::addGameItem(LocationToActionMap* map) {
     if (map) {
-        float cx = w - (map->width)*xFactor;
-        ofRectangle rect2Use((cx - map->x*xFactor), map->y*yFactor, map->width*xFactor, map->height*yFactor);
+        float flip = w - (map->x*xFactor);
+        ofRectangle rect2Use(flip, map->y*yFactor, map->width*xFactor, map->height*yFactor);
         if (!find(rect2Use)) {
             switch (current.getLevel()) {
             case GameLevel::Basic:
