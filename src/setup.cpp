@@ -27,7 +27,6 @@ void SuperSphere::setup() {
     setResolution(27);
     setPosition(rectangle.x, rectangle.y, 0.0f);
     setRadius(::getRadiusGlobal(rectangle.width, rectangle.height));
-
 }
 
 void GameLevel::setup(Levels levelIn) {

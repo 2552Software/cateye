@@ -78,12 +78,12 @@ void Game::update() {
         blinker.animateToAfterDelay(1.0f, ofRandom(10.0f, 30.0f)); // blink every few seconds bugbug menu
     }
     for (auto a : gameEyes) {
-        a->update();
+        a.update();
     }
     gameEyes.erase(std::remove_if(gameEyes.begin(),
         gameEyes.end(),
-        [](std::shared_ptr<EyeGameItem> item) {
-        return !item->isRunning();
+        [](EyeGameItem item) {
+        return !item.isRunning();
     }), gameEyes.end());
 
     fancyText.update(); //bugbug put a GET LOUND in here

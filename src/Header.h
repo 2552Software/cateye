@@ -9,8 +9,9 @@ const float windowHeight = 768;
 // convert to screen size
 const float xFactor = windowWidth / cameraWidth;
 const float yFactor = windowHeight / cameraHeight;
-
-
+inline ofRectangle convert(const ofRectangle&rect) {
+    return ofRectangle(rect.x*xFactor, rect.y*yFactor, rect.width*xFactor, rect.height*yFactor);
+}
 inline float getRadiusGlobal(int w= windowWidth, int h= windowHeight) {
     float r = 2.0f*(std::min(w, h) / 2)/3.0f;
     return r;
@@ -356,6 +357,6 @@ private:
     std::map<Key, float> mapCameraInX; // range to rotation
     std::map<Key, float> mapCameraInY;
     std::vector<std::map<std::pair<int, int>, LocationToActionMap>> aimationMaps; // map indexes, nullptr means no object found yet
-    std::list<std::shared_ptr<EyeGameItem>> gameEyes; // if you are in this list you have been found and not time out has occured bugbug add time out
+    std::list<EyeGameItem> gameEyes; // if you are in this list you have been found and not time out has occured bugbug add time out
     ofxAnimatableFloat blinker; // blink animation
 };

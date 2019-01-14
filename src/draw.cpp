@@ -18,9 +18,9 @@ void SuperSphere::draw() {
 void Game::draw(Music*music) {
     if (music) {
         for (auto a : gameEyes) {
-            if (a->getSound().sendSound()) {
-                music->set(a->getSound());
-                a->getSound().setSound(false); //bugbug will need to set sounds based on some id or such
+            if (a.getSound().sendSound()) {
+                music->set(a.getSound());
+                a.getSound().setSound(false); //bugbug will need to set sounds based on some id or such
             }
         }
 
@@ -189,16 +189,16 @@ void Game::drawGame() {
     for (auto& a : aimationMaps) {
         for (auto& grid : a) {
             if (current.getLevel() == grid.second.getLevel())  {
-                ofDrawRectangle(ofRectangle(grid.second.x*xFactor, grid.second.y*yFactor, grid.second.width*xFactor, grid.second.height*yFactor));
+                ofDrawRectangle(convert(grid.second));
             }
         }
     }
-    mainEyesSkins.getCurrentRef().start();
     for (auto a : gameEyes) {
-        a->setRotation(currentRotation);
-        a->draw();
+        a.setRotation(currentRotation);
+        mainEyesSkins.getCurrentRef().start();
+        a.draw();
+        mainEyesSkins.getCurrentRef().stop();
     }
-    mainEyesSkins.getCurrentRef().stop();
     ofPopMatrix();
 }
 

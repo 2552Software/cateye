@@ -178,7 +178,7 @@ size_t Game::winnerThreshold() {
 void Game::removeGameItem(int id) {
     gameEyes.erase(std::remove_if(gameEyes.begin(),
         gameEyes.end(),
-        [id](std::shared_ptr<EyeGameItem>item) {return item->getID() == id; }),
+        [id](EyeGameItem item) {return item.getID() == id; }),
         gameEyes.end());
 }
 
@@ -189,13 +189,13 @@ bool Game::addGameItem(LocationToActionMap* map) {
         if (!find(rect2Use)) {
             switch (current.getLevel()) {
             case GameLevel::Basic:
-                gameEyes.push_back(std::make_shared <EyeGameItem>(rect2Use, spheresSkins.getCurrentRef(), map->c, 60.0f, &mainEye));
+                gameEyes.push_back(EyeGameItem(rect2Use, spheresSkins.getCurrentRef(), map->c, 60.0f, &mainEye));
                 break;
             case GameLevel::Medium:
-                gameEyes.push_back(std::make_shared <EyeGameItem>(rect2Use, spheresSkins.getCurrentRef(), map->c, 60.0f, &mainEye));
+                gameEyes.push_back(EyeGameItem(rect2Use, spheresSkins.getCurrentRef(), map->c, 60.0f, &mainEye));
                 break;
             case GameLevel::Difficult:
-                gameEyes.push_back(std::make_shared <EyeGameItem>(rect2Use, spheresSkins.getCurrentRef(), map->c, 60.0f, &mainEye));
+                gameEyes.push_back(EyeGameItem(rect2Use, spheresSkins.getCurrentRef(), map->c, 60.0f, &mainEye));
                 break;
             }
         }
@@ -203,8 +203,8 @@ bool Game::addGameItem(LocationToActionMap* map) {
     return true;
 }
 bool Game::find(const ofRectangle& rect) {
-    for (auto item : gameEyes) {
-        if (*item == rect) {
+    for (auto& item : gameEyes) {
+        if (item == rect) {
             return true;
         }
     }
