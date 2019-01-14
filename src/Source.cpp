@@ -148,10 +148,6 @@ void Game::windowResized(int wIn, int hIn) {
     h = hIn;
     ofLogNotice("ofApp::setup") << "Window size " << w << " by " << h;
 
-    // convert to screen size
-    xFactor = w / cameraWidth;
-    yFactor = h / cameraHeight;
-    
     ofRectangle rect(0.0f, 0.0f, w, h);
     mainEye.setRectangle(rect);
     mainEye.setup();
@@ -188,8 +184,8 @@ void Game::removeGameItem(int id) {
 
 bool Game::addGameItem(LocationToActionMap* map) {
     if (map) {
-        float flip = w - (map->x*xFactor);
-        ofRectangle rect2Use(flip, map->y*yFactor, map->width*xFactor, map->height*yFactor);
+        float flip = cameraWidth - map->x;
+        ofRectangle rect2Use(flip*xFactor, map->y*yFactor, map->width*xFactor, map->height*yFactor);
         if (!find(rect2Use)) {
             switch (current.getLevel()) {
             case GameLevel::Basic:

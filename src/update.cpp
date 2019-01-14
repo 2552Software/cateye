@@ -1,5 +1,11 @@
 #include "ofApp.h"
 
+void SuperSphere::update() {
+    Animate3d::update();
+    if (!isAnimating()) {
+        stop();
+    }
+}
 void TextTimer::update() {
     int elapsedMilliSeconds = ofGetSystemTimeMillis() - timeBegan;
     if (timeDelay) {

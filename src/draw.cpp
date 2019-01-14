@@ -6,23 +6,10 @@ void SuperSphere::draw() {
     if (getRadius() > 0) {
         rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
         rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
-        //drawWireframe();
-        ofSpherePrimitive::draw();
-        home();
-        panDeg(180); // like a FG kickers - laces out
-    }
-}
-
-void EyeGameItem::draw() { // here just for debug
-    if (getRadius() > 0) {
-        rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
-        rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
-        setRotation(currentRotation);
         glm::vec2 pos = getPosition();
+        float r = getRadius();
         //drawWireframe();
-        texture.start();
         ofSpherePrimitive::draw();
-        texture.stop();
         home();
         panDeg(180); // like a FG kickers - laces out
     }
@@ -61,7 +48,7 @@ void Game::draw(Music*music) {
             ofPushMatrix();
             ofTranslate(w / 2, h / 2);// z will need to be moved via apis since OF is not consistant here
             setTitle();
-            ofPopMatrix();
+            
             if (!inGame()) {
                 mainEye.setRotation(currentRotation);
                 mainEyesSkins.getCurrentRef().start();
@@ -72,6 +59,7 @@ void Game::draw(Music*music) {
                 drawContours();
                 blink();
             }
+            ofPopMatrix();
             drawGame(); // draw any game that may be running
         }
     }

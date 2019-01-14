@@ -10,9 +10,6 @@
 #include "ofxOpenCv.h"
 #include <ofxGui.h>
 
-
-const int cameraWidth = 640;// 320; // the motion image from the camera
-const int cameraHeight = 480;//240;
 #define EYES "eyes"
 #define SPIRALS "spirals"
 #define SOUNDS "sounds"

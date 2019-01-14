@@ -25,7 +25,7 @@ void SuperSphere::setup() {
         lookAt(*GameObject::parent);  // do we want ths?
     }
     setResolution(27);
-    setPosition(rectangle.x + rectangle.width/2.0f, rectangle.y + rectangle.height/2.0f, 0.0f);
+    setPosition(rectangle.x - rectangle.width, rectangle.y - rectangle.height, 0.0f);
     setRadius(::getRadiusGlobal(rectangle.width, rectangle.height));
 
 }
@@ -111,15 +111,12 @@ void ContoursBuilder::setup() {
 void TextEngine::setup(int fontsize) {
     font.load("DejaVuSans.ttf", fontsize, false, false, true);
 }
+
 void Game::setup() { 
 
     setTriggerCount();
     setShapeMinSize();
     setSquareCount();
-
-    // convert to window size from camera sized
-    xFactor = w / cameraWidth;
-    yFactor = h / cameraHeight;
 
     basicText.setup(12);
     fancyText.setup(15);

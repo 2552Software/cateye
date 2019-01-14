@@ -2,7 +2,16 @@
 
 #include "ofApp.h"
 
-inline float getRadiusGlobal(int w= ofGetWidth(), int h= ofGetHeight()) {
+const float cameraWidth = 640;// 320; // the motion image from the camera
+const float cameraHeight = 480;//240;
+const float windowWidth = 1024;
+const float windowHeight = 768;
+// convert to screen size
+const float xFactor = windowWidth / cameraWidth;
+const float yFactor = windowHeight / cameraHeight;
+
+
+inline float getRadiusGlobal(int w= windowWidth, int h= windowHeight) {
     float r = 2.0f*(std::min(w, h) / 2)/3.0f;
     return r;
 }
@@ -186,6 +195,7 @@ public:
 
     void draw();
     void setup();
+    void update();
     void home() {
         setOrientation({ 0.f,0.f,0.f });
     }
@@ -198,29 +208,9 @@ public:
 
 class EyeGameItem : public SuperSphere {
 public:
-    EyeGameItem(const ofRectangle& rectangle, objectTexture texture, int id, float seconds, of3dPrimitive *parent) :SuperSphere(rectangle, texture, id, seconds, parent) { setup(); }
+    EyeGameItem(const ofRectangle& rectangle, objectTexture texture, int id, float seconds, of3dPrimitive *parent) :
+        SuperSphere(rectangle, texture, id, seconds, parent) { setup(); }
 
-    virtual  ~EyeGameItem() {  }
-
-    void draw();
-
-    void setup() {
-        setRadius(getRadius()*2.0f);// why grow it again?
-    }
-    void update() {
-        Animate3d::update();
-        if (!isAnimating()) {
-            stop();
-        }
-        //sphere.rotateDeg(20.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f));
-        //int w = ofGetWidth();//bugbug p;ut in setup
-        //int h = ofGetHeight();
-        //sphere.rotateAroundDeg(15.0f*sphere.getAnimator().val(), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3());
-        //ofNode node;
-        //node.setPosition(0, 0, -rectangle.width / 2);
-        //orbitDeg(5 * getUpAnimator().val(), ofRandom(360.0f), rectangle.width / 2 * 2, node);
-        //setRadius(getRadius()*getDownAnimator().val());
-    }
 };
 
 class GameLevel {
@@ -366,9 +356,6 @@ private:
     std::map<Key, float> mapCameraInX; // range to rotation
     std::map<Key, float> mapCameraInY;
     std::vector<std::map<std::pair<int, int>, LocationToActionMap>> aimationMaps; // map indexes, nullptr means no object found yet
-    // convert to screen size
-    float xFactor;
-    float yFactor;
     std::list<std::shared_ptr<EyeGameItem>> gameEyes; // if you are in this list you have been found and not time out has occured bugbug add time out
     ofxAnimatableFloat blinker; // blink animation
 };

@@ -12,7 +12,7 @@ void Game::buildTable() {
         map.height = h;
         for (float x = 0; x < cameraWidth; x += w) { // keep off the edges -- camera cannot always pick those up
             map.x = x;
-            for (float y = h; y < cameraHeight-h; y += h) {
+            for (float y = 0; y < cameraHeight; y += h) {
                 map.y = y;
                 aimationMaps[0].insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
                 map.c++;
@@ -25,7 +25,7 @@ void Game::buildTable() {
         map.height = h;
         for (float x = 0; x < cameraWidth; x += w) { // keep off the edges -- camera cannot always pick those up
             map.x = x;
-            for (float y = h; y < cameraHeight - h; y += h) {
+            for (float y = 0; y < cameraHeight - h; y += h) {
                 map.y = y;
                 aimationMaps[1].insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
                 map.c++;
@@ -38,7 +38,7 @@ void Game::buildTable() {
         map.height = h;
         for (float x = 0; x < cameraWidth; x += w) { // keep off the edges -- camera cannot always pick those up
             map.x = x;
-            for (float y = h; y < cameraHeight - h; y += h) {
+            for (float y = 0; y < cameraHeight; y += h) {
                 map.y = y;
                 aimationMaps[2].insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
                 map.c++;
