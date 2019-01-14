@@ -48,18 +48,17 @@ void Game::draw(Music*music) {
             ofPushMatrix();
             ofTranslate(w / 2, h / 2);// z will need to be moved via apis since OF is not consistant here
             setTitle();
-            
             if (!inGame()) {
                 mainEye.setRotation(currentRotation);
                 mainEyesSkins.getCurrentRef().start();
                 mainEye.draw();
                 mainEyesSkins.getCurrentRef().stop();
             }
+            ofPopMatrix();
             if (!mainEye.isAnimating()) {
                 drawContours();
                 blink();
             }
-            ofPopMatrix();
             drawGame(); // draw any game that may be running
         }
     }
@@ -85,7 +84,7 @@ void ContoursBuilder::draw(float w, float h, float z) {
                 line.addVertex((cameraWidth - blob.pts[i].x), blob.pts[i].y, z);
             }
             line.close();
-            line.scale(w / cameraWidth, h / cameraHeight);
+            line.scale(xFactor, yFactor);
             line.draw();
         }
     }
@@ -194,12 +193,12 @@ void Game::drawGame() {
             }
         }
     }
-
+    mainEyesSkins.getCurrentRef().start();
     for (auto a : gameEyes) {
         a->setRotation(currentRotation);
         a->draw();
     }
-
+    mainEyesSkins.getCurrentRef().stop();
     ofPopMatrix();
 }
 

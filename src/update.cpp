@@ -6,6 +6,7 @@ void SuperSphere::update() {
         stop();
     }
 }
+
 void TextTimer::update() {
     int elapsedMilliSeconds = ofGetSystemTimeMillis() - timeBegan;
     if (timeDelay) {

@@ -216,14 +216,12 @@ void Game::getCountours() {
     if (contours.contourFinder.blobs.size() > 0) {
         glm::vec3 target = currentRotation;
         glm::vec3 centroid;
-        ofRectangle rect;
 
         // first find any motion for the game, then find motion for drawing and eye tracking
         for (auto& blob : contours.contourFinder.blobs) {
             if (blob.area > max && blob.boundingRect.x > 1 && blob.boundingRect.y > 1) {  //x,y 1,1 is some sort of strange case
                 max = blob.area;
                 centroid = blob.centroid;
-                rect = blob.boundingRect;
                 break; // first is max
             }
         }
