@@ -148,8 +148,8 @@ protected:
 
 class GameObject : public Animate3d {
 public:
-    GameObject(float x, float y, int idIn, AnimRepeat repeat, float seconds, of3dPrimitive *parentIn) :Animate3d(repeat, seconds){
-        setup(x, y, seconds, repeat);
+    GameObject(float x, float y, float z, int idIn, AnimRepeat repeat, float seconds, of3dPrimitive *parentIn) :Animate3d(repeat, seconds){
+        setup(x, y, z, seconds, repeat);
         parent = parentIn;
         id = idIn;
     }
@@ -157,13 +157,15 @@ public:
         parent = nullptr;
         id = -1;
         running = false;
+        x = y = z = 0;
     }
 
     virtual ~GameObject() { }
 
-    void setup(float xIn, float yIn, float seconds, AnimRepeat repeat= PLAY_ONCE) {
+    void setup(float xIn, float yIn, float zIn, float seconds, AnimRepeat repeat= PLAY_ONCE) {
         x = xIn;
         y = yIn;
+        z = zIn;
         Animate3d::setup(repeat, seconds);
         running = true;// start off running
     }
@@ -180,12 +182,12 @@ protected:
     Sound sound;
     bool running;
     of3dPrimitive *parent;
-    float x, y;
+    float x, y, z;
 };
 
 class SuperSphere : public GameObject, public ofSpherePrimitive {
 public:
-    SuperSphere(float x, float y, float r, int id=-1, float seconds=0.0f, of3dPrimitive *parent=nullptr) :GameObject(x,y,id, PLAY_ONCE, seconds, parent) { setup(r); }
+    SuperSphere(float x, float y, float z, float r, int id=-1, float seconds=0.0f, of3dPrimitive *parent=nullptr) :GameObject(x,y,z,id, PLAY_ONCE, seconds, parent) { setup(r); }
     SuperSphere() :GameObject() { setup(0.0f); }
 
     void draw();
@@ -200,13 +202,13 @@ public:
 
 class MainEye : public SuperSphere { // uses external texture
 public:
-    MainEye(float x=0.0f, float y = 0.0f, float r = 0.0f) :SuperSphere(x,y,r) { Animate3d::setup(LOOP_BACK_AND_FORTH, 0.0f); running = true; }
+    MainEye(float x=0.0f, float y = 0.0f, float z=0.0f, float r = 0.0f) :SuperSphere(x,y,z,r) { Animate3d::setup(LOOP_BACK_AND_FORTH, 0.0f); running = true; }
 };
 
 class EyeGameItem : public SuperSphere {
 public:
-    EyeGameItem(float x, float y, float r, int id, float seconds, of3dPrimitive *parent) :
-        SuperSphere(x,y,r,id, seconds, parent) {}
+    EyeGameItem(float x, float y, float z, float r, int id, float seconds, of3dPrimitive *parent) :
+        SuperSphere(x,y,z,r,id, seconds, parent) {}
 };
 
 class GameLevel {

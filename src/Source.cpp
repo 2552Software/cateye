@@ -162,7 +162,7 @@ size_t Game::winnerThreshold() {
     switch (current.getLevel()) {
     case GameLevel::NoGame:
         return 0;
-    case GameLevel::Basic://bugbug drop enum just use numbers 
+    case GameLevel::Basic: 
         return aimationMaps[0].size();
     case GameLevel::Medium:
         return aimationMaps[1].size();
@@ -181,9 +181,10 @@ void Game::removeGameItem(int id) {
 
 bool Game::addGameItem(LocationToActionMap* map) {
     if (map) {
-        float flip = cameraWidth - map->x;
+        float flip = (cameraWidth - map->x)-map->width; // convert from camera perspective to user perspective
         ofRectangle rect(flip*xFactor, map->y*yFactor, map->width*xFactor, map->height*yFactor);
         float r = std::min(rect.width, rect.height) / 2;
+        r *= 0.9f;// leave some white space
         if (!find(map->c)) { // only include  one time
             float t = 60.0f;
             switch (current.getLevel()) {
@@ -196,7 +197,7 @@ bool Game::addGameItem(LocationToActionMap* map) {
                 t = 60.0f;
                 break;
             }
-            gameEyes.push_back(EyeGameItem(rect.x+rect.width/2.0f, rect.y+rect.height/2.0f, r, map->c, 60.0f, &mainEye));
+            gameEyes.push_back(EyeGameItem(rect.x+rect.width/2.0f, rect.y+rect.height/2.0f, 0.0f, r, map->c, 60.0f, &mainEye));
         }
     }
     return true;
@@ -234,7 +235,7 @@ void Game::getCountours() {
                         for (auto& a : aimationMaps) {
                             for (auto& item : a) { // get all blocks within region
                                 if (current.getLevel() == item.second.getLevel()) {
-                                    if (item.second.inside(blob.boundingRect)) { //
+                                    if (item.second.inside(blob.boundingRect)) { // stored and tracked like a mirror, facing the user
                                         addGameItem(&item.second);
                                     }
                                 }

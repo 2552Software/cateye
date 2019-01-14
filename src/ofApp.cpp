@@ -83,6 +83,10 @@ void ofApp::update() {
     eyeAnimator.update();
     light.update();
     if (music) {
+        float c = (float)eyeAnimator.winnerHitCount();
+        float max = (float)eyeAnimator.winnerThreshold();
+        music->pitch_ctrl.set(ofMap(c, 0, max, 36.0f, 72.0f));
+       // music->amp_ctrl.set(ofMap(c, 0, max, 1.0f, 0.0f));
         music->update();
     }
 }

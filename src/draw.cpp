@@ -183,7 +183,7 @@ void LocationToActionMap::draw() {
 void Game::drawGame() {
     ofPushMatrix();
     ofSetColor(ofColor::hotPink);
-    ofSetLineWidth(6);// ofRandom(1, 5));
+    ofSetLineWidth(1);
     ofNoFill();
 
     for (auto& a : aimationMaps) {

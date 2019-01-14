@@ -19,8 +19,8 @@ void Game::buildTable() {
             }
         }
         map.set(GameLevel::Medium);
-        w = cameraWidth / 8; // menu bugbug
-        h = cameraHeight / 8;
+        w = cameraWidth / 5; // menu bugbug
+        h = cameraHeight / 5;
         map.width = w;
         map.height = h;
         for (float x = 0; x < cameraWidth; x += w) { // keep off the edges -- camera cannot always pick those up
@@ -32,8 +32,8 @@ void Game::buildTable() {
             }
         }
         map.set(GameLevel::Difficult);
-        w = cameraWidth / 12; // menu bugbug
-        h = cameraHeight / 12;
+        w = cameraWidth / 7; //a little more difficult
+        h = cameraHeight / 7;
         map.width = w;
         map.height = h;
         for (float x = 0; x < cameraWidth; x += w) { // keep off the edges -- camera cannot always pick those up

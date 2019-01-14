@@ -5,7 +5,6 @@
 // sound https://www.liutaiomottola.com/formulae/freqtab.htm
 
 void Music::update() {
-
 }
 void Music::set(const Sound&sound) {
     if (sound.getAmp()) {

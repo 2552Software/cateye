@@ -26,7 +26,7 @@ void SuperSphere::setup(float r) {
         //not used in this release lookAt(*GameObject::parent);  // do we want ths?
     }
     setResolution(27);
-    setPosition(x, y, 0.0f);
+    setPosition(x, y, z);
     setRadius(r);
     home();
 }
