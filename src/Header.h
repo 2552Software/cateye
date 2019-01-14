@@ -134,6 +134,7 @@ public:
     Animate3d() {}
     void setup(AnimRepeat repeat, float seconds);
     void update() { animatorUp.update(1.0f / ofGetTargetFrameRate()); animatorDown.update(1.0f / ofGetTargetFrameRate());};
+    float getSeconds() { return seconds; }
     bool isAnimating() { return animatorUp.isAnimating() || animatorDown.isAnimating(); }
     ofxAnimatableFloat& getUpAnimator() { return animatorUp; }
     ofxAnimatableFloat& getDownAnimator() { return animatorDown; }
@@ -142,14 +143,13 @@ protected:
     ofxAnimatableFloat animatorUp;
     ofxAnimatableFloat animatorDown;
     ofVec3f currentRotation;
+    float seconds;
 };
 
 class GameObject : public Animate3d {
 public:
-    GameObject(const ofRectangle& rectangle, objectTexture textureIn, int idIn, AnimRepeat repeat, float seconds, of3dPrimitive *parentIn) :Animate3d(repeat, seconds){
-        setRectangle(rectangle);
-        setup(seconds, repeat);
-        texture = textureIn;
+    GameObject(float x, float y, int idIn, AnimRepeat repeat, float seconds, of3dPrimitive *parentIn) :Animate3d(repeat, seconds){
+        setup(x, y, seconds, repeat);
         parent = parentIn;
         id = idIn;
     }
@@ -161,57 +161,52 @@ public:
 
     virtual ~GameObject() { }
 
-    void setup(float seconds, AnimRepeat repeat= PLAY_ONCE) {
+    void setup(float xIn, float yIn, float seconds, AnimRepeat repeat= PLAY_ONCE) {
+        x = xIn;
+        y = yIn;
         Animate3d::setup(repeat, seconds);
         running = true;// start off running
-    }
-    virtual void setRectangle(const ofRectangle& rectangleIn) {
-        rectangle = rectangleIn;
     }
     bool operator==(const int rhs) const {
         return id == rhs;
     }
-    bool operator==(const ofRectangle& rhs) const {
-        return rectangle == rhs;
-    }
-
     bool isRunning() const { return running; }
     void stop() { running = false; }
     int getID() { return id; }
     Sound&getSound() { return sound; }
-    ofRectangle rectangle;
 
 protected:
     int id;
     Sound sound;
-    objectTexture texture;
     bool running;
     of3dPrimitive *parent;
+    float x, y;
 };
 
 class SuperSphere : public GameObject, public ofSpherePrimitive {
 public:
-    SuperSphere(const ofRectangle& rectangle, objectTexture texture, int id, float seconds, of3dPrimitive *parent) :GameObject(rectangle, texture, id, PLAY_ONCE, seconds, parent) { setup(); }
-    SuperSphere() :GameObject() { setup(); }
+    SuperSphere(float x, float y, float r, int id=-1, float seconds=0.0f, of3dPrimitive *parent=nullptr) :GameObject(x,y,id, PLAY_ONCE, seconds, parent) { setup(r); }
+    SuperSphere() :GameObject() { setup(0.0f); }
 
     void draw();
-    void setup();
+    void setup(float r);
     void update();
     void home() {
         setOrientation({ 0.f,0.f,0.f });
+        panDeg(180); // like a FG kickers - laces out
     }
+
 };
 
 class MainEye : public SuperSphere { // uses external texture
 public:
-    MainEye() :SuperSphere() { Animate3d::setup(LOOP_BACK_AND_FORTH, 0.0f); running = true; }
+    MainEye(float x=0.0f, float y = 0.0f, float r = 0.0f) :SuperSphere(x,y,r) { Animate3d::setup(LOOP_BACK_AND_FORTH, 0.0f); running = true; }
 };
 
 class EyeGameItem : public SuperSphere {
 public:
-    EyeGameItem(const ofRectangle& rectangle, objectTexture texture, int id, float seconds, of3dPrimitive *parent) :
-        SuperSphere(rectangle, texture, id, seconds, parent) { setup(); }
-
+    EyeGameItem(float x, float y, float r, int id, float seconds, of3dPrimitive *parent) :
+        SuperSphere(x,y,r,id, seconds, parent) {}
 };
 
 class GameLevel {
@@ -321,7 +316,7 @@ private:
     bool addGameItem(LocationToActionMap* rect);
     TextEngine basicText;
     TextEngine fancyText;
-    bool find(const ofRectangle& item);
+    bool find(int id);
     void credits(bool signon = false);    void setTriggerCount(float count=50.0f);
     void setShapeMinSize(float size=100.0f) { shapeMinSize = size; };
     void setSquareCount(int count=15);

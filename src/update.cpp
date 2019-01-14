@@ -2,7 +2,7 @@
 
 void SuperSphere::update() {
     Animate3d::update();
-    if (!isAnimating()) {
+    if (seconds > 0.0f && !isAnimating()) {
         stop();
     }
 }

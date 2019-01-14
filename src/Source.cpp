@@ -148,11 +148,8 @@ void Game::windowResized(int wIn, int hIn) {
     h = hIn;
     ofLogNotice("ofApp::setup") << "Window size " << w << " by " << h;
 
-    ofRectangle rect(0.0f, 0.0f, w, h);
-    mainEye.setRectangle(rect);
-    mainEye.setup();
-    rotatingEye.setRectangle(rect);
-    rotatingEye.setup();
+    mainEye.setup(getRadiusGlobal(w, h));
+    rotatingEye.setup(getRadiusGlobal(w, h));
 
     clear(); // reset game to assure all sizes are correct
    
@@ -185,26 +182,28 @@ void Game::removeGameItem(int id) {
 bool Game::addGameItem(LocationToActionMap* map) {
     if (map) {
         float flip = cameraWidth - map->x;
-        ofRectangle rect2Use(flip*xFactor, map->y*yFactor, map->width*xFactor, map->height*yFactor);
-        if (!find(rect2Use)) {
+        ofRectangle rect(flip*xFactor, map->y*yFactor, map->width*xFactor, map->height*yFactor);
+        float r = std::min(rect.width, rect.height) / 2;
+        if (!find(map->c)) { // only include  one time
+            float t = 60.0f;
             switch (current.getLevel()) {
             case GameLevel::Basic:
-                gameEyes.push_back(EyeGameItem(rect2Use, spheresSkins.getCurrentRef(), map->c, 60.0f, &mainEye));
                 break;
             case GameLevel::Medium:
-                gameEyes.push_back(EyeGameItem(rect2Use, spheresSkins.getCurrentRef(), map->c, 60.0f, &mainEye));
+                t = 60.0f;
                 break;
             case GameLevel::Difficult:
-                gameEyes.push_back(EyeGameItem(rect2Use, spheresSkins.getCurrentRef(), map->c, 60.0f, &mainEye));
+                t = 60.0f;
                 break;
             }
+            gameEyes.push_back(EyeGameItem(rect.x+rect.width/2.0f, rect.y+rect.height/2.0f, r, map->c, 60.0f, &mainEye));
         }
     }
     return true;
 }
-bool Game::find(const ofRectangle& rect) {
+bool Game::find(int id) {
     for (auto& item : gameEyes) {
-        if (item == rect) {
+        if (item == id) {
             return true;
         }
     }

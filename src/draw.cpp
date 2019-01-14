@@ -11,7 +11,6 @@ void SuperSphere::draw() {
         //drawWireframe();
         ofSpherePrimitive::draw();
         home();
-        panDeg(180); // like a FG kickers - laces out
     }
 }
 
@@ -55,6 +54,7 @@ void Game::draw(Music*music) {
                 mainEyesSkins.getCurrentRef().stop();
             }
             ofPopMatrix();
+            // next items are drawn absolute and are driven by camera and converted to screen units
             if (!mainEye.isAnimating()) {
                 drawContours();
                 blink();

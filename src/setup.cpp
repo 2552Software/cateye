@@ -1,7 +1,8 @@
 #include "ofApp.h"
 #include "sound.h"
 
-void Animate3d::setup(AnimRepeat repeat, float seconds){
+void Animate3d::setup(AnimRepeat repeat, float secondsIn){
+    seconds = secondsIn;
     animatorUp.reset(0.0001f); // do no make 0, some divs will fault
     animatorUp.setDuration(seconds);
     animatorUp.setRepeatType(repeat);
@@ -19,14 +20,15 @@ void Animate3d::setup(AnimRepeat repeat, float seconds){
     }
 }
 
-void SuperSphere::setup() {
+void SuperSphere::setup(float r) {
     if (GameObject::parent) {
-        setParent(*GameObject::parent);
-        lookAt(*GameObject::parent);  // do we want ths?
+        //not used in this release setParent(*GameObject::parent);
+        //not used in this release lookAt(*GameObject::parent);  // do we want ths?
     }
     setResolution(27);
-    setPosition(rectangle.x, rectangle.y, 0.0f);
-    setRadius(::getRadiusGlobal(rectangle.width, rectangle.height));
+    setPosition(x, y, 0.0f);
+    setRadius(r);
+    home();
 }
 
 void GameLevel::setup(Levels levelIn) {
