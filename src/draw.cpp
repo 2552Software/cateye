@@ -4,25 +4,23 @@
 
 void SuperSphere::draw() {
     if (getRadius() > 0) {
-        rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
-        rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
-        glm::vec2 pos = getPosition();
-        float r = getRadius();
-        //drawWireframe();
+        if (isAnimating()) {
+            rotateDeg(animatorUp.getPercentDone()*15.0f, 0.0f, 0.0f, 1.0f);
+            ofScale(animatorUp.getPercentDone()*2);
+        }
+        else {
+            rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
+            rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
+        }
         ofSpherePrimitive::draw();
-        home();
+        if (!isAnimating()) {
+            home(); // restore to start position
+        }
     }
 }
 
 void Game::draw(Music*music) {
     if (music) {
-        for (auto a : gameEyes) {
-            if (a.getSound().sendSound()) {
-                music->set(a.getSound());
-                a.getSound().setSound(false); //bugbug will need to set sounds based on some id or such
-            }
-        }
-
         if (current.getSound().sendSound()) {
             // y value controls the trigger intensity
            // float trig = ofMap(y, 0, ofGetHeight(), 1.0f, 0.000001f);
@@ -36,12 +34,12 @@ void Game::draw(Music*music) {
 
     if (!drawText()) { // draw text first and give it the full screen
         if (rotatingEye.isAnimating()) {
-            rotatingEyesSkins.getCurrentRef().start();
             ofPushMatrix(); 
             ofTranslate(w / 2, h / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
+            rotatingEyesSkins.getCurrentRef().start();
             rotatingEye.draw();
-            ofPopMatrix();
             rotatingEyesSkins.getCurrentRef().stop();
+            ofPopMatrix();
         }
         else {
             ofPushMatrix();
@@ -174,10 +172,6 @@ bool Game::drawText() {
     return fancyText.isFullScreenAnimating();
 }
 void LocationToActionMap::draw() {
-    ofFill();
-    ofSetLineWidth(5);
-    ofSetColor(ofColor::white);
-    ofDrawRectangle(x, y, width, height);
 }
 
 void Game::drawGame() {

@@ -202,7 +202,12 @@ public:
 
 class MainEye : public SuperSphere { // uses external texture
 public:
-    MainEye(float x=0.0f, float y = 0.0f, float z=0.0f, float r = 0.0f) :SuperSphere(x,y,z,r) { Animate3d::setup(LOOP_BACK_AND_FORTH, 0.0f); running = true; }
+    MainEye(float x=0.0f, float y = 0.0f, float z=0.0f, float r = 0.0f) :SuperSphere(x,y,z,r) { Animate3d::setup(LOOP_BACK_AND_FORTH, 00.0f);  }
+};
+
+class CrazyEye : public SuperSphere { // uses external texture
+public:
+    CrazyEye(float x = 0.0f, float y = 0.0f, float z = 0.0f, float r = 0.0f) :SuperSphere(x, y, z, r) { Animate3d::setup(LOOP_BACK_AND_FORTH, 30.0f); }
 };
 
 class EyeGameItem : public SuperSphere {
@@ -236,8 +241,6 @@ private:
     Levels level;
     float durations[MAXLEVELS];
 };
-
-
 
 // map location to interesting things
 class LocationToActionMap : public ofRectangle {
@@ -332,7 +335,7 @@ private:
     Textures mainEyesSkins;
     MainEye mainEye;
     Textures rotatingEyesSkins;
-    MainEye rotatingEye;
+    CrazyEye rotatingEye;
     Textures cubesSkins; // cache images
     Textures spheresSkins;
     Textures cylindersSkins;

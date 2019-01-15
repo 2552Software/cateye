@@ -83,10 +83,26 @@ void ofApp::update() {
     eyeAnimator.update();
     light.update();
     if (music) {
-        float c = (float)eyeAnimator.winnerHitCount();
-        float max = (float)eyeAnimator.winnerThreshold();
-        music->pitch_ctrl.set(ofMap(c, 0, max, 36.0f, 72.0f));
-       // music->amp_ctrl.set(ofMap(c, 0, max, 1.0f, 0.0f));
+        ofVec3f max;
+        for (auto& a : eyeAnimator.contours.contourFinder.blobs) {
+            if (a.centroid.x > max.x) {
+                max.x = a.centroid.x;
+            }
+            if (a.centroid.y > max.y) {
+                max.y = a.centroid.y;
+            }
+            if (a.centroid.z > max.z) {
+                max.z = a.centroid.z;
+            }
+        }
+        if (max.x > 0.0f) {
+            float pitch = ofMap(max.x, 0, cameraWidth, 36.0f, 72.0f);
+            music->pitch_ctrl.set(pitch);
+        }
+        if (max.y > 0.0f) {
+            float amp = ofMap(max.y, 0, cameraHeight, 1.0f, 0.5f);
+            music->amp_ctrl.set(amp);
+        }
         music->update();
     }
 }

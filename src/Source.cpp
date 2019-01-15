@@ -63,7 +63,7 @@ void GameLevel::advance() {
 
 void  Game::fireWorks() {
    //bugbug sounds(5);
-   rotatingEye.getUpAnimator().animateFromTo(-300, 300);//bugbug will need to adjsut for pi
+   rotatingEye.getUpAnimator().animateFromTo(-300.0f, 300.0f);//bugbug will need to adjsut for pi
 }
 
 void Game::rotate(const ofVec3f& target) {

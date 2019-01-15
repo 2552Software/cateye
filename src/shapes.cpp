@@ -25,15 +25,15 @@ void Game::buildTable() {
         map.height = h;
         for (float x = 0; x < cameraWidth; x += w) { // keep off the edges -- camera cannot always pick those up
             map.x = x;
-            for (float y = 0; y < cameraHeight - h; y += h) {
+            for (float y = 0; y < cameraHeight; y += h) {
                 map.y = y;
                 aimationMaps[1].insert(std::make_pair(std::make_pair(x, y), map)); // build a default table
                 map.c++;
             }
         }
         map.set(GameLevel::Difficult);
-        w = cameraWidth / 7; //a little more difficult
-        h = cameraHeight / 7;
+        w = cameraWidth / 6; //a little more difficult
+        h = cameraHeight / 6;
         map.width = w;
         map.height = h;
         for (float x = 0; x < cameraWidth; x += w) { // keep off the edges -- camera cannot always pick those up
