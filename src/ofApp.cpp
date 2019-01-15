@@ -99,6 +99,9 @@ void ofApp::update() {
             float pitch = ofMap(max.x, 0, cameraWidth, 42.0f, 72.0f);
             music->pitch_ctrl.set(pitch);
         }
+        else {
+            music->pitch_ctrl.set(ofRandom(36.0f, 72.0f));
+        }
         if (max.y > 0.0f) {
             float amp = ofMap(max.y, 0, cameraHeight, 1.0f, 0.5f);
             music->amp_ctrl.set(amp);

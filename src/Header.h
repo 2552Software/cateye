@@ -139,6 +139,7 @@ public:
     ofxAnimatableFloat& getUpAnimator() { return animatorUp; }
     ofxAnimatableFloat& getDownAnimator() { return animatorDown; }
     void setRotation(const ofVec3f& r) { currentRotation = r; }
+
 protected:
     ofxAnimatableFloat animatorUp;
     ofxAnimatableFloat animatorDown;
@@ -148,19 +149,16 @@ protected:
 
 class GameObject : public Animate3d {
 public:
-    GameObject(float x, float y, float z, int idIn, AnimRepeat repeat, float seconds, of3dPrimitive *parentIn) :Animate3d(repeat, seconds){
+    GameObject(float x, float y, float z, int idIn, AnimRepeat repeat, float seconds) :Animate3d(repeat, seconds){
         setup(x, y, z, seconds, repeat);
-        parent = parentIn;
         id = idIn;
+        stop();
     }
     GameObject():Animate3d(){
-        parent = nullptr;
         id = -1;
         stop();
         x = y = z = 0;
     }
-
-    virtual ~GameObject() { }
 
     void setup(float xIn, float yIn, float zIn, float seconds, AnimRepeat repeat = PLAY_ONCE);
     bool operator==(const int rhs) const {
@@ -176,36 +174,37 @@ protected:
     int id;
     Sound sound;
     bool running;
-    of3dPrimitive *parent;
     float x, y, z;
 };
 
-class SuperSphere : public GameObject, public ofSpherePrimitive {
+class SuperSphere : public GameObject {
 public:
-    SuperSphere(float x, float y, float z, float r, int id=-1, float seconds=0.0f, of3dPrimitive *parent=nullptr) :GameObject(x,y,z,id, PLAY_ONCE, seconds, parent) { setup(r); }
+    SuperSphere(float x, float y, float z, float r, int id=-1, float seconds=0.0f) :GameObject(x,y,z,id, PLAY_ONCE, seconds) { setup(r); }
     SuperSphere() :GameObject() { setup(0.0f); }
 
     void draw();
     void setup(float r);
     void update();
     void home() {
-        setOrientation({ 0.f,0.f,0.f });
-        panDeg(180); // like a FG kickers - laces out
+        sphere.setOrientation({ 0.f,0.f,0.f });
+        sphere.panDeg(180); // like a FG kickers - laces out
     }
-
+    ofSpherePrimitive sphere;
 };
 
 class MainEye : public SuperSphere { // uses external texture
 public:
-    MainEye(float x=0.0f, float y = 0.0f, float z=0.0f, float r = 0.0f) :SuperSphere(x,y,z,r) { Animate3d::setup(LOOP_BACK_AND_FORTH, 00.0f); }
+    MainEye(float x=0.0f, float y = 0.0f, float z=0.0f, float r = 0.0f) :SuperSphere(x,y,z,r) {  }
+
 };
 
 class CrazyEye : public SuperSphere { // uses external texture
 public:
     CrazyEye(float x = 0.0f, float y = 0.0f, float z = 0.0f, float r = 0.0f) :SuperSphere(x, y, z, r) { 
-        setup(r);
+        setup();
     }
-    void setup(float r);
+    void setup();
+    void setup(float r) { SuperSphere::setup(r); };
     void draw();
     void update() { SuperSphere::update(); rotater.update(1.0f / ofGetTargetFrameRate()); }
 
@@ -215,8 +214,9 @@ private:
 
 class EyeGameItem : public SuperSphere {
 public:
-    EyeGameItem(float x, float y, float z, float r, int id, float seconds, of3dPrimitive *parent) :
-        SuperSphere(x,y,z,r,id, seconds, parent) {}
+    EyeGameItem(float x, float y, float z, float r, int id, float seconds) :
+        SuperSphere(x,y,z,r,id, seconds) {}
+
 };
 
 class GameLevel {

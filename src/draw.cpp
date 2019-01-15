@@ -3,21 +3,21 @@
 
 
 void SuperSphere::draw() {
-    if (getRadius() > 0) {
+    if (sphere.getRadius() > 0) {
         if (currentRotation.x || currentRotation.y) {
-            rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
-            rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
+            sphere.rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
+            sphere.rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
         }
-        ofSpherePrimitive::draw();
+        sphere.draw();
         home(); // restore to start position
     }
 }
 
 void CrazyEye::draw() {
-    if (getRadius() > 0) {
-        rotateDeg(rotater.val()*15.0f, 0.0f, 0.0f, 1.0f);
+    if (sphere.getRadius() > 0) {
+        sphere.rotateDeg(rotater.val()*15.0f, 0.0f, 0.0f, 1.0f);
         ofScale(animatorUp.getPercentDone()*1.5f);
-        ofSpherePrimitive::draw();
+        sphere.draw();
         home(); // restore to start position
     }
 }

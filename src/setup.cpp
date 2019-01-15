@@ -19,8 +19,7 @@ void Animate3d::setup(AnimRepeat repeat, float secondsIn){
         animatorDown.animateTo(0.0001f);
     }
 }
-void CrazyEye::setup(float r) {
-    SuperSphere::setup(r);
+void CrazyEye::setup() {
     rotater.reset(1); // do no make 0, some divs will fault
     rotater.setDuration(5.0f);
     rotater.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
@@ -36,13 +35,9 @@ void GameObject::setup(float xIn, float yIn, float zIn, float seconds, AnimRepea
 }
 
 void SuperSphere::setup(float r) {
-    if (GameObject::parent) {
-        //not used in this release setParent(*GameObject::parent);
-        //not used in this release lookAt(*GameObject::parent);  // do we want ths?
-    }
-    setResolution(27);
-    setPosition(x, y, z);
-    setRadius(r);
+    sphere.setResolution(27);
+    sphere.setPosition(x, y, z);
+    sphere.setRadius(r);
     home();
 }
 

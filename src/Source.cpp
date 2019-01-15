@@ -141,7 +141,7 @@ size_t Game::winnerHitCount() {
 void Game::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event) {
     // no move main eye back into focus
     currentRotation.set(0.0f, 0.0f); // look forward, move ahead its not too late
-    mainEye.getUpAnimator().animateFromTo(-rotatingEye.getRadius(), 0.0f);
+    mainEye.getUpAnimator().animateFromTo(-rotatingEye.sphere.getRadius(), 0.0f);
     clear(); // reset and start again
 }
 void Game::windowResized(int wIn, int hIn) {
@@ -201,7 +201,7 @@ bool Game::addGameItem(LocationToActionMap* map) {
                 t = 60.0f;
                 break;
             }
-            EyeGameItem item(rect.x + rect.width / 2.0f, rect.y + rect.height / 2.0f, 0.0f, r, map->c, 60.0f, &mainEye);
+            EyeGameItem item(rect.x + rect.width / 2.0f, rect.y + rect.height / 2.0f, 0.0f, r, map->c, 60.0f);
             item.start();
             gameEyes.push_back(item);
         }
