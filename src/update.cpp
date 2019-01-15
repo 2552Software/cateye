@@ -1,11 +1,16 @@
 #include "ofApp.h"
 
 void SuperSphere::update() {
+    rotater.update(1.0f / ofGetTargetFrameRate());
     Animate3d::update();
-    if (seconds > 0.0f && !isAnimating()) {
-        stop();
+    if (seconds > 0.0f && !isRunning()) {
+        stop(); 
     }
 }
+void Animate3d::update() {
+    animatorUp.update(1.0f / ofGetTargetFrameRate());
+    animatorDown.update(1.0f / ofGetTargetFrameRate());
+};
 
 void TextTimer::update() {
     int elapsedMilliSeconds = ofGetSystemTimeMillis() - timeBegan;
@@ -69,14 +74,17 @@ void TextEngine::update() {
     }),    inlineText.end());
 
 }
-void Game::update() {
-
-    // blinker always moving but only drawn up request
+void Blinker::update() {
     blinker.update(1.0f / ofGetTargetFrameRate());
     if (!blinker.isOrWillBeAnimating()) {
         blinker.reset(0.0f);
         blinker.animateToAfterDelay(1.0f, ofRandom(10.0f, 30.0f)); // blink every few seconds bugbug menu
     }
+}
+void Game::update() {
+
+    // blinker always moving but only drawn up request
+    blinker.update();
     for (auto a : gameEyes) {
         a.update();
     }

@@ -29,8 +29,8 @@ void Game::blink() {
     ofSetColor(ofColor::black);
     ofPushStyle();
     ofFill();
-    ofDrawRectangle(0, 0, w, (h / 2)*blinker.val(), getRadiusGlobal());
-    ofDrawRectangle(0, h, w, -(h / 2)*blinker.val(), getRadiusGlobal());
+    ofDrawRectangle(0, 0, w, (h / 2)*blinker.blinker.val(), getRadiusGlobal());
+    ofDrawRectangle(0, h, w, -(h / 2)*blinker.blinker.val(), getRadiusGlobal());
     ofPopStyle();
 }
 
@@ -64,7 +64,7 @@ void GameLevel::advance() {
 void  Game::fireWorks() {
    //bugbug sounds(5);
    rotatingEye.start();
-   rotatingEye.getUpAnimator().animateFromTo(-300.0f, 300.0f);//bugbug will need to adjsut for pi
+   rotatingEye.animatorUp.animateFromTo(-300.0f, 300.0f);//bugbug will need to adjsut for pi
 }
 
 void Game::rotate(const ofVec3f& target) {
@@ -117,6 +117,7 @@ void Game::setSquareCount(int count) {
     }
 }
 Game::Game() {
+    
     maxForTrigger = 525.0f;
     shapeMinSize = 200.0f; // menus bugbug
     squareCount = 10;// menus bugbu
@@ -141,7 +142,7 @@ size_t Game::winnerHitCount() {
 void Game::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event) {
     // no move main eye back into focus
     currentRotation.set(0.0f, 0.0f); // look forward, move ahead its not too late
-    mainEye.getUpAnimator().animateFromTo(-rotatingEye.sphere.getRadius(), 0.0f);
+    mainEye.animatorUp.animateFromTo(-rotatingEye.sphere.getRadius(), 0.0f);
     clear(); // reset and start again
 }
 void Game::windowResized(int wIn, int hIn) {
@@ -151,16 +152,15 @@ void Game::windowResized(int wIn, int hIn) {
 
     mainEye.setup(getRadiusGlobal(w, h));
     rotatingEye.setup(getRadiusGlobal(w, h));
-    rotatingEye.getUpAnimator().setDuration(2.0f);
-    rotatingEye.getUpAnimator().setRepeatTimes(5);
-    rotatingEye.getUpAnimator().setRepeatType(LOOP_BACK_AND_FORTH_N_TIMES);
+    rotatingEye.animatorUp.setDuration(2.0f);
+    rotatingEye.animatorUp.setRepeatTimes(5);
+    rotatingEye.animatorUp.setRepeatType(LOOP_BACK_AND_FORTH_N_TIMES);
 
     clear(); // reset game to assure all sizes are correct
    
 }
 
 void Game::startPlaying() {
-   //bugbug sounds();
 }
 size_t Game::winnerThreshold() { 
     switch (current.getLevel()) {

@@ -1,12 +1,24 @@
 #include "ofApp.h"
 #include "sound.h"
 
+
+GameObject::GameObject(float x, float y, float z, int idIn, AnimRepeat repeat, float seconds) :Animate3d(repeat, seconds) {
+    setup(x, y, z, seconds, repeat);
+    id = idIn;
+    stop();
+}
+GameObject::GameObject() :Animate3d() {
+    id = -1;
+    stop();
+    x = y = z = 0;
+}
+
 void Animate3d::setup(AnimRepeat repeat, float secondsIn){
+
     seconds = secondsIn;
     animatorUp.reset(0.0001f); // do no make 0, some divs will fault
     animatorUp.setDuration(seconds);
     animatorUp.setRepeatType(repeat);
-    animatorUp.setCurve(LINEAR);
     if (seconds) {
         animatorUp.animateTo(1.0f);
     }
@@ -14,17 +26,9 @@ void Animate3d::setup(AnimRepeat repeat, float secondsIn){
     animatorDown.reset(1.0f); 
     animatorDown.setDuration(seconds);
     animatorDown.setRepeatType(repeat);
-    animatorDown.setCurve(LINEAR);
     if (seconds) {
         animatorDown.animateTo(0.0001f);
     }
-}
-void CrazyEye::setup() {
-    rotater.reset(1); // do no make 0, some divs will fault
-    rotater.setDuration(5.0f);
-    rotater.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
-    rotater.setCurve(LINEAR);
-    rotater.animateTo(360 / 15);
 }
 void GameObject::setup(float xIn, float yIn, float zIn, float seconds, AnimRepeat repeat) {
     x = xIn;
@@ -35,6 +39,9 @@ void GameObject::setup(float xIn, float yIn, float zIn, float seconds, AnimRepea
 }
 
 void SuperSphere::setup(float r) {
+    rotater.reset(1); // do no make 0, some divs will fault
+    rotater.setDuration(5.0f);
+    rotater.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
     sphere.setResolution(27);
     sphere.setPosition(x, y, z);
     sphere.setRadius(r);
@@ -79,7 +86,6 @@ void Textures::setup(const std::string& path, float duration) {
         selector.reset(0.0f);
         selector.setDuration(duration); 
         selector.setRepeatType(LOOP);
-        selector.setCurve(LINEAR);
         selector.animateTo(dir.size());
         for (; i < dir.size(); i++) {
             add(dir.getName(i), dir.getPath(i));
@@ -122,9 +128,13 @@ void ContoursBuilder::setup() {
 void TextEngine::setup(int fontsize) {
     font.load("DejaVuSans.ttf", fontsize, false, false, true);
 }
-
+void Blinker::setup() {
+    blinker.reset(0.0f);
+    blinker.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
+    blinker.setDuration(1.0f);
+}
 void Game::setup() { 
-
+    blinker.setup();
     setTriggerCount();
     setShapeMinSize();
     setSquareCount();
@@ -135,7 +145,7 @@ void Game::setup() {
     std::function<void(int, bool)> f = std::bind(&Game::textDone, this, std::placeholders::_1, std::placeholders::_2);
     fancyText.bind(f);
 
-    ofAddListener(rotatingEye.getUpAnimator().animFinished, this, &Game::rotatingEyesDone);
+    ofAddListener(rotatingEye.animatorUp.animFinished, this, &Game::rotatingEyesDone);
 
     buildTable();
     buildX();
@@ -149,22 +159,6 @@ void Game::setup() {
     cylindersSkins.setup(CYLINDERS, 3.0f);
     
     contours.setup();
-
-    //ofDirectory allSounds(SOUNDS);
-    //allSounds.allowExt("wav");
-   // allSounds.allowExt("mp3");
-   // allSounds.listDir();
-    //for (size_t i = 0; i < allSounds.size(); i++) {
-      //  ofSoundPlayer sound;
-       //bugbug not working on pi but replace with the cools stguf any sound.load(allSounds.getPath(i));
-        //mySounds.push_back(sound);
-   // }
-
-    blinker.reset(0.0f);
-    blinker.setCurve(EASE_IN_EASE_OUT);
-    blinker.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
-    blinker.setDuration(1.0f);
-    blinker.animateTo(1.0f);
 
     clear(); // go to a known state (call last like this as it may depend on othe settings)
     //bugbug credits(true);

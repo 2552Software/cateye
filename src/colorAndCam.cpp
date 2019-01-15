@@ -11,13 +11,11 @@ void Light::setup() {
     specularcolor.setColor(ofColor::white);
     specularcolor.setDuration(colorDuration);
     specularcolor.setRepeatType(LOOP_BACK_AND_FORTH);
-    specularcolor.setCurve(LINEAR);
     specularcolor.animateTo(ofColor::orangeRed);
 
     ambientcolor.setColor(ofColor::blue);
     ambientcolor.setDuration(colorDuration);
     ambientcolor.setRepeatType(LOOP_BACK_AND_FORTH);
-    ambientcolor.setCurve(LINEAR);
     ambientcolor.animateTo(ofColor::red);
 }
 void Light::update() {
@@ -43,7 +41,6 @@ void Material::setup() {
     color.setColor(ofColor::white);
     color.setDuration(1.0f);
     color.setRepeatType(LOOP_BACK_AND_FORTH);
-    color.setCurve(LINEAR);
     color.animateTo(ofColor::orangeRed);// COLOR not used yet
 
     setShininess(120);

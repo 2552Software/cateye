@@ -56,7 +56,6 @@ public:
     void update() {     color.update(1.0f / ofGetTargetFrameRate());   }
 private:
     ofxAnimatableOfColor color; // not used yet
-    ;
 };
 
 class objectTexture : public ofTexture {
@@ -133,14 +132,10 @@ public:
     }
     Animate3d() {}
     void setup(AnimRepeat repeat, float seconds);
-    void update() { animatorUp.update(1.0f / ofGetTargetFrameRate()); animatorDown.update(1.0f / ofGetTargetFrameRate());};
+    void update();
     float getSeconds() { return seconds; }
-    bool isAnimating() { return animatorUp.isAnimating() || animatorDown.isAnimating(); }
-    ofxAnimatableFloat& getUpAnimator() { return animatorUp; }
-    ofxAnimatableFloat& getDownAnimator() { return animatorDown; }
     void setRotation(const ofVec3f& r) { currentRotation = r; }
 
-protected:
     ofxAnimatableFloat animatorUp;
     ofxAnimatableFloat animatorDown;
     ofVec3f currentRotation;
@@ -149,16 +144,8 @@ protected:
 
 class GameObject : public Animate3d {
 public:
-    GameObject(float x, float y, float z, int idIn, AnimRepeat repeat, float seconds) :Animate3d(repeat, seconds){
-        setup(x, y, z, seconds, repeat);
-        id = idIn;
-        stop();
-    }
-    GameObject():Animate3d(){
-        id = -1;
-        stop();
-        x = y = z = 0;
-    }
+    GameObject(float x, float y, float z, int idIn, AnimRepeat repeat, float seconds);
+    GameObject();
 
     void setup(float xIn, float yIn, float zIn, float seconds, AnimRepeat repeat = PLAY_ONCE);
     bool operator==(const int rhs) const {
@@ -190,33 +177,27 @@ public:
         sphere.panDeg(180); // like a FG kickers - laces out
     }
     ofSpherePrimitive sphere;
+    ofxAnimatableFloat rotater;
+
 };
 
 class MainEye : public SuperSphere { // uses external texture
 public:
     MainEye(float x=0.0f, float y = 0.0f, float z=0.0f, float r = 0.0f) :SuperSphere(x,y,z,r) {  }
-
 };
 
 class CrazyEye : public SuperSphere { // uses external texture
 public:
-    CrazyEye(float x = 0.0f, float y = 0.0f, float z = 0.0f, float r = 0.0f) :SuperSphere(x, y, z, r) { 
-        setup();
+    CrazyEye(float x = 0.0f, float y = 0.0f, float z = 0.0f, float r = 0.0f) :SuperSphere(x, y, z, r) {
+        rotater.animateTo(180);
     }
-    void setup();
-    void setup(float r) { SuperSphere::setup(r); };
     void draw();
-    void update() { SuperSphere::update(); rotater.update(1.0f / ofGetTargetFrameRate()); }
-
-private:
-    ofxAnimatableFloat rotater;
 };
 
 class EyeGameItem : public SuperSphere {
 public:
     EyeGameItem(float x, float y, float z, float r, int id, float seconds) :
         SuperSphere(x,y,z,r,id, seconds) {}
-
 };
 
 class GameLevel {
@@ -295,6 +276,14 @@ private:
     }
 };
 
+class Blinker {
+public:
+    void setup();
+    void update();
+
+    ofxAnimatableFloat blinker; // blink animation
+
+};
 
 class Music;
 class Game {
@@ -356,10 +345,10 @@ private:
     bool sendFireworks;
     ofVec3f currentLocation;
     ofVec3f currentRotation;
+    Blinker blinker;
     typedef std::pair<float, float> Key;
     std::map<Key, float> mapCameraInX; // range to rotation
     std::map<Key, float> mapCameraInY;
     std::vector<std::map<std::pair<int, int>, LocationToActionMap>> aimationMaps; // map indexes, nullptr means no object found yet
     std::list<EyeGameItem> gameEyes; // if you are in this list you have been found and not time out has occured bugbug add time out
-    ofxAnimatableFloat blinker; // blink animation
 };

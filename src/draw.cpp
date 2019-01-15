@@ -1,5 +1,5 @@
 #include "ofApp.h"
-#include "sound.h"
+//#include "sound.h"
 
 
 void SuperSphere::draw() {
@@ -15,7 +15,7 @@ void SuperSphere::draw() {
 
 void CrazyEye::draw() {
     if (sphere.getRadius() > 0) {
-        sphere.rotateDeg(rotater.val()*15.0f, 0.0f, 0.0f, 1.0f);
+        sphere.rotateDeg(rotater.val()*2.0f, 0.0f, 0.0f, 1.0f);
         ofScale(animatorUp.getPercentDone()*1.5f);
         sphere.draw();
         home(); // restore to start position
@@ -27,7 +27,7 @@ void Game::draw(Music*music) {
             // y value controls the trigger intensity
            // float trig = ofMap(y, 0, ofGetHeight(), 1.0f, 0.000001f);
             //music->gate_ctrl.off();
-            music->set(current.getSound());
+            //music->set(current.getSound());
             current.getSound().setSound(false);
             // play everytime an item is selected
             //bugbug figure this out music->gate_ctrl.trigger(current->trigger); // we send a trigger to the envelope
@@ -91,10 +91,7 @@ void ContoursBuilder::draw(float w, float h, float z) {
 
 // see if anything is going on
 bool Game::isAnimating() {
-    if (!rotatingEye.isAnimating() && !mainEye.isAnimating() && !fancyText.isFullScreenAnimating()) {
-        return false;
-    }
-    return true;
+    return (rotatingEye.rotater.isAnimating() || fancyText.isFullScreenAnimating());
 }
 
 

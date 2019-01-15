@@ -1,6 +1,6 @@
 #include "ofApp.h"
 #include "sound.h"
-
+//Music *music = nullptr;
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetLogLevel(OF_LOG_VERBOSE);
@@ -23,11 +23,10 @@ void ofApp::setup(){
   
     // camera.lookAt(eyeAnimator.sphere);
     light.setup();
-
     // Works like shit on 4k a does most of OF.
-    gui.setup();
-    gui.setBackgroundColor(ofColor::white);
-    gui.setFillColor(ofColor::blue);
+    //gui.setup();
+   // gui.setBackgroundColor(ofColor::white);
+   // gui.setFillColor(ofColor::blue);
 
     // setup(const std::string& collectionName = "", const std::string& filename = ofxPanelDefaultFilename, float x = 10, float y = 10);
 
@@ -40,7 +39,9 @@ void ofApp::setup(){
     //eyeAnimator.setTriggerCount(maxForTrigger);
     eyeAnimator.setup();
     music = new Music();
-    music->setup(cameraWidth, cameraHeight); // tie to app
+    if (music) {
+        music->setup(cameraWidth, cameraHeight); // tie to app
+    }
 
     //player = new AudioPlayer; //bugbug replace cat calls with this
     //player->load("wargames.wav");
@@ -50,17 +51,18 @@ void ofApp::setup(){
 
     //bugbug eyeAnimator.credits(true); // setup credits, shown at boot bugbug spin eyes at boot too -- and restore text
 
-    gui.loadFont(OF_TTF_SANS, 24, true, true);
-    gui.setBorderColor(ofColor::yellow);
-    gui.setTextColor(ofColor::black);
-    gui.setHeaderBackgroundColor(ofColor::orangeRed);
-    gui.setBackgroundColor(ofColor::yellowGreen);
-    gui.setPosition(ofGetWidth() / 2, ofGetHeight() / 2);
-    gui.setShape(ofGetWidth() / 2, ofGetHeight() / 2, ofGetWidth() / 10, ofGetHeight() / 10 );
-    gui.loadFromFile("settings.xml");
-    squareCount.addListener(this, &ofApp::squareCountChanged);
-    maxForTrigger.addListener(this, &ofApp::triggerCountChanged);
-    maxForShape.addListener(this, &ofApp::shapeSizeChanged);
+   // gui.loadFont(OF_TTF_SANS, 24, true, true);
+   // gui.setBorderColor(ofColor::yellow);
+   // gui.setTextColor(ofColor::black);
+   // gui.setHeaderBackgroundColor(ofColor::orangeRed);
+   // gui.setBackgroundColor(ofColor::yellowGreen);
+   // gui.setPosition(ofGetWidth() / 2, ofGetHeight() / 2);
+   // gui.setShape(ofGetWidth() / 2, ofGetHeight() / 2, ofGetWidth() / 10, ofGetHeight() / 10 );
+   // gui.loadFromFile("settings.xml");
+
+    //squareCount.addListener(this, &ofApp::squareCountChanged);
+    //maxForTrigger.addListener(this, &ofApp::triggerCountChanged);
+    //maxForShape.addListener(this, &ofApp::shapeSizeChanged);
 }
 
 void ofApp::shapeSizeChanged(float &size) {
@@ -83,28 +85,34 @@ void ofApp::update() {
     eyeAnimator.update();
     light.update();
     if (music) {
-        ofVec3f max;
-        for (auto& a : eyeAnimator.contours.contourFinder.blobs) {
-            if (a.centroid.x > max.x) {
-                max.x = a.centroid.x;
+        if (eyeAnimator.inGame()) {
+            music->engine.start();
+            ofVec3f max;
+            for (auto& a : eyeAnimator.contours.contourFinder.blobs) {
+                if (a.centroid.x > max.x) {
+                    max.x = a.centroid.x;
+                }
+                if (a.centroid.y > max.y) {
+                    max.y = a.centroid.y;
+                }
+                if (a.centroid.z > max.z) {
+                    max.z = a.centroid.z;
+                }
             }
-            if (a.centroid.y > max.y) {
-                max.y = a.centroid.y;
+            if (max.x > 0.0f) {
+                float pitch = ofMap(max.x, 0, cameraWidth, 42.0f, 72.0f);
+                music->pitch_ctrl.set(pitch);
             }
-            if (a.centroid.z > max.z) {
-                max.z = a.centroid.z;
+            else {
+                //music->pitch_ctrl.set(ofRandom(36.0f, 72.0f));
             }
-        }
-        if (max.x > 0.0f) {
-            float pitch = ofMap(max.x, 0, cameraWidth, 42.0f, 72.0f);
-            music->pitch_ctrl.set(pitch);
+            if (max.y > 0.0f) {
+                float amp = ofMap(max.y, 0, cameraHeight, 1.0f, 0.5f);
+                music->amp_ctrl.set(amp);
+            }
         }
         else {
-            music->pitch_ctrl.set(ofRandom(36.0f, 72.0f));
-        }
-        if (max.y > 0.0f) {
-            float amp = ofMap(max.y, 0, cameraHeight, 1.0f, 0.5f);
-            music->amp_ctrl.set(amp);
+            music->engine.stop();
         }
         music->update();
     }
@@ -154,6 +162,7 @@ void ofApp::keyPressed(int key) {
     }
 
     // we can launch our sequences with the launch method, with optional quantization
+    /*
     switch (key) {
     case '1':
         music->engine.sequencer.sections[0].launch(0, music->quantize, music->quantime);
@@ -210,11 +219,8 @@ void ofApp::keyPressed(int key) {
         music->engine.sequencer.stop();
         break;
     }
-
-
- 
-
-   
+    */
+  
 }
 //--------------------------------------------------------------
 void ofApp::gotMessage(ofMessage msg) {
@@ -229,9 +235,9 @@ void ofApp::dragEvent(ofDragInfo dragInfo) {
 void ofApp::mouseMoved(int x, int y) {
     if (music) {
         float pitch = ofMap(x, 0, ofGetWidth(), 36.0f, 72.0f);
-        music->pitch_ctrl.set(pitch);
+       // music->pitch_ctrl.set(pitch);
         float amp = ofMap(y, 0, ofGetHeight(), 1.0f, 0.0f);
-        music->amp_ctrl.set(amp);
+        //music->amp_ctrl.set(amp);
     }
 }
 
@@ -249,9 +255,9 @@ void ofApp::mouseExited(int x, int y) {
 void ofApp::mouseDragged(int x, int y, int button) {
     if (music) {
         float pitch = ofMap(x, 0, ofGetWidth(), 36.0f, 72.0f);
-        music->pitch_ctrl.set(pitch);
+        //music->pitch_ctrl.set(pitch);
         float amp = ofMap(y, 0, ofGetHeight(), 1.0f, 0.0f);
-        music->amp_ctrl.set(amp);
+        //music->amp_ctrl.set(amp);
     }
 }
 
@@ -259,18 +265,18 @@ void ofApp::mouseDragged(int x, int y, int button) {
 void ofApp::mousePressed(int x, int y, int button) {
     if (music) {
         float pitch = ofMap(x, 0, ofGetWidth(), 36.0f, 72.0f);
-        music->pitch_ctrl.set(pitch);
+        //music->pitch_ctrl.set(pitch);
 
         // y value controls the trigger intensity
         float trig = ofMap(y, 0, ofGetHeight(), 1.0f, 0.000001f);
-        music->gate_ctrl.trigger(trig); // we send a trigger to the envelope
+        //music->gate_ctrl.trigger(trig); // we send a trigger to the envelope
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {
     if (music) {
-        music->gate_ctrl.off(); // we send an "off" trigger to the envelope
+       // music->gate_ctrl.off(); // we send an "off" trigger to the envelope
     }
     // this is the same as writing
     // gate_ctrl.trigger( 0.0f ); 
