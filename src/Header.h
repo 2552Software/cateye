@@ -156,7 +156,7 @@ public:
     GameObject():Animate3d(){
         parent = nullptr;
         id = -1;
-        running = false;
+        stop();
         x = y = z = 0;
     }
 
@@ -167,7 +167,7 @@ public:
         y = yIn;
         z = zIn;
         Animate3d::setup(repeat, seconds);
-        running = true;// start off running
+        stop();
     }
     bool operator==(const int rhs) const {
         return id == rhs;
@@ -203,12 +203,13 @@ public:
 
 class MainEye : public SuperSphere { // uses external texture
 public:
-    MainEye(float x=0.0f, float y = 0.0f, float z=0.0f, float r = 0.0f) :SuperSphere(x,y,z,r) { Animate3d::setup(LOOP_BACK_AND_FORTH, 00.0f);  }
+    MainEye(float x=0.0f, float y = 0.0f, float z=0.0f, float r = 0.0f) :SuperSphere(x,y,z,r) { Animate3d::setup(LOOP_BACK_AND_FORTH, 00.0f); }
 };
 
 class CrazyEye : public SuperSphere { // uses external texture
 public:
-    CrazyEye(float x = 0.0f, float y = 0.0f, float z = 0.0f, float r = 0.0f) :SuperSphere(x, y, z, r) { Animate3d::setup(LOOP_BACK_AND_FORTH, 0.0f); }
+    CrazyEye(float x = 0.0f, float y = 0.0f, float z = 0.0f, float r = 0.0f) :SuperSphere(x, y, z, r) { Animate3d::setup(LOOP_BACK_AND_FORTH, 0.0f); 
+    }
 };
 
 class EyeGameItem : public SuperSphere {

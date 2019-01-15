@@ -201,7 +201,9 @@ bool Game::addGameItem(LocationToActionMap* map) {
                 t = 60.0f;
                 break;
             }
-            gameEyes.push_back(EyeGameItem(rect.x+rect.width/2.0f, rect.y+rect.height/2.0f, 0.0f, r, map->c, 60.0f, &mainEye));
+            EyeGameItem item(rect.x + rect.width / 2.0f, rect.y + rect.height / 2.0f, 0.0f, r, map->c, 60.0f, &mainEye);
+            item.start();
+            gameEyes.push_back(item);
         }
     }
     return true;

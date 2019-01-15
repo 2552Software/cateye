@@ -96,7 +96,7 @@ void ofApp::update() {
             }
         }
         if (max.x > 0.0f) {
-            float pitch = ofMap(max.x, 0, cameraWidth, 36.0f, 72.0f);
+            float pitch = ofMap(max.x, 0, cameraWidth, 42.0f, 72.0f);
             music->pitch_ctrl.set(pitch);
         }
         if (max.y > 0.0f) {
