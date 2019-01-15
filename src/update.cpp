@@ -111,12 +111,9 @@ void Game::update() {
             }
             current.next();
         }
-        else {
-            getCountours();
-        }
-
         current.advance();
     }
+    getCountours();
 }
 
 // return true if updated
