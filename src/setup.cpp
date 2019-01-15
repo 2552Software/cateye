@@ -19,13 +19,13 @@ void Animate3d::setup(AnimRepeat repeat, float secondsIn){
         animatorDown.animateTo(0.0001f);
     }
 }
-void CrazyEye::setup() {
+void CrazyEye::setup(float r) {
+    SuperSphere::setup(r);
     rotater.reset(1); // do no make 0, some divs will fault
     rotater.setDuration(5.0f);
     rotater.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
     rotater.setCurve(LINEAR);
     rotater.animateTo(360 / 15);
-
 }
 void GameObject::setup(float xIn, float yIn, float zIn, float seconds, AnimRepeat repeat) {
     x = xIn;

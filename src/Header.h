@@ -203,9 +203,9 @@ public:
 class CrazyEye : public SuperSphere { // uses external texture
 public:
     CrazyEye(float x = 0.0f, float y = 0.0f, float z = 0.0f, float r = 0.0f) :SuperSphere(x, y, z, r) { 
-        setup();
+        setup(r);
     }
-    void setup();
+    void setup(float r);
     void draw();
     void update() { SuperSphere::update(); rotater.update(1.0f / ofGetTargetFrameRate()); }
 
