@@ -4,11 +4,7 @@
 
 void SuperSphere::draw() {
     if (getRadius() > 0) {
-        if (isAnimating() && isRunning() && dynamic) {
-            rotateDeg(animatorUp.getPercentDone()*45.0f, 0.0f, 0.0f, 1.0f);
-            ofScale(animatorUp.getPercentDone()*1.5f); 
-        }
-        else if (currentRotation.x || currentRotation.y) {
+        if (currentRotation.x || currentRotation.y) {
             rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
             rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
         }
@@ -19,7 +15,7 @@ void SuperSphere::draw() {
 
 void CrazyEye::draw() {
     if (getRadius() > 0) {
-        rotateDeg(rotater.val(), 0.0f, 0.0f, 1.0f);
+        rotateDeg(rotater.val()*15.0f, 0.0f, 0.0f, 1.0f);
         ofScale(animatorUp.getPercentDone()*1.5f);
         ofSpherePrimitive::draw();
         home(); // restore to start position

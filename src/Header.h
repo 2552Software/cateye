@@ -152,14 +152,12 @@ public:
         setup(x, y, z, seconds, repeat);
         parent = parentIn;
         id = idIn;
-        dynamic = false;
     }
     GameObject():Animate3d(){
         parent = nullptr;
         id = -1;
         stop();
         x = y = z = 0;
-        dynamic = false;
     }
 
     virtual ~GameObject() { }
@@ -180,7 +178,6 @@ protected:
     bool running;
     of3dPrimitive *parent;
     float x, y, z;
-    bool dynamic;
 };
 
 class SuperSphere : public GameObject, public ofSpherePrimitive {
@@ -206,17 +203,13 @@ public:
 class CrazyEye : public SuperSphere { // uses external texture
 public:
     CrazyEye(float x = 0.0f, float y = 0.0f, float z = 0.0f, float r = 0.0f) :SuperSphere(x, y, z, r) { 
-        Animate3d::setup(LOOP_BACK_AND_FORTH, 5.0f); 
-        dynamic = true;
-        rotater.reset(15); // do no make 0, some divs will fault
-        rotater.setDuration(5.0f);
-        rotater.setRepeatType(LOOP);
-        rotater.setCurve(LINEAR);
-        rotater.animateTo(360);
+        setup();
     }
+    void setup();
     void draw();
+    void update() { SuperSphere::update(); rotater.update(1.0f / ofGetTargetFrameRate()); }
 
-    void update() { rotater.update(1.0f / ofGetTargetFrameRate()); }
+private:
     ofxAnimatableFloat rotater;
 };
 
