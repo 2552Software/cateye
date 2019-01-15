@@ -152,23 +152,19 @@ public:
         setup(x, y, z, seconds, repeat);
         parent = parentIn;
         id = idIn;
+        dynamic = false;
     }
     GameObject():Animate3d(){
         parent = nullptr;
         id = -1;
         stop();
         x = y = z = 0;
+        dynamic = false;
     }
 
     virtual ~GameObject() { }
 
-    void setup(float xIn, float yIn, float zIn, float seconds, AnimRepeat repeat= PLAY_ONCE) {
-        x = xIn;
-        y = yIn;
-        z = zIn;
-        Animate3d::setup(repeat, seconds);
-        stop();
-    }
+    void setup(float xIn, float yIn, float zIn, float seconds, AnimRepeat repeat = PLAY_ONCE);
     bool operator==(const int rhs) const {
         return id == rhs;
     }
@@ -184,6 +180,7 @@ protected:
     bool running;
     of3dPrimitive *parent;
     float x, y, z;
+    bool dynamic;
 };
 
 class SuperSphere : public GameObject, public ofSpherePrimitive {
@@ -208,7 +205,9 @@ public:
 
 class CrazyEye : public SuperSphere { // uses external texture
 public:
-    CrazyEye(float x = 0.0f, float y = 0.0f, float z = 0.0f, float r = 0.0f) :SuperSphere(x, y, z, r) { Animate3d::setup(LOOP_BACK_AND_FORTH, 0.0f); 
+    CrazyEye(float x = 0.0f, float y = 0.0f, float z = 0.0f, float r = 0.0f) :SuperSphere(x, y, z, r) { 
+        Animate3d::setup(LOOP_BACK_AND_FORTH, 0.0f); 
+        dynamic = true;
     }
 };
 

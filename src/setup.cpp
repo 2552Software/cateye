@@ -20,6 +20,14 @@ void Animate3d::setup(AnimRepeat repeat, float secondsIn){
     }
 }
 
+void GameObject::setup(float xIn, float yIn, float zIn, float seconds, AnimRepeat repeat) {
+    x = xIn;
+    y = yIn;
+    z = zIn;
+    Animate3d::setup(repeat, seconds);
+    stop();
+}
+
 void SuperSphere::setup(float r) {
     if (GameObject::parent) {
         //not used in this release setParent(*GameObject::parent);
