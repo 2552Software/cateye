@@ -174,6 +174,7 @@ public:
     }
     bool isRunning() const { return running; }
     void stop() { running = false; }
+    void start() { running = true; }
     int getID() { return id; }
     Sound&getSound() { return sound; }
 
@@ -207,7 +208,7 @@ public:
 
 class CrazyEye : public SuperSphere { // uses external texture
 public:
-    CrazyEye(float x = 0.0f, float y = 0.0f, float z = 0.0f, float r = 0.0f) :SuperSphere(x, y, z, r) { Animate3d::setup(LOOP_BACK_AND_FORTH, 30.0f); }
+    CrazyEye(float x = 0.0f, float y = 0.0f, float z = 0.0f, float r = 0.0f) :SuperSphere(x, y, z, r) { Animate3d::setup(LOOP_BACK_AND_FORTH, 0.0f); }
 };
 
 class EyeGameItem : public SuperSphere {

@@ -63,6 +63,7 @@ void GameLevel::advance() {
 
 void  Game::fireWorks() {
    //bugbug sounds(5);
+   rotatingEye.start();
    rotatingEye.getUpAnimator().animateFromTo(-300.0f, 300.0f);//bugbug will need to adjsut for pi
 }
 
@@ -150,6 +151,9 @@ void Game::windowResized(int wIn, int hIn) {
 
     mainEye.setup(getRadiusGlobal(w, h));
     rotatingEye.setup(getRadiusGlobal(w, h));
+    rotatingEye.getUpAnimator().setDuration(5.0f);
+    rotatingEye.getUpAnimator().setRepeatTimes(5);
+    rotatingEye.getUpAnimator().setRepeatType(LOOP_BACK_AND_FORTH_N_TIMES);
 
     clear(); // reset game to assure all sizes are correct
    
