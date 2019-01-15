@@ -5,7 +5,7 @@
 void SuperSphere::draw() {
     if (getRadius() > 0) {
         if (isAnimating() && isRunning() && dynamic) {
-            rotateDeg(animatorUp.getPercentDone()*130.0f, 0.0f, 0.0f, 1.0f);
+            rotateDeg(animatorUp.getPercentDone()*45.0f, 0.0f, 0.0f, 1.0f);
             ofScale(animatorUp.getPercentDone()*1.5f); 
         }
         else if (currentRotation.x || currentRotation.y) {
@@ -51,10 +51,8 @@ void Game::draw(Music*music) {
             }
             ofPopMatrix();
             // next items are drawn absolute and are driven by camera and converted to screen units
-            if (!mainEye.isAnimating()) {
-                drawContours();
-                blink();
-            }
+            drawContours();
+            blink();
             drawGame(); // draw any game that may be running
         }
     }
