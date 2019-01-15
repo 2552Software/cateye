@@ -4,7 +4,7 @@
 
 void SuperSphere::draw() {
     if (getRadius() > 0) {
-        if (isAnimating() && isRunning() && dyamic) {
+        if (isAnimating() && isRunning() && dynamic) {
             rotateDeg(animatorUp.getPercentDone()*120.0f, 0.0f, 0.0f, 1.0f);
             ofScale(animatorUp.getPercentDone()*2); 
         }
