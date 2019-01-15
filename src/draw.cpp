@@ -5,17 +5,15 @@
 void SuperSphere::draw() {
     if (getRadius() > 0) {
         if (isAnimating() && isRunning() && dynamic) {
-            rotateDeg(animatorUp.getPercentDone()*120.0f, 0.0f, 0.0f, 1.0f);
-            ofScale(animatorUp.getPercentDone()*2); 
+            rotateDeg(animatorUp.getPercentDone()*130.0f, 0.0f, 0.0f, 1.0f);
+            ofScale(animatorUp.getPercentDone()*1.5f); 
         }
         else if (currentRotation.x || currentRotation.y) {
             rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
             rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
         }
         ofSpherePrimitive::draw();
-        if (!isAnimating()) {
-            home(); // restore to start position
-        }
+        home(); // restore to start position
     }
 }
 

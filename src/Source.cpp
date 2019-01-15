@@ -151,7 +151,7 @@ void Game::windowResized(int wIn, int hIn) {
 
     mainEye.setup(getRadiusGlobal(w, h));
     rotatingEye.setup(getRadiusGlobal(w, h));
-    rotatingEye.getUpAnimator().setDuration(5.0f);
+    rotatingEye.getUpAnimator().setDuration(2.0f);
     rotatingEye.getUpAnimator().setRepeatTimes(5);
     rotatingEye.getUpAnimator().setRepeatType(LOOP_BACK_AND_FORTH_N_TIMES);
 
