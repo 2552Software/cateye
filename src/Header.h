@@ -26,13 +26,13 @@ public:
     std::string& getPartialString();
     float getLine() { return line; }
     float timeToRender, timeBegan, timeDelay, lingerTime;
+    bool doneDrawing;
 
 private:
     std::string& getRawText() { return rawText; }
     std::string rawText; // raw text
     std::string partialText;
     float line; // user define value
-    bool doneDrawing;
 };
 
 class Light : public ofLight {
@@ -204,11 +204,11 @@ public:
 #define MAXLEVELS 4
     enum Levels { NoGame = 0, Basic = 1, Medium = 2, Difficult = 3 };
     
-    GameLevel() : durations{10.0f, 10.0f, 10.0f, 60.0f }
+    GameLevel() : durations{10.0f, 10.0f, 10.0f, 10.0f }
     { setup(NoGame);  }
 
     bool inGame() { return getLevel() != NoGame; }
-    void advance();
+    bool advance();
 
     void  resetLevelTime() { gameLevelTime = ofGetElapsedTimef(); }
     Sound&getSound() { return sound; }

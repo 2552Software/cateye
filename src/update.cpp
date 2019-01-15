@@ -13,11 +13,11 @@ void Animate3d::update() {
 };
 
 void TextTimer::update() {
-    int elapsed = ofGetElapsedTimef() - timeBegan;
+    int elapsed = ofGetSystemTimeMillis() - timeBegan;
     if (timeDelay) {
         if (timeDelay < elapsed) {
-            timeBegan = ofGetElapsedTimef(); // here we go
-            elapsed = ofGetElapsedTimef() - timeBegan; // time to start
+            timeBegan = ofGetSystemTimeMillis(); // here we go
+            elapsed = ofGetSystemTimeMillis() - timeBegan; // time to start
             timeDelay = 0.0; // delay is gone
         }
         else {
@@ -62,15 +62,13 @@ void TextEngine::update() {
     fullScreenText.erase(std::remove_if(fullScreenText.begin(),
         fullScreenText.end(),
         [](const TextTimer& item) {
-            int elapsedMilliSeconds = ((int)ofGetElapsedTimef() - item.timeBegan);
-            return item.lingerTime < elapsedMilliSeconds;
+            return item.doneDrawing;
         }),   fullScreenText.end());
 
     inlineText.erase(std::remove_if(inlineText.begin(),
         inlineText.end(),
         [](const TextTimer& item) {
-        int elapsedMilliSeconds = ((int)ofGetElapsedTimef() - item.timeBegan);
-        return item.lingerTime < elapsedMilliSeconds;
+        return item.doneDrawing;
     }),    inlineText.end());
 
 }
@@ -118,7 +116,9 @@ void Game::update() {
         }
         current.next();
     }
-    current.advance();
+    if (current.advance()){
+        gameEyes.clear();
+    }
     getCountours();
 }
 
