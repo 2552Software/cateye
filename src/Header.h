@@ -206,22 +206,15 @@ public:
 class CrazyEye : public SuperSphere { // uses external texture
 public:
     CrazyEye(float x = 0.0f, float y = 0.0f, float z = 0.0f, float r = 0.0f) :SuperSphere(x, y, z, r) { 
-        Animate3d::setup(LOOP_BACK_AND_FORTH, 0.0f); 
+        Animate3d::setup(LOOP_BACK_AND_FORTH, 5.0f); 
         dynamic = true;
         rotater.reset(15); // do no make 0, some divs will fault
         rotater.setDuration(5.0f);
         rotater.setRepeatType(LOOP);
         rotater.setCurve(LINEAR);
-        animatorUp.animateTo(360);
+        rotater.animateTo(360);
     }
-    void draw() {
-        if (getRadius() > 0) {
-            rotateDeg(rotater, 0.0f, 0.0f, 1.0f);
-            ofScale(animatorUp.getPercentDone()*1.5f);
-            ofSpherePrimitive::draw();
-            home(); // restore to start position
-        }
-    }
+    void draw();
 
     void update() { rotater.update(1.0f / ofGetTargetFrameRate()); }
     ofxAnimatableFloat rotater;

@@ -17,6 +17,14 @@ void SuperSphere::draw() {
     }
 }
 
+void CrazyEye::draw() {
+    if (getRadius() > 0) {
+        rotateDeg(rotater.val(), 0.0f, 0.0f, 1.0f);
+        ofScale(animatorUp.getPercentDone()*1.5f);
+        ofSpherePrimitive::draw();
+        home(); // restore to start position
+    }
+}
 void Game::draw(Music*music) {
     if (music) {
         if (current.getSound().sendSound()) {
@@ -31,7 +39,7 @@ void Game::draw(Music*music) {
     }
 
     if (!drawText()) { // draw text first and give it the full screen
-        if (rotatingEye.isAnimating()) {
+        if (rotatingEye.isRunning()) {
             ofPushMatrix(); 
             ofTranslate(w / 2, h / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
             rotatingEyesSkins.getCurrentRef().start();

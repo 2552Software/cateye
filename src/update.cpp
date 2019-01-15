@@ -98,21 +98,19 @@ void Game::update() {
     cylindersSkins.update();
     musicNotesSkins.update();
 
-    if (!isAnimating()) {
-        if (current.inGame() && isWinner()) {  
-            clear();
-            switch (current.getLevel()) {
-            case GameLevel::Difficult:
-                sendFireworks = true;
-                credits(true);
-                break;
-            default:
-                break;
-            }
-            current.next();
+    if (current.inGame() && isWinner()) {  
+        clear();
+        switch (current.getLevel()) {
+        case GameLevel::Difficult:
+            sendFireworks = true;
+            credits(true);
+            break;
+        default:
+            break;
         }
-        current.advance();
+        current.next();
     }
+    current.advance();
     getCountours();
 }
 
