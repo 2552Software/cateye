@@ -67,7 +67,7 @@ void  Game::fireWorks() {
    rotatingEye.start();
    rotatingEye.rotater.setDuration(10.0f);
    rotatingEye.rotater.setRepeatType(LOOP_BACK_AND_FORTH);
-   rotatingEye.rotater.animateFromTo(30.0f, 360.0f);
+   rotatingEye.rotater.animateFromTo(15.0f, 340.0f);
    rotatingEye.animatorUp.setDuration(10.0f);
    rotatingEye.animatorUp.setRepeatType(LOOP_BACK_AND_FORTH);
    rotatingEye.animatorUp.animateFromTo(1.0f, 1.5f);

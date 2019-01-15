@@ -13,11 +13,11 @@ void Animate3d::update() {
 };
 
 void TextTimer::update() {
-    int elapsedMilliSeconds = ofGetSystemTimeMillis() - timeBegan;
+    int elapsed = ofGetElapsedTimef() - timeBegan;
     if (timeDelay) {
-        if (timeDelay < elapsedMilliSeconds) {
-            timeBegan = ofGetSystemTimeMillis(); // here we go
-            elapsedMilliSeconds = ofGetSystemTimeMillis() - timeBegan; // time to start
+        if (timeDelay < elapsed) {
+            timeBegan = ofGetElapsedTimef(); // here we go
+            elapsed = ofGetElapsedTimef() - timeBegan; // time to start
             timeDelay = 0.0; // delay is gone
         }
         else {
@@ -25,12 +25,12 @@ void TextTimer::update() {
         }
     }
 
-    if (elapsedMilliSeconds > timeToRender || !rawText.size() || doneDrawing) {
+    if (elapsed > timeToRender || !rawText.size() || doneDrawing) {
         doneDrawing = true;
         partialText = rawText;
         return;
     }
-    float factor = elapsedMilliSeconds / timeToRender;  // ratio of seconds that passed to our full range of time, say 20% or 0.2
+    float factor = elapsed / timeToRender;  // ratio of seconds that passed to our full range of time, say 20% or 0.2
 
     size_t n = (int)(factor * rawText.length());
     if (n > rawText.length()) {
@@ -62,14 +62,14 @@ void TextEngine::update() {
     fullScreenText.erase(std::remove_if(fullScreenText.begin(),
         fullScreenText.end(),
         [](const TextTimer& item) {
-            int elapsedMilliSeconds = ((int)ofGetSystemTimeMillis() - item.timeBegan);
+            int elapsedMilliSeconds = ((int)ofGetElapsedTimef() - item.timeBegan);
             return item.lingerTime < elapsedMilliSeconds;
         }),   fullScreenText.end());
 
     inlineText.erase(std::remove_if(inlineText.begin(),
         inlineText.end(),
         [](const TextTimer& item) {
-        int elapsedMilliSeconds = ((int)ofGetSystemTimeMillis() - item.timeBegan);
+        int elapsedMilliSeconds = ((int)ofGetElapsedTimef() - item.timeBegan);
         return item.lingerTime < elapsedMilliSeconds;
     }),    inlineText.end());
 
