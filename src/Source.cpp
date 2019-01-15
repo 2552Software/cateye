@@ -63,8 +63,14 @@ void GameLevel::advance() {
 
 void  Game::fireWorks() {
    //bugbug sounds(5);
+   rotatingEye.home(); // restore to start position
    rotatingEye.start();
-   rotatingEye.animatorUp.animateFromTo(-300.0f, 300.0f);//bugbug will need to adjsut for pi
+   rotatingEye.rotater.setDuration(10.0f);
+   rotatingEye.rotater.setRepeatType(LOOP_BACK_AND_FORTH);
+   rotatingEye.rotater.animateFromTo(30.0f, 360.0f);
+   rotatingEye.animatorUp.setDuration(10.0f);
+   rotatingEye.animatorUp.setRepeatType(LOOP_BACK_AND_FORTH);
+   rotatingEye.animatorUp.animateFromTo(1.0f, 1.5f);
 }
 
 void Game::rotate(const ofVec3f& target) {
@@ -190,18 +196,19 @@ bool Game::addGameItem(LocationToActionMap* map) {
         float r = std::min(rect.width, rect.height) / 2;
         r *= 0.9f;// leave some white space
         if (!find(map->c)) { // only include  one time
-            float t = 60.0f;
+            float t = 20.0f; // no game, or time between games -- make 5 minute or so in production
             switch (current.getLevel()) {
             case GameLevel::Basic:
+                t = 20.0f;
                 break;
             case GameLevel::Medium:
-                t = 60.0f;
+                t = 20.0f;
                 break;
             case GameLevel::Difficult:
-                t = 60.0f;
+                t = 20.0f;
                 break;
             }
-            EyeGameItem item(rect.x + rect.width / 2.0f, rect.y + rect.height / 2.0f, 0.0f, r, map->c, 60.0f);
+            EyeGameItem item(rect.x + rect.width / 2.0f, rect.y + rect.height / 2.0f, 0.0f, r, map->c, t);
             item.start();
             gameEyes.push_back(item);
         }

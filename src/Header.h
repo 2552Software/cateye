@@ -189,7 +189,6 @@ public:
 class CrazyEye : public SuperSphere { // uses external texture
 public:
     CrazyEye(float x = 0.0f, float y = 0.0f, float z = 0.0f, float r = 0.0f) :SuperSphere(x, y, z, r) {
-        rotater.animateTo(180);
     }
     void draw();
 };
@@ -205,7 +204,7 @@ public:
 #define MAXLEVELS 4
     enum Levels { NoGame = 0, Basic = 1, Medium = 2, Difficult = 3 };
     
-    GameLevel() : durations{10.0f, 60.0f, 60.0f, 60.0f }
+    GameLevel() : durations{10.0f, 10.0f, 10.0f, 60.0f }
     { setup(NoGame);  }
 
     bool inGame() { return getLevel() != NoGame; }

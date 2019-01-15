@@ -39,9 +39,6 @@ void GameObject::setup(float xIn, float yIn, float zIn, float seconds, AnimRepea
 }
 
 void SuperSphere::setup(float r) {
-    rotater.reset(1); // do no make 0, some divs will fault
-    rotater.setDuration(5.0f);
-    rotater.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
     sphere.setResolution(27);
     sphere.setPosition(x, y, z);
     sphere.setRadius(r);

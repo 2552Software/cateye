@@ -15,10 +15,9 @@ void SuperSphere::draw() {
 
 void CrazyEye::draw() {
     if (sphere.getRadius() > 0) {
-        sphere.rotateDeg(rotater.val()*2.0f, 0.0f, 0.0f, 1.0f);
-        ofScale(animatorUp.getPercentDone()*1.5f);
+        sphere.rotateDeg(rotater.val(), 0.0f, 0.0f, 1.0f);
+        ofScale(animatorUp.val());
         sphere.draw();
-        home(); // restore to start position
     }
 }
 void Game::draw(Music*music) {
@@ -27,7 +26,7 @@ void Game::draw(Music*music) {
             // y value controls the trigger intensity
            // float trig = ofMap(y, 0, ofGetHeight(), 1.0f, 0.000001f);
             //music->gate_ctrl.off();
-            //music->set(current.getSound());
+            //music->set(current.getSound()); // seems to break memory move to next release
             current.getSound().setSound(false);
             // play everytime an item is selected
             //bugbug figure this out music->gate_ctrl.trigger(current->trigger); // we send a trigger to the envelope
@@ -50,6 +49,7 @@ void Game::draw(Music*music) {
             if (!inGame()) {
                 mainEye.setRotation(currentRotation);
                 mainEyesSkins.getCurrentRef().start();
+                ofLogVerbose() << " draw eye";
                 mainEye.draw();
                 mainEyesSkins.getCurrentRef().stop();
             }

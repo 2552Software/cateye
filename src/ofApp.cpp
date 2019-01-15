@@ -41,6 +41,7 @@ void ofApp::setup(){
     music = new Music();
     if (music) {
         music->setup(cameraWidth, cameraHeight); // tie to app
+        music->engine.stop();
     }
 
     //player = new AudioPlayer; //bugbug replace cat calls with this
