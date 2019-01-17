@@ -74,7 +74,7 @@ TextTimer::TextTimer(const std::string& text, float timeToRenderIn, float delay,
     timeToRender = timeToRenderIn;
     timeDelay = delay;
     timeBegan = (int)ofGetSystemTimeMillis();
-    lingerTime = timeDelay+timeToRender;// text remains  after animation
+    lingerTime = timeToRender;// text remains  after animation
 }
 
 std::string& TextTimer::getPartialString() {
@@ -146,12 +146,12 @@ void Game::credits(bool signon) {
     /** bugbug removed */
    // fancyText.addFullScreenText(TextTimer("fast for testing", 1000.0f, 0.0f, 0.0f));
     //return;
-
-    if (signon || (int)ofRandom(0, 10) > 2) {
+    fancyText.clear();
+    if (signon) {
         fancyText.addFullScreenText(TextTimer("Tom And Mark", 1000.0f, 0.0f, 0.0f));
-        fancyText.addFullScreenText(TextTimer("From Electronic Murals", 1000.0f, 1000.0f+100.0f,  1.0f));
-        fancyText.addFullScreenText(TextTimer("Thank Can Can Wonderland ...", 1000.0f, 1000.0f + 200.0f, 2.0f));
-        fancyText.addFullScreenText(TextTimer("... For their support of the Arts!", 1000.0f, 1000.0f + 300.0f, 3.0f));
+        fancyText.addFullScreenText(TextTimer("From Electronic Murals", 1000.0f, 1000.0f,  1.0f));
+        fancyText.addFullScreenText(TextTimer("Thank Can Can Wonderland ...", 1000.0f, 2000.0f, 2.0f));
+        fancyText.addFullScreenText(TextTimer("... For their support of the Arts!", 2000.0f, 3000.0f, 3.0f));
     }
     else {
         fancyText.addFullScreenText(TextTimer(fancyText.sillyString(), 1000.0f, 0.0f,  0.0f));

@@ -43,6 +43,7 @@ void Game::draw(Music*music) {
             ofPopMatrix();
         }
         else {
+            
             ofPushMatrix();
             ofTranslate(w / 2, h / 2);// z will need to be moved via apis since OF is not consistant here
             ofLogVerbose() << " w " << w << " h " << h;
@@ -54,6 +55,7 @@ void Game::draw(Music*music) {
                 mainEye.draw();
                 mainEyesSkins.getCurrentRef().stop();
             }
+            
             ofPopMatrix();
             // next items are drawn absolute and are driven by camera and converted to screen units
             drawContours();
@@ -92,7 +94,7 @@ void ContoursBuilder::draw(float w, float h, float z) {
 
 // see if anything is going on
 bool Game::isAnimating() {
-    return (rotatingEye.rotater.isAnimating() || fancyText.isFullScreenAnimating());
+    return (rotatingEye.isRunning() || fancyText.isFullScreenAnimating());
 }
 
 

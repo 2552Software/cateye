@@ -70,10 +70,10 @@ void  Game::fireWorks() {
    rotatingEye.home(); // restore to start position
    rotatingEye.start();
    rotatingEye.rotater.setDuration(10.0f);
-   rotatingEye.rotater.setRepeatType(LOOP_BACK_AND_FORTH);
+   rotatingEye.rotater.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
    rotatingEye.rotater.animateFromTo(15.0f, 45.0f);
    rotatingEye.animatorUp.setDuration(10.0f);
-   rotatingEye.animatorUp.setRepeatType(LOOP_BACK_AND_FORTH);
+   rotatingEye.animatorUp.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
    rotatingEye.animatorUp.animateFromTo(1.0f, 1.5f);
 }
 
@@ -150,7 +150,8 @@ size_t Game::winnerHitCount() {
 }
 
 void Game::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event) {
-    // no move main eye back into focus
+    // now move main eye back into focus
+    rotatingEye.stop();
     currentRotation.set(0.0f, 0.0f); // look forward, move ahead its not too late
     mainEye.animatorUp.animateFromTo(-rotatingEye.sphere.getRadius(), 0.0f);
     clear(); // reset and start again

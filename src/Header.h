@@ -204,9 +204,9 @@ public:
 #define MAXLEVELS 4
     enum Levels { NoGame = 0, Basic = 1, Medium = 2, Difficult = 3 };
     
-    GameLevel() : durations{10.0f, 10.0f, 10.0f, 10.0f }
+    GameLevel() : durations{30.0f, 10.0f, 10.0f, 10.0f }
     { setup(NoGame);  }
-
+         
     bool inGame() { return getLevel() != NoGame; }
     bool advance();
 
@@ -246,7 +246,9 @@ public:
     void draw(float z);
     void setup(int fontsize);
     void update();
-
+    void clear() {
+        fullScreenText.clear();
+    }
     void addFullScreenText(TextTimer txt) { fullScreenText.push_back(txt); }
     void addInlineText(TextTimer txt) { inlineText.push_back(txt); }
 
@@ -302,6 +304,7 @@ public:
     bool isAnimating();
     void windowResized(int w, int h);
     bool inGame() { return current.inGame(); }
+    void credits(bool signon = false);
     float w, h;
     ContoursBuilder contours;
     float maxForTrigger;
@@ -313,7 +316,7 @@ private:
     TextEngine basicText;
     TextEngine fancyText;
     bool find(int id);
-    void credits(bool signon = false);    void setTriggerCount(float count=50.0f);
+    void setTriggerCount(float count=50.0f);
     void setShapeMinSize(float size=100.0f) { shapeMinSize = size; };
     void setSquareCount(int count=15);
     void clear();

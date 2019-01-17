@@ -158,7 +158,7 @@ void Game::setup() {
     contours.setup();
 
     clear(); // go to a known state (call last like this as it may depend on othe settings)
-    //bugbug credits(true);
+    
     startPlaying();
 
     ofLogNotice("ImageAnimator::setup") << "finshed";

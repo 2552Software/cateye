@@ -50,7 +50,7 @@ void ofApp::setup(){
     //player->play();
 
 
-    //bugbug eyeAnimator.credits(true); // setup credits, shown at boot bugbug spin eyes at boot too -- and restore text
+    eyeAnimator.credits(true); // setup credits, shown at boot bugbug spin eyes at boot too -- and restore text
 
    // gui.loadFont(OF_TTF_SANS, 24, true, true);
    // gui.setBorderColor(ofColor::yellow);

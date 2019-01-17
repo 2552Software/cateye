@@ -25,7 +25,7 @@ void TextTimer::update() {
         }
     }
 
-    if (elapsed > timeToRender || !rawText.size() || doneDrawing) {
+    if (elapsed > timeToRender+lingerTime || !rawText.size() || doneDrawing) {
         doneDrawing = true;
         partialText = rawText;
         return;
@@ -35,7 +35,7 @@ void TextTimer::update() {
     size_t n = (int)(factor * rawText.length());
     if (n > rawText.length()) {
         partialText = rawText;
-        doneDrawing = true;
+        //doneDrawing = true;
     }
     else {
         partialText = rawText.substr(0, n);
@@ -105,19 +105,26 @@ void Game::update() {
     musicNotesSkins.update();
 
     if (current.inGame() && isWinner()) {  
-        clear();
-        switch (current.getLevel()) {
-        case GameLevel::Difficult:
-            sendFireworks = true;
-            credits(true);
-            break;
-        default:
-            break;
+        if (isWinner()) {
+            clear();
+            switch (current.getLevel()) {
+            case GameLevel::Difficult:
+                sendFireworks = true;
+                credits(true);
+                break;
+            default:
+                break;
+            }
+            current.next();
         }
-        current.next();
+        if (current.advance()) {
+            gameEyes.clear();
+        }
     }
-    if (current.advance()){
-        gameEyes.clear();
+    else {
+        if (ofRandom(10.0f) > 8.0f && !fancyText.isFullScreenAnimating()) {
+            credits(false); // funny text or maybe credits
+        }
     }
     getCountours();
 }
