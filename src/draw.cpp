@@ -64,10 +64,21 @@ void Game::draw(Music*music) {
         }
     }
 }
+void Blinker::draw() {
+    ofSetColor(ofColor::black);
+    ofPushStyle();
+    ofFill();
+    float blink = blinker.val();
+    float r = getRadiusGlobal();
+    
+    ofDrawRectangle(0.0f, 0.0f, r, windowWidth, (windowHeight / 2)*blink);
+    ofDrawRectangle(0.0f, windowHeight, r, windowWidth, -(windowHeight / 2)*blink);
+    ofPopStyle();
 
+}
 void ContoursBuilder::draw(float w, float h, float z) {
     ofNoFill();
-    ofSetLineWidth(1);// ofRandom(1, 5));
+    ofSetLineWidth(2);// ofRandom(1, 5));
     for (auto& blob : contourDrawer.blobs) {
         ofPolyline line;
         for (int i = 0; i < blob.nPts; i++) {
@@ -77,7 +88,7 @@ void ContoursBuilder::draw(float w, float h, float z) {
         line.scale(w / cameraWidth, h / cameraHeight);
         line.draw();
     }
-    ofSetLineWidth(5);// ofRandom(1, 5));
+    ofSetLineWidth(7);// ofRandom(1, 5));
     if (contourFinder.blobs.size() > 0) {
         for (auto& blob : contourFinder.blobs) {
             ofPolyline line;

@@ -86,19 +86,19 @@ std::string TextEngine::sillyString() {
     std::string s;
     switch ((int)ofRandom(0, 18)) {
     case 0:
-        s = "Free beer???";
+        s = "Time 4 Free beer???";
         break;
     case 1:
         s = "cookie time?";
         break;
     case 2:
-        s = "Is it bar time?";
+        s = "Is it bar time? prrfect";
         break;
     case 3:
         s = "Want to play a game?";
         break;
     case 4:
-        s = "Hal, is that you? Hal? Hal? Way in the back?";
+        s = "Hal, is that you? Hal? Hal?";
         break;
     case 5:
         s = "pinball!!";
@@ -113,22 +113,22 @@ std::string TextEngine::sillyString() {
         s = "Can Can Wonderland Rules!";
         break;
     case 9:
-        s = "0101010101010101001011010101001101001001!";
+        s = "0101010101010110110101001101001001!";
         break;
     case 10:
-        s = "Does A Squared + B Squared does really = C Squared every time?";
+        s = "Hello Can Can Wonderland!";
         break;
     case 11:
         s = "What's your OS?";
         break;
     case 12:
-        s = "E = MC Squared? what? no way";
+        s = "Knot shore watt 2 sway";
         break;
     case 13:
-        s = "I’d like to help you out... Which way did you come in?";
+        s = "Id lke to hlp U out... Whch wy did U cme in?";
         break;
     case 15:
-        s = "HippopotomonstrosesquiPedaliophobia is the fear of long words. Scary.";
+        s = "Pinball or mini golf?";
         break;
     case 16:
         s = "Beer can reduce a hangover";

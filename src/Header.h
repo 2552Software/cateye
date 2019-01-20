@@ -281,7 +281,9 @@ class Blinker {
 public:
     void setup();
     void update();
-
+    void draw();
+    float val() { return blinker.val(); }
+private:
     ofxAnimatableFloat blinker; // blink animation
 
 };
@@ -308,6 +310,7 @@ public:
     float w, h;
     ContoursBuilder contours;
     float maxForTrigger;
+    std::vector<ofSoundPlayer> mySounds;
 
 private:
     GameLevel current;// allocation not validated
@@ -343,7 +346,6 @@ private:
     void buildX();
     void buildY();
     void rotate(const ofVec3f& target);
-    std::vector<ofSoundPlayer> mySounds;
     bool sendFireworks;
     ofVec3f currentLocation;
     ofVec3f currentRotation;
@@ -353,4 +355,6 @@ private:
     std::map<Key, float> mapCameraInY;
     std::vector<std::map<std::pair<int, int>, LocationToActionMap>> aimationMaps; // map indexes, nullptr means no object found yet
     std::list<EyeGameItem> gameEyes; // if you are in this list you have been found and not time out has occured bugbug add time out
+    
+
 };

@@ -157,6 +157,13 @@ void Game::setup() {
     
     contours.setup();
 
+    ofSoundPlayer wargames;
+    wargames.load("sounds\\wargames.wav");
+    mySounds.push_back(wargames);
+    ofSoundPlayer cat;
+    cat.load("sounds\\cat.wav");
+    mySounds.push_back(cat);
+
     clear(); // go to a known state (call last like this as it may depend on othe settings)
     
     startPlaying();

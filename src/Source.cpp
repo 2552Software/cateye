@@ -26,12 +26,7 @@ void Game::setTitle() {
 }
 void Game::blink() {
     // blink upon request
-    ofSetColor(ofColor::black);
-    ofPushStyle();
-    ofFill();
-    ofDrawRectangle(0, 0, w, (h / 2)*blinker.blinker.val(), getRadiusGlobal());
-    ofDrawRectangle(0, h, w, -(h / 2)*blinker.blinker.val(), getRadiusGlobal());
-    ofPopStyle();
+    blinker.draw();
 }
 
 void Textures::add(const std::string &name, const std::string &root) {
