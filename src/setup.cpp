@@ -95,12 +95,12 @@ void ContoursBuilder::setup() {
     bool found = false;
     for (auto& device : devices) {
         ofLogVerbose("ContoursBuilder::setup") << device.deviceName << " " << device.id;
-        if (device.deviceName.find("FaceTime") == std::string::npos) { // if its not face time use it
+        //use 1st came in this release if (device.deviceName.find("FaceTime") == std::string::npos) { // if its not face time use it
             video.setDeviceID(device.id);
             ofLogNotice("ContoursBuilder::setup found ") << device.deviceName;
             found = true;
             break;
-        }
+       // }
     }
     if (!found) {
         ofLogFatalError("ContoursBuilder::setup no device found");

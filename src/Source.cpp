@@ -21,12 +21,12 @@ void Game::setTitle() {
             ss << "Enjoy the music!";
         }
         ss <<  " " << setprecision(2) << fixed << current.timeLeft();
-        basicText.print(ss.str(), 0.0f, 0.0f, getRadiusGlobal());
+        basicText.print(ss.str(), 0.0f, 0.0f, r);
    }
 }
 void Game::blink() {
     // blink upon request
-    blinker.draw();
+    blinker.draw(r);
 }
 
 void Textures::add(const std::string &name, const std::string &root) {
@@ -125,9 +125,10 @@ Game::Game() {
     
     maxForTrigger = 525.0f;
     shapeMinSize = 200.0f; // menus bugbug
-    squareCount = 10;// menus bugbu
-    w = ofGetWidth();
+    squareCount = 10;// menus bugbug
+    w = ofGetWidth(); // window is not sized in this release
     h = ofGetHeight();
+    r = std::min(w, h) / 2.0f;
 }
 
 void Game::textDone(int id, bool inLine) {
@@ -156,8 +157,8 @@ void Game::windowResized(int wIn, int hIn) {
     h = hIn;
     ofLogNotice("ofApp::setup") << "Window size " << w << " by " << h;
 
-    mainEye.setup(getRadiusGlobal(w, h));
-    rotatingEye.setup(getRadiusGlobal(w, h));
+    mainEye.setup(r);
+    rotatingEye.setup(r);
     rotatingEye.animatorUp.setDuration(2.0f);
     rotatingEye.animatorUp.setRepeatTimes(5);
     rotatingEye.animatorUp.setRepeatType(LOOP_BACK_AND_FORTH_N_TIMES);

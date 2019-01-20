@@ -12,10 +12,6 @@ const float yFactor = windowHeight / cameraHeight;
 inline ofRectangle convert(const ofRectangle&rect) {
     return ofRectangle(rect.x*xFactor, rect.y*yFactor, rect.width*xFactor, rect.height*yFactor);
 }
-inline float getRadiusGlobal(int w= windowWidth, int h= windowHeight) {
-    float r = std::min(w, h) / 2.0f;
-    return r;
-}
 
 class TextTimer {
 public:
@@ -279,7 +275,7 @@ class Blinker {
 public:
     void setup();
     void update();
-    void draw();
+    void draw(float r);
     float val() { return blinker.val(); }
 private:
     ofxAnimatableFloat blinker; // blink animation
@@ -309,6 +305,7 @@ public:
     ContoursBuilder contours;
     float maxForTrigger;
     std::vector<ofSoundPlayer> mySounds;
+    float r;
 
 private:
     GameLevel current;// allocation not validated
@@ -353,6 +350,5 @@ private:
     std::map<Key, float> mapCameraInY;
     std::vector<std::map<std::pair<int, int>, LocationToActionMap>> aimationMaps; // map indexes, nullptr means no object found yet
     std::list<EyeGameItem> gameEyes; // if you are in this list you have been found and not time out has occured bugbug add time out
-    
 
 };

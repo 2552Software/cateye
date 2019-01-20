@@ -64,12 +64,11 @@ void Game::draw(Music*music) {
         }
     }
 }
-void Blinker::draw() {
+void Blinker::draw(float r) {
     ofSetColor(ofColor::black);
     ofPushStyle();
     ofFill();
     float blink = blinker.val();
-    float r = getRadiusGlobal();
     
     ofDrawRectangle(0.0f, 0.0f, r, windowWidth, (windowHeight / 2)*blink);
     ofDrawRectangle(0.0f, windowHeight, r, windowWidth, -(windowHeight / 2)*blink);
@@ -128,8 +127,7 @@ bool TextEngine::animateString(TextTimer& text) {
     std::string s = text.getPartialString();
     if (s.size() > 0) {
         ofRectangle rect = font.getStringBoundingBox(s, 0.0f, 0.0f);
-        // assume in the middle of the screen
-        font.drawStringAsShapes(s, 0 - rect.width / 2, 3*rect.height*text.getLine()); // give a little room between
+        font.drawStringAsShapes(s, windowWidth/2 - rect.width / 2, windowHeight/4+rect.height+2*rect.height*text.getLine()); // give a little room between
         return true;
     }
     return false;
@@ -176,11 +174,8 @@ void TextEngine::draw(float z) {
 
 // return true if full screen mode enabled
 bool Game::drawText() {
-    ofPushMatrix();
-    ofTranslate(w / 2, h / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
-    basicText.draw(getRadiusGlobal());
-    fancyText.draw(getRadiusGlobal());
-    ofPopMatrix();
+    basicText.draw(r);
+    fancyText.draw(r);
     return fancyText.isFullScreenAnimating();
 }
 void LocationToActionMap::draw() {
@@ -209,5 +204,5 @@ void Game::drawGame() {
 }
 
 void Game::drawContours() {
-    contours.draw(w, h, getRadiusGlobal());
+    contours.draw(w, h, r);
 }
