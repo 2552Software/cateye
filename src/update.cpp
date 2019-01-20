@@ -13,9 +13,8 @@ void Animate3d::update() {
 };
 
 void TextTimer::update() {
-    elapsed = ofGetUnixTime() - timeBegan;
-    if (timeDelay < elapsed) {
-        partialText = rawText;
+    if (timeDelay < ++elapsed) {
+        finalText = rawText;
     }
 }
 
@@ -28,24 +27,24 @@ bool secondsPassed(int val) {
 }
 
 void TextEngine::update() {
-    // remove all that are done
-    fullScreenText.erase(std::remove_if(fullScreenText.begin(),
-        fullScreenText.end(),
-        [](const TextTimer& item) {
-            return item.elapsed > item.timeDelay + item.lingerTime;
-        }),   fullScreenText.end());
-
-    inlineText.erase(std::remove_if(inlineText.begin(),
-        inlineText.end(),
-        [](const TextTimer& item) {
-        return item.item.elapsed > item.timeDelay + item.lingerTime;
-    }),    inlineText.end());
     for (auto&a : fullScreenText) {
         a.update();
     }
     for (auto&a : inlineText) {
         a.update();
     }
+    // remove all that are done
+    fullScreenText.erase(std::remove_if(fullScreenText.begin(),
+        fullScreenText.end(),
+        [](const TextTimer& item) {
+            return item.completed();
+        }),   fullScreenText.end());
+
+    inlineText.erase(std::remove_if(inlineText.begin(),
+        inlineText.end(),
+        [](const TextTimer& item) {
+        return item.completed();
+    }),    inlineText.end());
 }
 void Blinker::update() {
     blinker.update(1.0f / ofGetTargetFrameRate());

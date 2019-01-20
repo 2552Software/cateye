@@ -67,18 +67,16 @@ void Game::buildY() {
     }
 }
 
-TextTimer::TextTimer(const std::string& text, unsigned int timeToRenderIn, unsigned int delay, unsigned int lineIn) {
+TextTimer::TextTimer(const std::string& text, unsigned int timeToRenderIn, unsigned int delay, int lineIn) {
     line = lineIn;
-    doneDrawing = false;
     rawText = text;
     timeDelay = delay;
-    timeBegan = ofGetUnixTime();
     elapsed = 0;
     lingerTime = timeToRenderIn;// text remains  after animation
 }
 
 std::string& TextTimer::getPartialString() {
-    return partialText;
+    return finalText;
 }
 
 std::string TextEngine::sillyString() {
@@ -148,13 +146,13 @@ void Game::credits(bool signon) {
     //return;
     fancyText.clear();
     if (signon) {
-        fancyText.addFullScreenText(TextTimer("Tom And Mark", 3, 0, 0));
-        fancyText.addFullScreenText(TextTimer("From Electronic Murals", 1, 1, 1));
-        fancyText.addFullScreenText(TextTimer("Thank Can Can Wonderland ...", 1, 2, 2));
-        fancyText.addFullScreenText(TextTimer("... For their support of the Arts!", 2, 3, 3));
+        fancyText.addFullScreenText(TextTimer("Tom And Mark", (int)ofGetFrameRate()*3, 0, -4));
+        fancyText.addFullScreenText(TextTimer("From Electronic Murals", (int)ofGetFrameRate() * 2, (int)ofGetFrameRate()/2, -3));
+        fancyText.addFullScreenText(TextTimer("Thank Can Can Wonderland ...", (int)ofGetFrameRate() * 2, (int)ofGetFrameRate(), -2));
+        fancyText.addFullScreenText(TextTimer("... For their support of the Arts!", (int)ofGetFrameRate() * 1, (int)ofGetFrameRate()*2, 0));
     }
     else {
-        fancyText.addFullScreenText(TextTimer(fancyText.sillyString(), 1, 0,  0));
+        fancyText.addFullScreenText(TextTimer(fancyText.sillyString(), (int)ofGetFrameRate()*2, 0,  0));
     }
 }
 

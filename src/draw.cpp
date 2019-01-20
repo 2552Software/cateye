@@ -124,11 +124,12 @@ void TextEngine::drawShapes(const std::string& s) {
     }
 }
 // draw until object is deleted
-bool TextEngine::animateString(TextTimer& text, int x, int y) {
+bool TextEngine::animateString(TextTimer& text) {
     std::string s = text.getPartialString();
     if (s.size() > 0) {
         ofRectangle rect = font.getStringBoundingBox(s, 0.0f, 0.0f);
-        font.drawStringAsShapes(s, x - rect.width / 2, 3*rect.height*text.getLine()); // give a little room bettween
+        // assume in the middle of the screen
+        font.drawStringAsShapes(s, 0 - rect.width / 2, 3*rect.height*text.getLine()); // give a little room between
         return true;
     }
     return false;
@@ -147,7 +148,7 @@ void TextEngine::draw(float z) {
         ofPushMatrix();
         ofTranslate(0.0f, 0.0f, z);
         for (auto& text : fullScreenText) {
-            if (animateString(text, 0.0f, 0.0f)) {
+            if (animateString(text)) {
                 found = true;
             }
         }
@@ -161,7 +162,7 @@ void TextEngine::draw(float z) {
         ofPushMatrix();
         ofTranslate(0.0f, 0.0f, z); // ned to do the z here as no other api in fonts has a z
         for (auto& text : inlineText) { 
-            if (animateString(text, 0.0f, 0.0f)) {
+            if (animateString(text)) {
                 found = true;
             }
         }

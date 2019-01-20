@@ -19,20 +19,18 @@ inline float getRadiusGlobal(int w= windowWidth, int h= windowHeight) {
 
 class TextTimer {
 public:
-    TextTimer(const std::string& textIn, unsigned int timeToRenderIn, unsigned int delay, unsigned int lineIn);
+    TextTimer(const std::string& textIn, unsigned int timeToRenderIn, unsigned int delay, int lineIn);
     void update();
-
+    bool completed() const { return elapsed > timeDelay + lingerTime; }
     std::string& getPartialString();
-    float getLine() { return line; }
-    unsigned int timeBegan, timeDelay, lingerTime;
-    unsigned int elapsed;
-    bool doneDrawing;
+    int getLine() { return line; }
 
 private:
+    unsigned int elapsed, timeDelay, lingerTime; // ticks (ie calls to update)
     std::string& getRawText() { return rawText; }
     std::string rawText; // raw text
-    std::string partialText;
-    float line; // user define value
+    std::string finalText;
+    int line; // user define value
 };
 
 class Light : public ofLight {
@@ -267,7 +265,7 @@ public:
 private:
     std::list<TextTimer> fullScreenText;
     std::list<TextTimer> inlineText;
-    bool animateString(TextTimer& text, int x, int y);
+    bool animateString(TextTimer& text);
     int id;
     std::function<void(int, bool)> callback;
     void call(bool bInline) {
