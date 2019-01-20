@@ -157,12 +157,20 @@ void Game::setup() {
     
     contours.setup();
 
-    ofSoundPlayer wargames;
-    wargames.load("sounds\\cat01.mp3");
-    mySounds.push_back(wargames);
-    ofSoundPlayer cat;
-    cat.load("sounds\\cat.mp3");
-    mySounds.push_back(cat);
+    ofDirectory dir("Sounds");
+    dir.allowExt("wav");
+    dir.allowExt("mp3");
+    size_t i = 0;
+    if (dir.listDir() > 0) {
+        for (; i < dir.size(); i++) {
+            ofSoundPlayer s;
+            s.load(dir.getPath(i));
+            mySounds.push_back(s);
+        }
+    }
+    else {
+        ofLogError() << "Sounds" << " missing"; // fatal?
+    }
 
     clear(); // go to a known state (call last like this as it may depend on othe settings)
     
