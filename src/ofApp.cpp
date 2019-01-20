@@ -124,6 +124,7 @@ void ofApp::update() {
 void ofApp::draw() {
     ofSetBackgroundColor(ofColor::black);
     ofSetColor(ofColor::white);
+    ofLogNotice() << "draw ";
     if (hideMenu) {
         ofEnableDepthTest();
         ofPushStyle();

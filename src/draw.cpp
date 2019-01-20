@@ -1,6 +1,4 @@
 #include "ofApp.h"
-//#include "sound.h"
-
 
 void SuperSphere::draw() {
     ofFill();
