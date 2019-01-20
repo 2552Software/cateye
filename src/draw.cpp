@@ -4,7 +4,6 @@
 
 void SuperSphere::draw() {
     ofFill();
-    ofSetColor(ofColor::hotPink);
     glm::vec3 v3 = sphere.getPosition();
     ofDrawRectangle(v3.x, v3.y, 0.0, sphere.getRadius() * 2, sphere.getRadius() * 2);
     if (sphere.getRadius() > 0) {
@@ -12,6 +11,7 @@ void SuperSphere::draw() {
             sphere.rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
             sphere.rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
         }
+        ofLogNotice() << "draw " << v3;
         sphere.draw();
         home(); // restore to start position
     }
