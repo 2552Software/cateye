@@ -13,7 +13,7 @@ inline ofRectangle convert(const ofRectangle&rect) {
     return ofRectangle(rect.x*xFactor, rect.y*yFactor, rect.width*xFactor, rect.height*yFactor);
 }
 inline float getRadiusGlobal(int w= windowWidth, int h= windowHeight) {
-    float r = 2.0f*(std::min(w, h) / 2)/3.0f;
+    float r = std::min(w, h) / 2.0f;
     return r;
 }
 
