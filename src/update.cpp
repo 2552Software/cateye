@@ -13,32 +13,9 @@ void Animate3d::update() {
 };
 
 void TextTimer::update() {
-    int elapsed = ofGetSystemTimeMillis() - timeBegan;
-    if (timeDelay) {
-        if (timeDelay < elapsed) {
-            timeBegan = ofGetSystemTimeMillis(); // here we go
-            elapsed = ofGetSystemTimeMillis() - timeBegan; // time to start
-            timeDelay = 0.0; // delay is gone
-        }
-        else {
-            return;
-        }
-    }
-
-    if (elapsed > timeToRender+lingerTime || !rawText.size() || doneDrawing) {
-        doneDrawing = true;
+    elapsed = ofGetUnixTime() - timeBegan;
+    if (timeDelay < elapsed) {
         partialText = rawText;
-        return;
-    }
-    float factor = elapsed / timeToRender;  // ratio of seconds that passed to our full range of time, say 20% or 0.2
-
-    size_t n = (int)(factor * rawText.length());
-    if (n > rawText.length()) {
-        partialText = rawText;
-        //doneDrawing = true;
-    }
-    else {
-        partialText = rawText.substr(0, n);
     }
 }
 
@@ -46,31 +23,29 @@ void Textures::update() {
     selector.update(1.0f / ofGetTargetFrameRate());
 }
 
-
 bool secondsPassed(int val) {
     return ((int)ofGetElapsedTimef() % val) == 0;
 }
 
 void TextEngine::update() {
+    // remove all that are done
+    fullScreenText.erase(std::remove_if(fullScreenText.begin(),
+        fullScreenText.end(),
+        [](const TextTimer& item) {
+            return item.elapsed > item.timeDelay + item.lingerTime;
+        }),   fullScreenText.end());
+
+    inlineText.erase(std::remove_if(inlineText.begin(),
+        inlineText.end(),
+        [](const TextTimer& item) {
+        return item.item.elapsed > item.timeDelay + item.lingerTime;
+    }),    inlineText.end());
     for (auto&a : fullScreenText) {
         a.update();
     }
     for (auto&a : inlineText) {
         a.update();
     }
-    // remove all that are done
-    fullScreenText.erase(std::remove_if(fullScreenText.begin(),
-        fullScreenText.end(),
-        [](const TextTimer& item) {
-            return item.doneDrawing;
-        }),   fullScreenText.end());
-
-    inlineText.erase(std::remove_if(inlineText.begin(),
-        inlineText.end(),
-        [](const TextTimer& item) {
-        return item.doneDrawing;
-    }),    inlineText.end());
-
 }
 void Blinker::update() {
     blinker.update(1.0f / ofGetTargetFrameRate());
@@ -151,12 +126,12 @@ void ContoursBuilder::update() {
         backgroundImage = grayImage; // only track new items -- so eye moves when objects move
 
         grayDiff.threshold(70, true); // turn any pixels above 30 white, and below 100 black bugbug menu can tune game here too
-        if (!contourFinder.findContours(grayDiff, 5, (cameraWidth*cameraHeight), 255, false, true)) {
+        if (!contourFinder.findContours(grayDiff, 5, (cameraWidth*cameraHeight), 255, true, true)) {
             contourFinder.blobs.clear(); // removes echo but does it make things draw too fast?
         }
         grayImage.blurGaussian();
         grayImage.threshold(70, true);
-        if (!contourDrawer.findContours(grayImage, 5, (cameraWidth*cameraHeight), 255, false)) {
+        if (!contourDrawer.findContours(grayImage, 5, (cameraWidth*cameraHeight), 255, true)) {
             contourDrawer.blobs.clear();
         }
 

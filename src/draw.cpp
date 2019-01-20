@@ -128,7 +128,7 @@ bool TextEngine::animateString(TextTimer& text, int x, int y) {
     std::string s = text.getPartialString();
     if (s.size() > 0) {
         ofRectangle rect = font.getStringBoundingBox(s, 0.0f, 0.0f);
-        font.drawStringAsShapes(s, x - rect.width / 2, y + rect.height*text.getLine()+ rect.height/2); // give a little room bettween
+        font.drawStringAsShapes(s, x - rect.width / 2, 3*rect.height*text.getLine()); // give a little room bettween
         return true;
     }
     return false;

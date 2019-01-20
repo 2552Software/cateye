@@ -19,13 +19,13 @@ inline float getRadiusGlobal(int w= windowWidth, int h= windowHeight) {
 
 class TextTimer {
 public:
-    TextTimer(const std::string& textIn, float timeToRenderIn, float delay, float lineIn);
-    void setup();
+    TextTimer(const std::string& textIn, unsigned int timeToRenderIn, unsigned int delay, unsigned int lineIn);
     void update();
 
     std::string& getPartialString();
     float getLine() { return line; }
-    float timeToRender, timeBegan, timeDelay, lingerTime;
+    unsigned int timeBegan, timeDelay, lingerTime;
+    unsigned int elapsed;
     bool doneDrawing;
 
 private:
