@@ -96,13 +96,13 @@ std::string TextEngine::sillyString() {
         s = "Want to play a game?";
         break;
     case 4:
-        s = "Hal, is that you? Hal? Hal?";
+        s = "Hal open the pod bay door";
         break;
     case 5:
         s = "pinball!!";
         break;
     case 6:
-        s = "I do not have that many random strings";
+        s = "Never trust a dog!!";
         break;
     case 7:
         s = "<your joke here>";
@@ -120,13 +120,13 @@ std::string TextEngine::sillyString() {
         s = "What's your OS?";
         break;
     case 12:
-        s = "Knot shore watt 2 sway";
+        s = "Cats Rule!";
         break;
     case 13:
-        s = "Id lke to hlp U out... Whch wy did U cme in?";
+        s = "MEOW!";
         break;
     case 15:
-        s = "Pinball or mini golf?";
+        s = "Pinball or mini golf next?";
         break;
     case 16:
         s = "Beer can reduce a hangover";
@@ -135,7 +135,7 @@ std::string TextEngine::sillyString() {
         s = "Howdy howdy!";
         break;
     default:
-        s = "Take the default action where ever you can";
+        s = "Time for a refill!";
         break;
     }
     return s;
@@ -146,13 +146,13 @@ void Game::credits(bool signon) {
     //return;
     fancyText.clear();
     if (signon) {
-        fancyText.addFullScreenText(TextTimer("Tom And Mark", (int)ofGetFrameRate(), 0, 1));
-        fancyText.addFullScreenText(TextTimer("From Electronic Murals", (int)ofGetFrameRate(), (int)ofGetFrameRate()/2, 2));
-        fancyText.addFullScreenText(TextTimer("Thank Can Can Wonderland ...", (int)ofGetFrameRate(), (int)ofGetFrameRate(), 3));
-        fancyText.addFullScreenText(TextTimer("... For their support of the Arts!", (int)ofGetFrameRate(), (int)ofGetFrameRate()*2, 4));
+        fancyText.addFullScreenText(TextTimer("Tom And Mark", (int)ofGetFrameRate(), 0, 2));
+        fancyText.addFullScreenText(TextTimer("From Electronic Murals", (int)ofGetFrameRate(), (int)ofGetFrameRate()/2, 3));
+        fancyText.addFullScreenText(TextTimer("Thank Can Can Wonderland ...", (int)ofGetFrameRate(), (int)ofGetFrameRate(), 4));
+        fancyText.addFullScreenText(TextTimer("... For their support of the Arts!", (int)ofGetFrameRate(), (int)ofGetFrameRate()*2, 5));
     }
     else {
-        fancyText.addFullScreenText(TextTimer(fancyText.sillyString(), (int)ofGetFrameRate()*2, 0, 1));
+        fancyText.addFullScreenText(TextTimer(fancyText.sillyString(), (int)ofGetFrameRate()*2, 0, 6));
     }
 }
 

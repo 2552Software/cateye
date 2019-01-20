@@ -3,6 +3,10 @@
 
 
 void SuperSphere::draw() {
+    ofFill();
+    ofSetColor(ofColor::hotPink);
+    glm::vec3 v3 = sphere.getPosition();
+    ofDrawRectangle(v3.x, v3.y, 0.0, sphere.getRadius() * 2, sphere.getRadius() * 2);
     if (sphere.getRadius() > 0) {
         if (currentRotation.x || currentRotation.y) {
             sphere.rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
@@ -127,7 +131,7 @@ bool TextEngine::animateString(TextTimer& text) {
     std::string s = text.getPartialString();
     if (s.size() > 0) {
         ofRectangle rect = font.getStringBoundingBox(s, 0.0f, 0.0f);
-        font.drawStringAsShapes(s, windowWidth/2 - rect.width / 2, windowHeight/4+rect.height+2*rect.height*text.getLine()); // give a little room between
+        font.drawStringAsShapes(s, windowWidth/2 - rect.width / 2, windowHeight/4+rect.height+3*rect.height*text.getLine()); // give a little room between
         return true;
     }
     return false;
