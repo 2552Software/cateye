@@ -209,7 +209,7 @@ public:
     }
 
     bool inGame() { return getLevel() != NoGame; }
-    bool advance();
+    bool checkTimeOut();
 
     void  resetLevelTime() { gameLevelTime = 0; }
     Sound&getSound() { return sound; }

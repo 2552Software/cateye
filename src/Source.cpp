@@ -21,6 +21,7 @@ void Game::setTitle() {
             ss << "Enjoy the music!";
         }
         ss <<  " " << setprecision(2) << fixed << current.timeLeft();
+        ofSetColor(ofColor::white);
         basicText.print(ss.str(), 0.0f, 0.0f, r);
    }
 }
@@ -66,7 +67,7 @@ void GameLevel::next() {
         break;
     }
 }
-bool GameLevel::advance() {
+bool GameLevel::checkTimeOut() {
     if (timeLeft() < 0) { // start game every 60 seconds for example
         prev(); // timeout, fall back
         return true;

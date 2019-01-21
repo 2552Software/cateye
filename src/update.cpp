@@ -98,7 +98,9 @@ void Game::update() {
     cylindersSkins.update();
     musicNotesSkins.update();
     current.update();
-    current.advance();
+    if (current.checkTimeOut()) {
+        gameEyes.clear();
+    }
 
     if (current.inGame() && isWinner()) {  
         clear();

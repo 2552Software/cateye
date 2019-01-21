@@ -19,6 +19,7 @@ void CrazyEye::draw() {
     }
 }
 void Game::draw(Music*music) {
+    ofSetColor(ofColor::white);
     if (music) {
         if (current.getSound().sendSound()) {
             // y value controls the trigger intensity
