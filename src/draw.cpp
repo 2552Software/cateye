@@ -75,7 +75,7 @@ void ContoursBuilder::draw(float w, float h, float z) {
     ofPushMatrix();
     ofTranslate(0.0f, 0.0f, z);
     ofEnableAlphaBlending();
-    ofSetColor(255, 255, 255, 32);
+    ofSetColor(255, 255, 255, 40);
     colorImg.draw(0.0f, 0.0f, w, h);
     ofSetColor(255, 255, 255);
     ofDisableAlphaBlending();
