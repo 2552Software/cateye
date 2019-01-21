@@ -129,6 +129,7 @@ Game::Game() {
     w = ofGetWidth(); // window is not sized in this release
     h = ofGetHeight();
     r = std::min(w, h) / 2.0f;
+    r -= r*0.1f;
 }
 
 void Game::textDone(int id, bool inLine) {

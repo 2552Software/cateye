@@ -1,15 +1,11 @@
 #include "ofApp.h"
 
 void SuperSphere::draw() {
-    ofFill();
-    glm::vec3 v3 = sphere.getPosition();
-    ofDrawRectangle(v3.x, v3.y, 0.0, sphere.getRadius() * 2, sphere.getRadius() * 2);
     if (sphere.getRadius() > 0) {
         if (currentRotation.x || currentRotation.y) {
             sphere.rotateDeg(currentRotation.x, 1.0f, 0.0f, 0.0f);
             sphere.rotateDeg(currentRotation.y, 0.0f, 1.0f, 0.0f);
         }
-        ofLogNotice() << "draw " << v3;
         sphere.draw();
         home(); // restore to start position
     }
@@ -48,8 +44,6 @@ void Game::draw(Music*music) {
             
             ofPushMatrix();
             ofTranslate(w / 2, h / 2);// z will need to be moved via apis since OF is not consistant here
-            ofLogVerbose() << " w " << w << " h " << h;
-
             setTitle();
             if (!inGame()) {
                 mainEye.setRotation(currentRotation);
@@ -57,7 +51,6 @@ void Game::draw(Music*music) {
                 mainEye.draw();
                 mainEyesSkins.getCurrentRef().stop();
             }
-            
             ofPopMatrix();
             // next items are drawn absolute and are driven by camera and converted to screen units
             drawContours();
@@ -77,7 +70,16 @@ void Blinker::draw(float r) {
     ofPopStyle();
 
 }
+
 void ContoursBuilder::draw(float w, float h, float z) {
+    ofPushMatrix();
+    ofTranslate(0.0f, 0.0f, z);
+    ofEnableAlphaBlending();
+    ofSetColor(255, 255, 255, 16);
+    grayImage.draw(0.0f, 0.0f, w, h);
+    ofDisableAlphaBlending();
+    ofPopMatrix();
+    return;
     ofNoFill();
     ofSetLineWidth(2);// ofRandom(1, 5));
     for (auto& blob : contourDrawer.blobs) {
@@ -102,7 +104,6 @@ void ContoursBuilder::draw(float w, float h, float z) {
         }
     }
 }
-
 
 // see if anything is going on
 bool Game::isAnimating() {
@@ -129,7 +130,7 @@ bool TextEngine::animateString(TextTimer& text) {
     std::string s = text.getPartialString();
     if (s.size() > 0) {
         ofRectangle rect = font.getStringBoundingBox(s, 0.0f, 0.0f);
-        font.drawStringAsShapes(s, windowWidth/2 - rect.width / 2, windowHeight/4+rect.height+3*rect.height*text.getLine()); // give a little room between
+        font.drawStringAsShapes(s, windowWidth/2 - rect.width / 2, windowHeight/4+rect.height+2*rect.height*text.getLine()); // give a little room between
         return true;
     }
     return false;

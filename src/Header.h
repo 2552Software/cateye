@@ -73,10 +73,11 @@ public:
     void draw(float w, float h, float z);
     ofxCvContourFinder contourFinder;
     ofxCvContourFinder contourDrawer;
+    ofxCvGrayscaleImage grayImage, backgroundImage, grayDiff;
+
 private:
     ofVideoGrabber video;
     ofxCvColorImage colorImg;
-    ofxCvGrayscaleImage grayImage, backgroundImage, grayDiff;
 }; 
 
 class Textures {
