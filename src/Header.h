@@ -330,7 +330,7 @@ private:
     TextEngine fancyText;
     bool find(int id);
     void nextLevel();
-    void setTriggerCount(float count=50.0f);
+    void setTriggerCount(float count=20.0f);
     void setShapeMinSize(float size=100.0f) { shapeMinSize = size; };
     void setSquareCount(int count=15);
     void clear();
