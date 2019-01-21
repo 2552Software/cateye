@@ -135,6 +135,18 @@ void Blinker::setup() {
     blinker.setDuration(1.0f);
 }
 void Game::setup() { 
+    maxForTrigger = 525.0f;
+    shapeMinSize = 200.0f; // menus bugbug
+    squareCount = 10;// menus bugbug
+    w = ofGetWidth(); // window is not sized in this release
+    h = ofGetHeight();
+    r = std::min(w, h) / 2.0f;
+    r -= r * 0.15f;
+    mainEye.setup(r);
+    rotatingEye.setup(r);
+
+    clear(); // reset game to assure all sizes are correct
+
     blinker.setup();
     setTriggerCount();
     setShapeMinSize();

@@ -53,6 +53,26 @@ void Blinker::update() {
         blinker.animateToAfterDelay(1.0f, ofRandom(10.0f, 30.0f)); //bugbug make range wider blink every few seconds bugbug menu
     }
 }
+void Game::nextLevel() {
+    if (current.getLevel() == GameLevel::Basic) {
+        mySounds[4].play();
+        ofSetColor(ofColor::hotPink);
+    }
+    else if (current.getLevel() == GameLevel::Medium) {
+        mySounds[2].play();
+        ofSetColor(ofColor::orangeRed);
+    }
+    else if (current.getLevel() == GameLevel::Difficult) {
+        ofSetColor(ofColor::yellowGreen);
+        mySounds[0].play();
+    }
+    else {
+        ofSetColor(ofColor::white);
+        mySounds[1].play();
+    }
+    gameEyes.clear();
+
+}
 void Game::update() {
 
     // blinker always moving but only drawn up request
@@ -78,28 +98,20 @@ void Game::update() {
     cylindersSkins.update();
     musicNotesSkins.update();
     current.update();
-    if (current.advance()) {
-        if (current.getLevel() == GameLevel::Basic) {
-            mySounds[0].play();
-        }
-        else {
-            mySounds[1].play();
-        }
-        gameEyes.clear();
-    }
+    current.advance();
 
     if (current.inGame() && isWinner()) {  
-        if (isWinner()) {
-            clear();
-            switch (current.getLevel()) {
-            case GameLevel::Difficult:
-                sendFireworks = true;
-                credits(true);
-                break;
-            default:
-                break;
-            }
+        clear();
+        switch (current.getLevel()) {
+        case GameLevel::Difficult:
+            sendFireworks = true;
+            credits(true);
+            break;
+        default:
+            mySounds[7].play();
             current.next();
+            nextLevel();
+            break;
         }
     }
     else if (!current.inGame()) {

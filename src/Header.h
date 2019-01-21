@@ -200,7 +200,7 @@ public:
 #define MAXLEVELS 4
     enum Levels { NoGame = 0, Basic = 1, Medium = 2, Difficult = 3 };
 
-    GameLevel() : durations{30* frameRate, 10 * frameRate, 10 * frameRate, 10 * frameRate } // measured in number of calls to update, about 15/second if that is the frame rate
+    GameLevel() : durations{60* frameRate, 10 * frameRate, 10 * frameRate, 10 * frameRate } // measured in number of calls to update, about 15/second if that is the frame rate
     { setup(NoGame);  }
 
     void setup(Levels level);
@@ -217,6 +217,7 @@ public:
     Levels getLevel() { return level; }
     int timeLeft() { return durations[level] - gameLevelTime; }
     void next();
+    void prev();
 private:
     float gameLevelTime;
     Sound sound;
@@ -319,6 +320,7 @@ private:
     TextEngine basicText;
     TextEngine fancyText;
     bool find(int id);
+    void nextLevel();
     void setTriggerCount(float count=50.0f);
     void setShapeMinSize(float size=100.0f) { shapeMinSize = size; };
     void setSquareCount(int count=15);

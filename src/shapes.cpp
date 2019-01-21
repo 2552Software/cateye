@@ -146,10 +146,11 @@ void Game::credits(bool signon) {
     //return;
     fancyText.clear();
     if (signon) {
-        fancyText.addFullScreenText(TextTimer("Tom And Mark", (int)ofGetTargetFrameRate(), 0, 2));
-        fancyText.addFullScreenText(TextTimer("From Electronic Murals", (int)ofGetTargetFrameRate(), 0, 3));
-        fancyText.addFullScreenText(TextTimer("Thank Can Can Wonderland ...", (int)ofGetTargetFrameRate()*2,0, 4));
-        fancyText.addFullScreenText(TextTimer("... For their support of the Arts!", (int)ofGetTargetFrameRate()*3, 0, 5));
+        mySounds[6].play();
+        fancyText.addFullScreenText(TextTimer("Tom And Mark", (int)ofGetTargetFrameRate()*2, 0, 2));
+        fancyText.addFullScreenText(TextTimer("From Electronic Murals", (int)ofGetTargetFrameRate() * 3, 0, 3));
+        fancyText.addFullScreenText(TextTimer("Thank Can Can Wonderland ...", (int)ofGetTargetFrameRate()*4,0, 4));
+        fancyText.addFullScreenText(TextTimer("... For their support of the Arts!", (int)ofGetTargetFrameRate()*5, 0, 5));
     }
     else {
         fancyText.addFullScreenText(TextTimer(fancyText.sillyString(), (int)ofGetTargetFrameRate()*2, 0, 4));

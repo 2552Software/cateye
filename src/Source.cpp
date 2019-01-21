@@ -32,10 +32,26 @@ void Game::blink() {
 void Textures::add(const std::string &name, const std::string &root) {
     skins.push_back(objectTexture(root));
 }
+void GameLevel::prev() {
+    switch (getLevel()) {
+    case NoGame:
+        setup(Basic);
+        break;
+    case Basic:
+        setup(NoGame);
+        break;
+    case Medium:
+        setup(Basic);
+        break;
+    case Difficult:
+        setup(Medium);
+        break;
+    }
+}
 
 void GameLevel::next() {
     //bugug for dev keep going forward current = current->getPrevious();
-    switch (level) {
+    switch (getLevel()) {
     case NoGame:
         setup(Basic);
         break;
@@ -52,22 +68,22 @@ void GameLevel::next() {
 }
 bool GameLevel::advance() {
     if (timeLeft() < 0) { // start game every 60 seconds for example
-        next();
+        prev(); // timeout, fall back
         return true;
     }
-    else {
-        return false;
-    }
+    return false;
 }
 
 void  Game::fireWorks() {
-   //bugbug sounds(5);
+   current.setup(GameLevel::NoGame); // game over
+   mySounds[5].setLoop(true);
+   mySounds[5].play();
    rotatingEye.home(); // restore to start position
    rotatingEye.start();
-   rotatingEye.rotater.setDuration(10.0f);
+   rotatingEye.rotater.setDuration(15.0f);
    rotatingEye.rotater.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
    rotatingEye.rotater.animateFromTo(15.0f, 45.0f);
-   rotatingEye.animatorUp.setDuration(10.0f);
+   rotatingEye.animatorUp.setDuration(15.0f);
    rotatingEye.animatorUp.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
    rotatingEye.animatorUp.animateFromTo(1.0f, 1.5f);
 }
@@ -122,14 +138,6 @@ void Game::setSquareCount(int count) {
     }
 }
 Game::Game() {
-    
-    maxForTrigger = 525.0f;
-    shapeMinSize = 200.0f; // menus bugbug
-    squareCount = 10;// menus bugbug
-    w = ofGetWidth(); // window is not sized in this release
-    h = ofGetHeight();
-    r = std::min(w, h) / 2.0f;
-    r -= r*0.15f;
 }
 
 void Game::textDone(int id, bool inLine) {
@@ -148,6 +156,8 @@ size_t Game::winnerHitCount() {
 
 void Game::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event) {
     // now move main eye back into focus
+    mySounds[5].setLoop(false);
+    mySounds[5].stop();
     rotatingEye.stop();
     currentRotation.set(0.0f, 0.0f); // look forward, move ahead its not too late
     mainEye.animatorUp.animateFromTo(-rotatingEye.sphere.getRadius(), 0.0f);
@@ -158,13 +168,6 @@ void Game::windowResized(int wIn, int hIn) {
     h = hIn;
     ofLogNotice("ofApp::setup") << "Window size " << w << " by " << h;
 
-    mainEye.setup(r);
-    rotatingEye.setup(r);
-    rotatingEye.animatorUp.setDuration(2.0f);
-    rotatingEye.animatorUp.setRepeatTimes(5);
-    rotatingEye.animatorUp.setRepeatType(LOOP_BACK_AND_FORTH_N_TIMES);
-
-    clear(); // reset game to assure all sizes are correct
    
 }
 

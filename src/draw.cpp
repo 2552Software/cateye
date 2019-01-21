@@ -101,10 +101,10 @@ void ContoursBuilder::draw(float w, float h, float z, bool drawcontours) {
     }
     else {
         ofPushMatrix();
-        ofTranslate(0.0f, 0.0f, z / 4);
+        ofTranslate(0.0f, 0.0f, z / 2);
         ofEnableAlphaBlending();
         ofSetColor(255, 255, 255, 28);
-        grayDraw.adaptiveThreshold(70, false, false);
+        grayDraw.adaptiveThreshold(51, false, false);
         grayDraw.draw(0.0f, 0.0f, w, h);
         ofDisableAlphaBlending();
         ofPopMatrix();
@@ -195,7 +195,6 @@ void LocationToActionMap::draw() {
 void Game::drawGame() {
     ofPushMatrix();
     //ofTranslate(0.0f, 0.0f, r);
-    ofSetColor(ofColor::hotPink);
     ofSetLineWidth(2);
     ofNoFill();
 
