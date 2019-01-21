@@ -78,6 +78,15 @@ void Game::update() {
     cylindersSkins.update();
     musicNotesSkins.update();
     current.update();
+    if (current.advance()) {
+        if (current.getLevel() == GameLevel::Basic) {
+            mySounds[0].play();
+        }
+        else {
+            mySounds[1].play();
+        }
+        gameEyes.clear();
+    }
 
     if (current.inGame() && isWinner()) {  
         if (isWinner()) {
@@ -91,15 +100,6 @@ void Game::update() {
                 break;
             }
             current.next();
-        }
-        if (current.advance()) {
-            if (current.getLevel() == GameLevel::Basic) {
-                mySounds[0].play();
-            }
-            else {
-                mySounds[1].play();
-            }
-            gameEyes.clear();
         }
     }
     else {
@@ -131,6 +131,8 @@ void ContoursBuilder::update() {
         }
         grayImage.blurGaussian();
         grayImage.threshold(80, true);
+        colorImg.blurGaussian(5);
+        colorImg.mirror(false, true);
         if (!contourDrawer.findContours(grayImage, 5, (cameraWidth*cameraHeight), 255, true)) {
             contourDrawer.blobs.clear();
         }

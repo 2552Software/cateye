@@ -51,7 +51,7 @@ void GameLevel::next() {
     }
 }
 bool GameLevel::advance() {
-    if (timeLeft() < 0.0f) { // start game every 60 seconds for example
+    if (timeLeft() < 0) { // start game every 60 seconds for example
         next();
         return true;
     }

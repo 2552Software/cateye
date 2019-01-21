@@ -215,8 +215,7 @@ public:
     Sound&getSound() { return sound; }
 
     Levels getLevel() { return level; }
-    float timeLeft() { return durations[level] - getLevelDuration(); }
-    float getLevelDuration() { return gameLevelTime; }
+    int timeLeft() { return durations[level] - gameLevelTime; }
     void next();
 private:
     float gameLevelTime;
