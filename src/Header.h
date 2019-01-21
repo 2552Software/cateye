@@ -74,7 +74,7 @@ public:
     void draw(float w, float h, float z);
     ofxCvContourFinder contourFinder;
     ofxCvContourFinder contourDrawer;
-    ofxCvGrayscaleImage grayImage, backgroundImage, grayDiff;
+    ofxCvGrayscaleImage grayImage, backgroundImage, grayDiff, grayDraw;
 
 private:
     ofVideoGrabber video;

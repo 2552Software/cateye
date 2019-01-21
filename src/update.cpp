@@ -129,9 +129,10 @@ void ContoursBuilder::update() {
         if (!contourFinder.findContours(grayDiff, 5, (cameraWidth*cameraHeight), 255, true, true)) {
             contourFinder.blobs.clear(); // removes echo but does it make things draw too fast?
         }
+        grayDraw = grayImage;
+        grayDraw.mirror(false, true);
         grayImage.blurGaussian();
         grayImage.threshold(80, true);
-        grayImage.mirror(false, true);
         if (!contourDrawer.findContours(grayImage, 5, (cameraWidth*cameraHeight), 255, true)) {
             contourDrawer.blobs.clear();
         }

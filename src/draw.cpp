@@ -73,13 +73,14 @@ void Blinker::draw(float r) {
 
 void ContoursBuilder::draw(float w, float h, float z) {
     ofPushMatrix();
-    ofTranslate(0.0f, 0.0f, z+2);
+    ofTranslate(0.0f, 0.0f, z);
     ofEnableAlphaBlending();
-    ofSetColor(255, 255, 255, 24);
-    grayImage.draw(0.0f, 0.0f, w, h);
-    ofSetColor(255, 255, 255);
+    ofSetColor(255,255,255, 28);
+    grayDraw.adaptiveThreshold(70, false, false);
+    grayDraw.draw(0.0f, 0.0f, w, h);
     ofDisableAlphaBlending();
     ofPopMatrix();
+    ofSetColor(255, 255, 255);
     return;
     ofNoFill();
     ofSetLineWidth(2);// ofRandom(1, 5));
@@ -188,7 +189,7 @@ void LocationToActionMap::draw() {
 void Game::drawGame() {
     ofPushMatrix();
     ofSetColor(ofColor::hotPink);
-    ofSetLineWidth(1);
+    ofSetLineWidth(2);
     ofNoFill();
 
     for (auto& a : aimationMaps) {
