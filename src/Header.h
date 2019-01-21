@@ -2,6 +2,7 @@
 
 #include "ofApp.h"
 
+const int frameRate = 15;
 const float cameraWidth = 640;// 320; // the motion image from the camera
 const float cameraHeight = 480;//240;
 const float windowWidth = 1024;
@@ -198,26 +199,30 @@ class GameLevel {
 public:
 #define MAXLEVELS 4
     enum Levels { NoGame = 0, Basic = 1, Medium = 2, Difficult = 3 };
-    
-    GameLevel() : durations{30.0f, 10.0f, 10.0f, 10.0f }
+
+    GameLevel() : durations{30* frameRate, 10 * frameRate, 10 * frameRate, 10 * frameRate } // measured in number of calls to update, about 15/second if that is the frame rate
     { setup(NoGame);  }
-         
+
+    void setup(Levels level);
+    void update() {
+        ++gameLevelTime;
+    }
+
     bool inGame() { return getLevel() != NoGame; }
     bool advance();
 
-    void  resetLevelTime() { gameLevelTime = ofGetElapsedTimef(); }
+    void  resetLevelTime() { gameLevelTime = 0; }
     Sound&getSound() { return sound; }
 
     Levels getLevel() { return level; }
     float timeLeft() { return durations[level] - getLevelDuration(); }
-    float getLevelDuration() { return ofGetElapsedTimef() - gameLevelTime; }
-    void setup(Levels level);
+    float getLevelDuration() { return gameLevelTime; }
     void next();
 private:
     float gameLevelTime;
     Sound sound;
     Levels level;
-    float durations[MAXLEVELS];
+    int durations[MAXLEVELS];
 };
 
 // map location to interesting things

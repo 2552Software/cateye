@@ -10,7 +10,7 @@ void ofApp::setup(){
     //ofSetWindowShape(ofGetScreenWidth(), ofGetScreenHeight());
 
     hideMenu = true;
-    ofSetFrameRate(15.0f); 
+    ofSetFrameRate(frameRate); 
 
     ofLogNotice("ofApp::setup") << "of version " << ofGetVersionInfo();
 

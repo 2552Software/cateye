@@ -50,7 +50,7 @@ void Blinker::update() {
     blinker.update(1.0f / ofGetTargetFrameRate());
     if (!blinker.isOrWillBeAnimating()) {
         blinker.reset(0.0f);
-        blinker.animateToAfterDelay(1.0f, ofRandom(1.0f, 3.0f)); //bugbug make range wider blink every few seconds bugbug menu
+        blinker.animateToAfterDelay(1.0f, ofRandom(10.0f, 30.0f)); //bugbug make range wider blink every few seconds bugbug menu
     }
 }
 void Game::update() {
@@ -77,6 +77,7 @@ void Game::update() {
     spheresSkins.update();
     cylindersSkins.update();
     musicNotesSkins.update();
+    current.update();
 
     if (current.inGame() && isWinner()) {  
         if (isWinner()) {
