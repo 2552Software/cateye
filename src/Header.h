@@ -310,10 +310,19 @@ public:
     float w, h;
     ContoursBuilder contours;
     float maxForTrigger;
-    std::vector<ofSoundPlayer> mySounds;
     float r;
-
+    void setSoundLoop(size_t i, bool b) {
+        if (i < mySounds.size()) {
+            mySounds[i].setLoop(b);
+        }
+    }
+    void playSound(size_t i) {
+        if (i < mySounds.size()) {
+            mySounds[i].play();
+        }
+    }
 private:
+    std::vector<ofSoundPlayer> mySounds;
     GameLevel current;// allocation not validated
     void removeGameItem(int id);
     bool addGameItem(LocationToActionMap* rect);

@@ -3,7 +3,7 @@
 //Music *music = nullptr;
 //--------------------------------------------------------------
 void ofApp::setup(){
-    ofSetLogLevel(OF_LOG_VERBOSE);
+    ofSetLogLevel(OF_LOG_NOTICE);
     ofLogToConsole();
 
     //ofSetFullscreen(true);

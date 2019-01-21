@@ -18,7 +18,7 @@
 #define SPHERES "spheres"
 #define MUSICNOTES "musicnotes"
 #define CYLINDERS "cylinders"
-
+#define SOUNDS "sounds"
 #include "Header.h"
 
 class ofApp : public ofBaseApp {

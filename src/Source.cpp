@@ -76,8 +76,8 @@ bool GameLevel::advance() {
 
 void  Game::fireWorks() {
    current.setup(GameLevel::NoGame); // game over
-   mySounds[5].setLoop(true);
-   mySounds[5].play();
+   setSoundLoop(5, true);
+   playSound(5);
    rotatingEye.home(); // restore to start position
    rotatingEye.start();
    rotatingEye.rotater.setDuration(15.0f);
@@ -156,8 +156,8 @@ size_t Game::winnerHitCount() {
 
 void Game::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event) {
     // now move main eye back into focus
-    mySounds[5].setLoop(false);
-    mySounds[5].stop();
+    setSoundLoop(5, false);
+    playSound(5);
     rotatingEye.stop();
     currentRotation.set(0.0f, 0.0f); // look forward, move ahead its not too late
     mainEye.animatorUp.animateFromTo(-rotatingEye.sphere.getRadius(), 0.0f);

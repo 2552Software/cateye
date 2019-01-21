@@ -146,7 +146,7 @@ void Game::credits(bool signon) {
     //return;
     fancyText.clear();
     if (signon) {
-        mySounds[6].play();
+        playSound(6);
         fancyText.addFullScreenText(TextTimer("Tom And Mark", (int)ofGetTargetFrameRate()*2, 0, 2));
         fancyText.addFullScreenText(TextTimer("From Electronic Murals", (int)ofGetTargetFrameRate() * 3, 0, 3));
         fancyText.addFullScreenText(TextTimer("Thank Can Can Wonderland ...", (int)ofGetTargetFrameRate()*4,0, 4));

@@ -113,9 +113,9 @@ void ContoursBuilder::setup() {
         ofLogFatalError("ContoursBuilder::setup no device found");
         ofExit(1);
     }
-    // only when degbugging video.setVerbose(true);
+    video.setVerbose(false);
     video.setPixelFormat(OF_PIXELS_RGB);
-    video.setDesiredFrameRate(15);
+    video.setDesiredFrameRate(frameRate);
     if (!video.setup(cameraWidth, cameraHeight, false)) {
         ofLogFatalError("ContoursBuilder::setup video.setup failed");
         ofExit(1);
@@ -173,7 +173,7 @@ void Game::setup() {
     
     contours.setup();
 
-    ofDirectory dir("Sounds");
+    ofDirectory dir(SOUNDS);
     dir.allowExt("wav");
     dir.allowExt("mp3");
     size_t i = 0;

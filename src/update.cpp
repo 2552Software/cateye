@@ -55,20 +55,20 @@ void Blinker::update() {
 }
 void Game::nextLevel() {
     if (current.getLevel() == GameLevel::Basic) {
-        mySounds[4].play();
+        playSound(4);
         ofSetColor(ofColor::hotPink);
     }
     else if (current.getLevel() == GameLevel::Medium) {
-        mySounds[2].play();
+        playSound(2);
         ofSetColor(ofColor::orangeRed);
     }
     else if (current.getLevel() == GameLevel::Difficult) {
+        playSound(0);
         ofSetColor(ofColor::yellowGreen);
-        mySounds[0].play();
     }
     else {
+        playSound(1);
         ofSetColor(ofColor::white);
-        mySounds[1].play();
     }
     gameEyes.clear();
 
@@ -108,7 +108,7 @@ void Game::update() {
             credits(true);
             break;
         default:
-            mySounds[7].play();
+            playSound(7);
             current.next();
             nextLevel();
             break;
