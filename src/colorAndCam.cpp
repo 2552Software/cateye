@@ -43,7 +43,7 @@ void Material::setup() {
     color.setRepeatType(LOOP_BACK_AND_FORTH);
     color.animateTo(ofColor::orangeRed);// COLOR not used yet
 
-    setShininess(120);
+    setShininess(90);
     setSpecularColor(ofColor::white);
     // setEmissiveColor(ofColor::black);
     setDiffuseColor(ofColor::whiteSmoke);

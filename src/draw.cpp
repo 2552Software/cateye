@@ -53,9 +53,11 @@ void Game::draw(Music*music) {
             }
             ofPopMatrix();
             // next items are drawn absolute and are driven by camera and converted to screen units
-            drawContours();
-            blink();
+            if (!inGame()) {
+                blink();
+            }
             drawGame(); // draw any game that may be running
+            drawContours();
         }
     }
 }
@@ -71,40 +73,44 @@ void Blinker::draw(float r) {
 
 }
 
-void ContoursBuilder::draw(float w, float h, float z) {
-    ofPushMatrix();
-    ofTranslate(0.0f, 0.0f, z);
-    ofEnableAlphaBlending();
-    ofSetColor(255,255,255, 28);
-    grayDraw.adaptiveThreshold(70, false, false);
-    grayDraw.draw(0.0f, 0.0f, w, h);
-    ofDisableAlphaBlending();
-    ofPopMatrix();
-    ofSetColor(255, 255, 255);
-    return;
-    ofNoFill();
-    ofSetLineWidth(2);// ofRandom(1, 5));
-    for (auto& blob : contourDrawer.blobs) {
-        ofPolyline line;
-        for (int i = 0; i < blob.nPts; i++) {
-            line.addVertex((cameraWidth - blob.pts[i].x), blob.pts[i].y, z);
-        }
-        line.close();
-        line.scale(w / cameraWidth, h / cameraHeight);
-        line.draw();
-    }
-    ofSetLineWidth(7);// ofRandom(1, 5));
-    if (contourFinder.blobs.size() > 0) {
-        for (auto& blob : contourFinder.blobs) {
+void ContoursBuilder::draw(float w, float h, float z, bool drawcontours) {
+    if (drawcontours) {
+        ofNoFill();
+        ofSetLineWidth(2);// ofRandom(1, 5));
+        for (auto& blob : contourDrawer.blobs) {
             ofPolyline line;
             for (int i = 0; i < blob.nPts; i++) {
                 line.addVertex((cameraWidth - blob.pts[i].x), blob.pts[i].y, z);
             }
             line.close();
-            line.scale(xFactor, yFactor);
+            line.scale(w / cameraWidth, h / cameraHeight);
             line.draw();
         }
+        ofSetLineWidth(7);// ofRandom(1, 5));
+        if (contourFinder.blobs.size() > 0) {
+            for (auto& blob : contourFinder.blobs) {
+                ofPolyline line;
+                for (int i = 0; i < blob.nPts; i++) {
+                    line.addVertex((cameraWidth - blob.pts[i].x), blob.pts[i].y, z);
+                }
+                line.close();
+                line.scale(xFactor, yFactor);
+                line.draw();
+            }
+        }
     }
+    else {
+        ofPushMatrix();
+        ofTranslate(0.0f, 0.0f, z / 4);
+        ofEnableAlphaBlending();
+        ofSetColor(255, 255, 255, 28);
+        grayDraw.adaptiveThreshold(70, false, false);
+        grayDraw.draw(0.0f, 0.0f, w, h);
+        ofDisableAlphaBlending();
+        ofPopMatrix();
+        ofSetColor(255, 255, 255);
+    }
+  
 }
 
 // see if anything is going on
@@ -188,6 +194,7 @@ void LocationToActionMap::draw() {
 
 void Game::drawGame() {
     ofPushMatrix();
+    //ofTranslate(0.0f, 0.0f, r);
     ofSetColor(ofColor::hotPink);
     ofSetLineWidth(2);
     ofNoFill();
@@ -209,5 +216,5 @@ void Game::drawGame() {
 }
 
 void Game::drawContours() {
-    contours.draw(w, h, r);
+    contours.draw(w, h, r, inGame());
 }

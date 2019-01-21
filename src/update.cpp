@@ -102,7 +102,7 @@ void Game::update() {
             current.next();
         }
     }
-    else {
+    else if (!current.inGame()) {
         if (ofRandom(100.0f) > 99.9f && !fancyText.isFullScreenAnimating()) {
             credits(false); // funny text or maybe credits
         }

@@ -71,7 +71,7 @@ public:
     void setup();
     // return true if updated
     void update();
-    void draw(float w, float h, float z);
+    void draw(float w, float h, float z, bool drawcontours);
     ofxCvContourFinder contourFinder;
     ofxCvContourFinder contourDrawer;
     ofxCvGrayscaleImage grayImage, backgroundImage, grayDiff, grayDraw;
