@@ -131,9 +131,7 @@ void ContoursBuilder::update() {
         }
         grayImage.blurGaussian();
         grayImage.threshold(80, true);
-        //colorImg.blurGaussian(5);
-        colorImg.blur();
-        colorImg.mirror(false, true);
+        grayImage.mirror(false, true);
         if (!contourDrawer.findContours(grayImage, 5, (cameraWidth*cameraHeight), 255, true)) {
             contourDrawer.blobs.clear();
         }

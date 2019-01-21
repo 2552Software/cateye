@@ -122,7 +122,7 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-    ofSetBackgroundColor(ofColor::lightBlue);
+    ofSetBackgroundColor(ofColor::black);
     ofSetColor(ofColor::white);
 
     if (hideMenu) {
