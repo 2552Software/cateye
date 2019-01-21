@@ -41,7 +41,12 @@ void GameObject::setup(float xIn, float yIn, float zIn, float seconds, AnimRepea
 void SuperSphere::setup(float r) {
     sphere.setResolution(27);
     sphere.setPosition(x, y, z);
-    sphere.setRadius(r);
+    if (!r) {
+        sphere.setRadius(std::min(windowWidth, windowHeight) / 2);
+    }
+    else {
+        sphere.setRadius(r);
+    }
     home();
 }
 
