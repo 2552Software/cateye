@@ -87,7 +87,7 @@ void ofApp::update() {
     eyeAnimator.update();
     light.update();
     if (music) {
-        if (eyeAnimator.inGame()) {
+        if (eyeAnimator.inGame() && !eyeAnimator.isWinner()) {
             music->engine.start();
             ofVec3f max;
             for (auto& a : eyeAnimator.contours.contourFinder.blobs) {

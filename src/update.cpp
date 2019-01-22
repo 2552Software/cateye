@@ -55,19 +55,19 @@ void Blinker::update() {
 }
 void Game::nextLevel() {
     if (current.getLevel() == GameLevel::Basic) {
-        playSound("cat");
+        playSound("wargames.wav");
         ofSetColor(ofColor::hotPink);
     }
     else if (current.getLevel() == GameLevel::Medium) {
-        playSound("breakingglass");
+        playSound("breakingglass.wav");
         ofSetColor(ofColor::orangeRed);
     }
     else if (current.getLevel() == GameLevel::Difficult) {
-        playSound("F15");
+        playSound("F15.wav");
         ofSetColor(ofColor::yellowGreen);
     }
     else {
-        playSound("cat2");
+        playSound("fanfare.wav");
         ofSetColor(ofColor::white);
     }
     gameEyes.clear();
@@ -110,7 +110,7 @@ void Game::update() {
             credits(true);
             break;
         default:
-            playSound(7);
+            playSound("cat.mp3");
             current.next();
             nextLevel();
             break;

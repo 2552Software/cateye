@@ -188,6 +188,7 @@ void Game::setup() {
     else {
         ofLogError() << SOUNDS << " missing"; // fatal?
     }
+    playSound("drums.wav");
 
     clear(); // go to a known state (call last like this as it may depend on othe settings)
     
