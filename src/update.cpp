@@ -128,9 +128,6 @@ void Game::update() {
         else if (ofRandom(100.0f) > 99.9f) {
             playMoreRandomSound("jaw_harp.wav");
         }
-        else if (ofRandom(100.0f) > 99.9f) {
-            playMoreRandomSound("pacman_intro.wav");
-        }
     }
     getCountours();
 }
