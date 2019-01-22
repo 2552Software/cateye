@@ -285,6 +285,11 @@ private:
 
 };
 
+class SoundPlayer : public ofSoundPlayer{
+public:
+    std::string name;
+};
+
 class Music;
 class Game {
 public:
@@ -310,24 +315,33 @@ public:
     ofRectangle convert(const ofRectangle&rect) {
         return ofRectangle(rect.x*scaleX(), rect.y*scaleY(), rect.width*scaleX(), rect.height*scaleY());
     }
-    void setSoundLoop(size_t i, bool b) {
-        if (i < mySounds.size()) {
-            mySounds[i].setLoop(b);
+    void setSoundLoop(const std::string& name, bool b) {
+        for (auto&a : mySounds) {
+            if (a.name == name) {
+                a.setLoop(b);
+                break;
+            }
         }
     }
-    void playSound(size_t i) {
-        if (i < mySounds.size()) {
-            mySounds[i].play();
+    void playSound(const std::string& name) {
+        for (auto&a : mySounds) {
+            if (a.name == name) {
+                a.play();
+                break;
+            }
         }
     }
-    void stopSound(size_t i) {
-        if (i < mySounds.size()) {
-            mySounds[i].stop();
+    void stopSound(const std::string& name) {
+        for (auto&a : mySounds) {
+            if (a.name == name) {
+                a.stop();
+                break;
+            }
         }
     }
 
 private:
-    std::vector<ofSoundPlayer> mySounds;
+    std::vector<SoundPlayer> mySounds;
     GameLevel current;// allocation not validated
     void removeGameItem(int id);
     bool addGameItem(LocationToActionMap* rect);

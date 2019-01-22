@@ -178,8 +178,9 @@ void Game::setup() {
     if (dir.listDir() > 0) {
         ofLogNotice() << " sound count " << dir.size();
         for (; i < dir.size(); i++) {
-            ofSoundPlayer s;
+            SoundPlayer s;
             s.load(dir.getPath(i));
+            s.name = dir.getName(i);
             ofLogNotice() << " sound loaded " << dir.getPath(i);
             mySounds.push_back(s);
         }

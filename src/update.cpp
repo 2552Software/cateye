@@ -55,19 +55,19 @@ void Blinker::update() {
 }
 void Game::nextLevel() {
     if (current.getLevel() == GameLevel::Basic) {
-        playSound(4);
+        playSound("cat");
         ofSetColor(ofColor::hotPink);
     }
     else if (current.getLevel() == GameLevel::Medium) {
-        playSound(2);
+        playSound("breakingglass");
         ofSetColor(ofColor::orangeRed);
     }
     else if (current.getLevel() == GameLevel::Difficult) {
-        playSound(0);
+        playSound("F15");
         ofSetColor(ofColor::yellowGreen);
     }
     else {
-        playSound(1);
+        playSound("cat2");
         ofSetColor(ofColor::white);
     }
     gameEyes.clear();
