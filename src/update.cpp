@@ -122,13 +122,13 @@ void Game::update() {
             playMoreRandomSound("neon_light.wav");
             credits(false); // funny text or maybe credits
         }
-        else if (ofRandom(1000.0f) > 999.9f) {
+        else if (ofRandom(100.0f) > 99.9f) {
             playMoreRandomSound("honk_honk_x.wav");
         }
         else if (ofRandom(100.0f) > 99.9f) {
             playMoreRandomSound("jaw_harp.wav");
         }
-        else if (ofRandom(1000.0f) > 999.9f) {
+        else if (ofRandom(100.0f) > 99.9f) {
             playMoreRandomSound("pacman_x.wav");
         }
     }
