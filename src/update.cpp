@@ -100,6 +100,7 @@ void Game::update() {
     current.update();
     if (current.checkTimeOut()) {
         gameEyes.clear();
+        nextLevel();
     }
 
     if (current.inGame() && isWinner()) {  
