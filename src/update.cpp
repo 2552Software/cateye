@@ -63,7 +63,7 @@ void Game::nextLevel() {
         ofSetColor(ofColor::orangeRed);
     }
     else if (current.getLevel() == GameLevel::Difficult) {
-        playSound("F15.wav");
+        playSound("accessgranted.wav");
         ofSetColor(ofColor::yellowGreen);
     }
     else {

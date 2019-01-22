@@ -81,12 +81,12 @@ void  Game::fireWorks() {
    playSound("drums.wav");
    rotatingEye.home(); // restore to start position
    rotatingEye.start();
-   rotatingEye.rotater.setDuration(15.0f);
+   rotatingEye.rotater.setDuration(12.0f);
    rotatingEye.rotater.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
-   rotatingEye.rotater.animateFromTo(15.0f, 45.0f);
+   rotatingEye.rotater.animateFromTo(15.0f, 60.0f);
    rotatingEye.animatorUp.setDuration(15.0f);
    rotatingEye.animatorUp.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
-   rotatingEye.animatorUp.animateFromTo(1.0f, 1.5f);
+   rotatingEye.animatorUp.animateFromTo(1.0f, 1.3f);
 }
 
 void Game::rotate(const ofVec3f& target) {
