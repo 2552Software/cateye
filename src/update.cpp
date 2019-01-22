@@ -55,7 +55,7 @@ void Blinker::update() {
 }
 void Game::nextLevel() {
     if (current.getLevel() == GameLevel::Basic) {
-        playSound("wargames.wav");
+        playSound("war_games_play_a_game.wav");
         ofSetColor(ofColor::hotPink);
     }
     else if (current.getLevel() == GameLevel::Medium) {
