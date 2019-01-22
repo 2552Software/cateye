@@ -117,22 +117,18 @@ void Game::update() {
             break;
         }
     }
-    else if (!current.inGame()) {
-        if (ofRandom(100.0f) > 99.9f && !fancyText.isFullScreenAnimating()) {
+    else if (!current.inGame() && !fancyText.isFullScreenAnimating()) {
+        if (ofRandom(100.0f) > 99.9f) {
             playMoreRandomSound("neon_light.wav");
-            ofSeedRandom(1);
             credits(false); // funny text or maybe credits
         }
-        else if (ofRandom(100.0f) > 99.9f) {
-            ofSeedRandom(10);
+        else if (ofRandom(1000.0f) > 999.9f) {
             playMoreRandomSound("honk_honk_x.wav");
         }
         else if (ofRandom(100.0f) > 99.9f) {
-            ofSeedRandom(100);
             playMoreRandomSound("jaw_harp.wav");
         }
-        else if (ofRandom(100.0f) > 99.9f) {
-            ofSeedRandom(1000);
+        else if (ofRandom(1000.0f) > 999.9f) {
             playMoreRandomSound("pacman_x.wav");
         }
     }
