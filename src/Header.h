@@ -334,7 +334,7 @@ public:
     void playMoreRandomSound(const std::string& name) {
         for (auto&a : mySounds) {
             if (a.name == name) {
-                a.setSpeed(ofRandom(0.8, 1.2));
+                a.setSpeed(ofRandom(0.5, 1.4));
                 a.play();
                 break;
             }
