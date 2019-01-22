@@ -35,16 +35,15 @@ void Game::draw(Music*music) {
     if (!drawText()) { // draw text first and give it the full screen
         if (rotatingEye.isRunning()) {
             ofPushMatrix(); 
-            ofTranslate(w / 2, h / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
+            ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2, 0.0f);// z will need to be moved via apis since OF is not consistant here
             rotatingEyesSkins.getCurrentRef().start();
             rotatingEye.draw();
             rotatingEyesSkins.getCurrentRef().stop();
             ofPopMatrix();
         }
         else {
-            
             ofPushMatrix();
-            ofTranslate(w / 2, h / 2);// z will need to be moved via apis since OF is not consistant here
+            ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);// z will need to be moved via apis since OF is not consistant here
             setTitle();
             if (!inGame()) {
                 mainEye.setRotation(currentRotation);
@@ -53,12 +52,12 @@ void Game::draw(Music*music) {
                 mainEyesSkins.getCurrentRef().stop();
             }
             ofPopMatrix();
-            // next items are drawn absolute and are driven by camera and converted to screen units
-            if (!inGame()) {
-                blink();
-            }
             drawGame(); // draw any game that may be running
             drawContours();
+            // next items are drawn absolute and are driven by camera and converted to screen units
+            if (!inGame()) { // draws entire screen so no middle starting point
+                blink();
+            }
         }
     }
 }
@@ -67,14 +66,14 @@ void Blinker::draw(float r) {
     ofPushStyle();
     ofFill();
     float blink = blinker.val();
-    
-    ofDrawRectangle(0.0f, 0.0f, r, windowWidth, (windowHeight / 2)*blink);
-    ofDrawRectangle(0.0f, windowHeight, r, windowWidth, -(windowHeight / 2)*blink);
+    // cover entire window no matte the size
+    ofDrawRectangle(0.0f, 0.0f, ofGetScreenWidth(), (ofGetScreenHeight() / 2)*blink); // top down
+    ofDrawRectangle(0.0f, ofGetScreenHeight(), ofGetScreenWidth(), -(ofGetScreenHeight() / 2)*blink);
     ofPopStyle();
-
 }
 
 void ContoursBuilder::draw(float w, float h, float z, bool drawcontours) {
+    ofPushMatrix();
     if (drawcontours) {
         ofNoFill();
         ofSetLineWidth(2);// ofRandom(1, 5));
@@ -95,23 +94,20 @@ void ContoursBuilder::draw(float w, float h, float z, bool drawcontours) {
                     line.addVertex((cameraWidth - blob.pts[i].x), blob.pts[i].y, z);
                 }
                 line.close();
-                line.scale(xFactor, yFactor);
+                line.scale(w / cameraWidth, h / cameraHeight);
                 line.draw();
             }
         }
     }
     else {
-        ofPushMatrix();
         ofTranslate(0.0f, 0.0f, z / 2);
         ofEnableAlphaBlending();
         ofSetColor(255, 255, 255, 28);
         grayDraw.adaptiveThreshold(51, false, false);
         grayDraw.draw(0.0f, 0.0f, w, h);
         ofDisableAlphaBlending();
-        ofPopMatrix();
-        ofSetColor(255, 255, 255);
     }
-  
+    ofPopMatrix();
 }
 
 // see if anything is going on
@@ -139,7 +135,7 @@ bool TextEngine::animateString(TextTimer& text) {
     std::string s = text.getPartialString();
     if (s.size() > 0) {
         ofRectangle rect = font.getStringBoundingBox(s, 0.0f, 0.0f);
-        font.drawStringAsShapes(s, windowWidth/2 - rect.width / 2, windowHeight/4+rect.height+2*rect.height*text.getLine()); // give a little room between
+        font.drawStringAsShapes(s, ofGetWidth() /2 - rect.width / 2, ofGetHeight() /4+rect.height+2*rect.height*text.getLine()); // give a little room between
         return true;
     }
     return false;
@@ -195,7 +191,6 @@ void LocationToActionMap::draw() {
 
 void Game::drawGame() {
     ofPushMatrix();
-    //ofTranslate(0.0f, 0.0f, r);
     ofSetLineWidth(2);
     ofNoFill();
 
@@ -216,5 +211,5 @@ void Game::drawGame() {
 }
 
 void Game::drawContours() {
-    contours.draw(w, h, r, inGame());
+    contours.draw(ofGetWidth(), ofGetHeight(), r, inGame());
 }

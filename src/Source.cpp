@@ -158,18 +158,13 @@ size_t Game::winnerHitCount() {
 void Game::rotatingEyesDone(ofxAnimatableFloat::AnimationEvent & event) {
     // now move main eye back into focus
     setSoundLoop(5, false);
-    playSound(5);
+    stopSound(5);
     rotatingEye.stop();
     currentRotation.set(0.0f, 0.0f); // look forward, move ahead its not too late
     mainEye.animatorUp.animateFromTo(-rotatingEye.sphere.getRadius(), 0.0f);
     clear(); // reset and start again
 }
 void Game::windowResized(int wIn, int hIn) {
-    w = wIn;
-    h = hIn;
-    ofLogNotice("ofApp::setup") << "Window size " << w << " by " << h;
-
-   
 }
 
 void Game::startPlaying() {
@@ -198,7 +193,7 @@ void Game::removeGameItem(int id) {
 bool Game::addGameItem(LocationToActionMap* map) {
     if (map) {
         float flip = (cameraWidth - map->x)-map->width; // convert from camera perspective to user perspective
-        ofRectangle rect(flip*xFactor, map->y*yFactor, map->width*xFactor, map->height*yFactor);
+        ofRectangle rect(flip*scaleX(), map->y*scaleY(), map->width*scaleX(), map->height*scaleY());
         float r = std::min(rect.width, rect.height) / 2;
         r *= 0.9f;// leave some white space
         if (!find(map->c)) { // only include  one time

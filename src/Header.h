@@ -5,15 +5,12 @@
 const int frameRate = 15;
 const float cameraWidth = 640;// 320; // the motion image from the camera
 const float cameraHeight = 480;//240;
-const float windowWidth = 1024;
-const float windowHeight = 768;
-// convert to screen size
-const float xFactor = windowWidth / cameraWidth;
-const float yFactor = windowHeight / cameraHeight;
-inline ofRectangle convert(const ofRectangle&rect) {
-    return ofRectangle(rect.x*xFactor, rect.y*yFactor, rect.width*xFactor, rect.height*yFactor);
+inline float scaleX() {
+    return (float)ofGetWidth() / cameraWidth;
 }
-
+inline float scaleY() {
+    return (float)ofGetHeight() / cameraHeight;
+}
 class TextTimer {
 public:
     TextTimer(const std::string& textIn, unsigned int timeToRenderIn, unsigned int delay, int lineIn);
@@ -200,7 +197,7 @@ public:
 #define MAXLEVELS 4
     enum Levels { NoGame = 0, Basic = 1, Medium = 2, Difficult = 3 };
 
-    GameLevel() : durations{60* frameRate, 10 * frameRate, 15 * frameRate, 20 * frameRate } // measured in number of calls to update, about 15/second if that is the frame rate
+    GameLevel() : durations{1* frameRate, 10 * frameRate, 15 * frameRate, 20 * frameRate } // measured in number of calls to update, about 15/second if that is the frame rate
     { setup(NoGame);  }
 
     void setup(Levels level);
@@ -307,10 +304,12 @@ public:
     void windowResized(int w, int h);
     bool inGame() { return current.inGame(); }
     void credits(bool signon = false);
-    float w, h;
     ContoursBuilder contours;
     float maxForTrigger;
-    float r;
+    float r; 
+    ofRectangle convert(const ofRectangle&rect) {
+        return ofRectangle(rect.x*scaleX(), rect.y*scaleY(), rect.width*scaleX(), rect.height*scaleY());
+    }
     void setSoundLoop(size_t i, bool b) {
         if (i < mySounds.size()) {
             mySounds[i].setLoop(b);
@@ -321,6 +320,12 @@ public:
             mySounds[i].play();
         }
     }
+    void stopSound(size_t i) {
+        if (i < mySounds.size()) {
+            mySounds[i].stop();
+        }
+    }
+
 private:
     std::vector<ofSoundPlayer> mySounds;
     GameLevel current;// allocation not validated

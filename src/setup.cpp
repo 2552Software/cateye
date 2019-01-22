@@ -42,7 +42,7 @@ void SuperSphere::setup(float r) {
     sphere.setResolution(27); 
     sphere.setPosition(x, y, z);
     if (!r) {
-        r = std::min(windowWidth, windowHeight) / 2;
+        r = std::min(ofGetWidth(), ofGetHeight()) / 2;
         r -= r * 0.15f;
         sphere.setRadius(r);
     }
@@ -138,9 +138,7 @@ void Game::setup() {
     maxForTrigger = 525.0f;
     shapeMinSize = 200.0f; // menus bugbug
     squareCount = 10;// menus bugbug
-    w = ofGetWidth(); // window is not sized in this release
-    h = ofGetHeight();
-    r = std::min(w, h) / 2.0f;
+    r = std::min(ofGetWidth(), ofGetHeight()) / 2.0f;
     r -= r * 0.15f;
     mainEye.setup(r);
     rotatingEye.setup(r);
@@ -178,14 +176,16 @@ void Game::setup() {
     dir.allowExt("mp3");
     size_t i = 0;
     if (dir.listDir() > 0) {
+        ofLogNotice() << " sound count " << dir.size();
         for (; i < dir.size(); i++) {
             ofSoundPlayer s;
             s.load(dir.getPath(i));
+            ofLogNotice() << " sound loaded " << dir.getPath(i);
             mySounds.push_back(s);
         }
     }
     else {
-        ofLogError() << "Sounds" << " missing"; // fatal?
+        ofLogError() << SOUNDS << " missing"; // fatal?
     }
 
     clear(); // go to a known state (call last like this as it may depend on othe settings)
