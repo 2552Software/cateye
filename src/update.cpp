@@ -59,7 +59,7 @@ void Game::nextLevel() {
         ofSetColor(ofColor::hotPink);
     }
     else if (current.getLevel() == GameLevel::Medium) {
-        playSound("breakingglass.wav");
+        playMoreRandomSound("breakingglass.wav");
         ofSetColor(ofColor::orangeRed);
     }
     else if (current.getLevel() == GameLevel::Difficult) {
@@ -67,7 +67,7 @@ void Game::nextLevel() {
         ofSetColor(ofColor::yellowGreen);
     }
     else {
-        playSound("fanfare.wav");
+        playMoreRandomSound("fanfare.wav");
         ofSetColor(ofColor::white);
     }
     gameEyes.clear();
@@ -111,7 +111,7 @@ void Game::update() {
             credits(true);
             break;
         default:
-            playSound("cat.mp3");
+            playMoreRandomSound("cat.mp3");
             current.next();
             nextLevel();
             break;
@@ -120,6 +120,15 @@ void Game::update() {
     else if (!current.inGame()) {
         if (ofRandom(100.0f) > 99.9f && !fancyText.isFullScreenAnimating()) {
             credits(false); // funny text or maybe credits
+        }
+        else if (ofRandom(100.0f) > 99.8f) {
+            playMoreRandomSound("honk_honk_x.wav");
+        }
+        else if (ofRandom(100.0f) > 99.8f) {
+            playMoreRandomSound("jaw_harp.wav");
+        }
+        else if (ofRandom(100.0f) > 99.8f) {
+            playMoreRandomSound("neon_light.wav");
         }
     }
     getCountours();

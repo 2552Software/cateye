@@ -147,6 +147,9 @@ void ofApp::draw() {
 void ofApp::keyReleased(int key) {
 }
 void ofApp::keyPressed(int key) {
+    if (key == ' ') {
+        ofToggleFullscreen();
+    }
     if (key == 'm') {
         gui.saveToFile("settings.xml");
         hideMenu = !hideMenu;

@@ -331,6 +331,15 @@ public:
             }
         }
     }
+    void playMoreRandomSound(const std::string& name) {
+        for (auto&a : mySounds) {
+            if (a.name == name) {
+                a.setSpeed(ofRandom(0.8, 1.2));
+                a.play();
+                break;
+            }
+        }
+    }
     void stopSound(const std::string& name) {
         for (auto&a : mySounds) {
             if (a.name == name) {
