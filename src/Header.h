@@ -197,7 +197,7 @@ public:
 #define MAXLEVELS 4
     enum Levels { NoGame = 0, Basic = 1, Medium = 2, Difficult = 3 };
 
-    GameLevel() : durations{60* frameRate, 10 * frameRate, 15 * frameRate, 20 * frameRate } // measured in number of calls to update, about 15/second if that is the frame rate
+    GameLevel() : durations{120* frameRate, 10 * frameRate, 15 * frameRate, 20 * frameRate } // measured in number of calls to update, about 15/second if that is the frame rate
     { setup(NoGame);  }
 
     void setup(Levels level);
