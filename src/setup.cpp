@@ -133,7 +133,7 @@ void Blinker::setup() {
     color= ofColor::hotPink;
     blinker.reset(0.0f);
     blinker.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
-    blinker.setDuration(2.0f);
+    blinker.setDuration(1.0f);
 }
 void Game::setup() { 
     maxForTrigger = 525.0f;

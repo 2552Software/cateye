@@ -60,7 +60,7 @@ void Blinker::update() {
             color = ofColor::blue;
         }
         else {
-            color = ofColor(ofRandom(255), ofRandom(255), ofRandom(255));
+            color = ofColor(ofColor::darkBlue);
         }
         blinker.animateToAfterDelay(1.0f, ofRandom(10.0f, 30.0f)); //bugbug make range wider blink every few seconds bugbug menu
     }
