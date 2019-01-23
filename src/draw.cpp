@@ -62,14 +62,19 @@ void Game::draw(Music*music) {
     }
 }
 void Blinker::draw(float r) {
-    ofSetColor(ofColor::black);
-    ofPushStyle();
-    ofFill();
     float blink = blinker.val();
-    // cover entire window no matte the size
-    ofDrawRectangle(0.0f, 0.0f, ofGetScreenWidth(), (ofGetScreenHeight() / 2)*blink); // top down
-    ofDrawRectangle(0.0f, ofGetScreenHeight(), ofGetScreenWidth(), -(ofGetScreenHeight() / 2)*blink);
-    ofPopStyle();
+    if (blink) {
+        ofPushMatrix();
+        ofPushStyle();
+        ofTranslate(0.0f, 0.0f, r);
+        ofFill();
+        ofSetColor(color);
+        // cover entire window no matte the size
+        ofDrawRectangle(0.0f, 0.0f, ofGetScreenWidth(), (ofGetScreenHeight() / 2)*blink); // top down
+        ofDrawRectangle(0.0f, ofGetScreenHeight(), ofGetScreenWidth(), -(ofGetScreenHeight() / 2)*blink);
+        ofPopStyle();
+        ofPopMatrix();
+    }
 }
 
 void ContoursBuilder::draw(float w, float h, float z, bool drawcontours) {

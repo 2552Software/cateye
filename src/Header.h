@@ -282,7 +282,7 @@ public:
     float val() { return blinker.val(); }
 private:
     ofxAnimatableFloat blinker; // blink animation
-
+    ofColor color;
 };
 
 class SoundPlayer : public ofSoundPlayer{

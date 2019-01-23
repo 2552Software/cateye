@@ -50,6 +50,18 @@ void Blinker::update() {
     blinker.update(1.0f / ofGetTargetFrameRate());
     if (!blinker.isOrWillBeAnimating()) {
         blinker.reset(0.0f);
+        if (ofRandom(100.0f) > 76.0f) {
+            color = ofColor::hotPink;
+        }
+        else if (ofRandom(100.0f) > 66.0f) {
+            color = ofColor::purple;
+        }
+        else if (ofRandom(100.0f) > 56.0f) {
+            color = ofColor::blue;
+        }
+        else {
+            color = ofColor(ofRandom(255), ofRandom(255), ofRandom(255));
+        }
         blinker.animateToAfterDelay(1.0f, ofRandom(10.0f, 30.0f)); //bugbug make range wider blink every few seconds bugbug menu
     }
 }

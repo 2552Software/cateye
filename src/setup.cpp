@@ -43,7 +43,7 @@ void SuperSphere::setup(float r) {
     sphere.setPosition(x, y, z);
     if (!r) {
         r = std::min(ofGetWidth(), ofGetHeight()) / 2;
-        r -= r * 0.15f;
+        //r -= r * 0.15f;
         sphere.setRadius(r);
     }
     else {
@@ -130,16 +130,17 @@ void TextEngine::setup(int fontsize) {
     font.load("DejaVuSans.ttf", fontsize, false, false, true);
 }
 void Blinker::setup() {
+    color= ofColor::hotPink;
     blinker.reset(0.0f);
     blinker.setRepeatType(LOOP_BACK_AND_FORTH_ONCE);
-    blinker.setDuration(1.0f);
+    blinker.setDuration(2.0f);
 }
 void Game::setup() { 
     maxForTrigger = 525.0f;
     shapeMinSize = 200.0f; // menus bugbug
     squareCount = 10;// menus bugbug
     r = std::min(ofGetWidth(), ofGetHeight()) / 2.0f;
-    r -= r * 0.15f;
+    //r -= r * 0.15f;
     mainEye.setup(r);
     rotatingEye.setup(r);
 
