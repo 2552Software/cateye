@@ -50,6 +50,9 @@ void Blinker::update() {
     blinker.update(1.0f / ofGetTargetFrameRate());
     if (!blinker.isOrWillBeAnimating()) {
         blinker.reset(0.0f);
+        if (ofRandom(100.0f) > 51.0f) {
+            color = ofColor::black;
+        }
         if (ofRandom(100.0f) > 76.0f) {
             color = ofColor::hotPink;
         }
