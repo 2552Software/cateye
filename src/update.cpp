@@ -53,7 +53,7 @@ void Blinker::update() {
         if (ofRandom(100.0f) > 51.0f) {
             color = ofColor::black;
         }
-        if (ofRandom(100.0f) > 76.0f) {
+        else if (ofRandom(100.0f) > 76.0f) {
             color = ofColor::hotPink;
         }
         else if (ofRandom(100.0f) > 66.0f) {
