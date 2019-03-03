@@ -82,7 +82,7 @@ std::string& TextTimer::getPartialString() {
 std::string TextEngine::sillyString() {
     //bugbug add more stuff
     std::string s;
-    switch ((int)ofRandom(0, 18)) {
+    switch ((int)ofRandom(0, 21)) {
     case 0:
         s = "Time 4 Free beer???";
         break;
@@ -133,6 +133,15 @@ std::string TextEngine::sillyString() {
         break;
     case 17:
         s = "Howdy howdy!";
+        break;
+    case 18:
+        s = "You are looking better than ever! Purrrr";
+        break;
+    case 19:
+        s = "You are the cats meow!";
+        break;
+    case 20:
+        s = "GET LOUND!";
         break;
     default:
         s = "Time for a refill!";

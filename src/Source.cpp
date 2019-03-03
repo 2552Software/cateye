@@ -195,7 +195,7 @@ bool Game::addGameItem(LocationToActionMap* map) {
         float flip = (cameraWidth - map->x)-map->width; // convert from camera perspective to user perspective
         ofRectangle rect(flip*scaleX(), map->y*scaleY(), map->width*scaleX(), map->height*scaleY());
         float r = std::min(rect.width, rect.height) / 2;
-        r *= 0.9f;// leave some white space
+        r *= 0.95f;// leave some white space
         if (!find(map->c)) { // only include  one time
             float t = 20.0f; // no game, or time between games -- make 5 minute or so in production
             switch (current.getLevel()) {

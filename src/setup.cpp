@@ -43,7 +43,7 @@ void SuperSphere::setup(float r) {
     sphere.setPosition(x, y, z);
     if (!r) {
         r = std::min(ofGetWidth(), ofGetHeight()) / 2;
-        //r -= r * 0.15f;
+        r -= r * 0.15f;
         sphere.setRadius(r);
     }
     else {
@@ -140,7 +140,7 @@ void Game::setup() {
     shapeMinSize = 200.0f; // menus bugbug
     squareCount = 10;// menus bugbug
     r = std::min(ofGetWidth(), ofGetHeight()) / 2.0f;
-    //r -= r * 0.15f;
+    r -= r * 0.9f;
     mainEye.setup(r);
     rotatingEye.setup(r);
 
